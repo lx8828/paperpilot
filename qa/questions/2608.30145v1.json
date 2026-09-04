@@ -1,0 +1,158 @@
+[
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文提出什么任务？填补了什么空白？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "内容级引文验证任务，填补书目级幻觉引用检测未覆盖的空白——评估引用是否真正支撑其主张。",
+    "must_have": [
+      "内容级",
+      "引文验证",
+      "书目级"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "CNCV 框架的三阶段是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "包含主张归一化、带 grounding 的证据检索和引文分类的三阶段框架。",
+    "must_have": [
+      "主张归一化",
+      "证据检索",
+      "分类"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-03",
+    "role": "dev",
+    "intent": "detail",
+    "question": "CNCV 相比先前两阶段框架的收益如何量化？",
+    "expect": [
+      "L1"
+    ],
+    "route_min": "L1",
+    "hint": "全部 18 个分类器上提升宏 F1；编码器平均提升 12%，生成式 LLM 提升 10%。",
+    "must_have": [
+      "18",
+      "12",
+      "10"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-04",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "claim normalization 具体做什么？为什么要做？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "对原始引用声明进行三步重写，模拟人类审稿人的理解-验证流程。",
+    "must_have": [
+      "范围限定",
+      "视角对齐",
+      "命题整合"
+    ],
+    "must_not": [],
+    "chunk_kw": null,
+    "note_calibrated": " | kw标注校准"
+  },
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-05",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "检索阶段为什么用基于 LLM 的检索器而非 BM25 加 cross-encoder 重排？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "以利用主张归一化的语义结构信息。",
+    "must_have": [
+      "语义结构",
+      "归一化"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-06",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说，这篇论文解决的是什么痛点？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "现在的幻觉检测只查'这篇引文存不存在'，不查'它到底撑不撑得起这句话'；CNCV 把后者也查了。",
+    "must_have": [
+      "支撑",
+      "存在"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-07",
+    "role": "user",
+    "intent": "detail",
+    "question": "用自动归一化主张检索的证据，效果和人工标注证据比怎么样？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "下游分类性能与人工标注证据在统计上等效。",
+    "must_have": [
+      "等效",
+      "人工标注"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30145v1.pdf",
+    "qid": "30145-08",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文构建的评测数据集规模多大？包含哪些标注？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "含 1,444 个引文实例，包含人工归一化主张、人工选择金证据和人工分配标签。",
+    "must_have": [
+      "1,444"
+    ],
+    "must_not": [],
+    "chunk_kw": "1444",
+    "note_calibrated": " | kw标注校准"
+  }
+]

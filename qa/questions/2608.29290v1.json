@@ -1,0 +1,41 @@
+[
+  {
+    "pdf": "2608.29290v1.pdf",
+    "qid": "29290-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，这篇论文修的是哪类 bug？怎么修的？",
+    "expect": ["L0", "L1"],
+    "route_min": "L0",
+    "hint": "修 REST API 客户端程序里的误用（用了废弃接口等）；把废弃/最新规范和代码片段分门别类存进数据库，检索后让 LLM 三阶段提示修复，最高修复率 88.6%。",
+    "must_have": ["REST", "废弃", "88.6"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29290v1.pdf",
+    "qid": "29290-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "为什么只给 LLM 废弃规范（D/Ds）效果反而很差？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "修复率远低于基线（混合误用案例 0%）；因为废弃与最新规范共同嵌入时，语义相似的废弃片段主导检索，降低提示可靠性。",
+    "must_have": ["废弃", "0%", "检索"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29290v1.pdf",
+    "qid": "29290-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "这套方法在真实世界的 API 误用上成功率怎么算的？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "从 SwitchBot/Fitbit 收集 21 个误用案例（9 请求头+端点、12 仅端点）；成功率=成功补丁次数/执行次数，每案例执行五次。",
+    "must_have": ["21", "SwitchBot", "五次"],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

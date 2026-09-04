@@ -1,0 +1,884 @@
+{
+  "2608.27843v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "34 页 / 853 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 37 chunk / 7 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓114 ~0 ✗2 (miss 2%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "116 条 / 4 类=[('contribution', 7), ('limitation', 2), ('method', 77), ('result', 30)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "1 条噪声 (1%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "116→97 组（压缩 84%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 11, 3: 20, 4: 57, 5: 9}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "9 Hub / 55 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "13 图全带指南 {'table': 3, 'figure': 10}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.28433v2.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "15 页 / 211 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 19 chunk / 7 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓80 ~1 ✗3 (miss 4%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "84 条 / 4 类=[('contribution', 13), ('limitation', 18), ('method', 41), ('result', 12)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "84→79 组（压缩 94%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {1: 1, 2: 4, 3: 8, 4: 58, 5: 8}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "8 Hub / 84 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "10 图全带指南 {'figure': 8, 'table': 2}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.28447v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "16 页 / 326 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 17 chunk / 7 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓76 ~0 ✗3 (miss 4%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "79 条 / 4 类=[('contribution', 6), ('limitation', 4), ('method', 35), ('result', 34)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "79→55 组（压缩 70%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {3: 7, 4: 39, 5: 9}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "9 Hub / 50 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "14 图全带指南 {'figure': 8, 'table': 6}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.29179v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "14 页 / 423 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 22 chunk / 6 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓93 ~0 ✗5 (miss 5%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "98 条 / 4 类=[('contribution', 4), ('limitation', 3), ('method', 47), ('result', 44)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "98→72 组（压缩 73%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {1: 1, 2: 4, 3: 15, 4: 45, 5: 7}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "7 Hub / 53 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "12 图全带指南 {'figure': 6, 'table': 6}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.29290v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "16 页 / 198 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 20 chunk / 6 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓73 ~0 ✗3 (miss 4%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "76 条 / 4 类=[('contribution', 6), ('limitation', 12), ('method', 37), ('result', 21)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "76→67 组（压缩 88%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 17, 3: 13, 4: 28, 5: 9}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "9 Hub / 57 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "6 图全带指南 {'table': 3, 'figure': 3}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.29615v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "23 页 / 518 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 14 chunk / 4 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓60 ~0 ✗0 (miss 0%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "60 条 / 4 类=[('contribution', 6), ('limitation', 1), ('method', 50), ('result', 3)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "60→46 组（压缩 77%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {3: 23, 4: 20, 5: 3}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "3 Hub / 15 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "24 图全带指南 {'figure': 13, 'table': 11}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.30023v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "17 页 / 172 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 27 chunk / 9 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓113 ~0 ✗2 (miss 2%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "115 条 / 4 类=[('contribution', 8), ('limitation', 29), ('method', 39), ('result', 39)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "115→67 组（压缩 58%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 9, 3: 2, 4: 53, 5: 3}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "3 Hub / 20 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "1 图全带指南 {'table': 1}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.30052v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "13 页 / 378 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 20 chunk / 7 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓52 ~0 ✗0 (miss 0%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "52 条 / 4 类=[('contribution', 3), ('limitation', 9), ('method', 6), ('result', 34)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "52→43 组（压缩 83%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 5, 4: 34, 5: 4}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "4 Hub / 30 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "6 图全带指南 {'table': 6}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.30145v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "22 页 / 280 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 22 chunk / 5 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓111 ~3 ✗1 (miss 1%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "115 条 / 4 类=[('contribution', 6), ('limitation', 15), ('method', 58), ('result', 36)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "115→107 组（压缩 93%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 5, 3: 5, 4: 91, 5: 6}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "6 Hub / 45 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "18 图全带指南 {'figure': 7, 'table': 11}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.30333v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "13 页 / 188 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 20 chunk / 7 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓94 ~0 ✗1 (miss 1%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "95 条 / 4 类=[('contribution', 11), ('limitation', 12), ('method', 52), ('result', 20)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "95→67 组（压缩 71%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 6, 3: 8, 4: 46, 5: 7}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "7 Hub / 67 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "5 图全带指南 {'figure': 1, 'table': 4}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.30938v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "18 页 / 412 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 26 chunk / 7 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓103 ~1 ✗8 (miss 7%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "112 条 / 4 类=[('contribution', 8), ('limitation', 8), ('method', 66), ('result', 30)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "112→86 组（压缩 77%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {1: 1, 2: 5, 3: 20, 4: 55, 5: 5}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "5 Hub / 45 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "11 图全带指南 {'figure': 8, 'table': 3}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.31046v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "20 页 / 653 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 27 chunk / 7 个 L1 节 / ⚠可疑标题 1/7 / 零星: 2 TEACHER SUPERVISION IN OPD IS HIGHLY N"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓125 ~0 ✗3 (miss 2%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "128 条 / 4 类=[('contribution', 9), ('limitation', 8), ('method', 46), ('result', 65)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "128→91 组（压缩 71%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 1, 3: 2, 4: 74, 5: 14}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "14 Hub / 99 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "20 图全带指南 {'figure': 12, 'table': 8}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.31079v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "22 页 / 502 blocks"
+    },
+    "HDR": {
+      "status": "fail",
+      "detail": "标题污染 3/7（样例: 3 TEACHER MODEL SYCOPHANTIC AGREEMENT TRANSFERS TO THE STUDE）"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓120 ~3 ✗5 (miss 4%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "128 条 / 4 类=[('contribution', 4), ('limitation', 5), ('method', 68), ('result', 51)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "1 条噪声 (1%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "128→108 组（压缩 84%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 3, 3: 36, 4: 59, 5: 10}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "10 Hub / 78 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "12 图全带指南 {'figure': 6, 'table': 6}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.31108v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "25 页 / 778 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 28 chunk / 9 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓99 ~2 ✗2 (miss 2%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "103 条 / 4 类=[('contribution', 7), ('limitation', 13), ('method', 54), ('result', 29)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "103→85 组（压缩 83%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 4, 3: 2, 4: 72, 5: 7}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "7 Hub / 53 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "20 图全带指南 {'figure': 14, 'table': 6}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2608.31166v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "37 页 / 2626 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 27 chunk / 4 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓51 ~5 ✗9 (miss 14%)"
+    },
+    "CLA": {
+      "status": "fail",
+      "detail": "提取失败 chunk 2 个: c17-p2 [APPENDIX A · A Proof of Theorem 3.3]: 无法解析模型返回的 JSON…"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "65→57 组（压缩 88%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 9, 3: 31, 4: 13, 5: 4}"
+    },
+    "SKEL": {
+      "status": "fail",
+      "detail": "孤岛 hub 2/4（['g4', 'g12']）"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "1 图全带指南 {'table': 1}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2609.00859v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "17 页 / 215 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 18 chunk / 6 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓63 ~2 ✗3 (miss 4%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "68 条 / 4 类=[('contribution', 8), ('limitation', 2), ('method', 35), ('result', 23)]"
+    },
+    "NS": {
+      "status": "skip",
+      "detail": "无 noise.json（未跑 run_scan_noise）"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "68→55 组（压缩 81%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 4, 3: 25, 4: 23, 5: 3}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "3 Hub / 14 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "7 图全带指南 {'figure': 3, 'table': 4}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2609.01316v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "23 页 / 489 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 42 chunk / 6 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓175 ~4 ✗8 (miss 4%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "187 条 / 4 类=[('contribution', 9), ('limitation', 19), ('method', 72), ('result', 87)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "187→126 组（压缩 67%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 1, 3: 15, 4: 104, 5: 6}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "6 Hub / 34 边（1 孤岛，容忍线内）"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "38 图全带指南 {'figure': 11, 'table': 27}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2609.01456v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "16 页 / 248 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 20 chunk / 6 个 L1 节"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓85 ~0 ✗4 (miss 4%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "89 条 / 4 类=[('contribution', 11), ('limitation', 5), ('method', 58), ('result', 15)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "89→69 组（压缩 78%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 1, 3: 1, 4: 59, 5: 8}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "8 Hub / 53 边（1 孤岛，容忍线内）"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "16 图全带指南 {'figure': 4, 'table': 12}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2609.01505v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "39 页 / 1827 blocks"
+    },
+    "HDR": {
+      "status": "fail",
+      "detail": "标题污染 5/10（样例: 2 Z2 ⊕Z3 Z2）"
+    },
+    "EVID": {
+      "status": "fail",
+      "detail": "✓51 ~4 ✗34 (miss 38%) > 阈值 15%"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "89 条 / 4 类=[('contribution', 2), ('method', 64), ('result', 23)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "89→88 组（压缩 99%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {1: 1, 2: 3, 3: 29, 4: 53, 5: 2}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "2 Hub / 18 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "6 图全带指南 {'table': 6}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2609.01555v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "13 页 / 827 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 13 chunk / 5 个 L1 节"
+    },
+    "EVID": {
+      "status": "fail",
+      "detail": "✓35 ~1 ✗15 (miss 29%) > 阈值 15%"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "51 条 / 4 类=[('contribution', 4), ('method', 29), ('result', 18)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "51→49 组（压缩 96%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {3: 15, 4: 30, 5: 4}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "4 Hub / 18 边（1 孤岛，容忍线内）"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "0 图（无图表论文）"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  },
+  "2609.01599v1.pdf": {
+    "PARS": {
+      "status": "pass",
+      "detail": "15 页 / 391 blocks"
+    },
+    "HDR": {
+      "status": "pass",
+      "detail": "正文 25 chunk / 8 个 L1 节 / ⚠可疑标题 1/8 / 零星: 7 This approximation is valid for our ta"
+    },
+    "EVID": {
+      "status": "pass",
+      "detail": "✓89 ~0 ✗6 (miss 6%)"
+    },
+    "CLA": {
+      "status": "pass",
+      "detail": "95 条 / 4 类=[('contribution', 4), ('limitation', 7), ('method', 48), ('result', 36)]"
+    },
+    "NS": {
+      "status": "pass",
+      "detail": "0 条噪声 (0%)"
+    },
+    "DEUP": {
+      "status": "pass",
+      "detail": "95→88 组（压缩 93%）"
+    },
+    "LAB": {
+      "status": "pass",
+      "detail": "label 合法 / importance {2: 3, 3: 4, 4: 75, 5: 6}"
+    },
+    "SKEL": {
+      "status": "pass",
+      "detail": "6 Hub / 55 边"
+    },
+    "FIG": {
+      "status": "pass",
+      "detail": "6 图全带指南 {'figure': 5, 'table': 1}"
+    },
+    "RPT": {
+      "status": "pass",
+      "detail": "overview + guide + report.md"
+    }
+  }
+}

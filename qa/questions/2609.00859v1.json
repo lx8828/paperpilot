@@ -1,0 +1,41 @@
+[
+  {
+    "pdf": "2609.00859v1.pdf",
+    "qid": "00859-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，RLEA 是怎么帮 LLM 解决车辆路径问题的？",
+    "expect": ["L0", "L1"],
+    "route_min": "L0",
+    "hint": "RLEA 让 LLM 自动把问题描述变成可求解的优化程序：Planner 用 Soft Q-learning 在 Refine/RAG/MLEM 三动作里选，进化记忆积累成功路径，最终在 48 种 VRP 变体上成功率比 DRoC 高 16.67%。",
+    "must_have": ["Planner", "Refine", "MLEM"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.00859v1.pdf",
+    "qid": "00859-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "RLEA 的三个动作是什么？哪个最关键？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "Refine/RAG/MLEM 三种（生成/修改、检索增强、进化记忆执行）；消融显示 Refine 最关键（移除下降最大，占执行动作 50.65%）。",
+    "must_have": ["Refine", "RAG", "MLEM"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.00859v1.pdf",
+    "qid": "00859-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "这套方法对比的基线有哪些？值钱在哪儿？",
+    "expect": ["L1"],
+    "route_min": "L1",
+    "hint": "对比 Direct Generation、Self-Refine、CoT、CoE、DRoC 五种；RLEA 让 LLM 自动建模复杂 VRP 变体，无需人写求解器。",
+    "must_have": ["DRoC", "CoT"],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

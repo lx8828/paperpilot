@@ -1,0 +1,163 @@
+[
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文解决什么问题？提出的框架叫什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "多模态医疗转诊决策中医学事实与医院运营脱节；提出 MASGR 多智能体结构化图推理框架。",
+    "must_have": [
+      "MASGR",
+      "转诊",
+      "医疗"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-02",
+    "role": "dev",
+    "intent": "detail",
+    "question": "MASGR 相比 GPT-5 和 ToR 在 EC、RC 上分别提升多少？",
+    "expect": [
+      "L1"
+    ],
+    "route_min": "L1",
+    "hint": "EC 和 RC 分别超过 GPT-5 达 0.74 和 0.80，超过 ToR 达 0.27 和 0.37。",
+    "must_have": [
+      "0.74",
+      "0.80",
+      "0.27",
+      "0.37"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "MASGR 通过什么机制弥合医学事实与医院运营的差距？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "引入专家知识仲裁机制（Expert Knowledge Arbitration）；也通过显式建模 Cascade 关系增强连贯且临床可靠推理。",
+    "must_have": [
+      "专家",
+      "仲裁",
+      "Cascade"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-04",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "框架如何组织领域专用智能体并连接多模态数据？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "部署领域专用智能体处理门诊、实验室、影像和病理等模态；通过级联、综合征、排除和上下文等结构化关系跨域链接。",
+    "must_have": [
+      "门诊",
+      "影像",
+      "级联",
+      "排除"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-05",
+    "role": "dev",
+    "intent": "detail",
+    "question": "专家代理从哪三个维度评估候选推理图？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "从证据完整性、推理连贯性和知识合规性三个维度评估。",
+    "must_have": [
+      "完整性",
+      "连贯性",
+      "合规性"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-06",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说，这套系统比普通 LLM 看病建议强在哪？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "把各科检查结果串成有因果关系的推理图、再有专家规则把关（如血氧低必须优先 ICU），兼顾医学事实与医院能不能接诊。",
+    "must_have": [
+      "专家",
+      "影像",
+      "转诊"
+    ],
+    "must_not": [],
+    "chunk_kw": null,
+    "note_calibrated": " | kw标注校准"
+  },
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文提到哪些严格合规规则的例子？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "如氧分压低于 60 mmHg 构成医疗紧急情况，可覆盖癌症诊断以优先 ICU。",
+    "must_have": [
+      "60",
+      "mmHg",
+      "ICU"
+    ],
+    "must_not": [],
+    "chunk_kw": "60 mmHg"
+  },
+  {
+    "pdf": "2608.30938v1.pdf",
+    "qid": "30938-08",
+    "role": "user",
+    "intent": "detail",
+    "question": "主观评分上 MASGR 的 EC 和 RC 大概多少？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "主观指标上得分最高，EC 为 4.57、RC 为 4.20。",
+    "must_have": [
+      "4.57",
+      "4.20"
+    ],
+    "must_not": [],
+    "chunk_kw": "4.57"
+  }
+]

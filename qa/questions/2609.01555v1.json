@@ -1,0 +1,160 @@
+[
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文在什么框架内做什么？主要结论是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "在 Hurwitz 级数环 (HR, α) 记号内构造形变卷积，证明其斜变版本在标量权重固定时具有结合性；构造加性累积量变换与系数反演公式；得到范数级生成元定理与 Lévy-Khintchine 演化。",
+    "must_have": [
+      "Hurwitz",
+      "形变卷积",
+      "累积量"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文构造的加性累积量变换用来做什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "给出系数反演公式，为从累积量收敛到坐标收敛提供严格途径。",
+    "must_have": [
+      "反演",
+      "累积量收敛",
+      "坐标收敛"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-03",
+    "role": "dev",
+    "intent": "detail",
+    "question": "参数 t=-1 时，形变卷积变成什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "参数 t=-1 时，形变卷积恰好等于 Hurwitz 级数环中的乘法。",
+    "must_have": [
+      "乘法"
+    ],
+    "must_not": [],
+    "chunk_kw": "t = −1"
+  },
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-04",
+    "role": "dev",
+    "intent": "detail",
+    "question": "对每个 t∈ΩR，卷积 ⊞H_t 有什么性质？单位元是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "是双线性、交换、结合的，单位元为 h1。",
+    "must_have": [
+      "双线性",
+      "交换",
+      "结合",
+      "h1"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-05",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文如何定义 t-形变 Hurwitz 累积量变换？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "通过系数对数与微分实现（对数 + 微分算子）。",
+    "must_have": [
+      "\\log",
+      "累积量"
+    ],
+    "must_not": [],
+    "chunk_kw": null,
+    "note_calibrated": " | kw标注校准"
+  },
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-06",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说，这篇论文在做什么？为什么有人关心？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "把概率论里'矩/累积量'的工具搬到一种带形变乘法的形式级数环上，证明极限定理的代数结构成立，统一推广了相关代数与概率结构。",
+    "must_have": [
+      "概率",
+      "级数",
+      "极限"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-07",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "卷积被置于什么代数结构上得到生成元定理？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "置于加权 Wiener 代数上，得到范数级生成元定理及有限自由和 Lévy-Khintchine 演化。",
+    "must_have": [
+      "Wiener",
+      "生成元",
+      "Lévy"
+    ],
+    "must_not": [],
+    "chunk_kw": "Wiener"
+  },
+  {
+    "pdf": "2609.01555v1.pdf",
+    "qid": "01555-08",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "对正整数 d 定义的有限自由卷积 ⊞d 是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "是 Hurwitz 系数律的正整数截断。",
+    "must_have": [
+      "正整数截断",
+      "系数律"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

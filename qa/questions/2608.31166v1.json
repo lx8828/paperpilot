@@ -1,0 +1,160 @@
+[
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？主要理论结果是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "研究一般博弈中无耦合无遗憾动态的个体遗憾界；去除个体遗憾对时间步长的多对数依赖，实现常数个体遗憾。",
+    "must_have": [
+      "无遗憾",
+      "个体遗憾",
+      "常数"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-02",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文得到的常数遗憾上界形式是什么？",
+    "expect": [
+      "L1"
+    ],
+    "route_min": "L1",
+    "hint": "对任意时间步长 T≥1，每个玩家的遗憾上界为 O(poly(N, log mmax))。",
+    "must_have": [
+      "poly",
+      "log"
+    ],
+    "must_not": [],
+    "chunk_kw": "poly",
+    "note_calibrated": " | kw标注校准"
+  },
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文提出的算法叫什么？用了什么技术实现高阶乐观？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "ECHO-OFTRL 算法，结合 EMA 级联实现高阶乐观，算法确定且完全无耦合。",
+    "must_have": [
+      "ECHO-OFTRL",
+      "EMA",
+      "乐观"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-04",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "为什么乐观方法能加速学习？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "乐观方法利用自博弈中策略平滑更新带来的可预测性加速学习与收敛。",
+    "must_have": [
+      "可预测性",
+      "平滑更新",
+      "自博弈"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-05",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "每个玩家如何维护 EMA 序列并计算预测器？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "每个玩家维护 N 个 EMA 序列，通过级联递归计算预测器；玩家采用 Hedge 策略，学习率为 η/λ(t)i。",
+    "must_have": [
+      "N 个 EMA",
+      "级联",
+      "Hedge"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-06",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说，这篇论文证明了什么？为什么重要？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "在大家都能'不后悔'的学习博弈里，每个人的后悔量不再随时间一直累积，而是能被一个常数绑住——理论上很强的结果。",
+    "must_have": [
+      "后悔",
+      "常数",
+      "时间"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-07",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文动力学与 Hedge 的关系？能否扩展到扩展型博弈？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "动力学基于提升版 Hedge，可核化以适用于扩展型博弈等组合场景。",
+    "must_have": [
+      "提升版 Hedge",
+      "核化",
+      "扩展型博弈"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31166v1.pdf",
+    "qid": "31166-08",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文提出的'自然问题'是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "无耦合正则化学习能否使每个玩家的正遗憾随时间一致有界。",
+    "must_have": [
+      "正遗憾",
+      "一致有界"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

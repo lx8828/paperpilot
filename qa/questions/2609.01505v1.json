@@ -1,0 +1,41 @@
+[
+  {
+    "pdf": "2609.01505v1.pdf",
+    "qid": "01505-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，这篇纯数学论文想算出什么？",
+    "expect": ["L0", "L1"],
+    "route_min": "L0",
+    "hint": "算 1≤n,k≤6 范围内扭子群 Tn,k，并解决 Pn,l 的指数 2 不确定性、确定矩阵 Bn,l/Cn,l，从而完整刻画 FCPn×D2l 的高阶光滑手术结构集。",
+    "must_have": ["扭子群", "手术", "CP"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01505v1.pdf",
+    "qid": "01505-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "论文里的矩阵 Qn,l 什么时候不为零？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "Qn,l 除非 l=1 且 n 为偶数，否则为零（定理 2.4）。",
+    "must_have": ["偶数", "零"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01505v1.pdf",
+    "qid": "01505-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "复共轭在 π0G(CPn) 里起什么作用？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "π0G(CPn) 同构于 Z2，由复共轭生成。",
+    "must_have": ["Z2", "复共轭"],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

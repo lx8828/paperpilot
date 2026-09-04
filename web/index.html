@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PaperPilot · 论文精读工作台</title>
+<style>
+  :root { --bg:#eef1f5; --card:#fff; --line:#e2e5ea; --accent:#2563eb;
+          --text:#1a1d21; --muted:#6b7280; --good:#16a34a; --warn:#d97706; --bad:#dc2626; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body { display:flex; flex-direction:column; height:100vh; overflow:hidden;
+         font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+         color:var(--text); background:var(--bg); }
+  /* 顶栏 */
+  header { display:flex; align-items:center; gap:14px; padding:9px 18px;
+           background:#fff; border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .logo { font-weight:800; font-size:16px; white-space:nowrap; }
+  .logo em { color:var(--accent); font-style:normal; }
+  .docname { font-size:13px; color:var(--muted); overflow:hidden;
+             text-overflow:ellipsis; white-space:nowrap; max-width:42vw; }
+  .spacer { flex:1; }
+  label.up { font-size:13px; padding:5px 12px; border:1px solid var(--line); border-radius:8px;
+             cursor:pointer; background:#fff; white-space:nowrap; }
+  label.up:hover { border-color:var(--accent); color:var(--accent); }
+  /* 三栏：grid 行必须 minmax(0,1fr)，否则 auto 行被内容撑破视口 → 无滚动条 */
+  .cols { display:grid; grid-template-columns:235px minmax(0,1fr) 400px;
+          grid-template-rows:minmax(0,1fr);
+          flex:1 1 0; min-height:0; height:100%; }
+  aside { min-height:0; }
+  /* 左栏 */
+  #nav { overflow-y:auto; background:#f7f8fa; border-right:1px solid var(--line); padding:8px; }
+  .nav-title { font-size:11px; color:var(--muted); margin:10px 8px 4px; letter-spacing:.6px; }
+  .ni { display:flex; align-items:center; gap:7px; padding:5px 9px; border-radius:7px;
+        cursor:pointer; font-size:13px; color:var(--text); }
+  .ni:hover { background:#e9edf3; }
+  .ni .npage { margin-left:auto; font-size:11px; color:var(--muted); }
+  .ni.sec { padding-left:22px; }
+  /* 中栏 */
+  #mid { display:flex; flex-direction:column; min-width:0; min-height:0;
+         overflow:hidden; background:var(--bg); }
+  .tabs { display:flex; gap:4px; padding:6px 14px 0; background:#fff;
+          border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .tb { padding:6px 14px; font-size:13px; color:var(--muted); cursor:pointer;
+        border-radius:8px 8px 0 0; border:1px solid transparent; border-bottom:none; }
+  .tb.on { color:var(--accent); font-weight:600; background:var(--bg); border-color:var(--line); }
+  #view { flex:1 1 0; min-height:0; overflow:auto; padding:16px; }
+  /* 报告卡片 */
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px;
+          padding:16px 20px; margin:0 auto 14px; max-width:880px; }
+  .card h1 { font-size:19px; margin-bottom:2px; }
+  .card h2 { font-size:14.5px; margin:0 0 6px; }
+  .muted { color:var(--muted); font-size:12px; }
+  .card p { white-space:pre-wrap; margin:4px 0; }
+  .pt { padding:6px 0; border-bottom:1px dashed var(--line); font-size:13.5px; }
+  .pt.low { opacity:.82; font-size:13px; }
+  .tag { display:inline-block; font-size:11px; padding:0 6px; border-radius:8px;
+         background:#eef2ff; color:#3730a3; margin-right:6px; }
+  .tag.dim { background:#f3f4f6; color:#6b7280; }
+  details.lows { margin-top:6px; padding-top:2px; }
+  details.lows summary { cursor:pointer; font-size:12.5px; color:var(--muted);
+                         user-select:none; padding:3px 2px; border-radius:6px; }
+  details.lows summary:hover { color:var(--accent); background:#f3f5f8; }
+  details.lows[open] summary { color:var(--accent); font-weight:600; }
+  .star { color:#d97706; }
+  .hub { background:#f6f7f9; border:1px solid var(--line); border-radius:10px;
+         padding:8px 12px; margin:8px 0; }
+  .hub .hbt { font-weight:600; }
+  .rel { margin:5px 0 2px; color:var(--muted); font-size:12px; }
+  .rel li { margin-left:16px; }
+  .ev-ok{color:var(--good)} .ev-loose{color:var(--warn)} .ev-miss{color:var(--bad)}
+  .fig { margin:6px 0; padding:7px 11px; background:#fafafa; border:1px solid var(--line);
+         border-radius:8px; }
+  .jump { color:var(--accent); cursor:pointer; font-size:12px; text-decoration:none; }
+  .jump:hover { text-decoration:underline; }
+  /* PDF */
+  .pdfwrap { position:relative; background:#fff; margin:0 auto 16px; max-width:900px;
+             box-shadow:0 1px 5px rgba(0,0,0,.12); }
+  .pdfwrap canvas { display:block; width:100%; height:auto; }
+  .pno { position:absolute; top:-20px; right:0; font-size:11px; color:var(--muted); }
+  .hl { position:absolute; background:rgba(255,213,0,.5); border-radius:2px;
+        box-shadow:0 0 0 1px rgba(217,119,6,.3); pointer-events:none; }
+  .hl.hl-line { background:rgba(255,200,0,.45); box-shadow:0 0 0 1px rgba(217,119,6,.25); }
+  .phint { position:sticky; top:0; z-index:4; background:#fffbeb; color:#92400e;
+           border:1px solid #fde68a; border-radius:8px; padding:5px 12px; font-size:13px;
+           margin-bottom:10px; display:none; max-width:900px; margin-left:auto; margin-right:auto; }
+  /* 右栏 */
+  #qa { display:flex; flex-direction:column; background:#fff; border-left:1px solid var(--line);
+        min-height:0; overflow:hidden; }
+  .qa-title { font-weight:700; font-size:14px; padding:10px 14px; border-bottom:1px solid var(--line); }
+  #msgs { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px; }
+  .empty { color:var(--muted); text-align:center; font-size:13px; margin:auto; line-height:1.9; }
+  .m { display:flex; flex-direction:column; }
+  .m.user { align-items:flex-end; }
+  .bub { max-width:92%; padding:8px 12px; border-radius:12px; font-size:13.5px;
+         white-space:pre-wrap; word-break:break-word; }
+  .m.user .bub { background:var(--accent); color:#fff; border-bottom-right-radius:4px; }
+  .m.ai .bub { background:#f4f5f7; border:1px solid var(--line); border-bottom-left-radius:4px; }
+  .cites { margin-top:6px; border-top:1px dashed var(--line); padding-top:4px; }
+  .ci { font-size:12px; color:var(--muted); margin:2px 0; }
+  .ci b { color:var(--accent); cursor:pointer; }
+  .flow { margin-top:5px; font-size:11px; color:var(--muted); }
+  .input { display:flex; gap:8px; padding:10px; border-top:1px solid var(--line); }
+  #qin { flex:1; padding:9px 12px; border:1px solid var(--line); border-radius:10px;
+         outline:none; font-size:13.5px; }
+  #qin:focus { border-color:var(--accent); }
+  #send { padding:9px 15px; border:none; border-radius:10px; background:var(--accent);
+          color:#fff; cursor:pointer; font-size:13px; }
+  #send:disabled { opacity:.5; cursor:default; }
+  .busy::before { content:""; display:inline-block; width:11px; height:11px; margin-right:8px;
+    border:2px solid #d6d9de; border-top-color:var(--accent); border-radius:50%;
+    animation:sp .9s linear infinite; vertical-align:-1px; }
+  @keyframes sp { to { transform:rotate(360deg); } }
+  .scr { scroll-margin-top:8px; }
+  ::-webkit-scrollbar{width:9px;height:9px} ::-webkit-scrollbar-thumb{background:#c6cad1;border-radius:5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">⚡Paper<em>Pilot</em></div>
+  <div class="docname" id="docname">未加载论文 —— 拖入 PDF 或上传</div>
+  <div class="spacer"></div>
+  <label class="up">📎 上传/换 PDF<input type="file" id="file" accept=".pdf" hidden></label>
+</header>
+
+<div class="cols">
+  <!-- 左：导航 -->
+  <aside id="nav">
+    <div class="nav-title">阅读</div>
+    <div class="ni" data-action="report"><span>📋 结构化报告</span></div>
+    <div class="ni" data-action="pdf"><span>📄 原文 PDF</span></div>
+    <div class="nav-title">论文结构</div>
+    <div id="navbody"></div>
+  </aside>
+
+  <!-- 中：视图 -->
+  <section id="mid">
+    <div class="tabs">
+      <div class="tb on" data-view="report">📋 结构化报告</div>
+      <div class="tb" data-view="pdf">📄 原文 PDF</div>
+    </div>
+    <div id="view">
+      <div id="rpv"></div>
+      <div id="pdfv" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- 右：问答 -->
+  <aside id="qa">
+    <div class="qa-title">💬 追问（支持多轮）</div>
+    <div id="msgs">
+      <div class="empty" id="empty">上传论文后可在这里提问。<br>支持多轮：先问一个，再问"它的 Q 网络几层？"。</div>
+    </div>
+    <div class="input">
+      <input id="qin" autocomplete="off" placeholder="针对当前论文提问…">
+      <button id="send">发送</button>
+    </div>
+  </aside>
+</div>
+
+<script src="/vendor/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='/vendor/pdf.worker.min.js';
+const PDF_SCALE=1.3;
+
+const $=id=>document.getElementById(id);
+const $nav=$('nav'), $navbody=$('navbody'), $view=$('view');
+const $msgs=$('msgs'), $qin=$('qin'), $send=$('send'), $file=$('file');
+
+const REL_CN={implements:'实现机制',supports:'证据支撑',limits:'边界限制',contrasts:'对照区分'};
+const EV={hit:'✓',loose:'~',miss:'⚠'};
+let S={pdf:null,report:null,view:'report',pdfDoc:null,pdfReady:false,renderTask:null};
+const chat=[]; let lastAsk=null;
+
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function evSpan(ev){const c=ev==='hit'?'ev-ok':ev==='loose'?'ev-loose':'ev-miss';
+  return `<span class="${c}">${EV[ev]||'?'}</span>`;}
+function addMsg(role,html){const d=document.createElement('div');d.className='m '+(role==='user'?'user':'ai');
+  d.innerHTML=`<div class="bub">${html}</div>`;$msgs.appendChild(d);$msgs.scrollTop=$msgs.scrollHeight;return d;}
+function busy(role,text){return addMsg(role,`<span class="busy"></span>${esc(text)}`);}
+
+// ───────── 导航 & 报告 ─────────
+function navItem(label,id,pg){return `<div class="ni" data-scroll="${id}"><span>${label}</span>`
+  + (pg?`<span class="npage">p${pg}</span>`:'')+'</div>';}
+function buildNav(r){
+  const h=[];
+  if(r.overview) h.push(navItem('📋 概述','sc-overview',r.pdf?1:null));
+  (r.core_points||[]).slice(0,6).forEach((g,i)=>
+    h.push(navItem('★ '+g.text.slice(0,24),'sc-core',(g.pages||[])[0])));
+  (r.sections||[]).forEach((s,i)=>h.push(navItem('📖 '+s.title,'sc-sec-'+i,
+    (s.groups&&s.groups[0]&&s.groups[0].pages||[])[0])));
+  if((r.figures||[]).length) h.push(navItem('🖼 图表 ('+r.figures.length+')','sc-figs'));
+  $navbody.innerHTML=h.join('');
+}
+function pointHtml(g,ev){
+  const p=(g.pages||[])[0]||1;
+  return `<div class="pt"><span class="tag">${esc(g.label)}</span>${g.importance>=5?'<span class="star">★</span>':''}`
+    + `${esc(g.text)} <span class="muted">${evSpan(g.ev)} p${p}`
+    + ` <a class="jump" data-goto="${p}" data-ev="${esc(ev||'')}">↗ 原文</a></span></div>`;
+}
+// 低分明细条：与 pointHtml 同构，但打上"低"标签以便视觉区分
+function lowHtml(g,ev){
+  const p=(g.pages||[])[0]||1;
+  return `<div class="pt low"><span class="tag dim">低分·${esc(g.label)}</span>`
+    + `${esc(g.text)} <span class="muted">${evSpan(g.ev)} p${p}`
+    + ` <a class="jump" data-goto="${p}" data-ev="${esc(ev||'')}">↗ 原文</a></span></div>`;
+}
+function renderReport(r){
+  const h=[];
+  // claim_id → evidence_quote，让"↗ 原文"跳转时能带证据定位高亮
+  const evById={}; (r.claims||[]).forEach(c=>{ if(c.claim_id) evById[c.claim_id]=c.evidence_quote||''; });
+  const evOf=g=>evById[g.rep_claim_id]||'';
+  h.push(`<div class="card scr" id="sc-overview"><h1>${esc(r.title)}</h1>
+    <div class="muted">${(r.stats||{}).n_claims||0} claims → ${(r.stats||{}).n_groups||0} 组`
+    +` · 核心 ${(r.stats||{}).n_hubs||0} · 图 ${(r.stats||{}).n_figures||0} · ${esc(r.pdf)}</div>
+    ${r.guide?`<h2>👋 一分钟导读</h2><p>${esc(r.guide)}</p>`:''}
+    ${r.overview?`<h2>📋 概述</h2><p>${esc(r.overview)}</p>`:''}</div>`);
+  if((r.core_points||[]).length){
+    h.push(`<div class="card scr" id="sc-core"><h2>🎯 核心要点</h2>`);
+    (r.core_points||[]).forEach(g=>h.push(pointHtml(g,evOf(g))));
+    h.push('</div>');
+  }
+  (r.sections||[]).forEach((s,i)=>{
+    h.push(`<div class="card scr" id="sc-sec-${i}"><h2>📖 ${esc(s.title)}</h2>`);
+    (s.groups||[]).forEach(g=>h.push(pointHtml(g,evOf(g))));
+    const lows=s.detail_groups||[];
+    if(lows.length){
+      h.push(`<details class="lows"><summary>🔻 ${lows.length} 条低分细节（点击展开）</summary>`);
+      lows.forEach(g=>h.push(lowHtml(g,evOf(g))));
+      h.push('</details>');
+    }
+    h.push('</div>');
+  });
+  const hubs=(r.skeleton||[]);
+  if(hubs.length){
+    h.push(`<div class="card"><h2>🕸️ 论证骨架</h2>`);
+    hubs.forEach(hub=>{
+      h.push('<div class="hub"><div class="hbt">'+(hub.importance>=5?'<span class="star">★</span>':'')
+        +`<span class="tag">${esc(hub.label)}</span>${esc(hub.text)}</div>`);
+      ['implements','supports','limits','contrasts'].forEach(rel=>{
+        const es=(hub.edges||[]).filter(e=>e.relation===rel); if(!es.length)return;
+        h.push(`<div class="rel">${REL_CN[rel]}（${rel}）</div><ul>`);
+        es.forEach(e=>h.push(`<li>${esc(e.text||'')} <span class="muted">—— ${esc(e.why||'')}`
+          +`（p${e.page||'?'} ${evSpan(e.ev)}）</span></li>`));
+        h.push('</ul>');
+      });
+      h.push('</div>');
+    });
+    h.push('</div>');
+  }
+  if((r.figures||[]).length){
+    h.push(`<div class="card scr" id="sc-figs"><h2>🖼 图表</h2>`);
+    (r.figures||[]).forEach(f=>{
+      h.push(`<div class="fig"><b>${esc(f.id)}</b><span class="muted">（p${f.page}）</span>：${esc(f.caption)}`
+        +(f.guide?`<br><span class="muted">${esc(f.guide)}</span>`:'')
+        +` <a class="jump" data-goto="${f.page||1}">↗ 查看原文</a></div>`);
+    });
+    h.push('</div>');
+  }
+  $('rpv').innerHTML=h.join('');
+  // 原文跳转按钮
+  $('rpv').querySelectorAll('a.jump[data-goto]').forEach(a=>a.addEventListener('click',e=>{
+    e.stopPropagation(); goToPdf(parseInt(a.dataset.goto,10)||1,a.dataset.ev||'');}));
+}
+function scrollTo(id){const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});}
+
+// ───────── 视图切换（report / pdf 双容器，各自渲染一次）─────────
+function showView(v){
+  S.view=v;
+  document.querySelectorAll('.tb').forEach(t=>t.classList.toggle('on',t.dataset.view===v));
+  const rpv=$('rpv'), pdfv=$('pdfv');
+  if(v==='report'){
+    pdfv.style.display='none';
+    rpv.style.display='block';
+    if(S.report && !rpv.children.length) renderReport(S.report);
+  } else {
+    rpv.style.display='none';
+    if(!S.pdf) return;
+    pdfv.style.display='block';
+    if(!S.pdfReady) ensurePdf();
+  }
+}
+let pdfPromise=null;
+function ensurePdf(){
+  if(pdfPromise) return pdfPromise;
+  pdfPromise=(async()=>{
+    const pdfv=$('pdfv');
+    pdfv.innerHTML=`<div style="text-align:center;padding:60px;color:var(--muted)">
+      <span class="busy"></span>正在加载 PDF…</div>`;
+    try{
+      if(!S.pdfDoc) S.pdfDoc=await pdfjsLib.getDocument('/pdf/'+encodeURIComponent(S.pdf)).promise;
+      pdfv.innerHTML=`<div class="phint" id="phint"></div>`;
+      for(let p=1;p<=S.pdfDoc.numPages;p++) await drawPage(p);
+      S.pdfReady=true;
+    }catch(e){
+      pdfv.innerHTML=`<div style="padding:30px;color:var(--bad)">PDF 加载失败：${esc(e.message)}</div>`;
+    }
+  })();
+  return pdfPromise;
+}
+async function drawPage(p){
+  const page=await S.pdfDoc.getPage(p);
+  const vp=page.getViewport({scale:PDF_SCALE});
+  const wrap=document.createElement('div'); wrap.className='pdfwrap'; wrap.dataset.p=p;
+  const cv=document.createElement('canvas');
+  cv.width=vp.width; cv.height=vp.height;
+  wrap.appendChild(cv);
+  const no=document.createElement('div'); no.className='pno'; no.textContent='p'+p;
+  wrap.appendChild(no);
+  $('pdfv').appendChild(wrap);
+  const ctx=cv.getContext('2d');
+  await page.render({canvasContext:ctx,viewport:vp}).promise;
+  page.getTextContent().then(tc=>{ wrap._text=tc; });
+}
+function hint(msg){const h=$('phint'); if(!h)return; h.style.display='block'; h.textContent=msg;
+  clearTimeout(h._t); h._t=setTimeout(()=>{h.style.display='none';},6000);}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function goToPdf(p,evidence){
+  showView('pdf');
+  if(!S.pdf) return;
+  await ensurePdf();
+  await sleep(60);                 // 等容器布局
+  const w=[...document.querySelectorAll('.pdfwrap')].find(x=>+x.dataset.p===p);
+  if(!w) return;
+  clearHl();
+  if(evidence){
+    const hit=await highlightOn(w,p,evidence);
+    w.scrollIntoView({behavior:'smooth',block:'start'});
+    hint(hit?`已跳至 p${p}，黄色整行为证据所在处。`:`已跳至 p${p}，未能精确定位，全页浅黄区域为搜索范围。`);
+  } else {
+    w.scrollIntoView({behavior:'smooth',block:'start'});
+    hint(`已跳至 p${p}。`);
+  }
+}
+function clearHl(){document.querySelectorAll('.hl').forEach(x=>x.remove());}
+// 粗略高亮：把整页文字按 y 聚成"视觉行" → 用证据去空白模糊匹配整行 →
+// 命中行整行标黄（跨行/多栏也容错）；实在找不到 → 整页罩一层淡黄"范围提示"。
+async function highlightOn(w,p,evidence){
+  let tc=w._text;
+  if(!tc||!tc.items){try{const pg=await S.pdfDoc.getPage(p);tc=await pg.getTextContent();}catch(e){return false;}}
+  const vp=await S.pdfDoc.getPage(p).then(pg=>pg.getViewport({scale:PDF_SCALE}));
+  const q=String(evidence||'').toLowerCase().replace(/\s+/g,'');
+  if(!q) return false;
+  // 1) 收集带几何的 text item，按基线 y 排序
+  const recs=[];
+  for(const it of tc.items||[]){
+    if(!it.str) continue;
+    const t=pdfjsLib.Util.transform(vp.transform,it.transform);
+    const hgt=Math.abs(it.height)*PDF_SCALE, wdt=Math.abs(it.width)*PDF_SCALE;
+    recs.push({x:t[4], y:t[5], top:t[5]-hgt, w:wdt, h:hgt, s:it.str});
+  }
+  if(!recs.length) return false;
+  recs.sort((a,b)=>a.y-b.y);
+  // 2) 聚成视觉行（相邻基线差在阈值内视为同一行），
+  //    再按 x 间隙切分左右栏/表格列——避免双栏论文整页一道黄带。
+  const groups=[];
+  for(const r of recs){
+    if(groups.length && Math.abs(r.y-groups[groups.length-1].y)
+        <= (Math.min(groups[groups.length-1].h,r.h)*0.7+2)){
+      groups[groups.length-1].items.push(r);
+    } else {
+      groups.push({y:r.y, h:r.h, items:[r]});
+    }
+  }
+  const lines=[];
+  for(const g of groups){
+    g.items.sort((a,b)=>a.x-b.x);
+    let cur={y:g.y, h:g.h, items:[g.items[0]]};
+    lines.push(cur);
+    for(let i=1;i<g.items.length;i++){
+      const prev=g.items[i-1];
+      const gap=g.items[i].x-(prev.x+prev.w);
+      if(gap>60){ cur={y:g.y, h:g.h, items:[]}; lines.push(cur); }
+      cur.items.push(g.items[i]);
+    }
+  }
+  for(const ln of lines){
+    ln.kw=ln.items.map(i=>i.s).join(' ').toLowerCase().replace(/\s+/g,'');
+  }
+  // 3) 行模糊匹配：证据从最长前缀往下试，第一个命中即返回该行（最长=最准）
+  let best=null;
+  const maxQ=Math.min(q.length,90);       // 前缀上限 90 字符够定位，省算力
+  for(let L=maxQ; L>=10; L--){
+    const sub=q.slice(0,L);
+    for(let i=0;i<lines.length;i++){
+      if(lines[i].kw.includes(sub)){ best={line:lines[i],len:L}; break; }
+    }
+    if(best) break;
+  }
+  const mk=document.createElement('div'); mk.className='hl';
+  const px=pct=>`${pct}%`;
+  if(best && best.len>=10){
+    const ln=best.line;
+    let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    for(const it of ln.items){
+      minX=Math.min(minX,it.x); maxX=Math.max(maxX,it.x+it.w);
+      minY=Math.min(minY,it.top); maxY=Math.max(maxY,it.y);
+    }
+    mk.style.left=px(minX/vp.width*100);
+    mk.style.top=px(minY/vp.height*100);
+    mk.style.width=px((maxX-minX)/vp.width*100);
+    mk.style.height=px((maxY-minY)/vp.height*100);
+    mk.classList.add('hl-line');
+    w.appendChild(mk);
+    return true;
+  }
+  // 4) 兜底：整页淡黄范围提示（不阻断阅读）
+  mk.style.left='0'; mk.style.top='0';
+  mk.style.width='100%'; mk.style.height='100%';
+  mk.style.opacity='.07';
+  w.appendChild(mk);
+  return false;
+}
+function norm(s){return String(s||'').replace(/\s+/g,' ').replace(/[’‘“”]/g,' ').trim();}
+
+// ───────── 上传 ─────────
+async function upload(f){
+  if(!f||!/\.pdf$/i.test(f.name)){alert('仅支持 .pdf');return;}
+  addMsg('user','📎 '+f.name);
+  const b=busy('ai','正在生成报告（新论文首次需 1~3 分钟；已有产物秒回）…');
+  const fd=new FormData(); fd.append('file',f);
+  try{
+    const res=await fetch('/api/report',{method:'POST',body:fd});
+    const data=await res.json();
+    b.remove();
+    if(!res.ok) throw new Error(data.detail||res.statusText);
+    S.pdf=data.pdf; S.report=data; S.pdfDoc=null; S.pdfReady=false;
+    pdfPromise=null; lastAsk=null; chat.length=0;
+    $('docname').textContent=(data.title||data.pdf)+' · '+data.pdf;
+    $('rpv').innerHTML=''; $('pdfv').innerHTML='';
+    buildNav(data); showView('report'); renderReport(data);
+    addMsg('ai','✅ 报告已生成。左边看结构、中间读原文/报告、右侧可以开始提问了。');
+    $qin.focus();
+  }catch(e){ b.remove(); addMsg('ai',`<span style="color:var(--bad)">生成失败：${esc(e.message)}</span>`); }
+}
+
+// ───────── 问答（多轮 history）────────
+async function ask(){
+  const q=$qin.value.trim(); if(!q) return;
+  if(!S.pdf){ addMsg('ai','请先上传一篇 PDF。'); return; }
+  addMsg('user',q); chat.push({role:'user',content:q});
+  const b=busy('ai','正在检索论文并回答…'); $send.disabled=true;
+  try{
+    const res=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question:q,pdf:S.pdf,history:chat.slice(0,-1)})});
+    const data=await res.json(); b.remove();
+    if(!res.ok) throw new Error(data.detail||res.statusText);
+    chat.push({role:'assistant',content:data.answer});
+    lastAsk=data;
+    addMsg('ai',renderAnswer(data));
+  }catch(e){ b.remove(); chat.pop(); addMsg('ai',`<span style="color:var(--bad)">问答失败：${esc(e.message)}</span>`); }
+  $send.disabled=false; $qin.value='';
+}
+function renderAnswer(d){
+  const cs=d.cites||[]; const html=esc(d.answer||'');
+  const body=html.replace(/\[(\d{1,3})\]/g,(m,n)=>{
+    const i=parseInt(n,10);
+    if(i>=1&&i<=cs.length) return `<a class="jump" data-cite="${i-1}">[${n}]</a>`;
+    return `[${n}]`;
+  });
+  let h=`<div>${body}</div>`;
+  if(cs.length){
+    h+='<div class="cites"><b class="muted">引用出处（点击跳原文）</b>';
+    cs.forEach((c,i)=>{
+      h+=`<div class="ci"><b data-cite="${i}">[${i+1}]</b> ${esc(c.gid?c.ref:'正文片段')}（p${c.page}）`
+        +`<span class="muted"> ${esc((c.evidence||'').slice(0,100))}</span></div>`;
+    });
+    h+='</div>';
+  }
+  const dbg=d.debug||{}; const ans=dbg.answer||{}; const route=(d.route||[]).join('→');
+  h+=`<div class="flow">档 <b>${esc(ans.level||'?')}</b> · 证据 ${ans.n_entries||0} 条 · ${esc(route)}`
+    +`${lastAsk===d?'':'（历史）'}</div>`;
+  return h;
+}
+function jumpCite(i){
+  if(!lastAsk||!lastAsk.cites||!lastAsk.cites[i])return;
+  const c=lastAsk.cites[i];
+  goToPdf(c.page||1, c.evidence||'');
+}
+
+// ───────── 事件 ─────────
+$file.addEventListener('change',e=>{upload(e.target.files[0]);e.target.value='';});
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>{e.preventDefault();
+  const f=[...(e.dataTransfer.files||[])].find(x=>/\.pdf$/i.test(x.name));
+  if(f)upload(f);});
+$send.addEventListener('click',ask);
+$qin.addEventListener('keydown',e=>{if(e.key==='Enter')ask();});
+document.querySelectorAll('.tb').forEach(t=>t.addEventListener('click',()=>showView(t.dataset.view)));
+$nav.addEventListener('click',e=>{
+  const n=e.target.closest('[data-action]'); if(n){showView(n.dataset.action);return;}
+  const s=e.target.closest('[data-scroll]'); if(s){showView('report');
+    requestAnimationFrame(()=>scrollTo(s.dataset.scroll));return;}});
+$msgs.addEventListener('click',e=>{
+  const c=e.target.closest('[data-cite]'); if(c) jumpCite(+c.dataset.cite);});
+window.addEventListener('load',()=>{ $qin.focus(); });
+</script>
+</body>
+</html>

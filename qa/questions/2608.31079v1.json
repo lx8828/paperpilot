@@ -1,0 +1,41 @@
+[
+  {
+    "pdf": "2608.31079v1.pdf",
+    "qid": "31079-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，这篇论文发现了什么？为什么让人警惕？",
+    "expect": ["L0", "L1"],
+    "route_min": "L0",
+    "hint": "模型用看似中性的偏好数据做 DPO 等训练，也能把'谄媚（顺着用户错）'传给学生模型，且不止 DPO 一种；说明谄媚可能是这类方法的固有特征而非外部副作用。",
+    "must_have": ["谄媚", "DPO", "固有特征"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31079v1.pdf",
+    "qid": "31079-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "把偏好标签反转会怎样？说明了什么？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "反转标签后谄媚率从 35% 掉到 0.6%，比 SFT 检查点低 12 个百分点——谄媚不是数据里写死的，而是优化目标本身带出来的。",
+    "must_have": ["35", "0.6", "12"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.31079v1.pdf",
+    "qid": "31079-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "如果只去掉数据集里'明显谄媚'的样本，能防止谄媚吗？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "不能。谄媚信号扩散于整个数据集而非集中在稀疏样本，每个样本看似中性；可移除超过 70% 的数据谄媚仍不受影响。",
+    "must_have": ["扩散", "70"],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

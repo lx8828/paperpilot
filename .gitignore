@@ -1,0 +1,35 @@
+# ── Python ──────────────────────────────────────────────
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── 虚拟环境 / 秘钥 ─────────────────────────────────────
+.venv
+.env
+.env.local
+
+# ── 论文 PDF（体积大，不入库）───────────────────────────
+src/paperpilot/storage/papers/*.pdf
+
+# ── LLM 生成产物（可重跑，不入库）───────────────────────
+out_claims/
+out_views/
+*.log
+resp_tmp.json
+
+# ── QA / 回归运行产物（可再生；手写问题集 questions/ 与基线仍入库）─
+qa/qa_run_*.json
+qa/qa_eval_out.json
+qa/rag_eval_out.json
+qa/snapshots/
+bench/snapshots/
+
+# ── 系统杂项 ────────────────────────────────────────────
+Thumbs.db
+.DS_Store

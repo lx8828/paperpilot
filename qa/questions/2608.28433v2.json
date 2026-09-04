@@ -1,0 +1,41 @@
+[
+  {
+    "pdf": "2608.28433v2.pdf",
+    "qid": "28433-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，Prove2Me 是个什么东西？",
+    "expect": ["L0", "L1"],
+    "route_min": "L0",
+    "hint": "一个开源协作平台：人类或 AI 智能体把数学定理在 Lean 里形式化并提交证明，无需 Lean 专家背景；平台用里程碑当权威检查点，防冲突。",
+    "must_have": ["Lean", "形式化", "里程碑"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.28433v2.pdf",
+    "qid": "28433-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "Sensitivity Conjecture 这个任务是怎么完成的？规模多大？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "四个里程碑全部达成；最大任务仅 6 个代理 + 两个消费级订阅完成，与集中式 swarm 规模相当；最小任务一个订阅四个子代理一周产出 17K 行代码。",
+    "must_have": ["6", "里程碑", "订阅"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.28433v2.pdf",
+    "qid": "28433-U3",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "平台怎么保证 AI 大规模写的证明不被人类误审？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "预固定审计面：人类审任务核心/目标/定义/里程碑引理，代理自由引入中间定理；审计代理只看到 Lean 声明，人类比对源 LaTeX 与回读判断忠实性。",
+    "must_have": ["审计", "回读", "LaTeX"],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

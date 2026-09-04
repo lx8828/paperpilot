@@ -1,0 +1,41 @@
+[
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，MIDR 是怎么做到多模态文档检索又快又好的？",
+    "expect": ["L0", "L1"],
+    "route_min": "L0",
+    "hint": "MIDR 不训练新检索器，而是在索引时就调用多模态 LLM 把每页文档'翻译'成结构化文本字段（布局、表格、图表描述），再用 BM25F 索引；比视觉检索器内存小约 9 倍、延迟低约 2 倍。",
+    "must_have": ["索引", "BM25F", "9"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "MIDR 在法语检索上表现如何？为什么特别？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "法语页面用英文生成富集来测跨语言桥接；两个法文域富集把 BM25 nDCG@10 从 0.1532 提到 0.5448，超过 ColQwen2.5。",
+    "must_have": ["0.1532", "0.5448", "跨语言"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-U3",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "MIDR 的'富化'会不会编造页面里没有的内容？它怎么防？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "富化用抽取-验证-精炼循环：先生成页面级字段，再审计其与页面图像和文本的接地性，仅修订不支持或不一致的内容（精炼触发率约 9.6%）。",
+    "must_have": ["验证", "精炼", "接地性"],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

@@ -1,0 +1,41 @@
+[
+  {
+    "pdf": "2608.30023v1.pdf",
+    "qid": "30023-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，PersonaGen 造出来是干嘛的？",
+    "expect": ["L0", "L1"],
+    "route_min": "L0",
+    "hint": "研究'生成式引擎优化（GEO）'缺买家侧数据，所以从约四千万条描述生成一百多万个去重 persona，每个带意图标签，公开 14,955 的子集 PersonaGen-15K。",
+    "must_have": ["persona", "意图", "GEO"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30023v1.pdf",
+    "qid": "30023-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "这批 persona 的意图分布大概什么样？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "78.3% 信息型、17.4% 商业型、4.3% 交易型，导航型低于 0.1%。",
+    "must_have": ["78.3", "17.4", "4.3"],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30023v1.pdf",
+    "qid": "30023-U3",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "他们是怎么把一百多万个 persona 里的重复项去掉的？",
+    "expect": ["L1", "L2"],
+    "route_min": "L1",
+    "hint": "两步：先 GPU 加速 MinHash LSH（128 排列、8 带 16 行，Jaccard 阈值 0.9）近似去重，再用 KaLM-Embedding-Gemma3-12B 语义去重（余弦>0.9 移除）。",
+    "must_have": ["MinHash", "LSH", "余弦"],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

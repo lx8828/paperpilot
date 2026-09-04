@@ -1,0 +1,159 @@
+[
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？核心问题是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "LLM 引用的特征理由在下一篮回购推荐中是否超越排序准确性；核心问题是其是否捕获跨推荐模型类重要的行为信号。",
+    "must_have": [
+      "回购",
+      "特征理由",
+      "行为信号"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文提出的混合设计是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "监督模型排序、特征级评估验证证据、LLM 生成面向用户的简洁理由。",
+    "must_have": [
+      "监督",
+      "排序",
+      "特征级",
+      "LLM"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-03",
+    "role": "dev",
+    "intent": "detail",
+    "question": "现成 LLM 作为独立基于特征的评分器表现如何？哪些模型最强？",
+    "expect": [
+      "L1"
+    ],
+    "route_min": "L1",
+    "hint": "结构化行为证据不足以替代监督式排序器；XGBoost 和 VNN 表现最强，监督排序器明显优于 LLM 评分器。",
+    "must_have": [
+      "XGBoost",
+      "VNN"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-04",
+    "role": "dev",
+    "intent": "detail",
+    "question": "LLM 生成的解释在引用特征方面存在什么问题？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "可能引用对未来回购结果不相关但看似合理的特征；GPT-4o 和 Gemini 的引用特征与归因基线匹配不一致。",
+    "must_have": [
+      "不相关",
+      "看似合理",
+      "归因"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-05",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文用什么方法验证 LLM 引用特征的忠实性？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "比较 LLM 引用特征与 TreeSHAP 和集成梯度两种归因方法；用跨模型特征掩蔽协议评估；补充文本到证据接地性检查。",
+    "must_have": [
+      "特征遮蔽",
+      "一致性",
+      "归因"
+    ],
+    "must_not": [],
+    "chunk_kw": null,
+    "note_calibrated": " | kw标注校准"
+  },
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-06",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说，这篇论文发现了什么反直觉的结论？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "排序排得准不代表理由给得对——LLM 的解释可能流畅但引用的特征根本没起作用；'排序质量'与'理由质量'是两个维度。",
+    "must_have": [
+      "理由",
+      "排序",
+      "维度"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "排序质量与理由质量的关系结论是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "排序质量不足以刻画理由质量，两个评估轴在提示和证据表示变化下可能产生分歧。",
+    "must_have": [
+      "不足以",
+      "分歧"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.30333v1.pdf",
+    "qid": "30333-08",
+    "role": "user",
+    "intent": "detail",
+    "question": "这研究是在哪些数据集上做的？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "三个数据集上评估（公开数据集含 Instacart 与 Dunnhumby 等回购/购物场景）。",
+    "must_have": [
+      "Instacart"
+    ],
+    "must_not": [],
+    "chunk_kw": "Instacart"
+  }
+]

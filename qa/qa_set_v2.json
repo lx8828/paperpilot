@@ -1,0 +1,1054 @@
+{
+  "_说明": [
+    "QA 验证集 v2（新 L0-L3 漏斗）。route_min=至少该下钻到的层（防浅层虚答）；expect=期望可达档位集合；hint=人工核对用 ground-truth 提示（迁移自 v1，新题为设计稿）；must_have/must_not=答案关键词自动核查（数字类，可能留空待跑分时人工补）。role: dev=开发验收视角, user=真实用户口语视角。"
+  ],
+  "questions": [
+    {
+      "pdf": "2609.00859v1.pdf",
+      "qid": "00859-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文提出了什么？它要解决什么问题？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "RLEA 框架：让 LLM 智能体自动建模求解复杂 VRP（现有方法建模鲁棒性不足），结合神经 Planner/检索增强/进化记忆。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.00859v1.pdf",
+      "qid": "00859-R2",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "R",
+      "question": "RLEA 相对最强基线在成功率上提升了多少？",
+      "hint_groups": [
+        "g7"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "成功率比 DRoC 高 16.67%（48 种变体）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.00859v1.pdf",
+      "qid": "00859-C1",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "RLEA 的动作空间包含哪三种动作？消融实验显示哪个动作最关键？",
+      "hint_groups": [
+        "g16",
+        "g48",
+        "g49"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "Refine/RAG/MLEM 三种；Refine 最关键（移除下降最大，且占执行动作 50.65%）。顶层 overview/core 未列。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.00859v1.pdf",
+      "qid": "00859-C2",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "论文的对比基线方法有哪些？",
+      "hint_groups": [
+        "g34"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "Direct Generation、Self-Refine、CoT、CoE、DRoC 五种。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.00859v1.pdf",
+      "qid": "00859-C3",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "RLEA 的 Planner 用什么基础模型？它的 Q 网络结构是怎样的？",
+      "hint_groups": [
+        "g29",
+        "g30",
+        "g28"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "冻结 SLM=Qwen2.5-1.5B-Instruct；Q 头是两层 MLP 256 隐藏单元 ReLU；Soft Q-Learning，Adam lr=1e-4。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.00859v1.pdf",
+      "qid": "00859-K1",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "K",
+      "question": "RLEA 相比最强基线 DRoC，在成功率上具体高多少个百分点？运行时错误率低多少？（要精确数值）",
+      "hint_groups": [
+        "g7",
+        "g8"
+      ],
+      "chunk_kw": "DRoC",
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "成功率比 DRoC 高 16.67%，运行时错误率较 DRoC 降低 10.41%（overview/core_points 明确给出）。",
+      "must_have": [
+        "16.67",
+        "10.41"
+      ],
+      "must_not": [],
+      "v1": true,
+      "note_calibrated": "Run1 原题问表格中绝对数值（表格被 [TABLE_CELL] 屏蔽，属已知适用性边界）；改为正文明确给出的相对数值"
+    },
+    {
+      "pdf": "2608.31079v1.pdf",
+      "qid": "31079-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文的核心结论是什么？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "谄媚性认同是对比偏好优化目标的意外后果（不限于 DPO），谄媚信号扩散于整个数据集；谄媚非外部副作用而是方法本身特征。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.31079v1.pdf",
+      "qid": "31079-R2",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "R",
+      "question": "反转偏好标签前后，模型谄媚率分别是多少？",
+      "hint_groups": [
+        "g33"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "原始标签 35%，反转后 0.6%（比 SFT 检查点低 12 个百分点）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.31079v1.pdf",
+      "qid": "31079-C1",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "论文如何测量模型的谄媚一致性率？（评估协议细节）",
+      "hint_groups": [
+        "g13",
+        "g14",
+        "g15"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "多轮对话：先答 MMLU 选择题再被挑战；谄媚率=1000 题上谄媚响应百分比，对 11 种不同力度挑战提示平均（如 That's wrong!）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.31079v1.pdf",
+      "qid": "31079-C2",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "论文发现可以移除多少比例的 Dolci-Instruct-DPO 训练数据，谄媚行为仍不受影响？",
+      "hint_groups": [
+        "g60"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "超过 70%。注意：该组 importance=5 但未进 core_points Top8，顶层看不到——这正是 C 类要证明的场景。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.31079v1.pdf",
+      "qid": "31079-C3",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "论文用了哪些数据归因方法来定位谄媚来源？这些方法能缓解谄媚吗？",
+      "hint_groups": [
+        "g49",
+        "g53",
+        "g55",
+        "g56"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "探针式数据归因（余弦相似度定位）与 LLS（对数似然位移差打分）；探针/logit 过滤需移除大量数据；LLS 选 25k 子集仅使谄媚率小幅增加<3% 或与随机无异——难以缓解。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.31079v1.pdf",
+      "qid": "31079-K1",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "K",
+      "question": "在 OLMo-3-7B 上，谄媚一致率从 SFT 检查点的百分之多少增加到多少？（要精确数值）",
+      "hint_groups": [
+        "g40"
+      ],
+      "chunk_kw": "sycophancy",
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "OLMo-3-7B 中谄媚一致率从 SFT 的 12% 翻倍至 32%（claim c0013，evidence 有原文）。",
+      "must_have": [
+        "12",
+        "32"
+      ],
+      "must_not": [],
+      "v1": true,
+      "note_calibrated": "Run1 原题问 delta learning Tulu DPO，论文仅有'>2x'无精确值；改为论文确有精确数值的 OLMo-3-7B 实验"
+    },
+    {
+      "pdf": "2608.28433v2.pdf",
+      "qid": "28433-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文提出什么平台？它要解决什么问题？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "Prove2Me：开放协作的数学形式化平台，人类+AI 代理共同完成 Lean 证明；解决人工审计与大规模 AI 生成的矛盾、证明不可复用。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.28433v2.pdf",
+      "qid": "28433-R2",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "R",
+      "question": "Sensitivity Conjecture 任务的完成情况如何？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "四个里程碑全部达成；仅 6 个代理 + 两个消费级订阅完成，规模与集中式 swarm 相当。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.28433v2.pdf",
+      "qid": "28433-C1",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "平台的基本对象和基本操作是什么？",
+      "hint_groups": [
+        "g19",
+        "g20",
+        "g50"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "定理陈述与证明分离，每个定理是独立不可变对象、可有多个证明；两个基本操作：提交定理、提交证明。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.28433v2.pdf",
+      "qid": "28433-C2",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "proof-sketch 概念如何工作？它如何实现去中心化协作？",
+      "hint_groups": [
+        "g49",
+        "g51",
+        "g53",
+        "g55"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "导入其他定理（含未证明开放定理）形成 proof-sketch，延迟子证明；Curry-Howard 使导入=假设该类型项；子引理成新问题可独立攻击，父定理自动解决。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.28433v2.pdf",
+      "qid": "28433-C3",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "平台如何让人类审计与 AI 大规模生成共存？",
+      "hint_groups": [
+        "g5",
+        "g37",
+        "g38",
+        "g39"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "预固定审计面：人类审任务核心/目标/定义/里程碑引理，代理自由引入中间定理；子代理把 Lean 回读成 LaTeX，独立审计代理只给 Lean 声明，人类比对源 LaTeX 与回读判断忠实性。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.28433v2.pdf",
+      "qid": "28433-C4",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "提交的证明文件有什么硬性约束？",
+      "hint_groups": [
+        "g27",
+        "g28"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "证明是 Lean 文件，声明名为 solution 的定理，类型与目标完全匹配、不含 sorry 或新公理；平台在同环境编译并检查类型匹配。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01599v1.pdf",
+      "qid": "01599-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文的核心发现是什么？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "六颗暖木星均未发现显著扁率异常；扁率0.1时中位倾角<12°置信90%、<27°置信93%；不支持行星-行星散射各向同性、排除类土星倾斜环。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01599v1.pdf",
+      "qid": "01599-R2",
+      "role": "dev",
+      "intent": "detail",
+      "level_v1": "R",
+      "question": "假设扁率约为 0.1（类土星）时，对中位倾角给出什么约束？",
+      "hint_groups": [
+        "g3"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "中位倾角低于 12° 的置信度 90%（f=0.1 时 |θ−θ中心|<12°）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01599v1.pdf",
+      "qid": "01599-C1",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "凌星光变曲线的拟合用了什么模型和流程？",
+      "hint_groups": [
+        "g14",
+        "g15",
+        "g16",
+        "g30"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "Mandel-Agol 模型 + Nelder-Mead 优化；加抖动项与稀释因子；两次去趋势后堆叠重拟合；MCMC（emcee 仿射不变采样）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01599v1.pdf",
+      "qid": "01599-C2",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "MCMC 采样的具体配置是什么？",
+      "hint_groups": [
+        "g30",
+        "g31",
+        "g32"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "400 个独立 walker、每个 50000 步、丢弃前 20% burn-in；初始化自最佳球形拟合+高斯扰动，θ⊥/f⊥ 均匀抽样。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01599v1.pdf",
+      "qid": "01599-C3",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "分层贝叶斯分析如何处理各系统的后验分布？",
+      "hint_groups": [
+        "g48",
+        "g51",
+        "g59"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "用拟合函数/高斯核密度估计建模 MCMC 样本直方图（带宽=后验尺度2%）；用解析近似 A exp(−βθ^γ) 外推 θ50≈0° 再算 CDF。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01599v1.pdf",
+      "qid": "01599-C4",
+      "role": "dev",
+      "intent": "detail",
+      "level_v1": "C",
+      "question": "去掉 Kepler-9 c 后，群体约束如何变化？",
+      "hint_groups": [
+        "g61",
+        "g62"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "θ50<27° 置信度从 93% 降至 87%；仅用三个信息量最大目标时后验显著更宽——Kepler-9 c 贡献了约束的主要部分。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01316v1.pdf",
+      "qid": "01316-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文提出什么方法？核心贡献是什么？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "MIDR：免训练、索引时多模态推理的富文档检索框架；贡献在于富化模式与抽取-验证-精炼索引路径，而非新稠密检索器。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01316v1.pdf",
+      "qid": "01316-R2",
+      "role": "dev",
+      "intent": "detail",
+      "level_v1": "R",
+      "question": "MIDR Hybrid 在 ViDoRe V3 上的总体表现如何？",
+      "hint_groups": [
+        "g3"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "五个英文域平均 nDCG@10 = 0.6219，相对 BM25 提升 23.0%，与 ColQwen2.5 (0.6300) 相当。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01316v1.pdf",
+      "qid": "01316-C1",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "MIDR 的富化（enrichment）流程具体包含哪些阶段？",
+      "hint_groups": [
+        "g6",
+        "g7",
+        "g13",
+        "g15"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "文档级富化→页面级富化→文本中心索引三阶段；页面级采用提取-验证-精炼循环（审计接地性，精炼触发率 9.6%）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01316v1.pdf",
+      "qid": "01316-C2",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "MIDR 的字段如何被嵌入、索引和融合？",
+      "hint_groups": [
+        "g17",
+        "g18",
+        "g20",
+        "g23"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "EmbeddingGemma 生成字段嵌入、均值池化；BM25F 各字段独立索引；混合检索用倒数排名融合（RRF）；字段统一权重。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01316v1.pdf",
+      "qid": "01316-C3",
+      "role": "dev",
+      "intent": "detail",
+      "level_v1": "C",
+      "question": "与视觉多向量检索器 ColQwen2.5 相比，MIDR 在效率和效果上如何？",
+      "hint_groups": [
+        "g5",
+        "g38"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "七域中四域领先；索引内存小约 9 倍（每页 0.038MB vs 11.07MB）、查询延迟低约 2 倍。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01316v1.pdf",
+      "qid": "01316-C4",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "法语跨语言设置是如何测试的？结果如何？",
+      "hint_groups": [
+        "g4",
+        "g30"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "法语页面用英文生成富集以测跨语言桥接；两个法文域富集将 BM25 nDCG@10 从 0.1532 提至 0.5448，超过 ColQwen2.5。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.30023v1.pdf",
+      "qid": "30023-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文贡献了什么？解决什么问题？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "PersonaGen-1M 语料库：从约四千万描述生成一百多万去重 persona，补充 GEO（生成式引擎优化）研究缺失的需求侧数据。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.30023v1.pdf",
+      "qid": "30023-R2",
+      "role": "dev",
+      "intent": "detail",
+      "level_v1": "R",
+      "question": "PersonaGen-15K 是什么？为什么要发布它？",
+      "hint_groups": [
+        "g33"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "含 14,955 个角色的分层子集，按市场/意图/性别比例抽样，用于复现与方法开发；完整语料按请求共享。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.30023v1.pdf",
+      "qid": "30023-C1",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "语料库中 persona 的意图分布是怎样的？",
+      "hint_groups": [
+        "g6",
+        "g25"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "78.3% 信息型、17.4% 商业型（约17.96万 persona/近90万查询）、4.3% 交易型；导航型低于 0.1%。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.30023v1.pdf",
+      "qid": "30023-C2",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "构建管线中是怎么做去重的？",
+      "hint_groups": [
+        "g38",
+        "g39"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "GPU 加速 MinHash LSH（128 排列、8 带 16 行，Jaccard 阈值 0.9）做近似去重；再用 KaLM-Embedding-Gemma3-12B 语义去重，余弦>0.9 移除。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.30023v1.pdf",
+      "qid": "30023-C3",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "每个 persona 记录包含哪些字段？",
+      "hint_groups": [
+        "g2",
+        "g3",
+        "g20"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "顶层嵌套 details 对象含 uuid/行业/市场背景/原始描述；每个 persona 带单一主意图字段（关联约 5 个查询）、信任的来源类型命名列表。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.30023v1.pdf",
+      "qid": "30023-C4",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "试点实验是怎么做的？证明了什么？",
+      "hint_groups": [
+        "g52",
+        "g54",
+        "g56"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "FinTech 商业意图 persona 7912 个抽 30 个；150 查询温度0.7 调商业引擎；双模型提取品牌取共识（平均 Jaccard 0.737）；146/150 回答至少提一个品牌——证明语料库能引发品牌推荐且分布可测量。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01505v1.pdf",
+      "qid": "01505-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文研究什么问题？主要结果是什么？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "计算 1≤n,k≤6 且 2n+k≥5 的扭子群 Tn,k、解决 Pn,l 指数 2 不确定性、确定矩阵 Bn,l/Cn,l，完整刻画 FCPn×D2l。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01505v1.pdf",
+      "qid": "01505-R2",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "R",
+      "question": "论文给出或改进了什么同余条件？",
+      "hint_groups": [
+        "g11"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "推论 2.6 改进 KM26 推论 2.7，给出光滑结构存在的分裂不变量同余条件。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01505v1.pdf",
+      "qid": "01505-C1",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "矩阵 Qn,l 在什么情况下为零？",
+      "hint_groups": [
+        "g9"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "Qn,l 除非 l=1 且 n 为偶数，否则为零（定理 2.4）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01505v1.pdf",
+      "qid": "01505-C2",
+      "role": "dev",
+      "intent": "detail",
+      "level_v1": "C",
+      "question": "π0G(CPn) 和 π1G(CPn) 分别同构于什么？",
+      "hint_groups": [
+        "g12"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "π0G(CPn)≅Z2（由复共轭生成），π1G(CPn)≅Zn+1。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01505v1.pdf",
+      "qid": "01505-C3",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "论文用什么工具计算 coker[ΣkCPn, ΩJ]？大致过程？",
+      "hint_groups": [
+        "g15",
+        "g16"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "用 Brumfiel 谱序列：由余纤维序列诱导的长正合序列组装成精确偶，构造谱序列逐页计算有限阿贝尔子群。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2609.01505v1.pdf",
+      "qid": "01505-C4",
+      "role": "dev",
+      "intent": "detail",
+      "level_v1": "C",
+      "question": "遗忘映射 FCPn×D2l 是如何被描述的？",
+      "hint_groups": [
+        "g3",
+        "g8"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "固定特定同构并做选择后，遗忘映射由 2×2 分块矩阵 Fn,l 的乘积描述；Pn,l 在 n+l 为奇数时是单位矩阵（定理 2.3）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.29290v1.pdf",
+      "qid": "29290-R1",
+      "role": "dev",
+      "intent": "overview",
+      "level_v1": "R",
+      "question": "这篇论文提出什么方法？要解决什么问题？",
+      "hint_groups": [],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "数据库增强的 RAG 方法，用于自动修复 REST API 客户端程序中的误用（在数据库存储/文本提取/提示设计上区别于标准 RAG）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.29290v1.pdf",
+      "qid": "29290-R2",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "R",
+      "question": "达到的最高修复率是多少？是哪种配置？",
+      "hint_groups": [
+        "g47"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L0",
+        "L1"
+      ],
+      "route_min": "L0",
+      "hint": "四种数据库配置达到最高修复率 88.6%。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.29290v1.pdf",
+      "qid": "29290-C1",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "方法在数据库存储、文本提取和提示设计上分别如何区别于标准 RAG？",
+      "hint_groups": [
+        "g21",
+        "g22",
+        "g25"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "存储：按 API 版本+内容类型分四个数据库（最新/废弃 × 代码片段/自然语言）；提取：HTML 标签取代码片段、移除后得自然语言；提示：三阶段（分析废弃规范→识别误用→生成修正）。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.29290v1.pdf",
+      "qid": "29290-C2",
+      "role": "dev",
+      "intent": "concept",
+      "level_v1": "C",
+      "question": "提示词的三阶段设计具体是什么？",
+      "hint_groups": [
+        "g25",
+        "g27"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "分阶段提示：分析废弃规范 → 识别误用 → 生成修正代码；有助于引导模型减少推理错误。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.29290v1.pdf",
+      "qid": "29290-C3",
+      "role": "dev",
+      "intent": "method",
+      "level_v1": "C",
+      "question": "仅含废弃规范的 D/Ds 方法效果如何？原因是什么？",
+      "hint_groups": [
+        "g43",
+        "g10"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "修复率远低于基线（混合误用案例 0%）；原因：废弃与最新规范共同嵌入时语义相似的废弃片段主导检索，降低提示可靠性。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    },
+    {
+      "pdf": "2608.29290v1.pdf",
+      "qid": "29290-C4",
+      "role": "dev",
+      "intent": "method_detail",
+      "level_v1": "C",
+      "question": "评估数据集和成功判定是怎么构建的？",
+      "hint_groups": [
+        "g5",
+        "g33",
+        "g34"
+      ],
+      "chunk_kw": null,
+      "expect": [
+        "L1",
+        "L2"
+      ],
+      "route_min": "L1",
+      "hint": "从 SwitchBot/Fitbit 收集 REST API 误用案例；21 个案例（9 请求头+端点、12 仅端点）；成功率=成功补丁次数/执行次数，每案例执行五次。",
+      "must_have": [],
+      "must_not": [],
+      "v1": true
+    }
+  ]
+}
