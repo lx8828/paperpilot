@@ -25,7 +25,7 @@ _REL_CN = {"implements": "实现机制", "supports": "证据支撑",
 # ── 概述 ───────────────────────────────────────────
 
 
-def _narrative(g: dict) -> bool:
+def _narrative(g: dict[str, Any]) -> bool:
     """该主张是否位于叙述性章节（摘要/引言/结论/讨论）。"""
     secs = g.get("sections") or []
     for s in secs[:1]:
@@ -37,7 +37,7 @@ def _narrative(g: dict) -> bool:
     return False
 
 
-def collect_materials(groups: list[dict], max_n: int = 12) -> list[dict]:
+def collect_materials(groups: list[dict[str, Any]], max_n: int = 12) -> list[dict[str, Any]]:
     """概述材料：摘要/引言/结论里的高分核心主张（优先叙述层）。"""
     cand = [g for g in groups
             if g.get("label") in ("core_claim", "result_primary")
@@ -49,7 +49,7 @@ def collect_materials(groups: list[dict], max_n: int = 12) -> list[dict]:
             for g in cand[:max_n]]
 
 
-def build_overview(groups: list[dict], title: str) -> str:
+def build_overview(groups: list[dict[str, Any]], title: str) -> str:
     """LLM 生成全文概述（研究者向，忠于论文）。"""
     mats = collect_materials(groups)
     rows = llm.chat_json(OVERVIEW_SYSTEM, build_overview_user(title, mats),
@@ -59,7 +59,7 @@ def build_overview(groups: list[dict], title: str) -> str:
     return str(rows).strip()
 
 
-def collect_guide_materials(groups: list[dict], max_n: int = 18) -> list[dict]:
+def collect_guide_materials(groups: list[dict[str, Any]], max_n: int = 18) -> list[dict[str, Any]]:
     """导读材料：核心主张+关键方法/支撑结果，叙述层优先。"""
     cand = [g for g in groups
             if g.get("label") in ("core_claim", "result_primary",
@@ -72,7 +72,7 @@ def collect_guide_materials(groups: list[dict], max_n: int = 18) -> list[dict]:
             for g in cand[:max_n]]
 
 
-def build_guide(groups: list[dict], title: str) -> str:
+def build_guide(groups: list[dict[str, Any]], title: str) -> str:
     """LLM 生成面向小白的通俗导读。"""
     mats = collect_guide_materials(groups)
     rows = llm.chat_json(GUIDE_SYSTEM, build_guide_user(title, mats),
@@ -85,7 +85,7 @@ def build_guide(groups: list[dict], title: str) -> str:
 # ── 渲染 ───────────────────────────────────────────
 
 
-def _rep(g: dict, n: int = 160) -> str:
+def _rep(g: dict[str, Any], n: int = 160) -> str:
     return g.get("rep_text", "").replace("\n", " ")[:n]
 
 
@@ -93,9 +93,9 @@ def _evmark(ev: str) -> str:
     return _EV.get(ev, "⚠")
 
 
-def render_report(groups: list[dict], hubs: list[dict],
+def render_report(groups: list[dict[str, Any]], hubs: list[dict[str, Any]],
                   overview: str, guide: str, meta: dict[str, Any],
-                  figures: list[dict] | None = None) -> str:
+                  figures: list[dict[str, Any]] | None = None) -> str:
     title = meta.get("title") or meta.get("pdf", "")
     pdf = meta.get("pdf", "")
     n_claims = meta.get("n_claims", 0)

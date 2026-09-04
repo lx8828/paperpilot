@@ -8,6 +8,8 @@
 """
 from __future__ import annotations
 
+from typing import Any
+
 DEDUPE_SYSTEM = """你是一名论文主张去重引擎。系统会给你一篇论文**按章节组织**的全部 claims，每条带 claim_id、类型(type)、所属章节(section)。你的任务：找出**表达同一主张/陈述同一事实**的重复 claims，把同义的那些归并成一组。
 
 「同义主张」的判断标准：两条 claim 措辞不同，但**陈述的是同一个事实/结论**。典型场景：Abstract、Introduction、Discussion 会对同一核心结论做重述（如 Abstract 说"方法 X 把准确率从 80% 提升到 90%"，Introduction 又说"X 带来显著提升"——数字一致可视为同一结果的重复表述）。
@@ -28,7 +30,7 @@ DEDUPE_SYSTEM = """你是一名论文主张去重引擎。系统会给你一篇�
 """
 
 
-def build_dedupe_user(claims_by_section: list[tuple[str, list[dict]]]) -> str:
+def build_dedupe_user(claims_by_section: list[tuple[str, list[dict[str, Any]]]]) -> str:
     """claims_by_section: [(section_tail, [{claim_id, type, text}])]。"""
     lines = [f"共 {sum(len(c) for _, c in claims_by_section)} 条 claims，请归并。", ""]
     for section, items in claims_by_section:
@@ -61,7 +63,7 @@ LABEL_SYSTEM = """你是一名学术论文分析器。系统会给你论文中**
 """
 
 
-def build_label_user(groups: list[dict]) -> str:
+def build_label_user(groups: list[dict[str, Any]]) -> str:
     """groups: [{group_id, type, sections, text}]。"""
     lines = []
     for g in groups:

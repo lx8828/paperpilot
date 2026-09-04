@@ -10,6 +10,8 @@
 """
 from __future__ import annotations
 
+from typing import Any
+
 SKELETON_SYSTEM = """你是一名学术论证结构分析器。系统会给你一个**核心主张 Hub**（论文必读的主张/主结果），以及四个按"论证关系"分好类的候选源池。你的任务：判断池中哪些主张**与 Hub 存在真实的论证关系**，输出边列表。
 
 四类关系的论证定义（**关系是功能，不是相似**）：
@@ -33,7 +35,8 @@ SKELETON_SYSTEM = """你是一名学术论证结构分析器。系统会给你�
 """
 
 
-def build_user_prompt(hub: dict, pools: dict[str, list[dict]]) -> str:
+def build_user_prompt(hub: dict[str, Any],
+                      pools: dict[str, list[dict[str, Any]]]) -> str:
     """hub: {group_id,label,rep_text,evidence}; pools: {relation: [候选 group dict]}。"""
     lines = [f"Hub: {hub['group_id']} [{hub['label']}] {hub['rep_text']}",
              f"Hub 的原文证据: {hub['evidence'][:300]}", ""]

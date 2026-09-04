@@ -153,14 +153,14 @@ def _appear(state: QAState, lvl: str) -> list[str]:
     return route
 
 
-def _fmt_core(points: list[dict]) -> str:
+def _fmt_core(points: list[Any]) -> str:
     lines = []
     for i, c in enumerate(points, 1):
         lines.append(f"[{i}] [{c.get('label','')}]({c.get('importance',0)}分) {c.get('text','')}")
     return "\n".join(lines) if lines else "（无核心要点）"
 
 
-def _fmt_claims(retrieved: list[dict]) -> str:
+def _fmt_claims(retrieved: list[Any]) -> str:
     lines = []
     for i, r in enumerate(retrieved, 1):
         lines.append(
@@ -171,7 +171,7 @@ def _fmt_claims(retrieved: list[dict]) -> str:
     return "\n".join(lines) if lines else "（未检索到相关主张）"
 
 
-def _fmt_chunks(chunks: list[dict], max_show: int = 8) -> str:
+def _fmt_chunks(chunks: list[Any], max_show: int = 8) -> str:
     lines = []
     for i, c in enumerate(chunks[:max_show], 1):
         text = (c.get("text") or "").strip()
@@ -194,7 +194,7 @@ def judge_l0(state: QAState) -> dict[str, Any]:
     )
     try:
         raw = llm.chat_json(_SYS_L0, user, temperature=0.0)
-        v = _parse(raw, default_enough=True)
+        v: dict[str, Any] = _parse(raw, default_enough=True)
     except llm.LLMError as e:
         v = {"enough": True, "target_sections": [], "gap": f"judge_l0 失败: {e}"[:120]}
     debug = dict(state.get("debug") or {})
@@ -228,7 +228,7 @@ def judge_l1(state: QAState) -> dict[str, Any]:
     )
     try:
         raw = llm.chat_json(_SYS_L1, user, temperature=0.0)
-        v = _parse(raw, default_enough=True)
+        v: dict[str, Any] = _parse(raw, default_enough=True)
     except llm.LLMError as e:
         v = {"enough": True, "target_sections": [], "gap": f"judge_l1 失败: {e}"[:120]}
     # 只保留候选里真实存在过的 section（防模型自造名字）
@@ -263,7 +263,7 @@ def judge_l2(state: QAState) -> dict[str, Any]:
     )
     try:
         raw = llm.chat_json(_SYS_L2, user, temperature=0.0)
-        v = _parse(raw, default_enough=True)
+        v: dict[str, Any] = _parse(raw, default_enough=True)
     except llm.LLMError as e:
         v = {"enough": True, "target_sections": [], "gap": f"judge_l2 失败: {e}"[:120]}
     debug = dict(state.get("debug") or {})
@@ -288,7 +288,7 @@ def judge_l3(state: QAState) -> dict[str, Any]:
     )
     try:
         raw = llm.chat_json(_SYS_L3, user, temperature=0.0)
-        v = _parse(raw, default_enough=False)
+        v: dict[str, Any] = _parse(raw, default_enough=False)
     except llm.LLMError as e:
         # 保底层判定失败 → 诚实收尾，不凭空编造
         v = {"enough": False, "target_sections": [], "gap": f"判定失败: {e}"[:120]}

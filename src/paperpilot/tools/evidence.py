@@ -11,6 +11,7 @@ run_claims / run_summary / viewer 共享此模块。
 from __future__ import annotations
 
 import re
+from typing import Any
 
 from paperpilot.models.schema import Claim
 
@@ -74,7 +75,7 @@ def verify_evidence(claims: list[Claim],
 # ── Claim <-> dict 序列化（落盘/读取共用）──
 
 
-def claim_to_dict(c: Claim) -> dict:
+def claim_to_dict(c: Claim) -> dict[str, Any]:
     return {
         "claim_id": c.claim_id,
         "type": c.type,
@@ -87,7 +88,7 @@ def claim_to_dict(c: Claim) -> dict:
     }
 
 
-def dict_to_claim(d: dict) -> Claim:
+def dict_to_claim(d: dict[str, Any]) -> Claim:
     return Claim(
         claim_id=d["claim_id"], type=d["type"], text=d["text"],
         evidence_quote=d["evidence_quote"], chunk_id=d["chunk_id"],

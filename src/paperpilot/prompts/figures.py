@@ -1,6 +1,8 @@
 """Figures 读图指南提示词（方案2 非多模态：LLM 基于 caption+正文引用描述图）。"""
 from __future__ import annotations
 
+from typing import Any
+
 GUIDE_SYSTEM = """你是学术论文的"图表讲解员"。系统会给你一篇论文中若干图表（Figure/Table）的编号、caption 和图注/正文引用段。对每个图表写一段 50~120 字的中文"读图指南"，让**没有看这张图**的读者也能理解它在论文论证中的作用。
 
 要求：
@@ -13,7 +15,7 @@ GUIDE_SYSTEM = """你是学术论文的"图表讲解员"。系统会给你一篇
 [{"id": "Figure 1", "guide": "……"}, {"id": "Table 3", "guide": "……"}]"""
 
 
-def build_guide_user(figs: list[dict]) -> str:
+def build_guide_user(figs: list[dict[str, Any]]) -> str:
     lines = []
     for f in figs:
         lines.append(f"### {f['id']}（p{f['page']}）")

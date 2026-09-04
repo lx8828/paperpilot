@@ -12,6 +12,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -22,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
 CLAIMS_DIR = ROOT / "out_claims"
 
 
-def scan_one(pdf: str, force: bool) -> dict | None:
+def scan_one(pdf: str, force: bool) -> dict[str, Any] | None:
     stem = Path(pdf).stem
     claim_file = CLAIMS_DIR / f"{stem}.claims.json"
     if not claim_file.exists():

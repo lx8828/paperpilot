@@ -27,7 +27,7 @@ CLAIMS_DIR = ROOT / "out_claims"
 VIEW_DIR = ROOT / "out_views"
 
 
-def load_inputs(pdf: str) -> tuple[list[dict], dict[str, dict]] | None:
+def load_inputs(pdf: str) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]] | None:
     stem = Path(pdf).stem
     sum_file = VIEW_DIR / f"{stem}.summary.json"
     claim_file = CLAIMS_DIR / f"{stem}.claims.json"
@@ -43,7 +43,7 @@ def load_inputs(pdf: str) -> tuple[list[dict], dict[str, dict]] | None:
     return groups, claim_map
 
 
-def render_hub(h: dict) -> list[str]:
+def render_hub(h: dict[str, Any]) -> list[str]:
     lines = [f"● Hub [{h['label']}] {h['rep_text'][:90]}"]
     if not h["edges"]:
         lines.append("    （无关系边）")

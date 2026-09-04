@@ -7,6 +7,8 @@
 """
 from __future__ import annotations
 
+from typing import Any
+
 OVERVIEW_SYSTEM = """你是一名学术论文概述撰写器。系统会给你：论文标题 + 若干条从该论文摘要/引言/结论提取出的**高分核心主张**（每条带来源编号）。请写一段 90~140 字的**全文概述**，让完全没读过这篇论文的人也能知道"这篇论文大致在讲什么"。
 
 概述应自然连贯地覆盖：**研究什么问题（动机）→ 提出/做了什么 → 关键方法思路 → 主要结果（尽量带上关键数字）→ 主要意义或局限**。
@@ -21,7 +23,7 @@ OVERVIEW_SYSTEM = """你是一名学术论文概述撰写器。系统会给你�
 {"overview": "概述正文……"}"""
 
 
-def build_overview_user(title: str, materials: list[dict]) -> str:
+def build_overview_user(title: str, materials: list[dict[str, Any]]) -> str:
     """materials: [{gid, label, text}] 高分核心主张。"""
     lines = [f"论文标题：{title}", "", "可用的核心主张材料："]
     for m in materials:
@@ -46,7 +48,7 @@ GUIDE_SYSTEM = """你是一名"论文翻译官"，任务是把一篇学术论文
 {"guide": "导读全文，段与段之间用空行分隔……"}"""
 
 
-def build_guide_user(title: str, materials: list[dict]) -> str:
+def build_guide_user(title: str, materials: list[dict[str, Any]]) -> str:
     lines = [f"论文标题：{title}", "", "可用的论文核心主张材料："]
     for m in materials:
         lines.append(f"[{m['gid']}] ({m['label']}) {m['text']}")

@@ -16,7 +16,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import urllib.error
 import urllib.request
+from typing import Any
 
 ENV_BASE = "PAPERPILOT_LLM_BASE_URL"
 ENV_KEY = "PAPERPILOT_LLM_API_KEY"
@@ -96,7 +98,7 @@ def _chat(system: str, user: str, *, temperature: float,
             "（或在工作目录放置 .env 文件）"
         )
 
-    body: dict = {
+    body: dict[str, Any] = {
         "model": model,
         "messages": [
             {"role": "system", "content": system},

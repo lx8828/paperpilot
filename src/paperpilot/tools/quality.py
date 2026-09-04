@@ -6,6 +6,8 @@
 """
 from __future__ import annotations
 
+from typing import Any
+
 from paperpilot.prompts.quality import QUALITY_SYSTEM, build_user
 from paperpilot.tools import llm
 
@@ -14,7 +16,7 @@ ROUNDS = 2     # 判定轮数（取交集）
 ABNORMAL = 0.15  # 噪声占比超过此值判定为异常（疑似误杀）
 
 
-def _call_batch(batch: list[dict]) -> set[str]:
+def _call_batch(batch: list[dict[str, Any]]) -> set[str]:
     rows = None
     for attempt in range(3):
         try:
@@ -31,7 +33,7 @@ def _call_batch(batch: list[dict]) -> set[str]:
     return {str(r.get("claim_id", "")).strip() for r in rows if isinstance(r, dict)}
 
 
-def scan_claims(claims: list[dict]) -> list[dict]:
+def scan_claims(claims: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """claims: [{claim_id, type, text, title_path}]。返回(保守的) noisy 列表。"""
     claim_map = {c["claim_id"]: c for c in claims}
     noisy_ids: set[str] = set()

@@ -13,6 +13,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -45,7 +46,7 @@ def load_all(pdf: str):
     return groups, hubs, n_claims, title or stem
 
 
-def get_overview(pdf: str, groups: list[dict], title: str, force: bool) -> str:
+def get_overview(pdf: str, groups: list[dict[str, Any]], title: str, force: bool) -> str:
     cache = VIEW_DIR / f"{Path(pdf).stem}.overview.json"
     if cache.exists() and not force:
         return str(json.loads(cache.read_text(encoding="utf-8"))["overview"])
@@ -56,7 +57,7 @@ def get_overview(pdf: str, groups: list[dict], title: str, force: bool) -> str:
     return overview
 
 
-def get_guide(pdf: str, groups: list[dict], title: str, force: bool) -> str:
+def get_guide(pdf: str, groups: list[dict[str, Any]], title: str, force: bool) -> str:
     cache = VIEW_DIR / f"{Path(pdf).stem}.guide.json"
     if cache.exists() and not force:
         return str(json.loads(cache.read_text(encoding="utf-8"))["guide"])

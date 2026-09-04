@@ -13,6 +13,7 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -25,7 +26,7 @@ PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
 VIEW_DIR = ROOT / "out_views"
 
 
-def process_one(pdf: str, with_guide: bool, force: bool) -> dict | None:
+def process_one(pdf: str, with_guide: bool, force: bool) -> dict[str, Any] | None:
     pdf_path = PAPERS_DIR / pdf
     stem = Path(pdf).stem
     out = VIEW_DIR / f"{stem}.figures.json"

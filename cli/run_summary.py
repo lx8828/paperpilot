@@ -31,7 +31,7 @@ PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
 
 # 复用同目录 run_claims.py 的表打印函数（不触发其 main）
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # cli/
-from run_claims import print_table  # noqa: E402
+from run_claims import print_table  # noqa: E402  # 隐式相对导入：CLI 脚本互引，见 pyproject basedpyright 豁免
 
 
 def _bigrams(tokens: list[str]) -> set[str]:
@@ -82,7 +82,7 @@ def build_row(data: dict[str, Any], target_chunks: list[Any]) -> dict[str, Any]:
 def audit_miss(pairs: list[tuple[str, dict[str, Any], list[Any]]]) -> None:
     cat_total = Counter()
     samples: dict[str, list[tuple[str, Any]]] = defaultdict(list)
-    per_pdf: dict[str, Counter] = {}
+    per_pdf: dict[str, Counter[str]] = {}
     for pdf, data, target in pairs:
         claims = [dict_to_claim(d) for d in data["claims"]]
         text_map = {c.chunk_id: c.text for c in target}

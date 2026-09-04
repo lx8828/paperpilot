@@ -36,11 +36,11 @@ CLAIMS_DIR = ROOT / "out_claims"
 VIEW_DIR = ROOT / "out_views"
 
 
-def group_to_dict(g: ClaimGroup) -> dict:
+def group_to_dict(g: ClaimGroup) -> dict[str, Any]:
     return g.model_dump(mode="json")
 
 
-def dict_to_group(d: dict) -> ClaimGroup:
+def dict_to_group(d: dict[str, Any]) -> ClaimGroup:
     return ClaimGroup(**d)
 
 

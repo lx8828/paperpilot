@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -38,11 +39,11 @@ SYSTEM = (
 MAX_CHUNK_CHARS = 2600
 
 
-def _load_report(pdf: str) -> dict:
+def _load_report(pdf: str) -> dict[str, Any]:
     return json.loads((VIEW_DIR / f"{Path(pdf).stem}.report.json").read_text(encoding="utf-8"))
 
 
-def top_ctx(r: dict) -> str:
+def top_ctx(r: dict[str, Any]) -> str:
     lines = [f"标题：{r['title']}", "", "=== 概述 ===", r["overview"], ""]
     lines.append("=== 核心要点 ===")
     for c in r.get("core_points", []):
@@ -55,7 +56,7 @@ def top_ctx(r: dict) -> str:
     return "\n".join(lines)
 
 
-def claim_ctx(r: dict, gids: list[str]) -> str:
+def claim_ctx(r: dict[str, Any], gids: list[str]) -> str:
     """模拟 claim retrieval 命中的组（完整信息 + 代表 claim 的原文证据）。"""
     groups = {g["group_id"]: g for g in r.get("groups", [])}
     claims = {c["claim_id"]: c for c in r.get("claims", [])}

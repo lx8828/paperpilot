@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 from concurrent.futures import ThreadPoolExecutor
+from typing import Any, cast
 
 from paperpilot.models.schema import Chunk, Claim, ClaimType
 from paperpilot.prompts.analyzer import SYSTEM_PROMPT, build_user_prompt
@@ -54,7 +55,7 @@ def extractable(chunks: list[Chunk]) -> list[Chunk]:
     return [c for c in chunks if not _skip_chunk(c)]
 
 
-def _build_claim(chunk: Chunk, row: dict, seq: int) -> Claim | None:
+def _build_claim(chunk: Chunk, row: dict[str, Any], seq: int) -> Claim | None:
     t = (row.get("type") or "").strip()
     text = (row.get("text") or "").strip()
     ev = (row.get("evidence_quote") or "").strip()
@@ -62,17 +63,17 @@ def _build_claim(chunk: Chunk, row: dict, seq: int) -> Claim | None:
         return None
     return Claim(
         claim_id=f"c{seq:04d}",
-        type=t,
+        type=cast(ClaimType, t),
         text=text,
         evidence_quote=ev,
         chunk_id=chunk.chunk_id,
         title_path=list(chunk.title_path),
         page=chunk.page_span[0],
-        page_span=tuple(chunk.page_span),
+        page_span=chunk.page_span,
     )
 
 
-def _extract_chunk_rows(chunk: Chunk) -> tuple[list[dict], str | None]:
+def _extract_chunk_rows(chunk: Chunk) -> tuple[list[dict[str, Any]], str | None]:
     """对单个 chunk 调 LLM，返回 (rows, error)。错误不抛出，逐块容错。"""
     prompt = build_user_prompt(chunk.title_path, mask_table_rows(chunk.text))
     try:

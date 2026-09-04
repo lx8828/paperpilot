@@ -18,8 +18,9 @@ def _clean(text: str) -> str:
 
 # 编号允许：4a / 3.1 / A.1 / C.1 / 10（章节编号或子图后缀）
 _CAP_HEAD_RE = re.compile(
-    r"^(Table|Tab\.?|Figure|Fig\.?)\s+"
-    r"([A-Za-z]{1,2}\.\d+|[A-Za-z]?\d+(?:\.\d+)*[a-z]?)\s*", re.I)
+    r"^(?:Table|Tab\.?|Figure|Fig\.?)\s+"
+    + r"(?:[A-Za-z]{1,2}\.\d+|[A-Za-z]?\d+(?:\.\d+)*[a-z]?)\s*",
+    re.I)
 
 
 def _caption_kind(text: str) -> tuple[str, str] | None:
@@ -45,14 +46,14 @@ def _caption_kind(text: str) -> tuple[str, str] | None:
     return None
 
 
-def extract_figures(blocks: list[dict]) -> list[dict]:
+def extract_figures(blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """从 PDF 文本块识别图表 caption + 收集正文引用段。
 
     Returns: [{id, kind, page, caption, refs}]
       id 形如 "Figure 4a" / "Table 2" / "Figure C.1"
       refs 为正文中提到该编号的块文本（截断保留整段）
     """
-    figs: list[dict] = []
+    figs: list[dict[str, Any]] = []
     for b in blocks:
         got = _caption_kind(b["text"])
         if got is None:
@@ -84,7 +85,7 @@ def extract_figures(blocks: list[dict]) -> list[dict]:
     return figs
 
 
-def build_context(fig: dict, max_refs: int = 3, ref_cap: int = 300) -> str:
+def build_context(fig: dict[str, Any], max_refs: int = 3, ref_cap: int = 300) -> str:
     """图上下文：caption + 前几段正文引用（RAG 单元/读图指南原料）。"""
     parts = [f"caption: {fig['caption']}"]
     refs = fig.get("refs", [])
@@ -95,7 +96,7 @@ def build_context(fig: dict, max_refs: int = 3, ref_cap: int = 300) -> str:
     return "\n".join(parts)
 
 
-def generate_guides(figs: list[dict]) -> dict[str, str]:
+def generate_guides(figs: list[dict[str, Any]]) -> dict[str, str]:
     """LLM 基于 caption+正文引用生成每图"读图指南"（一次调用，非多模态）。"""
     if not figs:
         return {}

@@ -23,3 +23,21 @@ paperpilot = "paperpilot:main"
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.basedpyright]
+# 类型收敛策略（2026-09-05）：
+#   Error 级已逐处修好（裸 dict 补泛型、TypedDict 访问、urllib.error 导入等）。
+#   Any/Unknown 系是"内部 dict 数据流"的固有噪音（LLM 产物 JSON 无法静态定型），
+#   无修复价值 → 关闭；保留 unused/字符串拼接等代码卫生告警。
+#   cli/*.py 之间通过 sys.path 互引脚本，隐式相对导入是刻意设计 → 豁免。
+typeCheckingMode = "standard"
+pythonVersion = "3.13"
+reportAny = "none"
+reportExplicitAny = "none"
+reportUnknownVariableType = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportImplicitRelativeImport = "none"
+reportPrivateUsage = "none"

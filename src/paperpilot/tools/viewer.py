@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 from collections import OrderedDict
-from typing import Any
+from typing import Any, cast
 
 from paperpilot.models.schema import Claim, ClaimGroup, ClaimLabel
 from paperpilot.prompts.viewer import (DEDUPE_SYSTEM, LABEL_SYSTEM,
@@ -94,9 +94,9 @@ def _ordered_sections(claims: list[Claim]) -> list[str]:
 # ── ① LLM 去重归并 ──────────────────────────────────────
 
 
-def _dedupe_call(claims: list[Claim]) -> list[dict]:
+def _dedupe_call(claims: list[Claim]) -> list[dict[str, Any]]:
     sec_order = _ordered_sections(claims)
-    by_sec: "OrderedDict[str, list[dict]]" = OrderedDict((s, []) for s in sec_order)
+    by_sec: "OrderedDict[str, list[dict[str, Any]]]" = OrderedDict((s, []) for s in sec_order)
     for c in claims:
         by_sec[section_tail(top_path(c))].append(
             {"claim_id": c.claim_id, "type": c.type, "text": c.text})
@@ -166,7 +166,7 @@ def label_groups(groups: list[ClaimGroup]) -> None:
     """LLM 给每个组判 1 个角色 label（就地写入）。失败则该组保持 detail。"""
     payload = [{"group_id": g.group_id, "type": g.type,
                 "sections": g.sections, "text": g.rep_text} for g in groups]
-    result: dict[str, dict] = {}
+    result: dict[str, dict[str, Any]] = {}
     try:
         rows = llm.chat_json(LABEL_SYSTEM, build_label_user(payload),
                              temperature=0.0)
@@ -179,7 +179,7 @@ def label_groups(groups: list[ClaimGroup]) -> None:
     for g in groups:
         r = result.get(g.group_id)
         if r and str(r.get("label", "")) in _LABELS:
-            g.label = str(r["label"])          # type: ignore[assignment]
+            g.label = cast(ClaimLabel, str(r["label"]))
             g.label_why = str(r.get("why", "")).strip()
 
 

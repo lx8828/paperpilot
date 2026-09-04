@@ -103,7 +103,7 @@ def _next_window(state: QAState, l2: dict[str, Any]) -> dict[str, Any]:
       全部圆心试完 / 预算耗尽 → done=True（不产窗口）。
     返回更新后的 l2（含新 window 或 done）。
     """
-    chunks = ordered_chunks(state["pdf"])
+    chunks = ordered_chunks(state.get("pdf") or "")
     by_id = {c.chunk_id: c for c in chunks}
     ids_in_sec = {sec: [c.chunk_id for c in clist]
                   for sec, clist in section_chunks(chunks).items()}
@@ -159,9 +159,10 @@ def _next_window(state: QAState, l2: dict[str, Any]) -> dict[str, Any]:
 
 def expand_l2(state: QAState) -> dict[str, Any]:
     """L2 步进：前进一次圆心/半径，产出当前窗口 chunks（分窗隔离）。"""
-    pdf = state["pdf"]
-    l2 = state.get("l2")
-    if l2 is None:
+    pdf = state.get("pdf") or ""
+    l2_raw = state.get("l2")
+    l2: dict[str, Any]
+    if l2_raw is None:
         chunks = ordered_chunks(pdf)
         ids_in_sec = {sec: [c.chunk_id for c in clist]
                       for sec, clist in section_chunks(chunks).items()}
@@ -169,10 +170,10 @@ def expand_l2(state: QAState) -> dict[str, Any]:
         l2 = {"centers": centers, "center_i": 0, "radius": -1,
               "window": [], "pulled": [], "done": False}
     else:
-        l2 = dict(l2)
-        l2["pulled"] = list(l2.get("pulled") or [])
-        l2["centers"] = list(l2.get("centers") or [])
-        l2["window"] = list(l2.get("window") or [])
+        l2 = dict(l2_raw)
+        l2["pulled"] = list(l2_raw.get("pulled") or [])
+        l2["centers"] = list(l2_raw.get("centers") or [])
+        l2["window"] = list(l2_raw.get("window") or [])
 
     l2 = _next_window(state, l2)
 
@@ -206,8 +207,8 @@ def expand_l2(state: QAState) -> dict[str, Any]:
 
 def search_l3(state: QAState) -> dict[str, Any]:
     """L3 独立全文检索：ChunkIndex 对原始问题检索 topK，写 l3_chunks（干净隔离）。"""
-    question = state["question"]
-    hits = ChunkIndex(state["pdf"]).search(question, top_k=L3_TOP_K)
+    question = state.get("question") or ""
+    hits = ChunkIndex(state.get("pdf") or "").search(question, top_k=L3_TOP_K)
     l3_chunks: list[dict[str, Any]] = []
     for h in hits:
         l3_chunks.append({

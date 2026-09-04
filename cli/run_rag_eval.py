@@ -15,6 +15,7 @@ import json
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -26,7 +27,7 @@ QA_FILE = ROOT / "qa" / "qa_set.json"
 OUT_FILE = ROOT / "qa" / "rag_eval_out.json"
 
 
-def summarize(q: dict, r: dict) -> dict:
+def summarize(q: dict[str, Any], r: dict[str, Any]) -> dict[str, Any]:
     retrieved = r.get("retrieved", [])
     hint = q.get("hint_groups") or []
     hit_groups = [g for g in hint if g in {h["gid"] for h in retrieved}]

@@ -231,11 +231,11 @@ def main() -> int:
     print(f"共 {len(qs)} 题")
 
     # 按 pdf 分组，embedding 索引同论文复用（内存模型单例），逐题跑
-    by_pdf: dict[str, list[dict]] = {}
+    by_pdf: dict[str, list[dict[str, Any]]] = {}
     for q in qs:
         by_pdf.setdefault(q["pdf"], []).append(q)
 
-    all_recs: list[dict] = []
+    all_recs: list[dict[str, Any]] = []
     for pdf in sorted(by_pdf):
         group = by_pdf[pdf]
         print(f"\n{'='*70}\n[{pdf}] {len(group)} 题")

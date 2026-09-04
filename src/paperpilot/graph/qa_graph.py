@@ -116,7 +116,7 @@ app = build_qa_graph()
 
 
 def ask(question: str, pdf: str,
-        history: list[dict] | None = None) -> dict[str, Any]:
+        history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """一键问答：跑完整张图，返回最终 State（answer/cites/debug/route…）。
 
     Args:
@@ -125,8 +125,10 @@ def ask(question: str, pdf: str,
         history: 之前轮次的对话 [{"role": "user"|"assistant", "content": str}, ...]，
                  供 judge/answer 理解"这个方法/它"等指代（真追问）。
     """
-    state: dict[str, Any] = {"question": question, "pdf": pdf}
+    state: QAState = {"question": question, "pdf": pdf}
     if history:
-        state["history"] = [m for m in history if m.get("role") in ("user", "assistant")
-                            and m.get("content")]
+        state["history"] = [
+            {"role": str(m.get("role")), "content": str(m.get("content"))}
+            for m in history
+            if m.get("role") in ("user", "assistant") and m.get("content")]
     return app.invoke(state)

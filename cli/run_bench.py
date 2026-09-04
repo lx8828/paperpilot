@@ -103,7 +103,7 @@ def status(s: str, detail: str = "") -> dict[str, str]:
 
 def _local_parse(pdf_path: Path) -> tuple[dict[str, Any], Any]:
     """重跑解析+分块。返回 (report, target_chunks)。"""
-    out: dict[str, str] = {}
+    out: dict[str, dict[str, str]] = {}
     try:
         result = parse_pdf(str(pdf_path))
     except Exception as e:  # noqa: BLE001

@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -71,7 +72,7 @@ async def serve_pdf(name: str) -> FileResponse:
 class AskBody(BaseModel):
     question: str
     pdf: str
-    history: list[dict] = []   # 之前轮次对话 [{role, content}, ...]，支持追问指代
+    history: list[dict[str, Any]] = []   # 之前轮次对话 [{role, content}, ...]，支持追问指代
 
 
 @app.post("/api/ask")

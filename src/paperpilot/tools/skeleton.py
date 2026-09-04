@@ -35,7 +35,8 @@ def _ev_ok(state: str) -> bool:
     return state in ("hit", "loose")
 
 
-def _group_candidates(groups_by_id: dict[str, dict], label_ok: set[str]) -> list[dict]:
+def _group_candidates(groups_by_id: dict[str, dict[str, Any]],
+                      label_ok: set[str]) -> list[dict[str, Any]]:
     out = []
     for gid, g in groups_by_id.items():
         if g["label"] in label_ok and _ev_ok(g.get("ev_state", "miss")):
@@ -43,10 +44,11 @@ def _group_candidates(groups_by_id: dict[str, dict], label_ok: set[str]) -> list
     return out
 
 
-def build_pools(groups_by_id: dict[str, dict], hub: dict) -> dict[str, list[dict]]:
+def build_pools(groups_by_id: dict[str, dict[str, Any]],
+                hub: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
     """按 Hub 类型构造四个关系的候选源池（白名单 + ev 过滤）。"""
     hub_label = hub["label"]
-    pools: dict[str, list[dict]] = {}
+    pools: dict[str, list[dict[str, Any]]] = {}
 
     # implements：仅 core_claim Hub 可挂，源只允许 method_core
     pools["implements"] = (_group_candidates(groups_by_id, {"method_core"})
@@ -72,10 +74,10 @@ def build_pools(groups_by_id: dict[str, dict], hub: dict) -> dict[str, list[dict
     return pools
 
 
-def _extract_edges(rows: Any, pools: dict[str, list[dict]],
-                   allowed: dict[str, set[str]]) -> list[dict]:
+def _extract_edges(rows: Any, pools: dict[str, list[dict[str, Any]]],
+                   allowed: dict[str, set[str]]) -> list[dict[str, Any]]:
     """解析 LLM 输出并校验：relation 合法、source 确实在该关系白名单池。"""
-    edges: list[dict] = []
+    edges: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
     if not isinstance(rows, list):
         return edges
@@ -92,21 +94,21 @@ def _extract_edges(rows: Any, pools: dict[str, list[dict]],
         seen.add((rel, src))
         edges.append({"relation": rel, "source": src, "why": why})
     # 数量硬上限（保留靠前的，LLM 已按重要度降序）
-    capped: dict[str, list[dict]] = {}
+    capped: dict[str, list[dict[str, Any]]] = {}
     for e in edges:
         capped.setdefault(e["relation"], []).append(e)
-    out = []
+    out: list[dict[str, Any]] = []
     for rel in RELATIONS:
         out.extend(capped.get(rel, [])[: REL_CAP[rel]])
     return out
 
 
-def build_skeleton(pdf_name: str, groups: list[dict],
-                   claim_map: dict[str, dict]) -> dict[str, Any]:
+def build_skeleton(pdf_name: str, groups: list[dict[str, Any]],
+                   claim_map: dict[str, dict[str, Any]]) -> dict[str, Any]:
     """为整篇论文建骨架。返回 {pdf, hubs:[...]}。"""
     groups_by_id = {g["group_id"]: g for g in groups}
 
-    def evidence_of(g: dict) -> str:
+    def evidence_of(g: dict[str, Any]) -> str:
         cid = g.get("rep_claim_id", "")
         c = claim_map.get(cid) or {}
         return str(c.get("evidence_quote", "") or "")
@@ -116,7 +118,7 @@ def build_skeleton(pdf_name: str, groups: list[dict],
     # 稳定性：Hub 也按重要性/总分排序
     hubs.sort(key=lambda g: g["score"].get("total", 0), reverse=True)
 
-    hub_out: list[dict] = []
+    hub_out: list[dict[str, Any]] = []
     for hub in hubs:
         pools = build_pools(groups_by_id, hub)
         allowed = {rel: {c["group_id"] for c in cand}
@@ -139,7 +141,7 @@ def build_skeleton(pdf_name: str, groups: list[dict],
             })
             continue
         # 建边：LLM 返回空边也算一次尝试（孤岛多为随机性，最多重试 3 次）
-        edges: list[dict] = []
+        edges: list[dict[str, Any]] = []
         for attempt in range(3):
             try:
                 rows = llm.chat_json(SKELETON_SYSTEM, user, temperature=0.0)

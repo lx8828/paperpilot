@@ -6,6 +6,8 @@
 """
 from __future__ import annotations
 
+from typing import Any
+
 QUALITY_SYSTEM = """你是学术论文 claim 的质量审查员。系统会给你一篇论文提取出的全部 claims（每条带 claim_id、类型 type、所属章节 section、文本 text）。请找出其中**真正读不通的噪声/碎片句**。
 
 核心判据只有一条：**把这句作为中文读一遍，一个普通读者能不能明白它说的具体事实？**
@@ -29,7 +31,7 @@ QUALITY_SYSTEM = """你是学术论文 claim 的质量审查员。系统会给�
 若没有噪声，输出 []。"""
 
 
-def build_user(claims: list[dict]) -> str:
+def build_user(claims: list[dict[str, Any]]) -> str:
     lines = []
     for c in claims:
         sec = (c.get("title_path") or ["?"])[0].split("·")[-1].strip()

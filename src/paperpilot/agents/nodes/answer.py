@@ -37,7 +37,7 @@ CITE_RE = re.compile(r"\[(\d{1,2})\]")
 # ── 条目格式化（claim 样式 / chunk 样式统一编号）─────────────────────────────
 
 
-def _fmt_claim_entry(i: int, e: dict) -> str:
+def _fmt_claim_entry(i: int, e: dict[str, Any]) -> str:
     sec = (e.get("sections") or e.get("title_path") or [""])
     sec = sec[0] if isinstance(sec, list) and sec else ""
     return (
@@ -47,7 +47,7 @@ def _fmt_claim_entry(i: int, e: dict) -> str:
     )
 
 
-def _fmt_chunk_entry(i: int, c: dict) -> str:
+def _fmt_chunk_entry(i: int, c: dict[str, Any]) -> str:
     return (f"[{i}] 正文段落（p{c.get('page','?')} {c.get('section','')}）："
             f"{c.get('text','')}")
 
@@ -55,7 +55,7 @@ def _fmt_chunk_entry(i: int, c: dict) -> str:
 # ── cites 解析 ────────────────────────────────────────────────────────────────
 
 
-def _cites_from(text: str, entries: list[dict], pdf: str) -> list[dict[str, Any]]:
+def _cites_from(text: str, entries: list[dict[str, Any]], pdf: str) -> list[dict[str, Any]]:
     stem = pdf.rsplit(".", 1)[0]
     cites: list[dict[str, Any]] = []
     seen: set[tuple[Any, ...]] = set()
@@ -93,7 +93,7 @@ def _cites_from(text: str, entries: list[dict], pdf: str) -> list[dict[str, Any]
 # ── 各档证据取料 ──────────────────────────────────────────────────────────────
 
 
-def _claim_entries(items: list[dict]) -> list[dict[str, Any]]:
+def _claim_entries(items: list[Any]) -> list[dict[str, Any]]:
     """retrieved claims / core_points 都转成 claim 样式条目。"""
     out = []
     for it in items:
@@ -103,7 +103,7 @@ def _claim_entries(items: list[dict]) -> list[dict[str, Any]]:
     return out
 
 
-def _chunk_entries(items: list[dict]) -> list[dict[str, Any]]:
+def _chunk_entries(items: list[Any]) -> list[dict[str, Any]]:
     out = []
     for it in items:
         out.append({**it, "kind": "chunk"})
@@ -125,16 +125,19 @@ def _fmt_history(state: QAState) -> str:
 def _build_context(state: QAState) -> tuple[str, list[dict[str, Any]], str]:
     """返回 (导语/概述区, 编号条目列表, 档位)。"""
     overview = state.get("overview") or ""
-    if state.get("l3_chunks"):
-        entries = _chunk_entries(state["l3_chunks"])
+    l3 = state.get("l3_chunks")
+    if l3:
+        entries = _chunk_entries(l3)
         header = f"标题：{state.get('title','')}\n\n=== 全文检索到的正文（独立检索） ==="
         return header, entries, "L3"
-    if state.get("chunks"):
-        entries = _chunk_entries(state["chunks"])
+    chunks = state.get("chunks")
+    if chunks:
+        entries = _chunk_entries(chunks)
         header = f"论文概述：{overview or '（无）'}\n\n=== 正文窗口 ==="
         return header, entries, "L2"
-    if state.get("retrieved"):
-        entries = _claim_entries(state["retrieved"])
+    retrieved = state.get("retrieved")
+    if retrieved:
+        entries = _claim_entries(retrieved)
         header = f"论文概述：{overview or '（无）'}\n\n=== 检索到的相关主张 ==="
         return header, entries, "L1"
     entries = _claim_entries(state.get("core_points") or [])
