@@ -19,6 +19,7 @@ from paperpilot.models.schema import Chunk
 from paperpilot.tools import analyzer
 from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.pdf_parser import parse_pdf
+from paperpilot.qasper_source import load_papers, build_chunks
 
 # document_cache.py → agents/ → paperpilot/ → src/ → 根
 ROOT = Path(__file__).resolve().parents[3]
@@ -27,9 +28,28 @@ PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
 MAX_CHUNK_LEN = 4000   # 与 pipeline / run_qa_eval 的二级切分阈值一致
 
 
+def is_qasper(pdf: str) -> bool:
+    """QASPER 虚拟论文名：qasper_<paper_id>（不落 PDF，从数据集构造）。"""
+    return pdf.startswith("qasper_") and pdf.endswith(".qpdf")
+
+
+@lru_cache(maxsize=64)
+def qasper_chunks(pid: str) -> list[Chunk]:
+    """返回 QASPER 某篇论文的 Chunk[]（与 claims 提取共用，chunk_id 恒定）。"""
+    papers = load_papers()
+    paper = papers.get(pid)
+    if not paper:
+        raise FileNotFoundError(f"QASPER 缺论文: {pid}")
+    return build_chunks(paper)
+
+
 @lru_cache(maxsize=16)
 def ordered_chunks(pdf: str) -> list[Chunk]:
     """返回该 pdf 的 extractable chunks（按正文顺序，已去 PREAMBLE/References/空）。"""
+    if is_qasper(pdf):
+        # QASPER：full_text → chunks，无 PDF 版面概念（page=0）
+        raw = qasper_chunks(pdf.removeprefix("qasper_").removesuffix(".qpdf"))
+        return [c for c in raw if c.title_path != ["(PREAMBLE)"]]
     result = parse_pdf(str(PAPERS_DIR / pdf))
     chunks = chunk_document(result["blocks"], max_len=MAX_CHUNK_LEN)
     return analyzer.extractable(chunks)

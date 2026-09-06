@@ -50,9 +50,11 @@ _orig_chat = llm._chat
 
 
 def _count_chat(system: str, user: str, *, temperature: float,
-                max_tokens: int | None) -> str:
+                max_tokens: int | None,
+                prefix: str = "PAPERPILOT_LLM") -> str:
     _LLM_CALLS["n"] += 1
-    return _orig_chat(system, user, temperature=temperature, max_tokens=max_tokens)
+    return _orig_chat(system, user, temperature=temperature,
+                      max_tokens=max_tokens, prefix=prefix)
 
 
 # ── 题目加载 ──────────────────────────────────────────────────────────────────

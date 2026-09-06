@@ -16,30 +16,36 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 import urllib.error
 import urllib.request
 from typing import Any
 
-ENV_BASE = "PAPERPILOT_LLM_BASE_URL"
-ENV_KEY = "PAPERPILOT_LLM_API_KEY"
-ENV_MODEL = "PAPERPILOT_LLM_MODEL"
-ENV_TIMEOUT = "PAPERPILOT_LLM_TIMEOUT"
+# 主链路（问答/生成）配置前缀
+_ENV_PREFIX = "PAPERPILOT_LLM"
+# 独立裁判配置前缀（QA 评测打分用；与主链路异源，防同模型自证偏好）
+_JUDGE_PREFIX = "PAPERPILOT_JUDGE"
 
 
 class LLMError(RuntimeError):
     pass
 
 
-def config() -> tuple[str, str, str]:
-    base = os.environ.get(ENV_BASE, "").strip().rstrip("/")
-    key = os.environ.get(ENV_KEY, "").strip()
-    model = os.environ.get(ENV_MODEL, "").strip()
+def config(prefix: str = _ENV_PREFIX) -> tuple[str, str, str]:
+    base = os.environ.get(f"{prefix}_BASE_URL", "").strip().rstrip("/")
+    key = os.environ.get(f"{prefix}_API_KEY", "").strip()
+    model = os.environ.get(f"{prefix}_MODEL", "").strip()
     return base, key, model
 
 
-def is_configured() -> bool:
-    base, key, model = config()
+def is_configured(prefix: str = _ENV_PREFIX) -> bool:
+    base, key, model = config(prefix)
     return bool(base and key and model)
+
+
+def judge_configured() -> bool:
+    """裁判模型是否已配置（独立于主链路）。"""
+    return is_configured(_JUDGE_PREFIX)
 
 
 def _load_dotenv(root: str | None = None) -> None:
@@ -89,13 +95,14 @@ def _parse_json(content: str):
 
 
 def _chat(system: str, user: str, *, temperature: float,
-          max_tokens: int | None) -> str:
-    """单轮对话，返回模型原始文本内容。"""
-    base, key, model = config()
+          max_tokens: int | None, prefix: str = _ENV_PREFIX) -> str:
+    """单轮对话，返回模型原始文本内容。prefix 切换主链路 / 裁判模型。"""
+    base, key, model = config(prefix)
+    timeout_env = f"{prefix}_TIMEOUT"
     if not base or not key or not model:
         raise LLMError(
-            f"LLM 未配置：请设置 {ENV_BASE} / {ENV_KEY} / {ENV_MODEL}"
-            "（或在工作目录放置 .env 文件）"
+            f"LLM 未配置：请设置 {prefix}_BASE_URL / {prefix}_API_KEY / "
+            f"{prefix}_MODEL（或在工作目录放置 .env 文件）"
         )
 
     body: dict[str, Any] = {
@@ -109,25 +116,36 @@ def _chat(system: str, user: str, *, temperature: float,
     }
     if max_tokens:
         body["max_tokens"] = max_tokens
-    try:
-        body_bin = json.dumps(body).encode("utf-8")
-        req = urllib.request.Request(
-            _chat_url(base),
-            data=body_bin,
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {key}",
-            },
-            method="POST",
-        )
-        timeout = float(os.environ.get(ENV_TIMEOUT, "120"))
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode("utf-8", "ignore")[:300]
-        raise LLMError(f"HTTP {e.code}: {detail}") from e
-    except Exception as e:  # URLError / Timeout / JSON 解析失败等
-        raise LLMError(f"请求失败: {e}") from e
+    body_bin = json.dumps(body).encode("utf-8")
+    req = urllib.request.Request(
+        _chat_url(base),
+        data=body_bin,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {key}",
+        },
+        method="POST",
+    )
+    timeout = float(os.environ.get(timeout_env, "120"))
+    # 显式不走代理：Windows 上 urllib 默认读系统代理（VPN 全局会劫持 LLM 直连 TLS）
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    last_err: Exception | None = None
+    for attempt in range(3):  # 网络抖动自动重试（最多 3 次），4xx 不重试
+        try:
+            with opener.open(req, timeout=timeout) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as e:
+            if 400 <= e.code < 500:
+                detail = e.read().decode("utf-8", "ignore")[:300]
+                raise LLMError(f"HTTP {e.code}: {detail}") from e
+            last_err = e  # 5xx / 网关错误 → 重试
+        except Exception as e:  # URLError / Timeout / SSL / JSON 解析失败
+            last_err = e
+        if attempt < 2:
+            time.sleep(2 * (attempt + 1))
+    else:
+        raise LLMError(f"请求失败（重试 3 次仍失败）: {last_err}") from last_err
 
     try:
         return str(data["choices"][0]["message"]["content"])
@@ -136,13 +154,70 @@ def _chat(system: str, user: str, *, temperature: float,
 
 
 def chat_json(system: str, user: str, *, temperature: float = 0.2,
-              max_tokens: int | None = None) -> object:
+              max_tokens: int | None = None,
+              prefix: str = _ENV_PREFIX) -> object:
     """单轮对话，返回解析后的 JSON（list/dict）。"""
-    content = _chat(system, user, temperature=temperature, max_tokens=max_tokens)
+    content = _chat(system, user, temperature=temperature, max_tokens=max_tokens,
+                    prefix=prefix)
     return _parse_json(content)
 
 
 def chat_text(system: str, user: str, *, temperature: float = 0.2,
-              max_tokens: int | None = None) -> str:
+              max_tokens: int | None = None,
+              prefix: str = _ENV_PREFIX) -> str:
     """单轮对话，返回原始文本（问答等非 JSON 场景）。"""
-    return _chat(system, user, temperature=temperature, max_tokens=max_tokens)
+    return _chat(system, user, temperature=temperature, max_tokens=max_tokens,
+                 prefix=prefix)
+
+
+# ── 裁判（独立模型打分）─────────────────────────────────────────────
+
+
+def judge_text(system: str, user: str, *, temperature: float = 0.0,
+               max_tokens: int | None = None) -> str:
+    """用独立裁判模型对话（原始文本）。"""
+    return chat_text(system, user, temperature=temperature,
+                     max_tokens=max_tokens, prefix=_JUDGE_PREFIX)
+
+
+def judge_json(system: str, user: str, *, temperature: float = 0.0,
+               max_tokens: int | None = None) -> object:
+    """用独立裁判模型对话并解析 JSON。
+
+    裁判模型（GLM 等）偶发返回 reason 内含未转义英文引号/裸换行导致
+    json.loads 失败。这里对裁判输出走宽松解析：先按标准 JSON 解析，
+    失败则用正则提取 score 与 reason（裁判 schema 固定为这两个字段）。
+    """
+    content = _chat(system, user, temperature=temperature,
+                    max_tokens=max_tokens, prefix=_JUDGE_PREFIX)
+    return _parse_judge_content(content)
+
+
+def _parse_judge_content(content: str) -> object:
+    """裁判输出的宽松解析：先严格，失败则提取 score / reason。"""
+    if not content or not content.strip():
+        raise LLMError("裁判返回空内容")
+    try:
+        return _parse_json(content)
+    except LLMError:
+        pass
+    m_score = re.search(r'"score"\s*:\s*(\d+)', content)
+    if not m_score:
+        raise LLMError(f"无法解析裁判返回的 JSON。内容前 200 字: {content[:200]!r}")
+    score = int(m_score.group(1))
+    reason = ""
+    m_r = re.search(r'"reason"\s*:\s*', content)
+    if m_r:
+        tail = content[m_r.end():].lstrip()
+        # reason 值：去掉首尾引号与结尾 "}（容忍内部未转义引号：只剥最外层）
+        if tail.startswith('"'):
+            tail = tail[1:]
+        # 剥到最后一个引号（reason 是最后一个字段，尾部形如 "} 或 "})
+        end = tail.rfind('"')
+        if end != -1:
+            tail = tail[:end]
+        tail = tail.rstrip()
+        # 若尾部残留反引号/code fence 结尾
+        tail = tail.rstrip("`").rstrip()
+        reason = tail
+    return {"score": score, "reason": reason}

@@ -20,6 +20,10 @@ from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
+import math
+import re
+from collections import Counter
+
 import numpy as np
 
 MODEL_NAME = "BAAI/bge-m3"
@@ -27,6 +31,72 @@ QUERY_PREFIX = "为这个句子生成表示以用于检索相关文章："
 
 # 模型已在本地 huggingface 缓存（避免每次加载联网访问 hub）
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
+
+# ── 轻量 BM25（无第三方依赖）：与向量检索做 RRF 融合 ─────────────────────
+# 英文按词切、中文按字切；QASPER/长文场景的精确专名（AMI IHM、Meta-LSTM 等）
+# 向量召回弱，BM25 的精确匹配可互补。
+_WORD_RE = re.compile(r"[A-Za-z0-9]+|[\u4e00-\u9fff]")
+
+
+def _tokenize(text: str) -> list[str]:
+    out: list[str] = []
+    for t in _WORD_RE.findall(text.lower()):
+        out.append(t)
+    return out
+
+
+class BM25Index:
+    """Okapi BM25，doc 级词频统计，支持英/中混合。构造 O(N*len)。"""
+
+    def __init__(self, docs: list[str], k1: float = 1.5, b: float = 0.75):
+        self.docs = docs
+        self.k1 = k1
+        self.b = b
+        n = len(docs)
+        self.tfs: list[Counter[str]] = []
+        self.lens: list[int] = []
+        df: Counter[str] = Counter()
+        for d in docs:
+            toks = _tokenize(d)
+            c = Counter(toks)
+            self.tfs.append(c)
+            self.lens.append(len(toks))
+            df.update(c.keys())
+        self.n = n
+        self.avgdl = (sum(self.lens) / n) if n else 0.0
+        # idf（bm25+ 平滑，避免 df>n）
+        self.idf = {t: math.log(1 + (n - df[t] + 0.5) / (df[t] + 0.5)) for t in df}
+
+    def score(self, query: str) -> np.ndarray:
+        """返回每 doc 的 bm25 分数（未归一）。"""
+        q = Counter(_tokenize(query))
+        out = np.zeros(self.n, dtype="float64")
+        for term, qf in q.items():
+            idf = self.idf.get(term)
+            if idf is None or qf == 0:
+                continue
+            for i in range(self.n):
+                f = self.tfs[i].get(term, 0)
+                if f == 0:
+                    continue
+                denom = f + self.k1 * (1 - self.b + self.b * self.lens[i] / self.avgdl) if self.avgdl else 1.0
+                out[i] += idf * qf * f / denom
+        return out
+
+
+def rrf_merge(vec_scores: np.ndarray, bm_scores: np.ndarray | None,
+              top_k: int, k: int = 60) -> list[int]:
+    """RRF 融合：score = Σ 1/(k + rank)。vec 必给；bm 可选（None 时只按 vec 排）。"""
+    n = len(vec_scores)
+    rrf = np.zeros(n, dtype="float64")
+    order_v = np.argsort(-vec_scores)
+    for r, i in enumerate(order_v):
+        rrf[i] += 1.0 / (k + r + 1)
+    if bm_scores is not None:
+        order_b = np.argsort(-bm_scores)
+        for r, i in enumerate(order_b):
+            rrf[i] += 1.0 / (k + r + 1)
+    return list(np.argsort(-rrf)[:top_k].tolist())
 
 # agents/embedder.py → 项目根
 ROOT = Path(__file__).resolve().parents[3]
@@ -189,5 +259,69 @@ class ChunkIndex:
                 "page": c.page_span[0],
                 "text": c.text,
                 "score": round(float(scores[int(i)]), 4),
+            })
+        return hits
+
+    def search_hybrid(self, query: str, top_k: int = 8) -> list[dict[str, Any]]:
+        """向量 + BM25 RRF 融合检索（专名/术语精确匹配互补）。
+
+        命中结果结构与 search 一致；score 存向量 cosine（便于沿用现有阈值/排序逻辑），
+        bm_rank 字段额外记录 bm25 贡献名次，供分析。
+        """
+        chunks = self._doc_chunks()
+        vecs = self.vectors()
+        n = len(chunks)
+        if n == 0:
+            return []
+        q = encode_query(query)
+        vec_scores = (q @ vecs.T).astype("float64")
+        bm = BM25Index([c.text for c in chunks])
+        bm_scores = bm.score(query)
+        order = rrf_merge(vec_scores, bm_scores, min(top_k, n))
+        hits = []
+        for i in order:
+            c = chunks[int(i)]
+            hits.append({
+                "chunk_id": c.chunk_id,
+                "title_path": list(c.title_path),
+                "page": c.page_span[0],
+                "text": c.text,
+                "score": round(float(vec_scores[int(i)]), 4),
+                "bm_rank": int(np.sum(bm_scores > bm_scores[int(i)])) + 1,
+            })
+        return hits
+
+    def search_multi(self, queries: list[str], top_k: int = 8) -> list[dict[str, Any]]:
+        """多 query 分别向量检索后 RRF 融合（query 改写方案2）。
+
+        queries[0] 通常为原问题。每 query 向量打分一次，RRF 合并 top_k。
+        命中带 score(原 query cosine) 与 src_query（命中来自哪个 query 的 top 位次信息）。
+        """
+        chunks = self._doc_chunks()
+        vecs = self.vectors()
+        n = len(chunks)
+        if n == 0:
+            return []
+        all_vec = np.zeros(n, dtype="float64")
+        rrf = np.zeros(n, dtype="float64")
+        for q in queries:
+            if not q:
+                continue
+            qv = encode_query(q)
+            scores = (vecs @ qv).astype("float64")
+            order = np.argsort(-scores)
+            for r, i in enumerate(order):
+                rrf[int(i)] += 1.0 / (60 + r + 1)
+                all_vec[int(i)] += float(scores[int(i)])
+        order = np.argsort(-rrf)[: min(top_k, n)]
+        hits = []
+        for i in order:
+            c = chunks[int(i)]
+            hits.append({
+                "chunk_id": c.chunk_id,
+                "title_path": list(c.title_path),
+                "page": c.page_span[0],
+                "text": c.text,
+                "score": round(float(all_vec[int(i)]) / max(len(queries), 1), 4),
             })
         return hits

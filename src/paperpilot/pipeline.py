@@ -30,6 +30,7 @@ sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAcces
 
 from paperpilot.models.schema import (Claim, ClaimGroup, EdgeView, GroupBrief,
                                       HubView, PaperReport, SectionView)
+from paperpilot.qasper_source import build_chunks, load_papers
 from paperpilot.tools import analyzer, llm
 from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.evidence import (claim_to_dict, dict_to_claim,
@@ -80,20 +81,65 @@ def _paper_title(pdf_path: Path) -> str:
         return ""
 
 
+# ───────────────────────── QASPER 文本源（无 PDF 版式） ─────────────────────────
+
+QASPER_PREFIX = "qasper_"
+QASPER_SUFFIX = ".qpdf"
+
+
+def is_qasper(pdf_name: str) -> bool:
+    return pdf_name.startswith(QASPER_PREFIX) and pdf_name.endswith(QASPER_SUFFIX)
+
+
+def _qasper_pid(pdf_name: str) -> str:
+    """qasper_<pid>.qpdf → <pid>。"""
+    return pdf_name[len(QASPER_PREFIX):-len(QASPER_SUFFIX)]
+
+
+def _qasper_paper(pdf_name: str) -> dict[str, Any]:
+    pid = _qasper_pid(pdf_name)
+    paper = load_papers().get(pid)
+    if not paper:
+        raise FileNotFoundError(f"QASPER 缺论文: {pid}")
+    return paper
+
+
+def _qasper_chunks(pdf_name: str) -> list[Any]:
+    """QASPER 论文的 Chunk[]（与 document_cache / QA 共用，chunk_id 恒定）。"""
+    return build_chunks(_qasper_paper(pdf_name))
+
+
+def _qasper_title(pdf_name: str) -> str:
+    return str(_qasper_paper(pdf_name).get("title", "") or "").strip()
+
+
 # ───────────────────────── Stage：各环节（产物缓存优先） ─────────────────────────
+
+
+def _source_chunks(pdf_name: str, *, max_len: int = MAX_LEN) -> list[Any]:
+    """统一 chunk 源：QASPER 走 full_text 构造；否则 parse PDF → chunk_document。"""
+    if is_qasper(pdf_name):
+        return _qasper_chunks(pdf_name)
+    result = parse_pdf(str(PAPERS_DIR / pdf_name))
+    return chunk_document(result["blocks"], max_len=max_len)
+
+
+def _display_title(pdf_name: str) -> str:
+    """标题源统一：QASPER 用数据集 title，PDF 从元数据读。"""
+    if is_qasper(pdf_name):
+        return _qasper_title(pdf_name)
+    return _paper_title(PAPERS_DIR / pdf_name)
 
 
 def stage_claims(pdf_name: str, *, force: bool, workers: int,
                  verbose: bool = False) -> dict[str, Any]:
     """claims 提取。返回 claims.json 的 payload。"""
-    pdf_path = PAPERS_DIR / pdf_name
     out = CLAIMS_DIR / f"{_stem(pdf_name)}.claims.json"
     if out.exists() and not force:
         if verbose:
             print(f"  [claims] 缓存复用 {out.name}")
         return _load(out) or {}
-    result = parse_pdf(str(pdf_path))
-    chunks = chunk_document(result["blocks"], max_len=MAX_LEN)
+    chunks = _source_chunks(pdf_name)
     target = analyzer.extractable(chunks)
     claims, errors = analyzer.extract_claims(target, workers=workers)
     chunk_map = {c.chunk_id: c.text for c in target}
@@ -146,7 +192,7 @@ def stage_view(pdf_name: str, *, force: bool, verbose: bool = False) -> list[dic
 
     _dump(sum_file, {"pdf": pdf_name, "n_claims": len(claims),
                      "groups": groups_dict})
-    title = _paper_title(PAPERS_DIR / pdf_name) or stem
+    title = _display_title(pdf_name) or stem
     md = render_markdown(groups, {"pdf": pdf_name, "n_claims": len(claims),
                                   "title": title})
     md_file.write_text(md, encoding="utf-8")
@@ -192,6 +238,10 @@ def stage_figures(pdf_name: str, *, force: bool,
             print(f"  [figures] 缓存复用 {fig_file.name}")
         return (json.loads(fig_file.read_text(encoding="utf-8")).get("figures") or [])
 
+    if is_qasper(pdf_name):
+        # QASPER 文本源无版面图：写空 figures（QA/报告不依赖图表）
+        _dump(fig_file, {"pdf": pdf_name, "figures": []})
+        return []
     result = parse_pdf(str(PAPERS_DIR / pdf_name))
     figs = extract_figures(result["blocks"])
     if figs:
@@ -219,7 +269,7 @@ def stage_report_text(pdf_name: str, *, force: bool,
     gd_file = VIEW_DIR / f"{stem}.guide.json"
     md_file = VIEW_DIR / f"{stem}.report.md"
 
-    title = _paper_title(PAPERS_DIR / pdf_name) or stem
+    title = _display_title(pdf_name) or stem
     overview = _load(ov_file) if not force else None
     guide = _load(gd_file) if not force else None
     if overview is None or guide is None:
@@ -363,7 +413,7 @@ def _assemble(pdf_name: str, *, verbose: bool = False) -> PaperReport:
 
     report = PaperReport(
         pdf=pdf_name,
-        title=_paper_title(PAPERS_DIR / pdf_name) or stem,
+        title=_display_title(pdf_name) or stem,
         generated_at=datetime.now().isoformat(timespec="seconds"),
         stats=stats,
         guide=str((gd or {}).get("guide", "") or ""),
@@ -388,8 +438,7 @@ def os_model() -> str:
 
 
 def _chunk_text_map(pdf_name: str) -> dict[str, str]:
-    result = parse_pdf(str(PAPERS_DIR / pdf_name))
-    target = analyzer.extractable(chunk_document(result["blocks"], max_len=MAX_LEN))
+    target = analyzer.extractable(_source_chunks(pdf_name))
     return {c.chunk_id: c.text for c in target}
 
 
@@ -409,18 +458,24 @@ def required_files(pdf_name: str) -> list[Path]:
 def process_pdf(pdf_name: str, *, force: bool = False,
                 skip_llm: bool = False, workers: int = 4,
                 verbose: bool = True) -> PaperReport:
-    """一个 PDF → 报告产物 → PaperReport（并落盘 report.json）。
+    """一个论文源 → 报告产物 → PaperReport（并落盘 report.json）。
+
+    支持两种源：
+      - PDF 文件（storage/papers/<pdf_name>）
+      - QASPER 文本源（qasper_<paper_id>.qpdf，从 qasper_data 数据集构造 chunks，
+        无 PDF 版面/页码——claims 提取、view、报告、QA 全链路一致）
 
     Args:
-        pdf_name: storage/papers 下的 PDF 文件名
+        pdf_name: PDF 文件名 或 QASPER 虚拟名
         force: True 时全链路重跑（调 LLM）；False 时有缓存则复用
         skip_llm: True 时只装配已有产物，缺失任一环节直接报错（不调 LLM）
         workers: claims 提取并发数
         verbose: 打印各环节进度
     """
-    pdf_path = PAPERS_DIR / pdf_name
-    if not pdf_path.exists():
-        raise FileNotFoundError(f"找不到 PDF：{pdf_path}")
+    if not is_qasper(pdf_name):
+        pdf_path = PAPERS_DIR / pdf_name
+        if not pdf_path.exists():
+            raise FileNotFoundError(f"找不到 PDF：{pdf_path}")
 
     stem = _stem(pdf_name)
     VIEW_DIR.mkdir(parents=True, exist_ok=True)

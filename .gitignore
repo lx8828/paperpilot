@@ -30,6 +30,28 @@ qa/rag_eval_out.json
 qa/snapshots/
 bench/snapshots/
 
+# ── QASPER 基准（数据与批量运行产物不入库）─────────────
+qasper_data/
+qasper_gh.json
+qasper_row.json
+qasper_tree.json
+qasper_head.bin
+allenai_repos.json
+qasper_script.py
+qasper_try.md
+qasper_readme.md
+qasper_hf_readme.md
+qa/qasper_run_*.json
+qa/qasper_judgeA_*.json
+qa/qasper_judgeL3_*.json
+qa/qasper_deep_*.json
+qa/qasper_yn*.json
+qa/_*.py
+qa/_*.txt
+qa/_*.json
+qa/_*.ps1
+qa/_*.err
+
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db
 .DS_Store
