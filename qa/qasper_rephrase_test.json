@@ -1,0 +1,132 @@
+[
+  {
+    "qid": "13b36644357870008d70e5601f394ec3c6c07048",
+    "question": "Is the dataset multilingual?",
+    "gold": "no",
+    "_q2": "论文里使用的数据集是什么语言？请给出语料语言构成的事实（英文/多语/混合等）。",
+    "_ans": "抱歉，我无法从该论文中找到关于数据集语言构成的具体信息；检索到的内容未提及语料是英文、多语还是混合，缺少这类事实性描述。建议您查阅论文的数据集章节或附录，或直接联系作者获取原始语料说明。",
+    "_dbg": {
+      "level": "unknown",
+      "route": "L0→L1→L2→L3→answer_unknown"
+    },
+    "answer": "抱歉，我无法从该论文中找到关于数据集是否多语言的明确信息。检索内容未涉及数据集的语言构成或语种覆盖情况，因此无法判断其是否多语言。",
+    "status": "unknown_ok"
+  },
+  {
+    "qid": "5a06f11aa75a8affde3d595c40fb03e06769e368",
+    "question": "Do they trim the search space of possible output sequences?",
+    "gold": "no",
+    "_q2": "论文对可能输出序列的搜索空间做了哪些处理（有无剪枝/限制）？请描述论文的实际做法，或说明论文没有涉及搜索空间修剪。",
+    "_ans": "抱歉，我无法从该论文中找到关于可能输出序列搜索空间剪枝或限制的具体做法，因为检索内容仅涉及实验设置、损失函数和延迟控制，缺少对搜索空间处理方法的描述。",
+    "_dbg": {
+      "level": "unknown",
+      "route": "L0→L1→L2→L3→answer_unknown"
+    },
+    "answer": "抱歉，我无法从该论文中找到直接支撑这一问题的内容。检索到的段落均未提及对可能输出序列的搜索空间进行剪枝，缺少与“输出序列搜索空间修剪”相关的具体描述或实验信息。",
+    "status": "unknown_ok"
+  },
+  {
+    "qid": "41174d8b176cb8549c2d83429d94ba8218335c84",
+    "question": "Does the Agent ask for a value of a variable using natural language generated text?",
+    "gold": "yes",
+    "_q2": "Agent 在交互中询问变量值时使用什么形式（自然语言文本还是内部状态表示）？实验实际用哪一种？",
+    "_ans": "你问的“Agent 询问变量值时使用的形式”对应论文中 e-QRAQ 模拟器提供的两种解释类型：自然语言解释（记为 U）和内部状态解释（记为 U INLINEFORM0）[1][2]。实验实际训练时只用内部状态解释（U INLINEFORM0），即“当前状态可推断内容”的表示，并未直接使用自然语言解释 U [3]。",
+    "_dbg": {
+      "level": "L3",
+      "route": "L0→L1→L2→L3→answer_L3"
+    },
+    "answer": "你问的 Agent 是否用自然语言生成的文本询问变量值，对应论文中的交互流程。证据显示，Agent 在交互中会查询变量值（如询问 $V0 的值），但论文未明确说明这些查询是否以自然语言生成文本的形式发出；相反，模拟器提供的解释分为自然语言（U）和内部状态（U INLINEFORM0）两类，而实验中仅使用内部状态解释进行训练 [3][6]。因此，基于现有证据，无法确认 Agent 的查询本身是自然语言生成的文本。",
+    "status": "fail"
+  },
+  {
+    "qid": "a45edc04277a458911086752af4f17405501230f",
+    "question": "Are datasets publicly available?",
+    "gold": "yes",
+    "_q2": "论文的数据集和代码是怎么发布的？请说明公开性相关的具体表述（公开/不公开/平台）。",
+    "_ans": "你问的“数据集和代码的发布方式”对应论文中关于可复现性（Reproducibility）的讨论。论文指出，尽管数据集和源代码常被分享在 GitHub 或 Zenodo 等平台上，但使用其他团队的数据或代码仍具挑战性 [1]。为促进公开与复用，论文建议采用 FAIR（可查找、可访问、可互操作、可重用）原则来管理科学数据，并推荐使用 Docker 这类无需编程知识、可跨平台运行的解决方案来加速复现过程 [1]。此外，论文还提到一个为基因组学预测模型提供统一框架的新倡议，认为其可被药物化学界快速采纳 [1]。综上，论文并未明确说明其自身数据集和代码是否公开，而是侧重讨论如何通过 FAIR 原则和 Docker 等工具提升公开数据的可用性与可复现性 [1]。",
+    "_dbg": {
+      "level": "L3",
+      "route": "L0→L1→L2→L3→answer_L3"
+    },
+    "answer": "是的，论文指出数据集和源代码通常通过 GitHub 或 Zenodo 等平台公开共享 [1]。然而，论文也强调，尽管有这些共享平台，使用其他研究组的数据或代码仍具挑战性 [1]。此外，论文提到 FAIR 原则可指导科学数据管理，但并未具体说明本文所用数据集是否全部公开 [1]。",
+    "status": "fail"
+  },
+  {
+    "qid": "d427e3d41c4c9391192e249493be23926fc5d2e9",
+    "question": "Can this adversarial approach be used to directly improve model accuracy?",
+    "gold": "yes",
+    "_q2": "这个对抗式方法除检测错误外，对模型准确率有什么作用？论文是怎么描述的？",
+    "_ans": "你问的“这个对抗式方法”对应论文中的 **CRIAGE**（Completion Robustness and Interpretability via Adversarial Graph Edits）。论文明确描述该方法**能有效降低链接预测模型的排名指标**：在 WN18 和 YAGO3-10 两个大型知识图谱上，其加性攻击可使 Hits@1 分别下降最高 **27.3%** 和 **50.7%** [7]；在全部测试三元组上，CRIAGE 优于随机攻击和反向攻击等基线，证明其能有效攻击知识图谱表示 [4]。此外，在“不确定测试”子集（每个测试集 100 条三元组）上攻击效果更为显著，造成指标大幅下降 [4]。论文还指出，不同模型鲁棒性有差异：DistMult 对随机攻击更鲁棒，而 ConvE 对设计攻击更鲁棒 [4]。",
+    "_dbg": {
+      "level": "L3",
+      "route": "L0→L1→L2→L3→answer_L3"
+    },
+    "answer": "抱歉，我无法从该论文中找到直接回答这一问题的内容。检索到的段落仅涉及对抗攻击对模型鲁棒性的影响及错误检测，未包含该方法能否直接提升模型准确率的实验或论述，因此缺少相关证据来支撑结论。",
+    "status": "unknown_ok"
+  },
+  {
+    "qid": "d4e78d3205e98cafdf93ddaa95627ea00b7c4d55",
+    "question": "Do they perform some annotation?",
+    "gold": "no",
+    "_q2": "论文的标注（annotation）工作是怎么做的：是自己标注还是复用现有数据集？",
+    "_ans": "你问的标注工作对应论文中使用的数据集标注方式。论文明确说明使用的是现有数据集，而非自行标注：HEOT 数据集和另一数据集中的推文均被标注为 offensive、abusive 和 none（或 benign）三个类别 [2][4]。论文并未提及自行开展标注工作，而是直接复用了这些已标注的数据集进行模型训练 [2][4]。因此，标注是复用现有数据集完成的。",
+    "_dbg": {
+      "level": "L3",
+      "route": "L0→L1→L2→L3→answer_L3"
+    },
+    "answer": "是的，论文中进行了标注工作。HEOT 数据集中的推文被标注为三个类别：offensive、abusive 和 none（或 benign）[1]。",
+    "status": "fail"
+  },
+  {
+    "qid": "4d4b9ff2da51b9e0255e5fab0b41dfe49a0d9012",
+    "question": "Is some other metrics other then perplexity measured?",
+    "gold": "no",
+    "_q2": "论文在困惑度之外还做了哪些评测？请列举评测指标与方式。",
+    "_ans": "你问的“困惑度之外的评测”对应论文中的**人工评估（human evaluation）**，而非其他自动指标。论文明确表示主要采用人工评估，并辅以困惑度 [2]。人工评估的具体方式为：招募四名英语母语学生作为评分员，对模型生成的回复按三个标准打分 [3]：(1) 语法正确性（grammatical correctness）、(2) 上下文连贯性（contextual coherence）、(3) 情感适切性（emotional appropriateness）[3]。每个标准采用 0、1、2 三级评分，其中 0 表示差、2 表示好、1 表示中性 [3]。此外，论文提及 BLEU 等机器翻译自动指标与人类判断相关性差，因此未作为主要评测手段 [2]。",
+    "_dbg": {
+      "level": "L2",
+      "route": "L0→L1→L2→answer_L2"
+    },
+    "answer": "是的，除困惑度外还评测了其他指标。论文在人工评估中衡量了回复的情感适切性、语言流畅性以及上下文连贯性 [4][5]。具体而言，人工评估显示模型回复在情感上比基线更合适且语言流畅性略有提升 [4]，同时 MEED 在上下文连贯性和情感适切性上的平均分高于 S2S 和 HRAN 基线 [5]。",
+    "status": "fail"
+  },
+  {
+    "qid": "dccc3b182861fd19ccce5bd00ce9c3f40451ed6e",
+    "question": "Does the model proposed beat the baseline models for all the values of the masking parameter tested?",
+    "gold": "no",
+    "_q2": "论文模型相对各基线在整体和分项上的表现如何？有没有数据集/任务上是打平或不如基线的？",
+    "_ans": "你问的“论文模型”对应论文中的 SMERTI（含 SMERTI-Transformer 与 SMERTI-RNN 变体）。整体上，SMERTI 变体在所有基线上全面胜出，尤其在 RE Match 上表现突出，其中 SMERTI-Transformer 最佳、SMERTI-RNN 次之 [3]。分项上，WordNet 模型（NWN-STEM、GWN-STEM）在情感保持上得分高但 RE Match 明显偏低，而 W2V-STEM 的 RE Match 较高但流畅性最低 [3]。关于打平或不如基线的情况，证据仅指出“对于名词，GWN-STEM 与 NWN-STEM 的输出是等价的”[1]，但未提及 SMERTI 在任何数据集或任务上打平或逊于基线；若需确认是否存在此类反例，现有材料中缺乏相应数据。",
+    "_dbg": {
+      "level": "L3",
+      "route": "L0→L1→L2→L3→answer_L3"
+    },
+    "answer": "你问的“模型”对应论文中提出的 SMERTI 流水线（含 SMERTI-Transformer 与 SMERTI-RNN 两种变体），“基线模型”对应 NWN-STEM、GWN-STEM 和 W2V-STEM。基于证据，答案是**是**：SMERTI 变体在整体上优于所有基线模型 [2][8]，且 SMERTI-Transformer 表现最佳、SMERTI-RNN 次之 [2]。不过，证据仅笼统说明 SMERTI 在“整体”和“多数指标”上胜出，并未逐条列出每个 MRT/RRT 取值下的对比结果，因此无法确认在**所有**测试的掩码参数值下 SMERTI 都严格优于每个基线 [2][8]。",
+    "status": "fail"
+  },
+  {
+    "qid": "74fe054f5243c8593ddd2c0628f91657246b7dfa",
+    "question": "Do they compare simultaneous translation performance to regular machine translation?",
+    "gold": "no",
+    "_q2": "论文是否把同传翻译和常规（非增量/整句）翻译做了对比？对比结果如何？",
+    "_ans": "是的，论文做了对比。你问的“常规翻译”对应论文中的“整句基线（full sentence baseline）”。在小型语料实验（small_parallel_enja）中，论文指出整句分数是增量方法的上界，而所提方法相比整句基线将平均延迟降低了超过 50%，但以 BLEU 和 RIBES 的一定损失为代价 [1]。",
+    "_dbg": {
+      "level": "L2",
+      "route": "L0→L1→L2→answer_L2"
+    },
+    "answer": "你问的“是否将同传翻译性能与常规机器翻译对比”对应论文中的“full sentence baseline”（即常规整句翻译模型）。**是**，论文进行了对比。在 small_parallel_enja 实验中，作者将提出的方法与 full sentence baseline 比较，并指出“The full sentence scores are upper bounds of incremental methods”[7]。同时，结果显示提出的方法相比该常规整句基线将平均延迟降低了超过 50%，但以 BLEU 和 RIBES 分数的部分损失为代价[7]。",
+    "status": "fail"
+  },
+  {
+    "qid": "790ed4458a23aa23e2b5399259e50083c86d9e14",
+    "question": "Do all the instances contain code-switching?",
+    "gold": "no",
+    "_q2": "训练/评测语料的每个实例都包含语码转换吗？语料构成与筛选标准是什么？",
+    "_ans": "抱歉，论文中未提供训练/评测语料每个实例是否均含语码转换的信息，也未说明语料的构成与筛选标准；现有内容仅涉及数据来源和预处理步骤，因此无法回答该问题。",
+    "_dbg": {
+      "level": "unknown",
+      "route": "L0→L1→L2→L3→answer_unknown"
+    },
+    "answer": "你问的“所有实例是否都包含语码转换”对应论文中用于训练和评测的 Hinglish 数据集。根据证据，论文明确指出 Hinglish 文本是“Hindi 和 English 词汇的混合，但用罗马字母书写”[1]，且模型处理的是这类语码转换文本[1][2]。然而，证据中并未说明数据集中每个实例（每条推文）是否都必然包含语码转换，也未给出不含语码转换的实例比例或筛选标准。因此，基于现有信息无法确认“所有实例”都包含语码转换，只能确定数据集整体面向 Hinglish 语码转换语言[1][3]。",
+    "status": "fail"
+  }
+]

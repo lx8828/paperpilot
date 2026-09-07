@@ -42,6 +42,7 @@ sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAcces
 from paperpilot.tools import analyzer
 from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.evidence import dict_to_claim, verify_evidence
+from paperpilot.tools.figures import extract_figures
 from paperpilot.tools.pdf_parser import parse_pdf
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
@@ -101,25 +102,26 @@ def status(s: str, detail: str = "") -> dict[str, str]:
 # ───────────────────────── 本地重算模块 ─────────────────────────
 
 
-def _local_parse(pdf_path: Path) -> tuple[dict[str, Any], Any]:
-    """重跑解析+分块。返回 (report, target_chunks)。"""
+def _local_parse(pdf_path: Path
+                 ) -> tuple[dict[str, dict[str, str]], Any, list[dict[str, Any]] | None]:
+    """重跑解析+分块。返回 (report, target_chunks, blocks)；解析失败 blocks=None。"""
     out: dict[str, dict[str, str]] = {}
     try:
         result = parse_pdf(str(pdf_path))
     except Exception as e:  # noqa: BLE001
         out["PARS"] = status("fail", f"解析异常: {type(e).__name__}: {e}")
-        return out, None
+        return out, None, None
     blocks = result["blocks"]
     if not blocks:
         out["PARS"] = status("fail", "blocks=0（无文本层？扫描件？）")
-        return out, None
+        return out, None, None
     out["PARS"] = status("pass", f"{result['page_count']} 页 / {len(blocks)} blocks")
 
     chunks = chunk_document(blocks, max_len=4000)
     target = analyzer.extractable(chunks)
     if not target:
         out["HDR"] = status("fail", "无正文 chunk（标题识别/过滤异常）")
-        return out, None
+        return out, None, blocks
     bare = [c.chunk_id for c in target if not c.title_path]
     if bare:
         # 缺 title_path 只影响标题组织，不影响 evidence 验证，继续
@@ -144,7 +146,7 @@ def _local_parse(pdf_path: Path) -> tuple[dict[str, Any], Any]:
                 out["HDR"] = status("pass", " / ".join(parts))
         else:
             out["HDR"] = status("pass", " / ".join(parts))
-    return out, target
+    return out, target, blocks
 
 
 def _local_evidence(claims_json: dict[str, Any], target: Any) -> dict[str, Any]:
@@ -290,11 +292,19 @@ def check_one(pdf_name: str, *, local: bool) -> dict[str, Any]:
         return {m: status("skip", "缺少 PDF 文件") for m in MODULES}
 
     out: dict[str, Any] = {}
+    fig_crash: str | None = None   # 无缓存首跑 extract_figures 崩溃标记（防缓存掩盖）
 
     # 本地重算层
     if local:
-        local_out, target = _local_parse(pdf_path)
+        local_out, target, blocks = _local_parse(pdf_path)
         out.update(local_out)
+        if blocks is not None:
+            # FIG 无缓存首跑：直接对新解析 blocks 跑 extract_figures（不写缓存、不调 LLM）。
+            # 背景：figures.py 捕获组回归曾被既有 figures.json 缓存掩盖，产物检查测不到"首次生成"路径。
+            try:
+                extract_figures(blocks)
+            except Exception as e:  # noqa: BLE001
+                fig_crash = f"无缓存重算 extract_figures 崩溃: {type(e).__name__}: {e}"
         if target is not None:
             claims_json = _read(CLAIMS_DIR / f"{stem}.claims.json")
             if claims_json is not None:
@@ -319,6 +329,10 @@ def check_one(pdf_name: str, *, local: bool) -> dict[str, Any]:
     out.update(_prod_skeleton(stem))
     out.update(_prod_figures(stem))
     out.update(_prod_report(stem))
+
+    # 无缓存首跑崩溃优先于产物缓存判定（缓存存在 ≠ 首次生成路径健康）
+    if fig_crash:
+        out["FIG"] = status("fail", fig_crash + "（figures.json 缓存会掩盖此问题）")
 
     # 补齐缺失模块（防御）
     for m in MODULES:

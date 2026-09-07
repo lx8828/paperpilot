@@ -1,0 +1,238 @@
+[
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？提出的方法核心思路是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "问题：科学知识图谱（KG）天然不完备，缺失的类型化连边可视为待验证的科学假设（如某化学物可能用于某应用），但真实发现极其稀疏，GNN 高效却在歧义情形不可靠、LLM 博学但全量调用太贵且不天然接地图结构。思路：HyGRAIL——异构 GNN 做 cost-aware 分流（triage），只把图模型没把握的歧义假设路由给 LLM 复核；路由前从 KG 检索节点级+多跳路径证据并自然化成语言，LLM review agent 依据证据给出判定，把图的可扩展性与 LLM 的证据化推理结合。",
+    "must_have": [
+      "GNN",
+      "LLM",
+      "分流",
+      "证据",
+      "假设"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，HyGRAIL 是干什么的？它怎么做到又省又准？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "它从科学知识图谱里找『可能还没人发现』的联系（比如某材料可能适合某用途），当新科学假设的候选来验证。又省又准的办法：先用便宜的图神经网络把所有候选快速过一遍，只有它拿不准的少数『模糊题』才交给贵的大模型看；交给大模型前，先把图谱里相关的证据（这个节点连着哪些性质/应用、两个节点之间有没有多跳通路）翻译成自然语言，让大模型照着证据判断而不是凭空猜。",
+    "must_have": [
+      "图",
+      "大模型",
+      "拿不准",
+      "模糊",
+      "证据",
+      "省"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "GNN triage 的『验证校准的歧义区间 [a*, b*]』是怎么定的？低分/高分/区间内分别怎么处理？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "对每个候选假设 h=(u,v,r)，GNN encoder+关系解码器给分 s_h。用验证集定阈值：给定两个纯度参数 m、n（按各 KG 正负比设定），选最小区间 [a*, b*]，使 s_h<a* 的验证假设中负例占比（negative purity）≥m、s_h>b* 的验证假设中正例占比（positive purity）≥n；『最小』指路由给 LLM 的验证假设最少。推理时：s_h<a* → 直接判负；s_h>b* → 直接判正；只有 a*≤s_h≤b* 的歧义假设才送 LLM——把昂贵 LLM 推理留给图模型无法自信解决的少数情形。",
+    "must_all": [
+      "纯度",
+      "区间"
+    ],
+    "must_have": [
+      "a",
+      "b",
+      "阈值",
+      "验证",
+      "路由"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "对路由给 LLM 的假设，HyGRAIL 检索什么证据、怎么把它们自然化成语言？两种自然化策略有何取舍？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "检索两类结构化证据：node-level——每个端点的局部关联（按类型限定证据边集，用 EviScore=α·NormCount+(1-α)·w 综合文献支持度与同类型内区分度取 top-k）；hypothesis-level——连接两端点的 2-hop/3-hop 路径。自然化两种：Auto-Naturalization——确定性模板，按支持度/权重高低把每条证据归为 well-established/common/promising/weak 四档，廉价、确定、可审计；LLM-Naturalization——LLM 把异构证据组织成连贯综述并可加背景知识，但要求把图内证据与额外背景分开，更灵活却更贵。",
+    "must_all": [
+      "自然化",
+      "证据"
+    ],
+    "must_have": [
+      "节点",
+      "路径",
+      "Auto",
+      "模板",
+      "LLM"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-04",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "LLM review agent 怎么输出判定？为什么既要二元决策又要置信度？最终预测规则是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "对每个被路由假设输出二元决策 d_h∈{True,False} 与置信度 q_h∈[0,100]：单用决策不暴露不确定度，单用置信度又可能校准差/集中在窄区间，二者结合可在拒绝明显不合理假设的同时、对看似合理者用校准阈值把关。置信度阈值 γ 在验证集被路由的假设上选定。最终规则：s_h<a*→0；s_h>b*→1；否则当 d_h=True 且 q_h≥γ 才接受。",
+    "must_all": [
+      "置信度",
+      "决策"
+    ],
+    "must_have": [
+      "True",
+      "阈值",
+      "γ",
+      "验证"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-05",
+    "role": "dev",
+    "intent": "concept",
+    "question": "为什么把科学发现建模成『类型化连边预测』？文中说 GNN 和 LLM 各自的短板是什么、怎么互补？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "因为不完备 KG 里许多有科学意义的关联只是因为没被报道/抽取/连上而缺失，一条缺失的类型化连边就可解释为待验证假设（如 CHM–APL 缺失连边暗示某化学物有未探索应用）。短板：发现相关连边极其稀疏，GNN 高效但依赖观测拓扑与关系统计、对歧义候选不可靠；LLM 有知识但全量穷举太贵、且不天然接地图结构。互补：GNN 当廉价分流器处理有把握的，LLM 只在图歧义处做证据化自然语言推理。",
+    "must_have": [
+      "连边",
+      "链接预测",
+      "稀疏",
+      "昂贵",
+      "证据"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-06",
+    "role": "dev",
+    "intent": "detail",
+    "question": "实验设置是什么：在哪个数据上、怎么划分、用了哪些 GNN/LLM/基线？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "数据：MatKG 材料科学 KG 采样的 3000 节点子图（近似保持密度与节点/边类型分布），用 7 种假设类型；按边最早文献时间排序后 7:1:2 划分 train/validation/test，负样本从同假设空间采未连节点对、正负比 1:20，验证/测试正边从训练图剔除防泄漏。GNN：HeteroConv、HGT、R-GCN。LLM reviewer：Qwen3-4B-Instruct-2507、Qwen3-14B、Ministral-3B-Reasoning、Ministral-14B-Reasoning。基线：HyGRAIL-NE（去证据）、TSH（拓扑+MatSciBERT 混合）、KG-FM（LLM+KG 上下文直接验证）。指标：test 上 recall 与 F1（阈值在验证集选）+ LLM call rate。",
+    "must_all": [
+      "MatKG",
+      "7"
+    ],
+    "must_have": [
+      "3000",
+      "HGT",
+      "R-GCN",
+      "Qwen3",
+      "Ministral",
+      "TSH"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "HyGRAIL 在 MatKG 上的最佳 F1 是多少？比最强 prior baseline 和 GNN-only 各高多少？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "最佳 F1=0.429（R-GCN + Qwen3-4B + HyGRAIL-Auto 取得）；比最强 prior baseline TSH 高 0.242 F1、比最好的 KG-FM 高 0.256、比对应 R-GCN-only 高 0.322，说明稀疏设定下图分数单独不够。",
+    "must_all": [
+      "0.429",
+      "0.242",
+      "0.322"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "0.429"
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-U2",
+    "role": "user",
+    "intent": "detail",
+    "question": "GNN triage 到底帮了多少忙——平均把 LLM 调用率降到了多少？哪个 GNN backbone 最省？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "平均把 LLM call rate 降到 45.64%（即平均省 54.36% 调用）；三个 backbone 里 HGT 最低，只有 29.99% 的测试假设被路由给 LLM（省 70.01%），HeteroConv 与 R-GCN 约 53.4%。",
+    "must_all": [
+      "45.64",
+      "29.99"
+    ],
+    "must_have": [
+      "HGT",
+      "call"
+    ],
+    "must_not": [],
+    "chunk_kw": "45.64"
+  },
+  {
+    "pdf": "2609.02056v1.pdf",
+    "qid": "02056-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "论文的 LLM review agent 有没有用闭源/商用前沿模型（比如 GPT、Claude）？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "没有（缺席判断）。四个 review 模型全部是开源权重模型：Qwen3-4B-Instruct-2507、Qwen3-14B、Ministral-3B-Reasoning、Ministral-14B-Reasoning，未使用任何闭源商用前沿模型。",
+    "must_have": [
+      "开源",
+      "open-weight",
+      "Qwen3",
+      "Ministral"
+    ],
+    "must_not": [],
+    "chunk_kw": "Ministral"
+  }
+]

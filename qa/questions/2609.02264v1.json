@@ -1,0 +1,239 @@
+[
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？核心主张是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "问题：LLM 多智能体系统的通信拓扑（谁给谁发消息）同时影响准确率与 token 消耗，最新方法把它当『按查询条件生成图』（变分/自回归/扩散解码器在 N×N 邻接空间搜索 + 图网络按效用与边数打分），但论文实测该配方三个假设都不成立。主张：Codebook Agent——把成功拓扑离线压成查询无关的 16 项码本，查询嵌入经 reward-weighted MLP 选码，MLP proxy 在扁平邻接上回归实测效用与归一化 token 成本做一次批量重排；测试时无迭代搜索、无消息传递，精度最高且省 token。",
+    "must_have": [
+      "拓扑",
+      "码本",
+      "查询",
+      "代理",
+      "token"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，Codebook Agent 解决什么问题、思路是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "多智能体系统里『谁和谁说话』的连线方式（拓扑）会影响答得准不准、烧多少 token。主流做法是每个问题现生成一种新连线，要反复采样打分、很贵。这篇发现：其实好用的连线方式翻来覆去就那么几种（约 6 种），没必要现场现想；于是它先把成功案例离线归纳成一本只有 16 种连线的『字典』，来了新问题就从字典里挑最合适的，再一次性快速比价。又快又准又省 token。",
+    "must_have": [
+      "连线",
+      "拓扑",
+      "字典",
+      "码本",
+      "挑",
+      "6"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文说主流『生成式拓扑设计』的三个隐含假设都被实测推翻，具体是哪三个反直觉事实？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "(1) 有用设计空间是短名单不是流形：能通过奖励筛选的拓扑坍缩成约 6 种不同图，即使码本容量从 8 涨到 64 也一样；最好的固定拓扑离所有生成式结果只差 ≤1.4 精度点，建模邻接空间的容量花在了问题不存在的地方。(2) 结构成本代理是反的：边数 |E| 与实测 token 消耗负相关（Pearson r≈-0.4），稀疏通信反而产生更长补全，最小化边数等于最大化它本想省的钱。(3) 同质团队上消息传递打分器邻接不变：当 agent 共享同一 profile（公开基准的默认设置），GNN 对每个候选给同一分数、根本无法排序。",
+    "must_all": [
+      "6",
+      "同质"
+    ],
+    "must_have": [
+      "-0.4",
+      "边数",
+      "邻接",
+      "固定",
+      "1.4"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Codebook Agent 的三个组件分别做什么？测试时的生成流程是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "三组件：(1) 拓扑码本——向量量化自编码器只对成功记录(u>0.5)压缩出查询无关的 16 项码本（dz=32，EMA 更新，含死码重置），解码器把码还原成有向邻接矩阵；(2) reward-weighted 码预测器——冻结编码器给每条训练记录打码，用 exp(γR)（γ=2）软目标把质量集中在高奖励码上，MLP 把查询嵌入映射到码分布（这是查询唯一介入处）；(3) execution-grounded MLP proxy——读扁平邻接 vec(A)，回归实测效用 u 与按任务归一化的 token 成本 τ~（含训练期才用的结构-token 辅助头）。测试：取 top-M=5 码→解码去重→一次批量 proxy 调用按 û−λĉ 选最优执行；无采样循环、无图构建、无消息传递。",
+    "must_all": [
+      "码本",
+      "proxy"
+    ],
+    "must_have": [
+      "VQ",
+      "MLP",
+      "批量",
+      "16",
+      "解码"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-U2",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "为什么论文坚持用『实测 token 消耗』当成本目标、并且用读扁平邻接的 MLP 而不是图神经网络当打分器？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "因为用边数当成本代理是反的：数据里边数 |E| 与实测 token 负相关（r≈-0.4），稀疏图让补全变长更烧钱，按边数打分会把系统推向更贵的图；必须回归实测的每任务归一化 token。打分器用 MLP 读 vec(A) 是因为主流图神经网络在同质团队（所有 agent 同 profile）上邻接不变——消息传递聚合相同特征后分数与 A 无关、根本无法排序，只有直接读邻接矩阵的 MLP 才能在匿名/同质团队上分开候选。",
+    "must_all": [
+      "实测",
+      "token"
+    ],
+    "must_have": [
+      "边数",
+      "MLP",
+      "同质",
+      "邻接",
+      "-0.4"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-04",
+    "role": "dev",
+    "intent": "concept",
+    "question": "论文怎么论证『有用拓扑是个短名单、不需要生成式搜索』？『哪个固定拓扑最好』为什么无法先验知道？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "论证：通过奖励筛选的拓扑坍缩到约 6 种（码本容量 8→64 都不变，容量闲置），最好的固定拓扑离生成式结果 ≤1.4 精度点，所以花容量去建模邻接流形用不上；对每个新设定『哪个固定图赢』不可先验知道——全连接在 MATH 赢、星形在同质 HumanEval 赢、链形在 MMLU 赢，固定图间差距可达 4.3 精度点与 2.9× token 差，识别赢家需要真实 LLM 执行（300 条记录那种成本），所以设计器的价值在于把这种选择按查询摊销。",
+    "must_have": [
+      "短名单",
+      "坍缩",
+      "6",
+      "固定",
+      "摊销"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-05",
+    "role": "dev",
+    "intent": "detail",
+    "question": "实验设置是什么：在哪些基准、用什么 backbone 与 agent 团队、训练数据怎么收集？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "基准：推理 GSM8K/MATH/MultiArith/SVAMP + 代码 MBPP/HumanEval（Pass@1），Qwen 迁移实验另用 MMLU。主 backbone gpt-4o-mini（temp 0.7），嵌入用冻结 all-MiniLM-L6-v2（d=384）。团队：数学 4×MathSolver+FinalRefer、代码 4×Programming Expert+FinalRefer、MMLU 3×Knowledgeable Expert，默认同质 profile（7 个设计轴设定里 6 个同质），HumanEval 另有异构四角色队。训练：每基准 50 个训练任务 × 6 种固定拓扑（complete/chain/star + 3 个 Erdős–Rényi 样本）真跑 LLM，得 300 条 (A,c,u,τ) 记录。指标：准确率/Pass@1、拓扑生成延迟、每查询平均 LLM token、端到端墙钟。",
+    "must_all": [
+      "gpt-4o-mini",
+      "300"
+    ],
+    "must_have": [
+      "GSM8K",
+      "MATH",
+      "HumanEval",
+      "同质",
+      "50"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-06",
+    "role": "dev",
+    "intent": "detail",
+    "question": "Codebook Agent 在六个基准上的平均精度是多少？比最强 prior 拓扑设计器 GTD 和 Vanilla 单智能体各高多少？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "平均精度 84.62（六个基准每列都第一）：比最强 prior 拓扑设计器 GTD(83.02) 高 +1.60，比 Vanilla(77.63) 高 +6.99，比多智能体协作 DyLAN(80.18) 高 +4.44；六个基准上全面高于此前 ~83 的先验前沿。",
+    "must_all": [
+      "84.62",
+      "83.02",
+      "77.63"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "84.62"
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "Codebook Agent 生成一个拓扑要多快？相对迭代生成器和省 token 的幅度是多少？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "单次拓扑生成约 2.4–2.5 ms；迭代式生成器（变分/自回归/扩散）是 301–396 ms/查询，即快约 125–158×；同时平均 LLM token 消耗比完整 incumbent（迭代解码器+边数 GNN）省 21.9–33.2%，MATH 端到端墙钟从 43.7 降到 27.4 分钟。",
+    "must_all": [
+      "2.4",
+      "301",
+      "21.9"
+    ],
+    "must_have": [
+      "ms",
+      "token",
+      "33.2"
+    ],
+    "must_not": [],
+    "chunk_kw": "2.4"
+  },
+  {
+    "pdf": "2609.02264v1.pdf",
+    "qid": "02264-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "Codebook Agent 只在 gpt-4o-mini 一个 backbone 上验证过、没有做跨模型迁移测试吗？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "不是（否定判断）。论文还做了 Qwen-3-8B 迁移实验：绝对分数整体下降（CoT 平均 67.5），但 Codebook Agent 仍每列领先、平均 74.0，高于 GTD(72.7) 与 G-Designer(72.1)，MATH +1.7、MMLU +1.9 于 GTD——说明短名单索引不是某一 API 的产物。",
+    "must_have": [
+      "Qwen",
+      "74.0",
+      "迁移"
+    ],
+    "must_not": [],
+    "chunk_kw": "Qwen-3-8B"
+  }
+]

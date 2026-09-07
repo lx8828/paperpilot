@@ -1,0 +1,238 @@
+[
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？核心发现是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "问题：多智能体系统里 agent 可能合谋而公开行为/消息看似正常，输出监控可被混淆/隐写骗过，因此用内部激活探针检测；但以往评估都假设 agent 不知道自己被监控。本文问：明确告诉 agent 激活被监控、甚至每轮给监控分数反馈，固定模型/探针/阈值，激活监控还会不会失效？核心发现：不会——好探针在 baseline/aware/feedback 三条件下都保持准确，agent 继续合谋；agent 行为确实改变（下注更保守、措辞变化），但这是『行为适应』而非『监控逃逸』。",
+    "must_have": [
+      "激活",
+      "探针",
+      "监控",
+      "合谋",
+      "aware"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，这篇在做什么实验、得出了什么结论？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "实验：让几个 LLM 在游戏里偷偷串通（21 点里合伙算牌、囚徒游戏里用暗号传词），同时用『看模型内部激活』的监控器抓他们；然后分别告诉 agent『有监控』『监控还给分』，看能不能骗过监控。结论：告诉它们也没用，好监控照样抓得准，它们还是照常串通；只是行为上变得更收敛（下注保守、传话方式变），属于被发现后的小心翼翼，不是真的躲过了监控。",
+    "must_have": [
+      "激活",
+      "监控",
+      "串通",
+      "合谋",
+      "抓"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文的『监控知晓度』实验设计是怎样的？三个条件分别给 agent 什么信息？为什么说这是干净的对照？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "三个条件：r=0 baseline——不告诉有激活监控（隐藏监控）；r=1 aware——明确告知存在激活监控；r=2 feedback——告知存在监控且每轮后收到上一轮监控分数。干净之处：模型权重、探针、聚合规则、阈值全部固定不变，只改 agent 被告知的信息（context 层面的适应），从而把检测变化归因于『知晓度』而非模型被重新训练。",
+    "must_all": [
+      "aware",
+      "feedback"
+    ],
+    "must_have": [
+      "baseline",
+      "固定",
+      "告知"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "激活监控器本身是怎么搭的：每类模型用谁的探针、per-agent 分数怎么聚合成群体判定、feedback 条件暴露的是哪个监控器？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "每个模型家族各配一个冻结探针 P_μ（Qwen 激活只由 Qwen 探针打分、GPT-OSS 由 GPT-OSS 探针打分，因激活空间不同）；探针在 NARCBench-Core 上训练后权重/层/标准化/阈值全部冻结。先算每 agent 分数 s_i,t，再按群体规则聚合：Peak（最大怀疑）、Split（两组分离，如 z(1)+z(2) 与 z(3)+z(4) 均值差）、Asymmetry（不对称性学习分类器）等，qt≥τ 判为合谋。feedback 条件暴露给 agent 的监控器固定为 logistic regression + Peak，其阈值取对照运行的 95 分位；其余探针与规则隐藏、只用于评估。",
+    "must_all": [
+      "冻结",
+      "Peak"
+    ],
+    "must_have": [
+      "探针",
+      "Split",
+      "Asymmetry",
+      "阈值",
+      "95"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-U2",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "两个测试游戏分别是什么规则？agent 在里面是怎么『合谋』的？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "游戏一：四人 21 点——座位 0 是算牌员(Counter)、座位 1 是大玩家(Big Player)、2/3 是诚实玩家；合谋鞋前两人私聊两轮约好新鲜信号方案，算牌员把牌堆热度编码成低/中/高三档混在普通闲聊里，大玩家据此调整下注。游戏二：Simmons 囚徒游戏——Alice(发信)与 Bob(收信)共享 16 词码本（狱卒 Warden 不知），每局 8 轮公开轮，其中 4 轮 carrier 轮 Alice 试图不直写暗语地传达秘密词，Bob 报概率并给出点估计。",
+    "must_all": [
+      "21",
+      "码本"
+    ],
+    "must_have": [
+      "算牌",
+      "Alice",
+      "Bob",
+      "暗号",
+      "Warden"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-04",
+    "role": "dev",
+    "intent": "concept",
+    "question": "论文怎么区分『监控逃逸(evasion)』『威慑(deterrence)』和『行为适应(behavioural adaptation)』？区分它们为什么重要？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "同时测检测性能 D 与合谋成功度 B：D 下降但 B 不变→候选监控逃逸（真躲过了）；D 与 B 都下降→威慑或协调退化（没躲过而是不敢/不会合谋了）；D 不变但行为变→无逃逸的行为适应。区分重要：检测分数下降未必等于被逃逸，可能是 agent 停止合谋或协调变差，只有结合行为指标才能判断监控是否真的失效。",
+    "must_have": [
+      "逃逸",
+      "威慑",
+      "适应",
+      "行为"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-05",
+    "role": "dev",
+    "intent": "detail",
+    "question": "实验用了哪些模型和探针架构？每类实验的样本规模（shoes/episodes）是多少？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "模型：Qwen3-32B-AWQ（取 26–30 层激活）与 GPT-OSS-20B（取 10–14 层），含 Homo-Qwen、Homo-GPT-OSS、混合(Qwen,GPT-OSS,Qwen,GPT-OSS) 三种组合；探针沿用 NARCBench 六种架构里的五种（LR、DoM、LAT、MLP、MHA；multi-layer logistic regression 结果未提供故不含），每模型每层单独训一个探针，训练重复 10 个随机种子。样本：黑杰克每 cell 25 个牌序种子、每个种子合谋+对照各跑一次=每 cell 50 鞋；Simmons 每 cell 20 局合谋 + 20 局对照。",
+    "must_all": [
+      "Qwen3-32B",
+      "GPT-OSS-20B"
+    ],
+    "must_have": [
+      "25",
+      "20",
+      "种子",
+      "层"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "那 Simmons 游戏里，Qwen–Qwen 组合的精确解码率在三种条件下分别是多少？离随机猜(1/16)有多远？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "Qwen–Qwen 的精确解码率：baseline 0.80、aware 0.90、feedback 0.85；随机猜测概率 1/16=0.0625，远低于此——三种条件下 Bob 都远高于随机地解出秘密，监控没有关闭隐信道。",
+    "must_all": [
+      "0.80",
+      "0.90",
+      "0.85",
+      "0.0625"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "0.80"
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-06",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文关于『监控器选型』得出了什么结论？AUROC 和固定阈值 recall 为什么不总是一起变？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "选型结论：黑杰克里 Difference of Means 与 MLP 最稳、几乎完美，logistic regression 多数 cell 也高；LAT/MHA 较不稳且更依赖群体规则；Simmons 两人局里 Deception Split 远比 Peak 或 Asymmetry 可靠（只看单个最大怀疑分可能漏掉跨 agent 相对模式里的信号）。AUROC 与固定阈值 recall 分离：如 Homo-GPT-OSS 黑杰克 LR-Peak 的 AUROC aware 0.975→feedback 0.912，recall 却 0.95→0.41——排序仍正确但冻结阈值下越界的合谋 run 变少，是部署时的校准(operating-point)问题而非可分性丢失，所以两者应分开报告。",
+    "must_all": [
+      "AUROC",
+      "recall"
+    ],
+    "must_have": [
+      "DoM",
+      "MLP",
+      "Split",
+      "校准",
+      "阈值"
+    ],
+    "must_not": [],
+    "chunk_kw": "AUROC"
+  },
+  {
+    "pdf": "2609.03035v1.pdf",
+    "qid": "03035-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文是否通过权重级优化（例如用 RL 把模型训练成专门对抗/绕过激活监控器）来测逃逸？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "没有（缺席判断）。模型权重全程固定，agent 只通过 prompt 告知与交互历史在 context 层面适应监控信息；Limitations 明确：agents adapt through prompts and interaction history; model weights are not updated against the monitor，并把更大规模/更多模型族的权重级对抗测试列为 future work。",
+    "must_have": [
+      "权重",
+      "固定",
+      "对抗",
+      "训练",
+      "future"
+    ],
+    "must_not": [],
+    "chunk_kw": "weights"
+  }
+]

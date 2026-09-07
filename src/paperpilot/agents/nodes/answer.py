@@ -17,6 +17,8 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from paperpilot.agents.embedder import ChunkIndex
+from paperpilot.agents.nodes.judge import judge_l3
 from paperpilot.agents.state import QAState
 from paperpilot.tools import llm
 
@@ -84,11 +86,34 @@ SYSTEM_EXTRACT = (
 )
 
 SYSTEM_UNKNOWN = (
-    "你是严谨的论文问答助手。用户的问题在论文中找不到可支撑的内容，"
-    "请诚实地说明这一点，并简要说清楚缺少的是哪类信息。不要编造。用中文，1~3 句。"
+    "你是严谨的论文问答助手。面对一个可能无法百分之百确定的问题，按以下顺序处理：\n"
+    "1. 若给出的原文能支持一个明确的结论（包括是/否、数值、做法有无），请**直接给结论**"
+    "并标注对应条目 [n]，不要因为'想更全面'而含糊。\n"
+    "2. 若确实无法给出确定结论：**不要只说'找不到/无法回答'**——请把检索到的最相关原文片段"
+    "逐条提炼/转述给用户（保留关键数字、专名与措辞，标注 [n]），让用户能直接看到论文怎么说、"
+    "自行判断；同时在结尾用一句话诚实说明'缺哪类信息导致无法下定论'。\n"
+    "3. 禁止编造：提炼必须来自上方条目。用中文回答。"
 )
 
 CITE_RE = re.compile(r"\[(\d{1,2})\]")
+
+# ── 缺失断言复核闸门 ──────────────────────────────────────────────────────────
+# 背景（QA_V2_NEW10_20260906_REPORT.md F1）：浅层(L0/L1/L2) answer 证据不足时，
+# 模型常断言"论文没写/未给出/未说明"，而数值/原因其实在 Abstract、正文表或 Discussion
+# 里——浅层上下文看不到就误判全文缺失，且不触发下钻。
+# 闸门：浅层答案若带"缺失口吻"，强制做一次 L3 独立全文复核；确有可答内容 → 以 L3 重答；
+# 确认全文也没有 → 保留原答案（此刻"缺失结论"才算站得住）。L3 终答本身不触发。
+AUDIT_TOP_K = 10
+_ABSENCE_RE = re.compile(
+    r"(未给出|未提供|未提及|未列出|并未说明|并未给出|没有给出|没有提供|找不到|"
+    r"未找到|没有找到|无法找到|无法判断|无法确认|信息不足|不包含[^，。；]{0,10}信息|"
+    r"未(?:明确|直接|具体|详细)?(?:说明|给出|提供|提及|指出|解释|报告)|"
+    r"没有(?:明确|直接|具体)?(?:说明|给出|提供|提及|解释|报告)|"
+    r"(?:论文|文中|文献|原文|文章)[^，。；]{0,16}(?:没有|未|不曾|并未)"
+    r"(?:明确|直接|具体)?(?:说明|给出|提供|提及|指出|解释|给出过|存在|报告)|"
+    r"(?:论文|文中|文献|原文|文章)[^，。；]{0,8}(?:未|没有|并未)[^，。；]{0,12}"
+    r"(?:给出|提供|报告|说明))",
+    re.I)
 
 
 # ── 条目格式化（claim 样式 / chunk 样式统一编号）─────────────────────────────
@@ -245,16 +270,20 @@ def _fmt_facts_block(facts: list[dict[str, Any]]) -> str:
 # ── 节点：generate_answer ─────────────────────────────────────────────────────
 
 
-def generate_answer(state: QAState) -> dict[str, Any]:
-    question = state.get("question", "")
-    pdf = state.get("pdf", "")
-    header, entries, level = _build_context(state)
+def _sec_tail(paths: list[str]) -> str:
+    """chunk title_path → 展示节名（与 pull_chunk.search_l3 同款取法）。"""
+    for p in reversed(paths or []):
+        if " · " in p:
+            return p.split(" · ", 1)[1].strip()
+    return (paths[-1] if paths else "")
 
+
+def _compose(question: str, pdf: str, header: str,
+             entries: list[dict[str, Any]], level: str,
+             state: QAState) -> tuple[str, list[dict[str, Any]], list[dict[str, Any]]]:
+    """给定上下文条目生成 answer + cites + facts（无 route/debug 副作用）。"""
     parts = [header]
-    if level in ("L1", "L0"):
-        fmt = _fmt_claim_entry
-    else:
-        fmt = _fmt_chunk_entry
+    fmt = _fmt_claim_entry if level in ("L1", "L0") else _fmt_chunk_entry
     for i, e in enumerate(entries, 1):
         parts.append(fmt(i, e))
     if not entries:
@@ -271,9 +300,65 @@ def generate_answer(state: QAState) -> dict[str, Any]:
             f"（若信息不足以回答，请说明缺什么，不要编造。）")
     answer = llm.chat_text(SYSTEM, user, temperature=0.0)
     cites = _cites_from(answer, entries, pdf)
-    verdict = state.get("verdict") or {}
+    return answer, cites, facts
 
-    route = list(state.get("route") or [])
+
+def _l3_audit_entries(pdf: str, question: str) -> list[dict[str, Any]]:
+    """缺失断言复核：独立全文检索（向量+BM25 融合，提升表格/数值段召回）。"""
+    try:
+        hits = ChunkIndex(pdf).search_hybrid(question, top_k=AUDIT_TOP_K)
+    except Exception:  # noqa: BLE001（复核失败不阻断，按"未找到"处理）
+        return []
+    out: list[dict[str, Any]] = []
+    for h in hits:
+        out.append({
+            "kind": "chunk",
+            "chunk_id": h.get("chunk_id", ""),
+            "page": h.get("page", 0),
+            "section": _sec_tail(list(h.get("title_path") or [])),
+            "text": h.get("text", ""),
+        })
+    return out
+
+
+def _audit_absence(question: str, pdf: str) -> dict[str, Any]:
+    """复核一条浅层"缺失断言"：L3 全文若能作答 → found=True，由调用方重答。"""
+    entries = _l3_audit_entries(pdf, question)
+    if not entries:
+        return {"found": False, "entries": [], "reason": "无全文检索命中"}
+    try:
+        v = judge_l3({"question": question, "l3_chunks": entries})
+    except Exception:  # noqa: BLE001
+        v = {"verdict": {"enough": False}}
+    enough = bool((v.get("verdict") or {}).get("enough", False))
+    return {"found": enough, "entries": entries,
+            "reason": "" if enough else "全文复核判定仍不足"}
+
+
+def generate_answer(state: QAState) -> dict[str, Any]:
+    question = state.get("question", "")
+    pdf = state.get("pdf", "")
+    header, entries, level = _build_context(state)
+    answer, cites, facts = _compose(question, pdf, header, entries, level, state)
+
+    # 缺失断言复核闸门：浅层答案若带"论文没写/未给出/找不到"口吻，
+    # 强制 L3 全文复核（修正"证据没送到就断言全文没有"的误判）。
+    audit: dict[str, Any] | None = None
+    if level in ("L0", "L1", "L2") and _ABSENCE_RE.search(answer or ""):
+        audit = _audit_absence(question, pdf)
+        if audit["found"]:
+            l3_entries = audit["entries"]
+            header3 = (f"标题：{state.get('title','') or ''}\n\n"
+                       f"=== 全文检索正文（缺失断言复核） ===")
+            answer, cites, facts = _compose(question, pdf, header3,
+                                            l3_entries, "L3", state)
+            level = "L3"
+            entries = l3_entries
+
+    verdict = state.get("verdict") or {}
+    route = [x for x in (state.get("route") or []) if not x.startswith("answer_")]
+    if level == "L3" and "L3" not in route and audit and audit["found"]:
+        route.append("L3")
     if f"answer_{level}" not in route:
         route.append(f"answer_{level}")
     debug = dict(state.get("debug") or {})
@@ -285,6 +370,14 @@ def generate_answer(state: QAState) -> dict[str, Any]:
         "enough": verdict.get("enough"),
         "gap": (verdict.get("gap") or "")[:120],
     }
+    if audit is not None:
+        debug["absence_audit"] = {
+            "triggered": True,
+            "found": audit["found"],
+            "dove_l3": audit["found"],
+            "n_l3": len(audit["entries"]),
+            "reason": audit["reason"],
+        }
     return {
         "answer": answer,
         "cites": cites,
@@ -297,23 +390,37 @@ def generate_answer(state: QAState) -> dict[str, Any]:
 
 
 def answer_unknown(state: QAState) -> dict[str, Any]:
+    """诚实收尾（L3 仍不足）。2026-09-07：不再只说"找不到"——
+    能明确就给结论；确实无法确定时，把检索到的相关原文提炼给用户自行判断。"""
     question = state.get("question", "")
+    pdf = state.get("pdf", "")
     gap = (state.get("verdict") or {}).get("gap", "")
-    answer = llm.chat_text(
-        SYSTEM_UNKNOWN,
-        f"{_fmt_history(state)}\n\n问题：{question}\n\n"
-        f"补充：检索到的内容不足以回答，缺口信息：{gap or '未知'}\n\n"
-        f"请诚实告知用户无法从该论文中找到答案。",
-        temperature=0.0,
-    )
+    entries: list[dict[str, Any]] = []
+    for c in (state.get("l3_chunks") or [])[:6]:
+        entries.append({**c, "kind": "chunk"})
+
+    if entries:
+        parts = ["=== 全文检索到的相关原文（供你提炼给用户） ==="]
+        for i, e in enumerate(entries, 1):
+            parts.append(_fmt_chunk_entry(i, e))
+        context = "\n\n".join(parts)
+        user = (f"{context}\n\n用户问题：{question}\n\n"
+                f"缺口信息（为什么下不了定论）：{gap or '未能找到决定性证据'}\n\n"
+                f"请按系统准则处理：能明确就明确（标[n]）；不能明确就把最相关片段提炼给用户（标[n]），"
+                f"并说明缺什么。")
+    else:
+        user = (f"用户问题：{question}\n\n缺口信息：{gap or '未知'}\n\n"
+                f"检索没有任何相关原文，请诚实说明并指出缺哪类信息。")
+    answer = llm.chat_text(SYSTEM_UNKNOWN, user, temperature=0.0)
     route = list(state.get("route") or [])
     if "answer_unknown" not in route:
         route.append("answer_unknown")
+    cites = _cites_from(answer, entries, pdf) if entries else []
     debug = dict(state.get("debug") or {})
-    debug["answer"] = {"level": "unknown", "gap": gap[:120]}
+    debug["answer"] = {"level": "unknown", "gap": gap[:120], "n_evidence": len(entries)}
     return {
         "answer": answer,
-        "cites": [],
+        "cites": cites,
         "route": route,
         "debug": debug,
     }

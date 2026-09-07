@@ -1,0 +1,236 @@
+[
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？核心主张是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "问题：LLM 智能体的安全既取决于 base model 也取决于 harness，单独做 harness 演化（外部规则/技能）可能超出弱策略执行能力、易脆弱失效，单独做 policy 优化（固定 harness）则跨模型迁移差、漏掉涌现风险。主张：SafeEvolve 用已完成 on-policy 轨迹驱动 harness 与 policy 协同进化飞轮——harness 侧把轨迹证据编译成可审计可回滚的 safety prompt+层级技能更新；policy 侧两阶段 SFT-RL 内化安全行为。",
+    "must_have": [
+      "harness",
+      "策略",
+      "协同",
+      "共进化",
+      "轨迹"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，SafeEvolve 到底在做什么？它跟『只改 prompt/加规则』或『只把模型再训练一下』有什么本质区别？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "它把『外面的安全护栏（safety prompt、技能库等 harness）』和『模型内部的安全能力』当成一个整体，让它们互相促进、一起进化：从真实执行轨迹里发现失败→先更新护栏→再让模型学着用好新护栏（SFT）并用强化学习内化成自己的行为（RL）→新行为又产生新轨迹供下一轮进化。只改外部规则往往模型不听话/执行中衰减，只训模型则难迁移且发现不了新风险。",
+    "must_have": [
+      "护栏",
+      "harness",
+      "内化",
+      "轨迹",
+      "SFT",
+      "RL"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SafeEvolve 的『harness 演化』具体怎么运转？一个更新是怎么被提出、验证并接受的？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "基于 rollout 证据的组件更新闭环：先冻结当前策略、用当前 harness 收集轨迹并聚合成组件级证据（成功/失败桶+元数据：攻击类型、工具族等）；proposer 只选中一个 harness 组件（如某条 safety prompt 或某个技能）产生有界变更 Δ，其余组件保持不变；用配对接受-拒绝门验证：候选 harness 与父 harness 在同一批任务/环境上对比，满足 J(Ĥ)≥J(H)+δ 且门控 G=1（G 拒绝安全/清洁效用/执行质量回退）才接受；接受的编辑以版本化组件变更存储（带证据+回滚元数据），得到可追踪的 H⋆。",
+    "must_all": [
+      "有界",
+      "接受"
+    ],
+    "must_have": [
+      "组件",
+      "proposer",
+      "门",
+      "回滚",
+      "版本"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "policy 侧的『两阶段 SFT-RL』各阶段做什么？为什么要先做 SFT 再做 RL？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "两阶段：(1) Harness-Use SFT cold start——在 evolved Runtime SkillBank 下收集 rollout，只保留通过任务类型安全/效用 verifier 的轨迹，且只对 assistant 回复与工具调用求最大似然（系统提示/技能/工具观测只作上下文），让策略先学会何时调用相关技能、忽略无关技能、识别并忽略不安全的环境指令；(2) Harness-Augmented RL——在 evolved harness（safety prompt P*+检索到的技能子集 Sx）条件下为每个任务采样 G 条轨迹，用 verifier 分解的奖励算组内相对优势（GRPO 式，含 clip 与 KL 约束）更新。先 SFT 是因为把 evolved 技能注入上下文后，base policy 还不可靠地知道何时/如何用，直接 RL 会从低质量 rollout 起步。",
+    "must_all": [
+      "SFT",
+      "RL"
+    ],
+    "must_have": [
+      "冷启动",
+      "技能",
+      "优势",
+      "verifier"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-U2",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "论文说奖励是按任务类型分开算的，具体怎么分？为什么干净任务、恶意查询、环境注入要区别对待？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "按 z(x)∈{clean, query, injection}：clean 任务奖励=效用 U(τ)（强调完成任务）；malicious query 奖励=安全分 S(τ)（惩罚满足有害请求）；environment injection 奖励=λU·U + λS·S + λUS·U·S（既要忽略注入指令、又要完成原良性目标，交互项奖励两者同时满足）。因为三类任务的失败模式不同：干净任务看完成度，恶意查询看意图级安全，注入攻击必须兼顾不服从注入与保留原目标。",
+    "must_all": [
+      "效用",
+      "安全"
+    ],
+    "must_have": [
+      "clean",
+      "query",
+      "injection",
+      "注入"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-04",
+    "role": "dev",
+    "intent": "concept",
+    "question": "论文威胁模型里的『恶意查询(malicious-query)』和『环境注入(environment-injection)』两类攻击有什么区别？攻击者能控制什么、不能控制什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "恶意查询：用户指令本身就表达有害意图（如隐私泄露/未授权操作），诱导 agent 生成有害内容或执行不安全工具调用；环境注入：用户目标良性，但外部观测（网页/文件/工具输出等）含对抗指令，把 agent 从原目标带偏到数据泄露或未授权动作。攻击者可控制用户请求或部分环境观测，但不能控制模型参数或已注册的工具 API。",
+    "must_have": [
+      "恶意查询",
+      "恶意",
+      "环境注入",
+      "注入",
+      "指令"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-05",
+    "role": "dev",
+    "intent": "detail",
+    "question": "实验用了哪些评测基准、各测什么？主要指标（ASR、U-Attack、harmful、refusal）分别指什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "AgentDojo 与 AgentDyn 测环境注入（原任务良性、外部观测含对抗指令）；AgentHarm 是恶意查询主基准。指标：AgentHarm 报 harmful score（有害请求遵从度，越低越好）、refusal（安全拒答）、benign（良性任务效用）；AgentDojo/AgentDyn 报 utility（干净任务完成）、utility under attack（攻击下任务完成）、ASR attack success rate（服从对抗指令率，越低越好）。backbone：Qwen3.5-4B 与 Qwen3-4B-Instruct-2507；每次更新 200 rollout steps、每批 32 任务×8 rollouts=256 条轨迹。",
+    "must_all": [
+      "AgentDojo",
+      "AgentHarm"
+    ],
+    "must_have": [
+      "AgentDyn",
+      "ASR",
+      "refusal",
+      "注入"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-06",
+    "role": "dev",
+    "intent": "detail",
+    "question": "在 Qwen3.5-4B 上，SafeEvolve 在 AgentDojo 的 ASR 从多少降到多少？benign/clean utility 从多少升到多少？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "ASR 从 2.37% 降到 0.79%（约 3× 降低），benign utility 从 59.79% 升到 61.86%。",
+    "must_all": [
+      "2.37",
+      "0.79",
+      "59.79",
+      "61.86"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "2.37"
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "那 AgentHarm 上呢？有害分和拒答率各变成了多少？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "AgentHarm 上 harmful score 从 56.45 降到 12.27，refusal rate 从 28.98% 升到 83.83%（Qwen3.5-4B）。",
+    "must_all": [
+      "56.45",
+      "12.27",
+      "28.98",
+      "83.83"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "56.45"
+  },
+  {
+    "pdf": "2609.02786v1.pdf",
+    "qid": "02786-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文实验是否表明：只做模型侧优化（model-only RL，不演化 harness）就能达到与完整 SafeEvolve 相当的安全-效用表现？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "不能（缺席/否定判断）。model-only RL 反而恶化：AgentDojo utility under attack 从 60.04 掉到 26.48，AgentHarm harmful score 从 56.45 升到 63.82，说明单靠 verifier 奖励的模型优化信号不稳定；需要 harness-policy 协同进化才能既降安全风险又保住效用。",
+    "must_have": [
+      "不能",
+      "26.48",
+      "63.82",
+      "恶化",
+      "协同"
+    ],
+    "must_not": [],
+    "chunk_kw": "26.48"
+  }
+]

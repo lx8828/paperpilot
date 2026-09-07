@@ -18,8 +18,8 @@ def _clean(text: str) -> str:
 
 # 编号允许：4a / 3.1 / A.1 / C.1 / 10（章节编号或子图后缀）
 _CAP_HEAD_RE = re.compile(
-    r"^(?:Table|Tab\.?|Figure|Fig\.?)\s+"
-    + r"(?:[A-Za-z]{1,2}\.\d+|[A-Za-z]?\d+(?:\.\d+)*[a-z]?)\s*",
+    r"^(Table|Tab\.?|Figure|Fig\.?)\s+"
+    + r"([A-Za-z]{1,2}\.\d+|[A-Za-z]?\d+(?:\.\d+)*[a-z]?)\s*",
     re.I)
 
 

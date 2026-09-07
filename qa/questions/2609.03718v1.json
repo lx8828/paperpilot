@@ -1,0 +1,235 @@
+[
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？核心结论是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "问题：近年 CAE 仿真 agent 都叠『仿真专用脚手架』（多智能体角色分解、领域 RAG、scripted reflection），但那是在弱基座模型时代的合理反应；现代通用 coding-agent harness（Claude Code/Codex 等）已自带多轮推理、工具调用、执行反馈。问：在通用 harness 之上，CAE 仿真 agent 到底还缺什么？结论：固定信息访问与修复预算下，单 agent 通用 harness 就追平或超过专用多智能体系统（FoamBench 96.4% vs 88.2%）；消融显示增益来自 harness 自带的执行反馈修复，scripted reflection 无增益；唯一仍有用的是以求解器教程形式喂给它的领域知识（最大实测增益 80.9%→96.4%）。",
+    "must_have": [
+      "harness",
+      "通用",
+      "专用",
+      "教程",
+      "修复"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，这篇论文在争什么？结论对做 CAE 智能体的人意味着什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "它在争：过去做仿真智能体都要专门搭一套『多角色分工+领域知识库+自我反思』的复杂架子，但现在通用的编程智能体（类似 Claude Code/Codex）本身已经会多轮思考、跑命令、看报错自己修。结论：直接用通用智能体就够，专门架子基本不添分；真正还差的是把『求解器怎么用』的领域知识（教程）喂给它——这是提升最大的单项。含义：工程力气该花在沉淀领域知识上，而不是搭脚手架。",
+    "must_have": [
+      "通用",
+      "架子",
+      "专用",
+      "教程",
+      "领域"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文的『Direct Baseline』是什么？用哪四个 harness-backbone 组合实例化、保证公平对比的条件是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "Direct Baseline：不写仿真专用编排器，直接用现成通用 coding-agent harness 端到端驱动 CAE 任务——harness 指已含文件编辑、shell 执行、结构化工具调用的公开 agent 循环，无任何仿真专用脚手架。四个组合跨三个生态：Claude Code+Claude Opus 4.6、Codex CLI+GPT-5.5、CodeWhale(DeepSeek-TUI)+DeepSeek V4、opencode+Qwen3.5-Plus。公平条件：每任务至多 K 轮执行、轮内跑完把日志（成功或报错）追加回上下文；所有任务跨 harness 共享同一 prompt 模板，无失败特判分支、无专用子 agent、无 curated 语料；除非说明，报告最强单 harness 并附跨 harness 一致性。",
+    "must_all": [
+      "Claude",
+      "GPT-5.5"
+    ],
+    "must_have": [
+      "Codex",
+      "DeepSeek",
+      "Qwen3.5",
+      "shell",
+      "模板"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "论文的『能力归因框架』把 agent 能力分成哪两类？机制消融是怎么测出『专用脚手架』的边际贡献的？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "两类：(1) 通用能力 general-purpose——多轮推理、执行反馈（每次运行后把日志追加进上下文）、知识访问（读教程/API 文档）、基于失败迭代修复，现代 coding harness 用 file/shell 工具+长上下文+子 agent 派发原生提供；(2) 领域专用脚手架 domain-specific——面向求解器的角色分解（planner/writer/runner/reviewer 拆开）、curated 领域 RAG、scripted reflection（往 prompt 里插显式自我批评指令）、求解器专用编排。方法：旧系统是在通用能力上叠专用脚手架；论文保持信息访问/修复预算/评分一致，只做『去掉某脚手架』的机制消融，测前者已就位时后者的边际贡献。",
+    "must_all": [
+      "通用",
+      "专用"
+    ],
+    "must_have": [
+      "执行反馈",
+      "角色分解",
+      "RAG",
+      "reflection",
+      "消融"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-U2",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "论文说『执行反馈驱动的修复』是主要增益来源，具体数字是怎样的？修复轮数(R)怎么影响成功率？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "FoamBench 上按修复预算 R 扫：R≤1（无修复轮）只有 1 例成功；R≤2 就升到 71.8%；R≤3（多给一轮修复）再加 6 例、到 96.4%——即从『必须一次写对』到允许一轮修错，成功率大幅跳升，说明执行反馈+少量修复预算就解释了绝大部分增益。",
+    "must_all": [
+      "71.8",
+      "96.4"
+    ],
+    "must_have": [
+      "修复",
+      "R",
+      "轮",
+      "日志"
+    ],
+    "must_not": [],
+    "chunk_kw": "71.8"
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-04",
+    "role": "dev",
+    "intent": "concept",
+    "question": "论文里『scripted reflection』指什么？为什么它在现代 harness 上『加进去没收益』？这类脚手架的合理性为何随模型时代变化？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "scripted reflection=往 prompt 里插入显式『自我批评/评审』指令，让 agent 提交前先审视自己输出（源自评审式脚手架）。在现代 harness 上无收益，因为 harness 已有多轮推理+执行反馈+少量修复预算：真正的错误会被跑出来的日志暴露并由迭代修复处理，prompt 层硬编码的『先自评再提交』只是重复 harness 已具备的行为。合理性变化：弱基座模型规划差、上下文短、工具用不稳，角色分解补规划、curated 检索补知识，所以当年合理；如今这些能力被通用 harness 吸收，专用架子边际贡献趋近于零。",
+    "must_have": [
+      "自我批评",
+      "反思",
+      "评审",
+      "执行反馈",
+      "修复"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-05",
+    "role": "dev",
+    "intent": "detail",
+    "question": "实验覆盖哪些基准、成功判据怎么定？为什么论文把定量结论主要压在 FoamBench 上？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "覆盖：FoamBench(110 例)、SimBench(45)、MetaOpenFOAM v1(8)/v2(13)、NL2FOAM(21)、MCP-SIM(12)、FEABench(15)，涉及 OpenFOAM/COMSOL/FEniCS/PyChrono 等求解器。判据用各基准原版：FoamBench 与 FEABench 做数值级检查（FoamBench 要求 agent 解场与参考解的归一化均方误差 NMSE 低于逐例阈值），其余只要生成的 case 跑到达收敛（残差/求解器退出判据）即算成功，不做场级 NMSE。定量结论压在 FoamBench 是因其余套件小（8/12/15 例），一两个 case 之差落在单次运行噪声内，只作描述性。",
+    "must_all": [
+      "FoamBench",
+      "收敛"
+    ],
+    "must_have": [
+      "NMSE",
+      "MCP-SIM",
+      "FEABench",
+      "SimBench",
+      "110"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-06",
+    "role": "dev",
+    "intent": "detail",
+    "question": "在 FoamBench 上，Direct Baseline（最强 harness Claude Opus 4.6）的成功率是多少？原专用系统的纸面数字是多少？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "Claude Opus 4.6 的 Direct Baseline 在 FoamBench 上 96.4%（110 例中过 106），原专用系统（paper 数字）88.2%（过 97）；四个通用 harness 中最弱的 Qwen3.5-Plus 也有 77.2%，GPT-5.5 92.5%、DeepSeek V4 89.3%。MCP-SIM 上四个通用 harness 全部 100%，反超专用系统 91.7%。",
+    "must_all": [
+      "96.4",
+      "88.2"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "96.4"
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "喂领域知识（教程）到底有多大用？FoamBench 上三种模式的数字是什么？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "FoamBench（Claude Opus 4.6 Direct Baseline）：no tutorial 80.9%（89 例）→ optional tutorial（给列表可自行查阅）92.7%→ must-read tutorial（强制先读相关教程）96.4%，no→must-read 是 +15.5 点、论文测到的最强单项干预；optional 模式找回 no→must-read 差距的约 2/3。对比：SimBench 上 must-read 只 +6.7 点（瓶颈是 PyChrono 建模而非语法回忆），MCP-SIM 三模式都 100%（已饱和）。",
+    "must_all": [
+      "80.9",
+      "96.4",
+      "15.5"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "80.9"
+  },
+  {
+    "pdf": "2609.03718v1.pdf",
+    "qid": "03718-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文的所有实验数字都做了多次运行并报告了方差/置信区间吗？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "没有（缺席判断）。Limitations 明确：每个配置只跑 single run、不报告方差或置信区间；MetaOpenFOAM v1/MCP-SIM/FEABench 套件很小，一两例之差落在 run-to-run 噪声内，故把它们当描述性、定量结论压在 FoamBench(110 例) 上。",
+    "must_have": [
+      "单次",
+      "single",
+      "方差",
+      "置信",
+      "没有",
+      "未"
+    ],
+    "must_not": [],
+    "chunk_kw": "single run"
+  }
+]

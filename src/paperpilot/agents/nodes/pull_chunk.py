@@ -20,17 +20,53 @@ L3 · search_l3
 """
 from __future__ import annotations
 
+import os
 from typing import Any
 
 from paperpilot.agents.document_cache import (ordered_chunks, section_chunks,
                                               section_from_path)
 from paperpilot.agents.embedder import ChunkIndex
 from paperpilot.agents.state import QAState
+from paperpilot.tools import llm
 
 MAX_CENTERS = 2
 MAX_RADIUS = 3
 MAX_L2_CHUNKS = 6
-L3_TOP_K = 8
+L3_TOP_K = 12   # 离线实测：top8 只覆盖 gold 证据的 ~73%，top12 在 ~85% 且上下文可控；改到 12
+
+# 检索侧查询改写（只影响"找"，不改作答口径）。PAPERPILOT_QUERY_REWRITE=0 可关闭做 A/B。
+_REWRITE_SYS = (
+    "你是检索查询改写器。给定一个面向学术论文的问题，生成 2~3 条**仅供检索**的查询变体。\n"
+    "规则：\n"
+    "1. 抽取并保留关键实体（数据集/语料名、模型/方法名、指标、语言、数字等），这是检索的锚；\n"
+    "2. 补同义/上位/常见论文表述（如 'how many utterances' → 'corpus size / number of utterances'；\n"
+    "   'is the dataset multilingual?' → 'dataset language composition'）；\n"
+    "3. 若问题是英文/面向英文论文，变体用英文；口语或长句改短、去虚词；每条 ≤12 词；\n"
+    "4. 变体必须与问题同一语义方向，不要自创新问题。\n"
+    '只输出 JSON：{"queries": ["...", "...", "..."]}'
+)
+
+
+def _rewrite_queries(question: str) -> list[str]:
+    """返回 [原问题, 变体1, 变体2]；改写失败/被禁用时只返回原问题。
+
+    2026-09-07 A/B（40 题，裁判一致）：改写 ON pass=9 vs OFF pass=12——负收益
+    （救回 2 条但弄坏 5 条，含 4 条 OFF 已 pass 被改写带偏），故**默认关闭**；
+    需要时用环境变量 PAPERPILOT_QUERY_REWRITE=1 开启做对照实验。
+    """
+    if os.environ.get("PAPERPILOT_QUERY_REWRITE", "0") != "1":
+        return [question]
+    try:
+        obj = llm.chat_json(_REWRITE_SYS, f"问题：{question}", temperature=0.2)
+        extra = []
+        if isinstance(obj, dict):
+            for q in (obj.get("queries") or []):
+                s = str(q).strip()
+                if s and len(s) <= 200 and s.lower() != question.lower():
+                    extra.append(s)
+        return ([question] + extra)[:3]
+    except Exception:  # noqa: BLE001（改写失败不影响主链路）
+        return [question]
 
 
 def _section_tail(paths: list[str]) -> str:
@@ -206,9 +242,18 @@ def expand_l2(state: QAState) -> dict[str, Any]:
 
 
 def search_l3(state: QAState) -> dict[str, Any]:
-    """L3 独立全文检索：ChunkIndex 对原始问题检索 topK，写 l3_chunks（干净隔离）。"""
+    """L3 独立全文检索：ChunkIndex 对原始问题检索 topK，写 l3_chunks（干净隔离）。
+
+    2026-09-07 改为多查询混合：查询改写（实体/同义变体）+ 原问题，search_multi_hybrid
+    （向量+BM25 × 多查询 RRF）；PAPERPILOT_QUERY_REWRITE=0 可回退单查询 hybrid 做 A/B。
+    """
     question = state.get("question") or ""
-    hits = ChunkIndex(state.get("pdf") or "").search(question, top_k=L3_TOP_K)
+    idx = ChunkIndex(state.get("pdf") or "")
+    queries = _rewrite_queries(question)
+    if len(queries) > 1:
+        hits = idx.search_multi_hybrid(queries, top_k=L3_TOP_K)
+    else:
+        hits = idx.search_hybrid(question, top_k=L3_TOP_K)
     l3_chunks: list[dict[str, Any]] = []
     for h in hits:
         l3_chunks.append({

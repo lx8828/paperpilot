@@ -1,0 +1,237 @@
+[
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文研究什么问题？核心主张是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "任务：论文-代码不一致检测（paper-code discrepancy detection，保证研究可复现性）。问题：提交量超过人工审稿能力，单 agent LLM 受限于上下文窗口且只做 paper 侧检测，漏掉只能从代码侧发现的 paper omission，在 SciCoQA 上最佳 recall 仅 46%。主张：Dude——首个双检测多智能体系统，用 paper agent+code agent 分工同时做 paper-oriented 与 code-oriented 检测，并用粒度对齐协商+两级 salience 过滤抑制过解释/过报告带来的假阳性。",
+    "must_have": [
+      "论文",
+      "代码",
+      "不一致",
+      "双检测",
+      "多智能体"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，Dude 是干嘛的？它比『让一个大模型直接看论文和代码找茬』强在哪？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "它自动检查论文写的内容和配套代码是否对得上（比如论文说用了 L2 正则但代码里没有）。强在：不再让一个模型硬啃全文+全代码，而是拆给『看论文的 agent』和『看代码的 agent』分工，两边各找一遍（论文侧能抓冲突和代码缺失，代码侧能抓论文漏写的实现），再用协商和过滤把误报压下去。",
+    "must_have": [
+      "论文",
+      "代码",
+      "对不上",
+      "不一致",
+      "分工",
+      "agent"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Dude 由哪几类 agent 组成？三个检测阶段各做什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "四类专用 agent：claimer（发起/初始化研究主张）、verifier（验证一致性）、negotiator（协商修正）、orchestrator（协调+汇总报告）。三阶段：(1) paper-oriented 检测——paper claimer 从论文抽取描述 D_i（必要时用 web 检索外部知识精化），code verifier 用 grep/glob/read 在代码库找对应实现并判定 matched/partial/mismatch/unfound；(2) code-oriented 检测——反向：code claimer 从代码库抽取显著实现，paper verifier 回论文找对应描述验证；(3) report generation——orchestrator 合并 paper 侧主张 R_p 与 code 侧主张 R_c，按匹配结果+来源判定 discrepancy 类型生成最终报告。",
+    "must_all": [
+      "claimer",
+      "verifier",
+      "orchestrator"
+    ],
+    "must_have": [
+      "negotiator",
+      "论文",
+      "代码"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "『粒度对齐协商（granularity-aligned negotiation）』具体怎么运转？解决什么问题？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "解决论文自然语言描述与代码语言实现之间的『粒度不对称』：verifier 可能对高层 paper 描述过度解释（over-interpretation）导致假匹配。机制：checklist 记录每条主张 explanation 是否 valid；paper negotiator 先检查 explanation，发现过度解释就用论文原文精化描述 D_i；code negotiator 按精化后的描述重新定位代码实现、复验一致性并更新 matching result 与 explanation；orchestrator 控制轮次，直到全部 valid 或达到最大轮数（默认 r=2）停止。",
+    "must_all": [
+      "协商",
+      "粒度"
+    ],
+    "must_have": [
+      "checklist",
+      "过度解释",
+      "paper",
+      "code",
+      "精化"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-U2",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "论文说的『两级显著性过滤（two-stage salience filtering）』到底在滤什么？为什么要滤两遍？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "滤掉多智能体系统『过报告』出来的琐碎/无关主张，抑制假阳性。第一级在 code claim 生成时做 anchor-guided filtering：用分类别的领域知识当锚点，帮 code claimer 判断哪些代码实现算『显著』值得报；第二级在一致性验证时做 relevance-based filtering：paper verifier 判断实现与当前论文是否相关（同一实现如 INT8 量化在模型压缩论文里关键、在注意力架构论文里琐碎），滤掉与论文无关的琐碎主张。滤两遍是因为『重要性』既取决于代码本身也取决于具体论文语境。",
+    "must_all": [
+      "相关",
+      "琐碎"
+    ],
+    "must_have": [
+      "显著性",
+      "过滤",
+      "锚点",
+      "anchor",
+      "假阳性"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-04",
+    "role": "dev",
+    "intent": "concept",
+    "question": "论文里的三类不一致（paper-code conflict / code omission / paper omission）分别指什么？为什么 paper omission 对单 agent 方法最难？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "paper-code conflict：论文描述与代码实现直接冲突（如论文称用了 L2 正则而代码没有/实现不一致，含 partial/mismatch）；code omission：论文明确写了某主张（如用了 batch norm），代码里找不到对应实现（unfound 且来自 paper 侧）；paper omission：代码里有显著实现但论文没写/描述无依据（unfound 且来自 code 侧）。paper omission 只能从代码侧观察，单 agent 默认走 paper→code 方向自然漏掉它。",
+    "must_have": [
+      "冲突",
+      "遗漏",
+      "omission",
+      "unfound",
+      "代码"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-05",
+    "role": "dev",
+    "intent": "detail",
+    "question": "Dude 的实验设置是什么：在哪些数据/模型上评测、用什么裁判、对比哪些基线？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "数据：SciCoQA（现有唯一论文-代码不一致数据集）+ 自选 20 篇 ICML 2025/ICLR 2026 有公开代码的论文。模型：GPT-5.4、DeepSeekV4-Pro、Kimi、Claude-4.6 四种 backbone；用 Gemini-3.1 Pro 做 LLM-as-a-Judge，按 SciCoQA 标注算 recall/precision/F1。基线：Single-LM、Prompt-LM（单 agent 提示做双检测）、Vanilla-MA（多 agent 双检测）、Multi-Agent Debate (MAD)。默认协商轮数 r=2，所有 agent 默认同模型。",
+    "must_all": [
+      "SciCoQA",
+      "Gemini"
+    ],
+    "must_have": [
+      "GPT-5.4",
+      "Single-LM",
+      "Vanilla-MA",
+      "MAD",
+      "20"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-06",
+    "role": "dev",
+    "intent": "detail",
+    "question": "相比基线，Dude 在 SciCoQA 上的 recall、precision、F1 各自最多提升了多少？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "最多提升：recall 22.8%、precision 9.0%、F1 18.7%（相对 Single-LM，GPT-5.4 与 DeepSeek-V4 两设置下均一致胜出）。",
+    "must_all": [
+      "22.8",
+      "9.0",
+      "18.7"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "22.8"
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "多智能体一般更费 token，Dude 为什么能把 token 开销压到多智能体方法里最低？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "两个设计：(1) 所有 paper agent 与 code agent 之间只通过结构化 JSON 文件通信，大幅降低多智能体交互的 token 成本；(2) 维护所有已检索过的论文/代码片段记录，避免 agent 对同一内容重复检索浪费 token。因此 Dude 的额外 token 开销在全部多智能体方法中最低（但仍高于单 agent 基线）。",
+    "must_have": [
+      "JSON",
+      "通信",
+      "检索",
+      "记录",
+      "token"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.03416v1.pdf",
+    "qid": "03416-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "论文在最新最强的 backbone（如 GPT-5.5、Claude-Opus-4.7）上对所有基线做了全量评测吗？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "没有（缺席判断）。Limitations 明确说明：由于最新模型推理成本过高，未能用所有 LLM 提供商的最新 backbone（GPT-5.5、Claude-Opus-4.7）评测全部基线方法，留作 future work。",
+    "must_have": [
+      "GPT-5.5",
+      "Claude-Opus-4.7",
+      "成本",
+      "未能",
+      "future"
+    ],
+    "must_not": [],
+    "chunk_kw": "GPT-5.5"
+  }
+]

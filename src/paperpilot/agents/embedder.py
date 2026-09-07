@@ -262,6 +262,47 @@ class ChunkIndex:
             })
         return hits
 
+    def search_multi_hybrid(self, queries: list[str], top_k: int = 8) -> list[dict[str, Any]]:
+        """多 query × 向量+BM25 混合，全部按 RRF 融合成一份 top_k（查询改写主用）。
+
+        对每个查询同时累积"向量位次"与"BM25 位次"的 RRF 分；最后按 RRF 取 top_k。
+        命中结构与 search_hybrid 一致（score 存平均向量 cosine）。
+        """
+        chunks = self._doc_chunks()
+        vecs = self.vectors()
+        n = len(chunks)
+        if n == 0:
+            return []
+        texts = [c.text for c in chunks]
+        rrf = np.zeros(n, dtype="float64")
+        avg = np.zeros(n, dtype="float64")
+        bm_idx = BM25Index(texts)
+        used = 0
+        for q in queries:
+            if not q:
+                continue
+            used += 1
+            qv = encode_query(q)
+            v = (vecs @ qv).astype("float64")
+            b = np.asarray(bm_idx.score(q), dtype="float64")
+            for r, i in enumerate(np.argsort(-v)):
+                rrf[int(i)] += 1.0 / (60 + r + 1)
+                avg[int(i)] += float(v[int(i)])
+            for r, i in enumerate(np.argsort(-b)):
+                rrf[int(i)] += 1.0 / (60 + r + 1)
+        order = np.argsort(-rrf)[: min(top_k, n)]
+        hits = []
+        for i in order:
+            c = chunks[int(i)]
+            hits.append({
+                "chunk_id": c.chunk_id,
+                "title_path": list(c.title_path),
+                "page": c.page_span[0],
+                "text": c.text,
+                "score": round(float(avg[int(i)]) / max(used, 1), 4),
+            })
+        return hits
+
     def search_hybrid(self, query: str, top_k: int = 8) -> list[dict[str, Any]]:
         """向量 + BM25 RRF 融合检索（专名/术语精确匹配互补）。
 

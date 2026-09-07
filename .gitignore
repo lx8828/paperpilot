@@ -52,6 +52,12 @@ qa/_*.json
 qa/_*.ps1
 qa/_*.err
 
+# ── 2026-09-07 标准版收尾：整夜原始数据与本地归档不入库 ──
+qa/qasper_overnight_full_*.json
+qa/qasper_overnight_w*.jsonl
+qa/_archive/
+qa/_scratch/
+
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db
 .DS_Store

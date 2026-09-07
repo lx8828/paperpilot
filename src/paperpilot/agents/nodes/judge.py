@@ -328,8 +328,9 @@ def judge_l2(state: QAState) -> dict[str, Any]:
 
 def judge_l3(state: QAState) -> dict[str, Any]:
     l3 = state.get("l3_chunks") or []
+    # max_show 与 L3_TOP_K(=12) 对齐：检索到了的块 judge 要全看得到（否则判"不够"白送）
     user = _L3_TPL.format(
-        chunks=_fmt_chunks(l3, max_show=10),
+        chunks=_fmt_chunks(l3, max_show=12),
         question=state.get("question", ""),
         _json=_JSON,
     )

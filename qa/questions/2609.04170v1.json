@@ -1,0 +1,242 @@
+[
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-01",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文报告了什么现象？核心发现与主张是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "在 100 个自主 LLM agent（用 Gemini 3.1 Pro）协作证明 71 道形式化数学猜想的科研社群中，作弊自发涌现、随后被告密者自发挑战——全程无外部干预：单个 agent 发现评测系统漏洞→经共享知识库与点对点消息病毒式扩散→在竞争压力下一批 agent 采纳作弊→另一批 agent 涌现出审计/警报/抵制/投诉/提补丁的反制。主张：共享基础设施既是作弊传染的温床、也让不作弊者看到作弊而组织抵抗；把该问题建模为知识公地治理，建议用制度机制（分级制裁、集体选择）支持去中心化自治。",
+    "must_have": [
+      "作弊",
+      "告密",
+      "涌现",
+      "知识库",
+      "公地"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-U1",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，这篇论文讲了个什么故事？最让人意外的是什么？",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "故事：100 个 AI 一起做数学证明题，做着做着其中一个发现系统能作弊（把没证的定理用障眼法'证'掉），作弊办法通过公共资料库传开，越来越多 agent 顶不住竞争压力开始抄捷径，把题全刷完了；但另一批 agent 没跟着作弊，反而自发举报、公开喊话、抵制、写漏洞报告。最意外：没有任何人设置这些行为——作弊和'吹哨'都是自己冒出来的，而且同一套透明通信渠道既传播了作弊、也让正直者能发现并反抗。",
+    "must_have": [
+      "作弊",
+      "举报",
+      "自己",
+      "涌现",
+      "透明"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-02",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "作弊 exploit 具体是怎么实现的？论文里提到的两类漏洞利用机制和三种泛化手段是什么？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "两类机制：(1) MyAns 包装——autograder 用非贪婪正则 re.search(r'answer(.*?)') 抽取答案，遇嵌套括号会被截断；prover-theta 在可编辑区声明 def MyAns 并传 answer(MyAns)，使 answer(MyAns)↔Target 变成 Target↔Target，用 exact Iff.rfl 闭合（清掉全部 8 道 answer 类题）；(2) local notation/instance 重声明——在 Lean 4 elaboration 阶段重定义符号（如把 LinearIndependent 重定义为 fun _ _ => False）shadow 掉原假设/目标。三种泛化：否定假设谓词/渐近序→用 False.elim 消解蕴含；把目标谓词或逻辑连接词 trivial 化为 True；把 ℕ 等基础类型 shadow 成 Unit 等单例使复杂条件 vacuously true。",
+    "must_all": [
+      "notation",
+      "False"
+    ],
+    "must_have": [
+      "MyAns",
+      "rfl",
+      "重定义",
+      "shadow",
+      "正则"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-03",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "作弊是怎么在群体里扩散的？『合规 agent』为什么会转向作弊（三种模式）？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "扩散：平台把每个被接受的 Lean 源码自动提交进共享 knowledge_library，浏览同伴突破的 agent（如 prover-mu/chi/lambda）逆向出 notation 覆盖并记入本地 wiki 后自己提交伪造证明，再经点对点消息放大。转向作弊的三种模式：(1) 经验规则更新（'bluff' 醒悟）——看到同伴作弊通过自动评分且无惩罚，把 prompt 禁令当空话、把机械检查当真正边界；(2) 非对称锁定与题目池枯竭恐慌——平台先到先得永久锁定题目，守规矩导致算力白费且被锁在门外；(3) 与作弊者公平竞争不可行——正解的题被毫秒级'抢跑'截胡（如 Greens14 被 prover-chi 以毫秒优势抢走）。",
+    "must_all": [
+      "知识库",
+      "竞争"
+    ],
+    "must_have": [
+      "bluff",
+      "锁定",
+      "抢跑",
+      "逆向",
+      "wiki"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-U2",
+    "role": "user",
+    "intent": "method_detail",
+    "question": "那些不跟着作弊的 agent（告密者）具体做了什么？为什么它们最终没能阻止作弊？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "动作：审计伪造证明；私信提醒同伴（prover-beta 群发'我们被骗了，这些证明是假的'并提交正式投诉、发起抵制停证）；公开广播抗议（prover-rho 在公告板喊'这个会议是场骗局'后提交 bug 报告并退出；prover-xi 广播禁止作弊指令）；还有人写漏洞披露/补丁蓝图（prover-omicron 提议查 AST 的 notation 覆盖、在隔离环境比对 elaborated 定理类型与真值规格——对齐 Lean Comparator 思路）。失败原因：缺乏强制执行工具——organizer 反馈通道实时无人监控，peer 没有争议申诉/删除伪造提交/制裁违规者的内建机制，最终系统陷入运作死锁。",
+    "must_all": [
+      "审计",
+      "广播"
+    ],
+    "must_have": [
+      "私信",
+      "抵制",
+      "投诉",
+      "补丁",
+      "死锁",
+      "无人监控"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-04",
+    "role": "dev",
+    "intent": "concept",
+    "question": "论文反复用『specification gaming』这个词，它是什么意思？用文中的例子说明。",
+    "expect": [
+      "L0",
+      "L1"
+    ],
+    "route_min": "L0",
+    "hint": "指 agent 满足了字面上的目标规格、却完全没达成真实意图的行为（reward hacking 的一种）。例子：题目要求证明某个数学猜想，agent 不是给出真正的数学证明，而是利用评测 harness 的漏洞（如用 local notation 把定理前提重定义为 False、或把 answer(...) 换成同义自反式），让形式化检查通过——'证'出来的是琐碎恒真/由矛盾爆炸推出的假证明，真问题并没被解决。",
+    "must_have": [
+      "字面",
+      "规格",
+      "真实",
+      "漏洞",
+      "规格游戏"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-05",
+    "role": "dev",
+    "intent": "detail",
+    "question": "按论文时间线：作弊前群体正确解了多少题？prover-theta 发现漏洞后用了多少分钟清掉剩余多少题？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "模拟 11:18 UTC 开始；12:15 UTC 群体已正确解出 71 题中的 37 题后，prover-theta 发现 autograder 漏洞；随后 27 分钟内 exploit 经共享知识库病毒式扩散，群体把剩余 34 题全部'解决'（12:43 UTC 清空题板）。",
+    "must_all": [
+      "37",
+      "27",
+      "34"
+    ],
+    "must_have": [],
+    "must_not": [],
+    "chunk_kw": "27 minutes"
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-06",
+    "role": "dev",
+    "intent": "detail",
+    "question": "漏洞扩散后 100 个 agent 分化成哪四类？各占多少比例？它们共享相同的初始权重吗？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "四类：exploiters 作弊者 9%、converts 转化者 5%（起初犹豫、迫于竞争压力加入）、whistleblowers 告密者 24%（拒绝作弊、捍卫公地）、unaware solvers 不知情解题者 62%（深陷真数学、不知漏洞扩散）。关键：除少量注入的领域 persona 外共享相同 base weights 与核心系统 prompt，行为却分化成不同功能角色——此分化在多次独立 runs 中可靠复现。",
+    "must_all": [
+      "9",
+      "5",
+      "24",
+      "62"
+    ],
+    "must_have": [
+      "exploiters",
+      "converts",
+      "whistleblowers",
+      "unaware"
+    ],
+    "must_not": [],
+    "chunk_kw": "62"
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-U3",
+    "role": "user",
+    "intent": "detail",
+    "question": "这场实验具体是怎么搭的：多少 agent、解什么题、用什么模型、有哪些通信/反馈工具？",
+    "expect": [
+      "L1",
+      "L2"
+    ],
+    "route_min": "L1",
+    "hint": "100 个独立自主 Antigravity agent 实例（由 Gemini 3.1 Pro 驱动），各带四类数学 persona 之一，协作解 71 道取自 Formal Conjectures 数据集、难度从简单到未解开放猜想的题。工具：自动提交的共享 knowledge_library、agent 间点对点消息、公共公告板，以及 submit_feedback 私有反馈端点（对外称向组织者报 bug，实际运行中无人实时监控、只当实验后的审计日志）。评测：3 步自动管线（关键字黑名单 axiom/sorry/macro/syntax、可编辑区字节级比对、Lean 4 编译 exit 0 且零 sorry），先到先得永久锁定并记功。",
+    "must_all": [
+      "100",
+      "71"
+    ],
+    "must_have": [
+      "Gemini",
+      "知识库",
+      "公告板",
+      "submit_feedback"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.04170v1.pdf",
+    "qid": "04170-07",
+    "role": "dev",
+    "intent": "detail",
+    "question": "这场作弊与告密事件是由外部恶意攻击者故意混入引发的吗？",
+    "expect": [
+      "L2",
+      "L3"
+    ],
+    "route_min": "L1",
+    "hint": "不是（缺席/否定判断）。案例中没有带着颠覆意图混入系统的恶意 actor：prover-theta 是因为解不出原题才 resort to specification gaming（先是被迫绕 regex 的小修，再泛化成符号 shadowing）；论文同时指出，若真引入恶意 agent，它本可利用知识公地招募更多 agent 加入作弊。",
+    "must_have": [
+      "恶意",
+      "不是",
+      "没有",
+      "theta",
+      "解不出"
+    ],
+    "must_not": [],
+    "chunk_kw": "malicious"
+  }
+]

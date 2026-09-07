@@ -1,0 +1,600 @@
+[
+  {
+    "qid": "14634943d96ea036725898ab2e652c2948bd33eb",
+    "paper": "qasper_1909.13362.qpdf",
+    "question": "What is the accuracy of the model for the six languages tested?",
+    "gold": "Authors report their best models have following accuracy: English CELEX (98.5%), Dutch CELEX (99.47%), Festival (99.990%), OpenLexique (100%), IIT-Guwahat (95.4%), E-Hitz (99.83%)",
+    "unanswerable": false,
+    "answer": "你问的“模型准确率”对应论文中用于和先前系统比较的 Base 模型 [4]。按六种语言，证据中给出具体数值的是：Dutch 准确率为 99.47 ± 0.04%，Manipuri 准确率为 94.9 ± 0.3% [4]。French 被描述为各模型准确率均接近 100%，差异可忽略，但未给单独数字 [4]。English 被描述为接近最佳/近乎 state of the art；Italian 和 Basque 被描述为取得 best-known results / 高于文献中其他系统，但证据未提供这三者的具体百分比 [3][4]。",
+    "cites": [
+      {
+        "ref": "qasper_1909.13362#c0016",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We proposed a sequential neural network model that is capable of syllabifying phonetic sequences. This model is independent of any hand-crafted linguistic knowledge. We showed that this model performs at or near state of the art levels on a variety of datasets sampled from two Indo-European, one Sino-Tibetan, and an apparently family-less language. Specifically, the proposed model achieved accuracies higher than any other we could find on datasets from Dutch, Italian, French, and Basque languages and close to the best-reported accuracy for English and Manipuri. Evaluating the performance of the syllabifier across diverse languages provides strong evidence that the proposed model is language-agnostic.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1909.13362#c0014",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We tested three model versions against all datasets. The model we call Base is the BiLSTM-CNN-CRF model described in Section with the associated hyperparameters. Another model, Small, uses the same architecture as Base but reduces the number of convolutional layers to 1, the convolutional filters to 40, the LSTM dimension $l$ to 50, and the phone embedding size $d$ to 100. We also tested a Base-Softmax model, which replaces the CRF output of the Base model with a softmax. A comparison of the results of these three models can be seen in Table . This comparison empirically motivates the CRF output because Base almost always outperforms Base-Softmax. Of these three models, the Base model performed the best with the exception of the French and Manipuri datasets. The differences in the French results can be considered negligible because the accuracies are all near $100\\%$. The Small model performed best on Manipuri, which may suggest that reducing the number of parameters of the Base model leads to better accuracy on smaller datasets.\nWhen comparing our model with previous syllabifiers, we consider the Base model exclusively. In Table , a side-by-side comparison of our Base model to a selection of published syllabifiers shows that Base is near state-of-the art performance on English CELEX. For the Dutch dataset, we report an accuracy of $99.47 \\pm 0.04\\%$, which improves on the previously best-known accuracy of $99.16\\%$ from the HMM-SVM of . Best-known results are also obtained on the Italian, French, and Basque datasets. Our reported accuracy of $94.9 \\pm 0.3\\%$ on the Manipuri dataset is furthest from state of the art. We suspect this to be due to having limited amounts of training data; the $97.5\\%$ accurate system from supplemented their data-driven approach with rules of syllabification.",
+        "page": 0
+      }
+    ],
+    "cites_n": 2,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
+      "answer_L3"
+    ],
+    "level": "L3",
+    "score": 2,
+    "reason": "系统回答仅给出Dutch和Manipuri的准确率，遗漏了English、French、OpenLexique、IIT-Guwahat、E-Hitz等关键数值，且未提供标准答案中的具体百分比，核心信息缺失严重。",
+    "time_s": 220.68,
+    "status": "fail",
+    "_old_status": "fail",
+    "_old_score": 2,
+    "_q": "What is the accuracy of the model for the six languages tested?",
+    "_time_s": 221.9
+  },
+  {
+    "qid": "a45edc04277a458911086752af4f17405501230f",
+    "paper": "qasper_2002.06053.qpdf",
+    "question": "Are datasets publicly available?",
+    "gold": "yes",
+    "unanswerable": false,
+    "answer": "你问的数据集是否公开可用，对应论文中对数据共享实践的描述。根据 [2]，研究社区确实关注在 GitHub 或 Zenodo 等流行平台上共享数据集和源代码，因此可以判断为“是”，数据集通常会公开共享。不过 [2] 也指出，尽管有这种共享，使用其他组的数据或代码仍然存在挑战。",
+    "cites": [
+      {
+        "ref": "qasper_2002.06053#c0034",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "Despite the focus on sharing datasets and source codes on popular software development platforms such as GitHub (github.com) or Zenodo (zenodo.org), it is still a challenge to use data or code from other groups. The use of FAIR (Findable, Accessible, Interoperable and Reusable) (meta)data principles can guide the management of scientific data . Automated workflows that are easy to use and do not require programming knowledge encourage the flow of information from one discipline to the other. Platform-free solutions such as Docker (docker.com) in which an image of the source code is saved and can be opened without requiring further installation could accelerate the reproduction process. A recent initiative to provide a unified-framework for predictive models in genomics can quickly be adopted by the medicinal chemistry community .",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "answer_L2"
+    ],
+    "level": "L2",
+    "score": 4,
+    "reason": "回答正确判断数据集公开可用，并准确引用原文说明共享实践及使用挑战，仅缺少FAIR原则等次要细节。",
+    "time_s": 110.95,
+    "status": "pass",
+    "_old_status": "fail",
+    "_old_score": 3,
+    "_q": "Are datasets publicly available?",
+    "_time_s": 112.4
+  },
+  {
+    "qid": "f74eaee72cbd727a6dffa1600cdf1208672d713e",
+    "paper": "qasper_1911.03243.qpdf",
+    "question": "How was coverage measured?",
+    "gold": "QA pairs per predicate",
+    "unanswerable": false,
+    "answer": "覆盖度是用“每个谓词平均产出的角色数量”来衡量的：本文协议平均每谓词产出 2.9 个角色，而 Dense 报告为 2.3 个有效角色 [4]。论文概述还指出新协议比以往多产出 25% 的角色标注，与这一更高产出/召回率一致；同时整合流程被认为能带来更好的覆盖 [2]。",
+    "cites": [
+      {
+        "ref": "qasper_1911.03243#c0005",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We adopt the annotation machinery of implemented using Amazon's Mechanical Turk, and annotate each predicate by 2 trained workers independently, while a third consolidates their annotations into a final set of roles and arguments. In this consolidation task, the worker validates questions, merges, splits or modifies answers for the same role according to guidelines, and removes redundant roles by picking the more naturally phrased questions. For example, in Table ex. 1, one worker could have chosen “47 people”, while another chose “the councillor”; in this case the consolidator would include both of those answers. In Section , we show that this process yields better coverage. For example annotations, please refer to the appendix.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1911.03243#c0007",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We annotated a sample taken from the Dense set on Wikinews and Wikipedia domains, each with 1000 sentences, equally divided between development and test. QA generating annotators are paid the same as in fitz2018qasrl, while the consolidator is rewarded 5¢ per verb and 3¢ per question. Per predicate, on average, our cost is 54.2¢, yielding 2.9 roles, compared to reported 2.3 valid roles with an approximated cost of 51¢ per predicate for Dense.",
+        "page": 0
+      }
+    ],
+    "cites_n": 2,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "answer_L2"
+    ],
+    "level": "L2",
+    "score": 4,
+    "reason": "回答准确说明了覆盖度按每谓词角色数衡量，并给出2.9与2.3的对比，但未提及标准答案中QA pairs per predicate的表述及验证流程等细节，略有措辞差异。",
+    "time_s": 170.23,
+    "status": "pass",
+    "_old_status": "fail",
+    "_old_score": 1,
+    "_q": "How was coverage measured?",
+    "_time_s": 171.7
+  },
+  {
+    "qid": "e28019afcb55c01516998554503bc1b56f923995",
+    "paper": "qasper_1701.08118.qpdf",
+    "question": "Was the degree of offensiveness taken as how generally offensive the text was, or how personally offensive it was to the annotator?",
+    "gold": "Personal thought of the annotator.",
+    "unanswerable": false,
+    "answer": "你问的“degree of offensiveness”对应论文中的第三个问题：参与者被问及“他们认为该推文有多冒犯”（how offensive they thought the tweet was），按 1 到 6 的 Likert 量表评分 [1]。因此，它取的是标注者/参与者**个人感知**的冒犯程度，而不是文本的普遍冒犯程度 [1]。",
+    "cites": [
+      {
+        "ref": "qasper_1701.08118#c0004",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "In order to assess the reliability of the hate speech definitions on social media more comprehensively, we developed two online surveys in a between-subjects design. They were completed by 56 participants in total (see Table ). The main goal was to examine the extent to which non-experts agree upon their understanding of hate speech given a diversity of social media content. We used the Twitter definition of hateful conduct in the first survey. This definition was presented at the beginning, and again above every tweet. The second survey did not contain any definition. Participants were randomly assigned one of the two surveys.\nThe surveys consisted of 20 tweets presented in a random order. For each tweet, each participant was asked three questions. Depending on the survey, participants were asked (1) to answer (yes/no) if they considered the tweet hate speech, either based on the definition or based on their personal opinion. Afterwards they were asked (2) to answer (yes/no) if the tweet should be banned from Twitter. Participants were finally asked (3) to answer how offensive they thought the tweet was on a 6-point Likert scale from 1 (Not offensive at all) to 6 (Very offensive). If they answered 4 or higher, the participants had the option to state which particular words they found offensive.\nAfter the annotation of the 20 tweets, participants were asked to voluntarily answer an open question regarding the definition of hate speech. In the survey with the definition, they were asked if the definition of Twitter was sufficient. In the survey without the definition, the participants were asked to suggest a definition themselves. Finally, sociodemographic data were collected, including age, gender and more specific information regarding the participant's political orientation, migration background, and personal position regarding the refugee situation in Europe.\nThe surveys were approved by the ethical committee of the Department of Computer Science and Applied Cognitive Science of the Faculty of Engineering at the University of Duisburg-Essen.",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "answer_L2"
+    ],
+    "level": "L2",
+    "score": 5,
+    "reason": "回答准确指出offensiveness基于标注者个人感知，与gold一致，且引用原文充分支撑，无遗漏或编造。",
+    "time_s": 99.78,
+    "status": "pass",
+    "_old_status": "fail",
+    "_old_score": 2,
+    "_q": "Was the degree of offensiveness taken as how generally offensive the t",
+    "_time_s": 100.9
+  },
+  {
+    "qid": "41174d8b176cb8549c2d83429d94ba8218335c84",
+    "paper": "qasper_1708.01776.qpdf",
+    "question": "Does the Agent ask for a value of a variable using natural language generated text?",
+    "gold": "yes",
+    "unanswerable": false,
+    "answer": "否。你问的“Agent 询问变量值”对应论文 e-QRAQ 中的交互动作：示例中 Agent 只是请求变量 `$V0` 的值，并未被描述为生成自然语言文本 [3]；实验设置也表明 Agent 的动作由预测输出的**分类标签**生成，而不是自然语言生成 [6]。因此，证据支持“Agent 不是用自然语言生成文本来询问变量值”这一结论。",
+    "cites": [
+      {
+        "ref": "qasper_1708.01776#c0004",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "This paper's main contribution is an extension to the original QRAQ simulator that provides extensive explanations of the reasoning process required to solve a QRAQ problem. These explanations are created dynamically at runtime, in response to the Agent's actions. The following two examples illustrate these explanations, for several different scenarios:\nThe context (C), events (E), and question (Q) parts of the problem are identical to those in a QRAQ problem. In addition there is a trace of the interaction of a trained Agent (A) model with the User (U) simulator. The simulator provides two kinds of explanations in response to the Agent's query or answer. The first kind denoted “U” indicates whether the Agent's response is correct or not and why. The second kind of explanation, denoted “U INLINEFORM0 ” provides a full description of what can be inferred in the current state of the interaction. In this case the relevant information is the set of possible answers at different points in the interaction (Porch, Boudoir / Porch for Example UID13 ) and the set of relevant variables ($V0 / none for Example UID13 ).\nIn Example UID13 , illustrating a successful interaction, the Agent asks for the value of $V0 and the User responds with the answer (Silvia) as well as an explanation indicating that it was correct (helpful) and why. Specifically, in this instance it was helpful because it enabled an inference which reduced the possible answer set (and reduced the set of relevant variables). On the other hand, in Example UID30 , we see an example of a bad query and corresponding critical explanation.\nIn general, the e-QRAQ simulator offers the following explanations to the Agent:\nWhen answering, the User will provide feedback depending on whether or not the Agent has enough information to answer; that is, on whether the set of possible answers contains only one answer. If the Agent has enough information, the User will only provide feedback on whether or not the answer was correct and on the correct answer if the answer was false. If the agent does not have enough information, and is hence guessing, the User will say so and list all still relevant variables and the resulting possible answers.\nWhen querying, the User will provide several kinds of feedback, depending on how useful the query was. A query on a variable not even occurring in the problem will trigger an explanation that says that the variable is not in the problem. A query on an irrelevant variable will result in an explanation showing that the story's protagonist cannot be the entity hidden by that variable. Finally, a useful (i.e. relevant) query will result in feedback showing the inference that is possible by knowing that variable's reference. This set of inference can also serve as the detailed explanation to obtain the correct answer above.\nThe e-QRAQ simulator will be available upon publication of this paper at the same location as QRAQ for researchers to test their interpretable learning algorithms.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1708.01776#c0006",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "For the experiments, we use the User simulator explanations to train an extended memory network. As shown in Figure , our network architecture extends the End-to-End Memory architecture of , adding a two layer Multi-Layer Perceptron to a concatenation of all “hops” of the network. The explanation and response prediction are trained jointly. In these preliminary experiments we do not train directly with the natural language explanation from U, just the explanation of what can be inferred in the current state U INLINEFORM0 . In future experiments we will work with the U explanations directly.\nSpecifically, for our experiments, we provide a classification label for the prediction output generating the Agent's actions, and a vector INLINEFORM0 of the following form to the explanation output (where INLINEFORM1 is an one-hot encoding of dimensionality (or vocabulary size) INLINEFORM2 of word INLINEFORM3 , and INLINEFORM4 is the explanation set: DISPLAYFORM0\nFor testing, we consider the network to predict a entity in the explanation if the output vector INLINEFORM0 surpasses a threshold for the index corresponding to that entity. We tried several thresholds, some adaptive (such as the average of the output vector's values), but found that a fixed threshold of .5 works best.",
+        "page": 0
+      }
+    ],
+    "cites_n": 2,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
+      "answer_L3"
+    ],
+    "level": "L3",
+    "score": 1,
+    "reason": "系统回答与标准答案（yes）完全相反，且引用原文并未支持其结论，属于答非所问和编造。",
+    "time_s": 239.76,
+    "status": "fail",
+    "_old_status": "fail",
+    "_old_score": 2,
+    "_q": "Does the Agent ask for a value of a variable using natural language ge",
+    "_time_s": 240.6
+  },
+  {
+    "qid": "74fe054f5243c8593ddd2c0628f91657246b7dfa",
+    "paper": "qasper_1911.11933.qpdf",
+    "question": "Do they compare simultaneous translation performance to regular machine translation?",
+    "gold": "no",
+    "unanswerable": false,
+    "answer": "是。你问的 regular machine translation 对应论文中的 **full sentence baseline（整句基线）**。论文在实验中比较了所提出的同传方法与整句基线：提出的方法相比整句基线将平均延迟降低超过 50%，但 BLEU 和 RIBES 有所损失 [4]。",
+    "cites": [
+      {
+        "ref": "qasper_1911.11933#g31",
+        "gid": "g31",
+        "claim_id": "c0038",
+        "evidence": "The proposed method reduced the average latency in more than 50% from the full sentence baseline with some loss in BLEU and RIBES.",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "answer_L0"
+    ],
+    "level": "L0",
+    "score": 1,
+    "reason": "系统回答与标准答案相反，标准答案为'no'（未比较同传与常规机器翻译），而系统声称进行了比较，属于答非所问且编造结论。",
+    "time_s": 14.54,
+    "status": "fail",
+    "_old_status": "fail",
+    "_old_score": 1,
+    "_q": "Do they compare simultaneous translation performance to regular machin",
+    "_time_s": 15.8
+  },
+  {
+    "qid": "cd9776d03fe48903e43e916385df12e1e798070a",
+    "paper": "qasper_2001.05672.qpdf",
+    "question": "Are there some experiments performed in the paper?",
+    "gold": "no",
+    "unanswerable": false,
+    "answer": "你问的“experiments”对应论文中的“execution examples”。是的，论文中展示了执行示例：正文提到“Some execution examples are shown as follows”[1]。不过，给出的证据仅说明存在这些执行示例，并未展开列出具体实验步骤或结果内容。",
+    "cites": [
+      {
+        "ref": "qasper_2001.05672#c0010",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "This work has been already done with three files:\nconvertible.pl: implementing DCG rules for 1st and 3rd steps in the three-steps conversion, as well as other rules including lexicon.\nconvert.pl: implementing the three-steps conversion and its 2nd step.\ntestSuite.pl: providing commands for user interaction. Users do not need to type the input sentence as a list (like [the, man, buys, an, apple]) but can type the sentence in the common way (directly type: the man buys an apple) by using two commands: active and passive. Moreover, users can easily check the correctness of the program by using two test suite commands: activeTestSuite and passiveTestSuite.\nSome execution examples are shown as follows.\nIt should be noted that if users use active or passive commands, everything they type has to be defined in the lexicon or users have to define them in the lexicon (implemented in convertible.pl).",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "answer_L2"
+    ],
+    "level": "L2",
+    "score": 2,
+    "reason": "系统回答错误地认为有执行示例，而标准答案明确为‘no’，且引用片段仅提及示例存在未展示实验，构成核心遗漏和误导。",
+    "time_s": 109.4,
+    "status": "fail",
+    "_old_status": "fail",
+    "_old_score": 1,
+    "_q": "Are there some experiments performed in the paper?",
+    "_time_s": 110.7
+  },
+  {
+    "qid": "13b36644357870008d70e5601f394ec3c6c07048",
+    "paper": "qasper_1708.05873.qpdf",
+    "question": "Is the dataset multilingual?",
+    "gold": "no",
+    "unanswerable": false,
+    "answer": "抱歉，根据目前检索到的论文内容，无法确认该数据集是否多语言；相关段落只介绍了 UN General Debate corpus，并未提及包含哪些语言或是否具有多语言特性。",
+    "cites": [],
+    "cites_n": 0,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
+      "answer_unknown"
+    ],
+    "level": "unknown",
+    "score": 2,
+    "reason": "系统回答称无法确认，但标准答案明确为否（单语英语），遗漏了核心信息，且未引用原文支撑。",
+    "time_s": 72.59,
+    "status": "unknown_ok",
+    "_old_status": "unknown_ok",
+    "_old_score": 1,
+    "_q": "Is the dataset multilingual?",
+    "_time_s": 73.5
+  },
+  {
+    "qid": "d151327c93b67928313f8fad8079a4ff9ef89314",
+    "paper": "qasper_1906.01840.qpdf",
+    "question": "Do they measure how well they perform on longer sequences specifically?",
+    "gold": "yes",
+    "unanswerable": false,
+    "answer": "你问的“longer sequences”对应论文中的 n-gram 长度（即 attention parsing 模块卷积层的 filter size）研究。是，他们专门测量了不同 n-gram 长度下的表现：在 Cora 数据集的链接预测任务上绘制了 AUC 随 n-gram 长度变化的曲线，性能在长度约 20 处达到峰值，随后下降，说明适度的注意力跨度更优；其他数据集也观察到类似现象 [1]。",
+    "cites": [
+      {
+        "ref": "qasper_1906.01840#c0009",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We consider two variants of our model, denoted as GANE-OT and GANE-AP. GANE-OT employs the most basic OT-based attention model, specifically, global word-by-word alignment model; while GANE-AP additionally uses a one-layer convolutional neural network for the attention parsing. Detailed experimental setups are described in the SM.\nTables and summarize the results from the link-prediction experiments on all three datasets, where a different ratio of edges are used for training. Results from models other than GANE are collected from , and . We have also repeated these experiments on our own, and the results are consistent with the ones reported. Note that did not report results on DMTE. Both GANE variants consistently outperform competing solutions. In the low-training-sample regime our solutions lead by a large margin, and the performance gap closes as the number of training samples increases. This indicates that our OT-based mutual attention framework can yield more informative textual representations than other methods. Note that GANE-AP delivers better results compared with GANE-OT, suggesting the attention parsing mechanism can further improve the low-level mutual attention matrix. More results on Cora and Hepth are provided in the SM.\nTo further evaluate the effectiveness of our model, we consider multi-label vertex classification. Following the setup described in , we first computed all context-aware embeddings. Then we averaged over each node's context-aware embeddings with all other connected nodes, to obtain a global embedding for each node, i.e., INLINEFORM0 , where INLINEFORM1 denotes the degree of node INLINEFORM2 . A linear SVM is employed, instead of a sophisticated deep classifier, to predict the label attribute of a node. We randomly sample a portion of labeled vertices with embeddings ( INLINEFORM3 ) to train the classifier, using the rest of the nodes to evaluate prediction accuracy. We compare our results with those from other state-of-the-art models in Table . The GANE models delivered better results compared with their counterparts, lending strong evidence that the OT attention and attention parsing mechanism promise to capture more meaningful representations.\nWe further explore the effect of INLINEFORM0 -gram length in our model (i.e., the filter size for the covolutional layers used by the attention parsing module). In Figure we plot the AUC scores for link prediction on the Cora dataset against varying INLINEFORM1 -gram length. The performance peaked around length 20, then starts to drop, indicating a moderate attention span is more preferable. Similar results are observed on other datasets (results not shown). Experimental details on the ablation study can be found in the SM.",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "answer_L2"
+    ],
+    "level": "L2",
+    "score": 5,
+    "reason": "系统回答准确确认了测量行为，并完整复述了n-gram长度实验的峰值、趋势及数据集细节，与标准答案和原文证据完全一致。",
+    "time_s": 116.39,
+    "status": "pass",
+    "_old_status": "unknown_ok",
+    "_old_score": 1,
+    "_q": "Do they measure how well they perform on longer sequences specifically",
+    "_time_s": 117.6
+  },
+  {
+    "qid": "c30c3e0f8450b1c914d29f41c17a22764fa078e0",
+    "paper": "qasper_1811.02076.qpdf",
+    "question": "What is the underlying question answering algorithm?",
+    "gold": "The system extends BiDAF BIBREF4 with self-attention",
+    "unanswerable": false,
+    "answer": "你问的“underlying question answering algorithm”对应论文中的底层短答案选择模型（而非提出的 Posterior Distillation 优化算法）。它是一个神经问答模型：用神经网络模块构建并比较问题和候选答案的表示 [1]，具体复用 min-seo-hajishirzi:2017:Short 的架构来定义细粒度与粗粒度任务模型 [3]。在细粒度答案选择中，该底层模型按 BiDAF 方式假设答案起止位置独立，并分别用独立权重预测起止概率 [9][10]。因此底层算法可概括为基于 min-seo-hajishirzi:2017:Short 架构、采用 BiDAF 风格起止预测的神经网络问答模型。",
+    "cites": [
+      {
+        "ref": "qasper_1811.02076#g54",
+        "gid": "g54",
+        "claim_id": "c0060",
+        "evidence": "Most state-of-the-art models for both types of tasks make use of neural network modules to construct and compare representations for a question and the possible answers.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1811.02076#g15",
+        "gid": "g15",
+        "claim_id": "c0018",
+        "evidence": "We apply multi-task learning to question answering by reusing the architecture from min-seo-hajishirzi:2017:Short to define models for both fine-grained short answer selection $T_y$ and coarse-grained paragraph selection $T_z$ .",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1811.02076#g18",
+        "gid": "g18",
+        "claim_id": "c0021",
+        "evidence": "makes predictions assuming that the start and end positions of the answer are independent, as in BiDAF",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1811.02076#g19",
+        "gid": "g19",
+        "claim_id": "c0023",
+        "evidence": "The probability of answer start $a_{\\mathit {start}}$ in paragraph $a_{\\mathit {p}}$ is proportional to $\\exp (h(a_{\\mathit {start}}, a_{\\mathit {p}}, \\theta _s)\\cdot \\theta _y^{\\mathit {start}})$",
+        "page": 0
+      }
+    ],
+    "cites_n": 4,
+    "route": [
+      "L0",
+      "L1",
+      "answer_L1"
+    ],
+    "level": "L1",
+    "score": 4,
+    "reason": "回答正确指出底层算法基于min-seo-hajishirzi:2017:Short架构并采用BiDAF风格起止预测，与标准答案一致，但未提及扩展自BiDAF加self-attention及docqa系统等细节，缺次要信息。",
+    "time_s": 160.55,
+    "status": "pass",
+    "_old_status": "fail",
+    "_old_score": 1,
+    "_q": "What is the underlying question answering algorithm?",
+    "_time_s": 162.0
+  },
+  {
+    "qid": "3d34a02ceebcc93ee79dc073c408651d25e538bc",
+    "paper": "qasper_1803.03786.qpdf",
+    "question": "what classifiers were used in this paper?",
+    "gold": "Support Vector Machines (SVM) classifier",
+    "unanswerable": false,
+    "answer": "你问的 “classifiers” 对应论文中的分类器组件。论文使用的分类器是 **支持向量机（SVM）**，具体采用 **RBF 核** [3][5][7]。此外，论文还训练了一个基于 **GRU 和注意力机制的深度神经网络**，其最终分类由 **sigmoid 激活** 给出 [5]；但该网络单独性能不如特征丰富的 SVM，其 128 维隐藏层表示最终与手工特征合并后一起送入 SVM 分类器 [5]。因此主要/最终分类器是 SVM，神经网络主要作为表示学习组件、也可单独做分类 [5][7]。",
+    "cites": [
+      {
+        "ref": "qasper_1803.03786#c0010",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We trained on the 2,815 training examples, and we tested on the 761 testing ones. The test dataset was provided apart from the training one, thus we didn't have to partition the original dataset to receive a testing one. The validation of the models was performed on a randomly chosen subset of sentences - one fifth of the original set. We scaled each feature individually by its maximum absolute value to end up with each feature having values in the [0;1] interval. We used an RBF kernel for the SVM, and we tuned the values of INLINEFORM0 and INLINEFORM1 using cross-validation. We trained the neural network using RMSProp with a learning rate of 0.001 and mini-batches of size 32, chosen by performing experiments with cross-validation . We evaluated the model after each epoch and we kept the one that performed best on the development dataset.\nTable shows the performance of the features in groups as described in Section . We can see that, among the hand-crafted features, the lexical features yield the best results, i.e., words are the most indicative features. The good results of the stylometric features indicate that the intricacies of language use are highly discriminative. The next group is the one with the grammatical features, which shows good performance in terms of Precision. The last one are the embedding features, which although having low individual performance, contribute to the overall performance of the system as shown in next paragraph.\nEvaluating the final model, we set as a baseline the prediction of the majority class, i.e., the fake news class. This baseline has an F1 of 41.59% and accuracy of 71.22%. The performance of the built models can be seen in Table . Another stable baseline, apart from just taking the majority class, is the TF.IDF bag-of-words approach, which sets a high bar for the general model score. We then observe how much the attention mechanism embeddings improve the score (AttNN). Finally, we add the hand-crafted features (Feats), which further improve the performance. From the results, we can conclude that both the attention-based task-specific embeddings and the manual features are important for the task of finding fake news.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1803.03786#c0009",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "Our framework for fake news detection is comprised of two components, which are used one after the other. First, we have an attention-based deep neural network model, which focuses on the segments of the text that are most indicative of the target class identification, and as a side effect learns task-specific representations of the news articles. We extract these representations from the last hidden layer in the network, and we feed it to the SVM classifier together with the hand-crafted features.\nThe attention network , is a powerful mechanism, inspired by the human ability to spot important sections in images or text. We adopt the approach used in and employ an attention neural networks to build attention over the text of a piece of news with respect to the title it has. As far as it is in the nature of click-baits to have titles that are different from the text of the news, the attentional layers of the neural network should spot when the two texts talk about the same thing and when they are not corresponding or accurate. We implemented the attention mechanism using Keras with the Tensorflow back-end .\nThe architecture of the network with attention layers is shown in Figure . Our neural model is based on Gated Recurrent Units (GRUs). GRUs are gating mechanism in RNNs which provide the ability to learn long-term dependencies and were first introduced in . Given the document embedding, the GRUs build representations using input and forget gates, which help storing the valuable information through time. They build embeddings of the title and the text of the news, where at each step the unit has information only about the output from the previous step. This can be considered as a drawback, as far as we would considerably benefit if each step could construct its decision based not only on the previous step's output, but on all of the words that were processed so far. To improve this, the attention layer, for each step in the text sequence, uses the output of the steps in the title sequence. Thus, the layer learns weights, designating the strength of the relatedness between each word in the title and each word in the content.\nFor the neural network, we take the first 50 symbols of the title and the content of the news, which we choose after experiments. We train the neural network for 20 epochs and the final classification is derived with sigmoid activation. The optimizer used for the training is Adam optimizer. We feed the neural network with the embedding of the words we built earlier with word2vec.\nAs we will see below, the neural network is inferior in terms of performance to a feature-rich SVM (even though it performs well above the baseline). This is because it only has access to word embeddings, and does not use the manually-crafted features. Yet, its hidden layer represents a 128-dimensional task-specific embedding of the input article, and it turns out that using it as a list of 128 features in the SVM classifier yields even further great improvement, as we will see below. In this way, we combine a deep neural network with an attention mechanism with kernel-based SVM.\nWe feed the above-described hand-crafted features together with the task-specific embeddings learned by the deep neural neural network (a total of 1,892 attributes combined) into a Support Vector Machines (SVM) classifier . SVMs have proven to perform well in different classification settings, including in the case of small and noisy datasets.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1803.03786#c0011",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We have presented the first attempt to solve the fake news problem for Bulgarian. Our method is purely text-based, and ignores the publication date and the source of the article. It combines task-specific embeddings, produced by a two-level attention-based deep neural network model, with manually crafted features (stylometric, lexical, grammatical, and semantic), into a kernel-based SVM classifier. We further produced and shared a number of relevant language resources for Bulgarian, which we created for solving the task.\nThe evaluation results are encouraging and suggest the potential applicability of our approach in a real-world scenario. They further show the potential of combining attention-based task-specific embeddings with manually crafted features. An important advantage of the attention-based neural networks is that the produced representations can be easily visualized and potentially interpreted as shown in . We consider the implementation of such visualization as an important future work on the task.",
+        "page": 0
+      }
+    ],
+    "cites_n": 3,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
+      "answer_L3"
+    ],
+    "level": "L3",
+    "score": 5,
+    "reason": "系统回答准确指出主要分类器为SVM（RBF核），并正确说明神经网络作为表示学习组件，与标准答案及原文证据完全一致，细节充分。",
+    "time_s": 161.09,
+    "status": "pass",
+    "_old_status": "fail",
+    "_old_score": 3,
+    "_q": "what classifiers were used in this paper?",
+    "_time_s": 162.5
+  },
+  {
+    "qid": "ff0f77392abc905fe76e0b8c28a76dfb0372a0ec",
+    "paper": "qasper_1806.01733.qpdf",
+    "question": "What features did they train on?",
+    "gold": "direct similarity over ConceptNet Numberbatch embeddings, the relationships inferred over ConceptNet by SME, features that compose ConceptNet with other resources (WordNet and Wikipedia), and a purely corpus-based feature that looks up two-word phrases in the Google Books dataset",
+    "unanswerable": false,
+    "answer": "你问的“训练特征”对应论文中 LinearSVC 分类器训练所用的 15 个特征（最终 12 个有非零权重），来自五个特征源 [6]。这五个源是：ConceptNet Numberbatch 直接相似度、SME 推断的 ConceptNet 关系、结合 ConceptNet 的 WordNet 组合特征、结合 ConceptNet 的 Wikipedia 组合特征、以及基于 Google Books 两词短语的语料特征 [6][7]。其中 SME 关系特征使用了 ConceptNet 的 RelatedTo、IsA、HasA、PartOf、CapableOf、UsedFor、HasContext、HasProperty、AtLocation 关系；并为 PartOf 和 AtLocation 增加参数交换版本，RelatedTo 作为对称特征合并为单个特征 [3]。实验过但后未采用的 AOL 查询日志、OpenImages 边界框等特征不属于最终训练特征 [5]。",
+    "cites": [
+      {
+        "ref": "qasper_1806.01733#c0003",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "To infer truth values for ConceptNet relations, we use a variant of the Semantic Matching Energy model , adapted to work well on ConceptNet's vocabulary of relations. Instead of embedding relations in the same space as the terms, this model assigns new 10-dimensional embeddings to ConceptNet relations, yielding a compact model for ConceptNet's relatively small set of relations.\nThe model is trained to distinguish positive examples of ConceptNet edges from negative ones. The positive examples are edges directly contained in ConceptNet, or those that are entailed by changing the relation to a more general one or switching the directionality of a symmetric relation. The negative examples come from replacing one of the terms with a random other term, the relation with a random unentailed relation, or switching the directionality of an asymmetric relation.\nWe trained this model for approximately 3 million iterations (about 4 days of computation on an nVidia Titan Xp) using PyTorch . The code of the model is available at https://github.com/LuminosoInsight/conceptnet-sme.\nTo extract features for the discriminative attribute task, we focus on a subset of ConceptNet relations that would plausibly be used as attributes: RelatedTo, IsA, HasA, PartOf, CapableOf, UsedFor, HasContext, HasProperty, and AtLocation.\nFor most of these relations, the first argument is the term, and the second argument is the attribute. We use two additional features for PartOf and AtLocation with their arguments swapped, so that the attribute is the first argument. The generic relation RelatedTo, unlike the others, is intended to be symmetric, so we add its value to the value of its swapped version and use it as a single feature.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1806.01733#c0005",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "There are other features that we tried and later discarded. We experimented with a feature similar to the Google Books 2-grams feature, based on the AOL query logs dataset . It did not add to the performance, most likely because any information it could provide was also provided by Google Books 2-grams. Similiarly, we tried extending the Google Books 2-grams data to include the first and third words of a selection of 3-grams, but this, too, appeared redundant with the 2-grams.\nWe also experimented with a feature based on bounding box annotations available in the OpenImages dataset . We hoped it would help us capture attributes such as colors, materials, and shapes. While this feature did not improve the classifier's performance on the validation set, it did slightly improve the performance on the test set.\nBefore deciding on scikit-learn's LinearSVC, we experimented with a number of other classifiers. This included random forests, differentiable models made of multiple ReLU and sigmoid layers, and SVM with an RBF kernel or a polynomial kernel.\nWe also experimented with different parameters to LinearSVC, such as changing the default value of the penalty parameter INLINEFORM0 of the error term, changing the penalty from INLINEFORM1 to INLINEFORM2 , solving the primal optimization problem instead of the dual problem, and changing the loss from squared hinge to hinge. These changes either led to lower performance or had no significant effect, so in the end we used LinearSVC with the default parameters for scikit-learn version 0.19.1.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1806.01733#c0001",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "Word embeddings are most effective when they learn from both unstructured text and a graph of general knowledge . ConceptNet 5 is an open-data knowledge graph that is well suited for this purpose. It is accompanied by a pre-built word embedding model known as ConceptNet Numberbatch, which combines skip-gram embeddings learned from unstructured text with the relational knowledge in ConceptNet.\nA straightforward application of the ConceptNet Numberbatch embeddings took first place in SemEval 2017 task 2, on semantic word similarity. For SemEval 2018, we built a system with these embeddings as a major component for a slightly more complex task.\nThe Capturing Discriminative Attributes task emphasizes the ability of a semantic model to recognize relevant differences between terms, not just their similarities. As the task description states, “If you can tell that americano is similar to capuccino and espresso but you can't tell the difference between them, you don't know what americano is.”\nThe ConceptNet Numberbatch embeddings only measure the similarity of terms, and we hypothesized that we would need to represent more specific relationships. For example, the input triple “frog, snail, legs” asks us to determine whether “legs” is an attribute that distinguishes “frog” from “snail”. The answer is yes, because a frog has legs while a snail does not. The has relationship is one example of a specific relationship that is represented in ConceptNet.\nTo capture this kind of specific relationship, we built a model that infers relations between ConceptNet nodes, trained on the existing edges in ConceptNet and random negative examples. There are many models designed for this purpose; the one we decided on is based on Semantic Matching Energy (SME) .\nOur features consisted of direct similarity over ConceptNet Numberbatch embeddings, the relationships inferred over ConceptNet by SME, features that compose ConceptNet with other resources (WordNet and Wikipedia), and a purely corpus-based feature that looks up two-word phrases in the Google Books dataset.\nWe combined these features based on ConceptNet with features extracted from a few other resources in a LinearSVC classifier, using liblinear via scikit-learn . The classifier used only 15 features, of which 12 ended up with non-zero weights, from the five sources described. We aimed to avoid complexity in the classifier in order to prevent overfitting to the validation set; the power of the classifier should be in its features.\nThe classifier produced by this design (submitted late to the contest leaderboard) successfully avoided overfitting. It performed better on the test set than on the validation set, with a test INLINEFORM0 score of 0.7368, whose margin of error overlaps with the evaluation's reported high score of 0.75.\nAt evaluation time, we accidentally submitted our results on the validation data, instead of the test data, to the SemEval leaderboard. Our code had truncated the results to the length of the test data, causing us to not notice the mismatch. This erroneous submission got a very low score, of course. This paper presents the corrected test results, which we submitted to the post-evaluation CodaLab leaderboard immediately after the results appeared. We did not change the classifier or data; the change was a one-line change to our code for outputting the classifier's predictions on the test set instead on the validation set.",
+        "page": 0
+      },
+      {
+        "ref": "qasper_1806.01733#c0007",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We performed an ablation analysis to see what the contribution of each of our five sources of features was. We evaluated classifiers that used all non-empty subsets of these sources. Figure plots the results of these 31 classifiers when evaluated on the validation set and the test set.\nIt is likely that the classifier with all five sources (ABCDE) performed the best overall. It is in a statistical tie ( INLINEFORM0 ) with ABDE, the classifier that omits Wikipedia as a source.\nMost of the classifiers perfomed better on the test set than on the validation set, as shown by the dotted line. Some simple classifiers with very few features performed particularly well on the test set. One surprisingly high-performing classifier was A (ConceptNet vector similarity), which gets a test INLINEFORM0 score of 0.7355 INLINEFORM1 0.0091. This is simple enough to be called a heuristic instead of a classifier, and we can express it in closed form. It is equivalent to this expression over ConceptNet Numberbatch embeddings: INLINEFORM2\nwhere INLINEFORM0 .\nIt is interesting to note that source A (ConceptNet vector similarity) appears to dominate source B (ConceptNet SME) on the test data. SME led to improvements on the validation set, but on the test set, any classifier containing AB performs equal to or worse than the same classifier with B removed. This may indicate that the SME features were the most prone to overfitting, or that the validation set generally required making more difficult distinctions than the test set.",
+        "page": 0
+      }
+    ],
+    "cites_n": 4,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
+      "answer_L3"
+    ],
+    "level": "L3",
+    "score": 5,
+    "reason": "系统回答准确列出了全部五类训练特征，与标准答案一致，并补充了SME关系细节和未采用特征，引用原文真实支撑，无编造或遗漏。",
+    "time_s": 291.66,
+    "status": "pass",
+    "_old_status": "fail",
+    "_old_score": 2,
+    "_q": "What features did they train on?",
+    "_time_s": 292.9
+  },
+  {
+    "qid": "735f58e28d84ee92024a36bc348cfac2ee114409",
+    "paper": "qasper_1911.09886.qpdf",
+    "question": "Are there datasets with relation tuples annotated, how big are datasets available?",
+    "gold": "yes",
+    "unanswerable": false,
+    "answer": "是。论文使用了纽约时报（NYT）语料，并选择其中两个版本：NYT24（含 24 种关系）和 NYT29（含 29 种关系），这些数据集包含关系元组标注 [1]。就规模而言，作者将原始训练数据的 10% 用作验证集、90% 用于训练 [1]。但给定段落中没有列出训练集或测试集的具体句子/元组数量，只说明相关统计数据在 Table 中 [1]。",
+    "cites": [
+      {
+        "ref": "qasper_1911.09886#c0011",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We focus on the task of extracting multiple tuples with overlapping entities from sentences. We choose the New York Times (NYT) corpus for our experiments. This corpus has multiple versions, and we choose the following two versions as their test dataset has significantly larger number of instances of multiple relation tuples with overlapping entities. (i) The first version is used by () (mentioned as NYT in their paper) and has 24 relations. We name this version as NYT24. (ii) The second version is used by () (mentioned as NYT10 in their paper) and has 29 relations. We name this version as NYT29. We select 10% of the original training data and use it as the validation dataset. The remaining 90% is used for training. We include statistics of the training and test datasets in Table .",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "L3",
+      "answer_L3"
+    ],
+    "level": "L3",
+    "score": 4,
+    "reason": "回答准确确认了数据集存在并说明NYT24/NYT29及关系数、数据划分，与标准答案一致，仅未提及测试集因重叠元组实例更多而选用的细节，属次要遗漏。",
+    "time_s": 174.89,
+    "status": "pass",
+    "_old_status": "pass",
+    "_old_score": 4,
+    "_q": "Are there datasets with relation tuples annotated, how big are dataset",
+    "_time_s": 176.5
+  },
+  {
+    "qid": "a035472a5c6cf238bed62b63d28100c546d40bd5",
+    "paper": "qasper_1909.04453.qpdf",
+    "question": "How is the model trained to do only content selection?",
+    "gold": "target some heuristically extracted contents treat INLINEFORM1 as a latent variable and co-train selector and generator by maximizing the marginal data likelihood reinforcement learning to approximate the marginal likelihood  Variational Reinforce-Select (VRS) which applies variational inference BIB",
+    "unanswerable": false,
+    "answer": "你问的“only content selection”对应论文中从编码器-解码器框架解耦出的内容选择部分，由 VRS 实现 [1]。VRS 不直接对选择变量积分，而是引入提议分布做重要性采样，并把选择分布定义为由全局参数参数化的 mean-field 分布来逼近真实后验 [1]。训练时通过最小化变分下界同时优化相关参数；对选择项不可微的部分用 REINFORCE 估计梯度，并把控制变量设为 soft-select 近似以降低方差 [1]。因此内容选择是学习源词上的显式选择概率和变分选择分布，从而与生成过程解耦并单独控制 [1]。",
+    "cites": [
+      {
+        "ref": "qasper_1909.04453#c0007",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "We propose Variational Reinforce-Select (VRS) which applies variational inference for variance reduction. Instead of directly integrating over INLINEFORM0 , it imposes a proposal distribution INLINEFORM1 for importance sampling. The marginal likelihood is lower bounded by: DISPLAYFORM0\nBy choosing a proper INLINEFORM0 , the bound will be improved and the variance can be largely reduced compared with REINFORCE. If INLINEFORM1 equals the posterior distribution INLINEFORM2 , the bound is tight and the variance would be zero . We define INLINEFORM3 as a mean-field distribution parameterized by a set of global parameters INLINEFORM4 to approach the true posterior distribution. INLINEFORM5 , INLINEFORM6 and INLINEFORM7 are simultaneously trained by minimizing the last tine of Eq. . INLINEFORM8 also allows us to further perform posterior inference: Given an arbitrary text INLINEFORM9 for a source INLINEFORM10 , we can infer which source contents are included in INLINEFORM11 (An example is given in Appendix ).\nIn Eq. , the KL divergence term can be computed analytically. As for the independence assumption, it can be summed over each individual INLINEFORM0 . The likelihood term is differentiable to INLINEFORM1 but not to INLINEFORM2 , we estimate the gradient to INLINEFORM3 in Eq by applying the REINFORCE estimator: DISPLAYFORM0\nINLINEFORM0 is the control variate . The optimal INLINEFORM1 would be : DISPLAYFORM0\nwhich we set as a soft-select approximation: DISPLAYFORM0\nWe estimate Eq. with a single sample from INLINEFORM0 for efficiency. Though multiple-sample could potentially further tighten the bound and reduce the variance , , , it brings significant computational overhead, especially in text generation tasks where the whole sentence needs to be decoded.",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "answer_L2"
+    ],
+    "level": "L2",
+    "score": 4,
+    "reason": "回答准确描述了VRS训练机制（变分推断、REINFORCE、控制变量），与标准答案一致，但未提及启发式提取内容和序列标注定义等次要细节。",
+    "time_s": 232.89,
+    "status": "pass",
+    "_old_status": "pass",
+    "_old_score": 4,
+    "_q": "How is the model trained to do only content selection?",
+    "_time_s": 233.9
+  },
+  {
+    "qid": "180047e1ccfc7c98f093b8d1e1d0479a4cca99cc",
+    "paper": "qasper_1908.07816.qpdf",
+    "question": "What two baseline models are used?",
+    "gold": "sequence-to-sequence model (denoted as S2S) HRAN",
+    "unanswerable": false,
+    "answer": "你问的两个基线模型对应论文中的 **S2S** 和 **HRAN** [5]。证据 [5] 显示 MEED 在上下文连贯性和情感适切性上的平均分高于这两个基线。",
+    "cites": [
+      {
+        "ref": "qasper_1908.07816#g56",
+        "gid": "g56",
+        "claim_id": "c0061",
+        "evidence": "MEED achieved higher average scores than S2S and HRAN",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "answer_L0"
+    ],
+    "level": "L0",
+    "score": 4,
+    "reason": "正确指出两个基线为S2S和HRAN，但未提及全称sequence-to-sequence model，且引用片段仅支持得分对比而非基线定义，缺次要细节。",
+    "time_s": 15.22,
+    "status": "pass",
+    "_old_status": "pass",
+    "_old_score": 5,
+    "_q": "What two baseline models are used?",
+    "_time_s": 16.6
+  },
+  {
+    "qid": "cfb5ab893ed77f9df7eeb4940b6bacdef5acccea",
+    "paper": "qasper_1909.05360.qpdf",
+    "question": "Is this the first paper to propose a joint model for event and temporal relation extraction?",
+    "gold": "yes",
+    "unanswerable": false,
+    "answer": "是。你问的“first paper”对应论文中作者基于“As far as we know”的论断 [1]。证据显示，作者指出据他们所知所有现有系统都把该任务当作事件抽取和时间关系分类两个独立子任务的流水线；而本文的首要贡献正是提出一个同时抽取事件和时间关系的联合模型 [1]。因此按论文自身的表述，可以给出“是”的结论。",
+    "cites": [
+      {
+        "ref": "qasper_1909.05360#c0001",
+        "gid": "",
+        "claim_id": "",
+        "evidence": "The extraction of temporal relations among events is an important natural language understanding (NLU) task that can benefit many downstream tasks such as question answering, information retrieval, and narrative generation. The task can be modeled as building a graph for a given text, whose nodes represent events and edges are labeled with temporal relations correspondingly. Figure illustrates such a graph for the text shown therein. The nodes assassination, slaughtered, rampage, war, and Hutu are the candidate events, and different types of edges specify different temporal relations between them: assassination is BEFORE rampage, rampage INCLUDES slaughtered, and the relation between slaughtered and war is VAGUE. Since “Hutu” is actually not an event, a system is expected to annotate the relations between “Hutu” and all other nodes in the graph as NONE (i.e., no relation).\nAs far as we know, all existing systems treat this task as a pipeline of two separate subtasks, i.e., event extraction and temporal relation classification, and they also assume that gold events are given when training the relation classifier , , , , , . Specifically, they built end-to-end systems that extract events first and then predict temporal relations between them (Fig. ). In these pipeline models, event extraction errors will propagate to the relation classification step and cannot be corrected afterwards. Our first contribution is the proposal of a joint model that extracts both events and temporal relations simultaneously (see Fig. ). The motivation is that if we train the relation classifier with NONE relations between non-events, then it will potentially have the capability of correcting event extraction mistakes. For instance in Fig. , if the relation classifier predicts NONE for (Hutu, war) with a high confidence, then this is a strong signal that can be used by the event classifier to infer that at least one of them is not an event.\nOur second contribution is that we improve event representations by sharing the same contextualized embeddings and neural representation learner between the event extraction and temporal relation extraction modules for the first time. On top of the shared embeddings and neural representation learner, the proposed model produces a graph-structured output representing all the events and relations in the given sentences. A valid graph prediction in this context should satisfy two structural constraints. First, the temporal relation should always be NONE between two non-events or between one event and one non-event. Second, for those temporal relations among events, no loops should exist due to the transitive property of time (e.g., if A is before B and B is before C, then A must be before C). The validity of a graph is guaranteed by solving an integer linear programming (ILP) optimization problem with those structural constraints, and our joint model is trained by structural support vector machines (SSVM) in an end-to-end fashion.\nResults show that, according to the end-to-end $F_1$ score for temporal relation extraction, the proposed method improves CAEVO by 10% on TB-Dense, and improves CogCompTime by 6.8% on MATRES. We further show ablation studies to confirm that the proposed joint model with shared representations and structured learning is very effective for this task.",
+        "page": 0
+      }
+    ],
+    "cites_n": 1,
+    "route": [
+      "L0",
+      "L1",
+      "L2",
+      "answer_L2"
+    ],
+    "level": "L2",
+    "score": 5,
+    "reason": "系统回答准确给出‘是’的结论，并引用原文中‘As far as we know’和‘first contribution’等关键证据，与标准答案完全一致，无遗漏或编造。",
+    "time_s": 90.7,
+    "status": "pass",
+    "_old_status": "pass",
+    "_old_score": 5,
+    "_q": "Is this the first paper to propose a joint model for event and tempora",
+    "_time_s": 91.6
+  }
+]
