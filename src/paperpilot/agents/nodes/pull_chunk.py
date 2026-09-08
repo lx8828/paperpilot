@@ -32,6 +32,11 @@ from paperpilot.tools import llm
 MAX_CENTERS = 2
 MAX_RADIUS = 3
 MAX_L2_CHUNKS = 6
+# 策略④（圆心诊断 2026-09-08：净亏题 L1 池 70% 含 gold 块、节 70% 命中，
+# 但"每节 score 最高单 claim"圆心命中仅 10%——答案块躺在池里被浪费）：
+# PAPERPILOT_L2_MULTI_CENTER=1 时，每个 target 节把该节**全部**命中 claim 的
+# chunk（按 score 降序）都列入候选圆心（受下面总量上限约束），default 仍每节 1 个。
+MAX_MULTI_CENTERS_TOTAL = 8
 L3_TOP_K = 12   # 离线实测：top8 只覆盖 gold 证据的 ~73%，top12 在 ~85% 且上下文可控；改到 12
 
 # 检索侧查询改写（只影响"找"，不改作答口径）。PAPERPILOT_QUERY_REWRITE=0 可关闭做 A/B。
@@ -98,20 +103,24 @@ def _pick_centers(state: QAState,
                   ids_in_sec: dict[str, list[str]]) -> list[str]:
     """按 verdict.target_sections 顺序 + retrieved 命中，产出圆心 chunk_id 列表。
 
-    每个候选节取节内 score 最高命中的 chunk_id 为圆心；候选节无对应命中则跳过。
+    默认：每个候选节取节内 score 最高命中的 chunk_id 为圆心（候选节无命中则跳过）。
+    策略④（PAPERPILOT_L2_MULTI_CENTER=1）：每节取该节全部命中 claim 的 chunk_id
+    （按 score 降序、总量 ≤ MAX_MULTI_CENTERS_TOTAL）作多候选圆心——圆心诊断显示
+    答案块常在池内但非该节最高分，多候选能直接喂到正确窗口。
     """
     targets = (state.get("verdict") or {}).get("target_sections", [])[:MAX_CENTERS]
     retrieved = state.get("retrieved") or []
-    # home_section → 最高分命中 chunk
-    best_by_sec: dict[str, tuple[float, str]] = {}
+    multi = os.environ.get("PAPERPILOT_L2_MULTI_CENTER", "0") == "1"
+    # home_section → [(score, chunk_id)]（保 retrieve 序内全部命中）
+    hits_by_sec: dict[str, list[tuple[float, str]]] = {}
     for r in retrieved:
         sec = r.get("home_section") or ""
         cid = r.get("chunk_id") or ""
         if not sec or not cid:
             continue
-        score = float(r.get("score", 0.0))
-        if sec not in best_by_sec or score > best_by_sec[sec][0]:
-            best_by_sec[sec] = (score, cid)
+        if cid not in ids_in_sec.get(sec, []):
+            continue
+        hits_by_sec.setdefault(sec, []).append((float(r.get("score", 0.0)), cid))
 
     centers: list[str] = []
     seen: set[str] = set()
@@ -119,9 +128,20 @@ def _pick_centers(state: QAState,
         if sec in seen:
             continue
         seen.add(sec)
-        cid = best_by_sec.get(sec, (0.0, ""))[1]
-        if cid and cid in ids_in_sec.get(sec, []):
-            centers.append(cid)
+        lst = hits_by_sec.get(sec, [])
+        if not lst:
+            continue
+        lst.sort(key=lambda x: -x[0])
+        if multi:
+            for _s, cid in lst:
+                if len(centers) >= MAX_MULTI_CENTERS_TOTAL:
+                    break
+                if cid not in centers:
+                    centers.append(cid)
+        else:
+            cid = lst[0][1]
+            if cid not in centers:
+                centers.append(cid)
     return centers
 
 

@@ -1,0 +1,44 @@
+[
+ {
+  "qid": "5328cc2588b2bf7b91f4e0f342e8cbfc6dc8ac00",
+  "score": 4,
+  "pass": true,
+  "answer": "你问的“previous state of the art model”对应论文中作为对比基线的 **LSTM-based RNN-T 模型**（使用双向 LSTM 音频编码器）[1]。论文指出，Transformer Transducer (T-T) 模型显著优于该 LSTM-based RNN-T 基线 [1]。此外，论文在结论中声称其提出的 T-T 模型在 LibriSpeech 基准上达到了新的最先进准确率 [2]，但并未明确说明此前最先进模型的具体名称或架构。因此，证据中仅能确认此前的对比基线是 LSTM"
+ },
+ {
+  "qid": "b686e10a725254695821e330a277c900792db69f",
+  "score": 3,
+  "pass": false,
+  "answer": "你问的“contextual embedding methods”在论文中并未作为对比对象出现。论文对比的是**非上下文**的静态词嵌入方法，包括 word2vec、Gaussian embedding（w2g）以及多原型模型（如 MSSG）[2][5]。论文提出的 w2gm 模型在这些静态嵌入基准上表现更优，例如在 WordSim-353 上显著优于 MSSG [2]，但全文未提及 ELMo、BERT 等上下文嵌入方法，也未与它们进行任何实验比较。因此，论文没有提供与上下文嵌入方法的对比结果，无法回答这一问题。"
+ },
+ {
+  "qid": "a891039441e008f1fd0a227dbed003f76c140737",
+  "score": 5,
+  "pass": true,
+  "answer": "你问的“MC”对应论文中的“machine comprehension”（机器阅读理解）。[1] 中明确提到“Many specific problems such as machine comprehension and question answering often involve modeling such question-document pairs”，其中“machine comprehension”即缩写为“MC”。[2] 中也有“CNN/Daily Mail dataset contains ne"
+ },
+ {
+  "qid": "bf7cb53f4105f2e6a413d1adef5349ff1e673500",
+  "score": 4,
+  "pass": true,
+  "answer": "你问的“paraphrases of the questions”对应论文中的“paraphrases of candidate logical forms”，即由逻辑形式转换而来的文本表示，而非问题本身的改写。这些paraphrases来源于将每个候选逻辑形式（logical form）通过递归遍历其树结构转换成的可读文本表示[2][3]。具体而言，系统先为每个问题生成一组候选逻辑形式，再将每个候选程序转换为对应的paraphrase[5]。例如，问题“How many people attended the l"
+ },
+ {
+  "qid": "cd1792929b9fa5dd5b1df0ae06fc6aece4c97424",
+  "score": 5,
+  "pass": true,
+  "answer": "否。你问的“实体链接（entity linking）过程”对应论文中的方法并不包含该步骤。论文提出的 TupleInf 系统通过 ElasticSearch 检索句子、运行 Open IE 抽取 (subject; predicate; object) 元组，并用 ILP 支持图搜索来连接问题词与答案选项 [1][2][5]，全程未提及任何实体链接（entity linking）机制。文中仅涉及词元重叠、TF-IDF 和 Jaccard 相似度等文本匹配手段 [1]，没有将文本提及映射到知识库实体的过程。"
+ },
+ {
+  "qid": "21a96b328b43a568f9ba74cbc6d4689dbc4a3d7b",
+  "score": 5,
+  "pass": true,
+  "answer": "否。论文中并未从固定的 SRE 训练集中单独划分出一个验证集（validation set）。训练数据仅包含固定的 LDC 电话语音数据（NIST SRE 2004-2010 和 Switchboard 语料库）[2]，而开发集（development set）是 NIST 提供的独立协议，用于镜像评测条件并评估系统性能 [3][6]，并非从训练集中分出。此外，在次要提交中，他们使用了标注开发集的一个不相交部分（20 个说话人中的 10 个）进行训练，并在另一部分上评估以避免过拟合 [6]，但这同样不是从固定训练集"
+ },
+ {
+  "qid": "0481a8edf795768d062c156875d20b8fb656432c",
+  "score": 3,
+  "pass": false,
+  "answer": "你问的“mentioned cues”在论文中对应的是实体选择器（Entity Selector）中用于构建状态向量的特征线索。论文明确提到的线索包括：实体流行度（popularity of the entity）、实体描述与提及上下文之间的编辑距离（edit distance between the entity description and the mention context）、以及实体描述与提及上下文中相同词的数量（the number of identical words in the entity "
+ }
+]

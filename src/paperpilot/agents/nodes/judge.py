@@ -18,6 +18,8 @@ L3 失败按 enough=False 走诚实收尾（防凭空编造）。
 """
 from __future__ import annotations
 
+import os
+import re
 from typing import Any
 
 from paperpilot.agents.state import QAState
@@ -125,6 +127,73 @@ _L2_TPL = """论文概述：
 {_json}
 
 {completeness}"""
+
+
+# ── L2 严格版（诊断于 2026-09-08：净亏题=首窗判够但窗口不含答案句）─────────
+# L2TARGET_AB 诊断：净亏 10 题里 9 题 judge_l2 在 radius0/1 窗口判 enough 放行，
+# 而窗口∩gold evidence 重叠率仅 0.01-0.04（L3 全文检索同题 0.98-1.00）→ 答案块
+# 在 L2 圆心够不到处，judge_l2 却被"相关但不足/子话题错位"骗到判够。
+# judge_l2_strict 收紧判够：加三种假阳性护栏。默认不用（图仍走 judge_l2）。
+
+_SYS_L2_STRICT = (
+    "你是严谨的信息充分性判定器。给定论文概述与已拉取的**正文段落窗口**，"
+    "判断这些原文是否足以**精确**回答用户问题（含数字/公式/表格细节）。"
+    "本模式门槛更高：宁可判不够让系统扩窗/转全文检索（代价可控），也不在残缺窗口上放行作答。"
+    "只输出 JSON。"
+)
+
+_L2_TPL_STRICT = """论文概述：
+{overview}
+
+当前拉取的正文段落（每段标了出处章节与页码）：
+{chunks}
+{history}
+用户问题：{question}
+
+请判断：这些正文是否**直接、完整地**包含回答该问题所需的原句（含全部具体对象/名称/数值/成员/步骤）？
+
+【判够前必须排除三种假阳性——以下情况即使"看着相关"也判 enough=false，gap 写缺什么】：
+1. 窗口在讨论与问题相邻的**别的内容**，不是问题所问对象本身。例如：
+   问"用了哪些数据集/有哪些基线算法"，窗口却只在讲方法效果、任务设定、动机；
+   问"标注是怎么做的"，窗口却在讲标注一致性度量/kappa/质量数字；
+   问"某方法的步骤"，窗口只给了背景或结论。
+   这类"同主题但没答所问"是最隐蔽的假阳性，务必警惕。
+2. 只给了部分证据（such as / e.g. / 等 / 仅一项 / 只提背景），未穷举全部成员或覆盖完整流程
+   （如该论文列了三个基线，窗口只出现一个/两个）。
+3. 窗口明显是某个段落的截取，答案需要跨段落拼凑才能完整 —— 本层判不够让系统扩窗，
+   扩不动会转全文检索兜底（多花一点检索成本远好过在残缺材料上答错）。
+
+【反向护栏】若眼前窗口确实**自足地直接给出**了完整答案（问题所问的每个点都有对应原句）
+→ 判 enough=true，不要因为"理论上原文更权威"而无依据地判不够。
+{_json}
+
+{completeness}"""
+
+
+def judge_l2_strict(state: QAState) -> dict[str, Any]:
+    """L2 严格判够（实验用，默认图不启用）。防"相关但不足/子话题错位"的首窗放行。"""
+    chunks = state.get("chunks") or []
+    user = _L2_TPL_STRICT.format(
+        overview=state.get("overview") or "（无概述）",
+        chunks=_fmt_chunks(chunks),
+        history=_fmt_history(state),
+        question=state.get("question", ""),
+        _json=_JSON,
+        completeness=_COMPLETENESS,
+    )
+    try:
+        raw = llm.chat_json(_SYS_L2_STRICT, user, temperature=0.0)
+        v: dict[str, Any] = _parse(raw, default_enough=True)
+    except llm.LLMError as e:
+        v = {"enough": True, "target_sections": [], "gap": f"judge_l2_strict 失败: {e}"[:120]}
+    debug = dict(state.get("debug") or {})
+    debug["judge_l2"] = {"gap": (v["gap"] or "")[:120], "enough": v["enough"],
+                         "n_chunks": len(chunks), "judge": "strict"}
+    return {
+        "verdict": v,
+        "route": _appear(state, "L2"),
+        "debug": debug,
+    }
 
 
 # ── L3：全文检索的独立保底───────────────────────────────────────────────────
@@ -298,6 +367,48 @@ def judge_l1(state: QAState) -> dict[str, Any]:
 # ── 节点：judge_l2（L2 自环中每轮扩完判一次）───────────────────────────────
 
 
+def _l2_hardcheck(question: str, chunks: list[Any]) -> tuple[bool, str]:
+    """策略③硬指标：judge_l2 判 enough 后，窗口文本须命中问题的强信号。
+
+    背景（L2TARGET_AB 2026-09-08）：净亏 10 题里 9 题 judge_l2 判 enough 放行 → L2 作答
+    仍错（2-3 分，材料不足）。硬检查把"窗口根本没出现问题的数字/专名"这种明显不足
+    拦成不够 → 走 expand→done→L3 兜底（L3 已证同题可答 4-5 分）。
+    问题无强信号（纯语义问句）→ 不启用，退回 LLM 判定。
+
+    Returns:
+        (是否通过, 缺失信号说明)。通过或未启用 → (True, "")。
+    """
+    sigs: list[str] = []
+    for m in re.finditer(r"\d+(?:\.\d+)?", question):
+        t = m.group().strip()
+        if t not in sigs:
+            sigs.append(t)
+    # 专名：大写开头的长词/含数字-连字符词，过滤句首虚词与普通大写单词
+    for m in re.finditer(r"\b[A-Z][A-Za-z0-9\-]{2,}\b", question):
+        w = m.group()
+        low = w.lower()
+        if low in _HARD_STOP or any(ch.islower() for ch in w[1:]):
+            continue
+        if w not in sigs:
+            sigs.append(w)
+    if not sigs:
+        return True, ""
+    text = "\n".join((c.get("text") or "") for c in chunks).lower()
+    missed = [s for s in sigs if s.lower() not in text]
+    if not missed:
+        return True, ""
+    return False, f"缺信号: {'/'.join(missed[:4])}"
+
+
+# 问句里不算专名的普通大写词/句首虚词（硬指标提取信号时过滤）
+_HARD_STOP = {
+    "what", "whats", "how", "does", "do", "did", "is", "are", "was", "were",
+    "which", "where", "when", "why", "who", "whom", "its", "it", "the", "this",
+    "these", "those", "that", "of", "in", "on", "for", "with", "using", "used",
+    "than", "and", "or", "as", "at", "by", "from", "per", "to", "their", "them",
+}
+
+
 def judge_l2(state: QAState) -> dict[str, Any]:
     chunks = state.get("chunks") or []
     user = _L2_TPL.format(
@@ -313,9 +424,18 @@ def judge_l2(state: QAState) -> dict[str, Any]:
         v: dict[str, Any] = _parse(raw, default_enough=True)
     except llm.LLMError as e:
         v = {"enough": True, "target_sections": [], "gap": f"judge_l2 失败: {e}"[:120]}
+    # 策略③硬指标（开关 PAPERPILOT_JUDGE_L2_HARD=1，默认关）：LLM 判够后，
+    # 窗口必须命中问题强信号；全缺 → 强制不够（回 expand→done→L3 兜底）。
+    hard_override = ""
+    if os.environ.get("PAPERPILOT_JUDGE_L2_HARD") == "1" and v["enough"]:
+        ok, miss = _l2_hardcheck(state.get("question", ""), chunks)
+        if not ok:
+            hard_override = miss
+            v = {"enough": False, "target_sections": [],
+                 "gap": f"[硬指标] 窗口未命中问题关键信号：{miss}"[:160]}
     debug = dict(state.get("debug") or {})
     debug["judge_l2"] = {"gap": (v["gap"] or "")[:120], "enough": v["enough"],
-                         "n_chunks": len(chunks)}
+                         "n_chunks": len(chunks), "hard_override": hard_override}
     return {
         "verdict": v,
         "route": _appear(state, "L2"),

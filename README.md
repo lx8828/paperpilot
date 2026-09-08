@@ -1,6 +1,8 @@
-# PaperPilot · LLM 论文深度精读系统
+# PaperPilot · 论文帮读器（LLM 精读 + 可溯源）
 
 输入一篇 PDF 学术论文 → 系统自动完成 **解析 → claims 提取与证据溯源 → 语义去重 → 角色打标 → 重要性打分 → 论证骨架 → 图表指南 → 结构化精读报告**，并支持**带引用溯源的论文问答**（L0→L1→L2→L3 逐级下钻漏斗）。
+
+**给谁用**：想读论文、却被英文和专业门槛劝退的普通人。系统把论文**讲成能懂的话**（一分钟导读 / 大白话概述 / 引导式问答），同时每个关键结论都带回原文出处——让外行"读得懂、不跑偏、能自己点回原文核实"。
 
 > **核心信条：所有结论必须能回到原文。**
 > 任何产出如果不能指向原文页码/证据片段，就视为不合格——用工程手段对抗 LLM 在学术场景下的幻觉，而不是靠 "prompt 让它别编"。
@@ -11,25 +13,49 @@
 
 | 能力 | 说明 |
 |---|---|
-| 📄 **单篇精读报告** | 一分钟导读 / 概述 / 核心要点 / 论证骨架 / 章节精读（低分默认折叠可展开）/ 图表一览 |
+| 📄 **帮读型报告** | 一分钟导读 / 大白话概述 / 核心要点 / 论证骨架 / 章节精读（低分默认折叠可展开）/ 图表一览 |
 | 🔍 **证据溯源闭环** | 每条主张绑定原文 `evidence_quote` + 页码，报告里可一键跳回原文并**整行高亮** |
 | 💬 **漏斗式问答** | L0(报告层) → L1(claims) → L2(章节邻域扩展) → L3(独立全文检索) → unknown(诚实收尾)，答案带 [n] 引用可点跳原文 |
+| 🛡 **防编造/诚实拒答** | 该说不确定就说不确定；诱导/篡改数值/论文没有的东西 → 不编（负向组 20/20、对抗 12/12） |
 | 🖥 **三栏工作台** | 左：结构导航 ｜ 中：报告 / 原文 PDF ｜ 右：多轮追问 |
-| ✅ **评测体系** | 176 题全量 QA 回归（21 篇 × 双视角问题集）+ bench 回归护栏 |
+| ✅ **评测体系** | 帮读问答 + 导读忠实度 + 防幻觉/压力/稳定性 + 三列公平对比（详见下） |
 
 ---
 
 ## 📊 评测成绩（标准版 · 2026-09-07 定版）
 
+**产品定位**：论文**帮读器**（面向小白），**不是"答题得分器"**。对"帮高手精确摘原文细节"这类需求，我们如实承认不占优——那是产品范围决策，不是缺陷。
+
+### 帮读定位评测（主口径）
+
+| 测试 | 结果 | 报告 |
+|---|---|---|
+| A 小白外行问答（3 篇 × 5 题） | **15/15**：讲懂、不编造、给阅读路径 | `qa/reader/READER_REPORT_20260907.md` |
+| B 导读数值忠实抽检（5 篇） | **102/102** 数值可回原文、0 缺失 | `qa/reader/FIDELITY_REPORT_20260907.md` |
+| 防幻觉负向组（篡改数值/不存在物） | **20/20**：0 编造、0 误断言缺失 | `qa/negqa/NEGQA_REPORT_20260907.md` |
+| 对抗/诱导压力（12 题） | **12/12**：不顺着假前提、评价缺失项不编 | `qa/stress/STRESS_REPORT_20260907.md` |
+| 压力/边界 | 超长 168K 字符 **8/8** pass；坏 PDF 干净报错不崩溃；扫描件不可用（需 OCR/MinerU） | 同上 |
+| 稳定性 / 同义改写（30×3） | 3 问法 pass 一致 **70%**（平均跨度 0.53 → 报数自带 ±） | `qa/robust/ROBUST_REPORT_20260907.md` |
+
+### 三列公平对比（B0 直接 LLM / B1 朴素 RAG / B2 本系统 · 同题同裁判盲判）
+
+| 池 | B0 | B1 | B2 | 结论 |
+|---|---|---|---|---|
+| 常规 20 篇 64 题 | 46 | 49 | **51** | 领先集中在**诚实拒答**（无答案 6/8 vs 4/8）与**证据引用**（1.9 cites/题）；extractive 与朴素 RAG 相当 |
+| 硬题 30 题（按我们已知弱点选） | **10** | 8 | 9 | 无整体优势；**无答案诚实拒答 3/3 vs 1/3** 是唯一稳赢点；hard extractive 摘取是短板（1/12） |
+
+> **诚实结论**：我们不是"更会答题"的系统。价值 = 该拒答就拒答、不编造、每句话可溯源、给小白讲得懂；精确摘取 extractive 细值是已知短板（也是将来 MinerU 表格接入的真正动机）。对比详情：`qa/compare/compare_20260907_191606.md`、`qa/compare/deep_20260907_compare.md`。
+
+### 历史问答口径（工程边界，不再作主成绩）
+
 | 口径 | 成绩 | 说明 |
 |---|---|---|
-| QASPER 1000 题（全新样本，异源裁判，flash） | **75.0%** | 权威全量口径（旧 233 题 75.5% 双样本一致） |
-| 定版估计 | **~79–82%** | 250 条非 pass 用当前代码重跑 26% 翻绿，按旧 pass 不回退外推（未含回归，保守五折 ~78%） |
+| QASPER 1000 题（全新样本，异源裁判） | **75.0%** | 权威全量口径（旧 233 题 75.5% 双样本一致） |
+| 定版估计 | **~79–82%** | 250 条非 pass 当前代码重跑 26% 翻绿外推 |
+| 中文 QA 回归（21 篇手写题集） | 176/176 ✅ | 关键词自动判定（v2.0） |
 | 检索层改动 | L3 `search_hybrid`+topK12、unknown 收尾"提炼原文给用户" | 查询改写 A/B 负收益已默认关闭 |
 
-**版本说明**：本版为标准版（链路模型 `deepseek-chat`/v4-flash，无 MinerU 表格接入，无更强模型）。
-完整优化/评测/决策史见 [`qa/CAMPAIGN_20260906-07.md`](qa/CAMPAIGN_20260906-07.md)（含 §10 定版）；
-逐级实验记录在 `qa/` 下 `QA_V2_NEW10…`、`QASPER_OVERNIGHT_MORNING_REPORT.md`、`QASPER_EVAL_LOG.md` 等。
+**版本说明**：标准版 = 链路模型 `deepseek-chat`（供应商侧 v4-flash），无 MinerU 表格接入、无更强模型；评测裁判默认 `glm-4-flash`（免费、与主链路异源）。完整决策史见 [`qa/CAMPAIGN_20260906-07.md`](qa/CAMPAIGN_20260906-07.md)（§10 定版、§11 定位收尾）。
 
 ---
 
@@ -87,20 +113,17 @@ uv run python cli/main.py <pdf名> --force
 
 ---
 
-## 📊 评测与回归护栏
+## 🔬 评测与回归护栏
 
 | 命令 | 作用 |
 |---|---|
-| `uv run python cli/run_qa_v2.py` | **176 题全量 QA 回归**（L0→L3 漏斗）。`--pdf`/`--limit` 可定向单篇冒烟；`--save-baseline` 固化基线 |
-| `uv run python cli/run_qa_v2.py --pdf x.pdf --limit 6` | 单篇冒烟 |
-| `uv run python cli/run_qasper_eval.py --papers N` | **QASPER 第三方基准**（233 题，异源裁判 1~5 分，≥4 pass）|
-| `uv run python cli/run_bench.py` | report 层回归护栏：本地重算 21 篇产物，与 `bench/baseline.json` 做勾叉 diff（不调 LLM） |
-| `uv run python cli/run_bench.py --save-baseline` | 固化新基线 |
+| `uv run python cli/run_qa_v2.py` | 中文 QA 回归（176 题，L0→L3 漏斗）。`--pdf`/`--limit` 定向冒烟；`--save-baseline` 固化基线 |
+| `uv run python cli/run_qasper_eval.py --papers N` | QASPER 第三方基准（异源裁判 1~5 分，≥4 pass） |
+| `uv run python cli/run_bench.py` | report 层回归护栏：本地重算 21 篇产物与 `bench/baseline.json` 做勾叉 diff（不调 LLM） |
+| `uv run python cli/run_compare.py sample/run` | 三列公平对比 harness（B0 直接 LLM / B1 朴素 RAG / B2 本系统，见 `qa/COMPARE_DESIGN.md`） |
+| `uv run python qa/negqa/_run_neg.py` 等 | 防幻觉负向 / 稳定性改写 / 导读数值忠实 等一次性评测 runner（可复用） |
 
-**当前状态**（v2.0 定稿）：
-- 中文 QA 回归（21 篇手写题集）：校准后 **176/176 ✅**（关键词自动判定，见 `qa/QA_V2_RUN1_REPORT.md`）
-- **QASPER 233 第三方基准：176/233 = 75.5% pass**（V1 基线 50.6% → v2.0 75.5%，优化链与逐级归因见 `qa/QASPER_EVAL_LOG.md`、`qa/FULL_RERUN_20260906_REPORT.md`）
-- bench 21 篇中 4 篇带"已知边界叉"（数学/定理证明型论文，产品决策为不纳入范围，见 `DEVELOPMENT_LOG.md`）
+**回归状态**（v2.0 定稿）：中文 QA 176/176 ✅；bench 21 篇 4 篇带"已知边界叉"（数学/定理证明型论文，产品决策为不纳入范围）；产物不入库（`out_claims/`、`out_views/`、PDF、`.env` 均 `.gitignore`），`qa/questions/`、`bench/baseline.json` 是资产入库。
 
 ---
 
@@ -136,7 +159,7 @@ src/paperpilot/
 └── graph/             # LangGraph 接线（qa_graph.py）
 web/                   # FastAPI + 前端三栏工作台
 cli/                   # 命令行入口 + 评测工具
-qa/                    # 手写问题集 + QA 运行结果/汇总
+qa/                    # 手写问题集 + QA/评测结果与报告
 bench/                 # 21 篇回归基线
 ```
 
@@ -162,23 +185,28 @@ bench/                 # 21 篇回归基线
 
 | 文档 | 内容 |
 |---|---|
+| `qa/CAMPAIGN_20260906-07.md` | **决策总账**：优化史 + 定版（§10）+ 定位收尾/评测矩阵（§11） |
+| `qa/COMPARE_DESIGN.md` | 三列公平对比设计（控制变量/口径/成本记录） |
+| `qa/reader/READER_REPORT…` + `FIDELITY_REPORT…` | 帮读主口径：小白问答 15/15、导读数值 102/102 |
+| `qa/negqa/` `qa/robust/` `qa/stress/` | 防幻觉 / 稳定性 / 压力边界 报告 |
 | `QA_FUNNEL_DESIGN.md` | 问答漏斗架构设计 + 铁律 |
 | `DEVELOPMENT_LOG.md` | 开发踩坑记录、决策背景、遗留项、命令速查 |
-| `design.md` | 早期设计 |
 | `qa/QA_V2_RUN1_REPORT.md` | QA v2 测试报告（Run1→Run2 演进与校准） |
+| `design.md` | 早期设计 |
 
 ---
 
 ## 🧰 开发约定
 
-- **类型检查**：`uv run basedpyright src cli web`（当前 **0 errors / 0 warnings**）。`Any/Unknown` 噪音已在 `pyproject.toml [tool.basedpyright]` 收敛，保留 unused/拼接等卫生告警。
+- **类型检查**：`uv run basedpyright src cli web`（当前 **0 errors / 0 warnings**）。
 - **改核心逻辑后**：先 `run_bench.py` 看产物无退化，再 `run_qa_v2.py` 看 QA 不回归。
-- **产物不入库**：`out_claims/`、`out_views/`、论文 PDF、`.env` 均在 `.gitignore` 内；`qa/questions/`（手写问题集）与 `bench/baseline.json`（回归基线）是资产，入库。
+- **产物不入库**：`out_claims/`、`out_views/`、论文 PDF、`.env` 均在 `.gitignore` 内；`qa/questions/` 与 `bench/baseline.json` 是资产，入库。
 
 ---
 
 ## 📌 当前定位
 
-> 输入一篇论文 → 深度精读报告 + 可溯源问答。下一步规划：MCP 工具化（论文问答作为独立工具供外部 agent 调用）、多篇对比 / 主题追踪 / 论文库（远期）。
+> 给被英文/专业门槛劝退的普通人**读论文**：报告讲得懂 + 问答不编造 + 每句可溯源。我们对"帮小白建立正确理解"负责，明确不做"帮高手精确摘原文细节"（那是产品范围决策）。
+> 将来可选（证据驱动，已记录在 CAMPAIGN §11.4）：extractive 按题型直取原文、缺失复核扩展到 L3、MinerU 表格接入（需先验证 16G 笔记本体量）、MCP 工具化/多篇对比（远期）。
 
 作者：lx（834659376@qq.com）

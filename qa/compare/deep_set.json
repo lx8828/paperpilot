@@ -1,0 +1,305 @@
+{
+ "items": [
+  {
+   "pid": "2001.05467",
+   "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+   "question": "How much better were results of the proposed models than base LSTM-RNN model?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "1904.04055",
+   "qid": "7e328cc3cffa521e73f111d6796aaa9661c8eb07",
+   "question": "What is specific about the specific embeddings?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1809.08652",
+   "qid": "790ed4458a23aa23e2b5399259e50083c86d9e14",
+   "question": "Do all the instances contain code-switching?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "unknown_ok",
+   "old_score": 2,
+   "new_score": 1
+  },
+  {
+   "pid": "1907.00854",
+   "qid": "2c3b2c3bab6d18cb0895462e3cfd91cd0dee7f7d",
+   "question": "what pretrained models were used?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "1908.06606",
+   "qid": "1959e0ebc21fafdf1dd20c6ea054161ba7446f61",
+   "question": "How is the clinical text structuring task defined?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 3,
+   "new_score": 3
+  },
+  {
+   "pid": "1910.08210",
+   "qid": "37e8f5851133a748c4e3e0beeef0d83883117a98",
+   "question": "How better is performance of proposed model compared to baselines?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 3
+  },
+  {
+   "pid": "1704.00939",
+   "qid": "6407dae0c095c2c8e15e6769f03925aa4f0e902e",
+   "question": "How long is the dataset used for training?",
+   "qtype": "unans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1611.03382",
+   "qid": "81e8d42dad08a58fe27eea838f060ec8f314465e",
+   "question": "What is the state-of-the art?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "1910.03484",
+   "qid": "a65e5c97ade6e697ec10bcf3c3190dc6604a0cd5",
+   "question": "What non-annotated datasets are considered?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "1702.06589",
+   "qid": "bf7cb53f4105f2e6a413d1adef5349ff1e673500",
+   "question": "What is the source of the paraphrases of the questions?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1606.02006",
+   "qid": "102a0439739428aac80ac11795e73ce751b93ea1",
+   "question": "What datasets were used?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "1912.07025",
+   "qid": "79bb1a1b71a1149e33e8b51ffdb83124c18f3e9c",
+   "question": "What accuracy does CNN model achieve?",
+   "qtype": "ans",
+   "old_status": "unknown_ok",
+   "new_status": "unknown_ok",
+   "old_score": 1,
+   "new_score": 2
+  },
+  {
+   "pid": "1911.03562",
+   "qid": "205163715f345af1b5523da6f808e6dbf5f5dd47",
+   "question": "How many papers are used in experiment?",
+   "qtype": "ans",
+   "old_status": "unknown_ok",
+   "new_status": "unknown_ok",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1909.13362",
+   "qid": "d71cb7f3aa585e256ca14eebdc358edfc3a9539c",
+   "question": "Which models achieve state-of-the-art performances?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "2003.07433",
+   "qid": "53712f0ce764633dbb034e550bb6604f15c0cacd",
+   "question": "Do they evaluate only on English datasets?",
+   "qtype": "unans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "2001.08051",
+   "qid": "d7d611f622552142723e064f330d071f985e805c",
+   "question": "How many utterances are in the corpus?",
+   "qtype": "ans",
+   "old_status": "unknown_ok",
+   "new_status": "unknown_ok",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1912.00864",
+   "qid": "572458399a45fd392c3a4e07ce26dcff2ad5a07d",
+   "question": "How much more accurate is the model than the baseline?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 2
+  },
+  {
+   "pid": "2002.08307",
+   "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+   "question": "How much is pre-training loss increased in Low/Medium/Hard level of pruning?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 1
+  },
+  {
+   "pid": "1902.00330",
+   "qid": "0481a8edf795768d062c156875d20b8fb656432c",
+   "question": "what are the mentioned cues?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "unknown_ok",
+   "old_score": 2,
+   "new_score": 1
+  },
+  {
+   "pid": "2003.07758",
+   "qid": "ead5dc1f3994b2031a1852ecc4f97ac5760ea977",
+   "question": "How many category tags are considered?",
+   "qtype": "ans",
+   "old_status": "unknown_ok",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1707.00995",
+   "qid": "ec91b87c3f45df050e4e16018d2bf5b62e4ca298",
+   "question": "What is the baseline used?",
+   "qtype": "unans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 2
+  },
+  {
+   "pid": "1707.00110",
+   "qid": "6e8c587b6562fafb43a7823637b84cd01487059a",
+   "question": "How much is the BLEU score?",
+   "qtype": "ans",
+   "old_status": "unknown_ok",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 2
+  },
+  {
+   "pid": "1908.02402",
+   "qid": "f1bd66bb354e3dabf5dc4a71e6f08b17d472ecc9",
+   "question": "How do slot binary classifiers improve performance?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "1907.02030",
+   "qid": "4b0ba460ae3ba7a813f204abd16cf631b871baca",
+   "question": "How is an incoming claim used to retrieve similar factchecked claims?",
+   "qtype": "ans",
+   "old_status": "unknown_ok",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 3
+  },
+  {
+   "pid": "2002.10361",
+   "qid": "38c74ab8292a94fc5a82999400ee9c06be19f791",
+   "question": "How large is the corpus?",
+   "qtype": "ans",
+   "old_status": "unknown_ok",
+   "new_status": "unknown_ok",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1910.02339",
+   "qid": "4c7ac51a66c15593082e248451e8f6896e476ffb",
+   "question": "What is the performance proposed model achieved on AlgoList benchmark?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "1803.07771",
+   "qid": "0b9021cefca71081e617a362e7e3995c5f1d2a88",
+   "question": "What are the other models they compare to?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 1
+  },
+  {
+   "pid": "1911.03243",
+   "qid": "96526a14820b7debfd6f7c5beeade0a854b93d1a",
+   "question": "How was the corpus obtained?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  },
+  {
+   "pid": "2003.07433",
+   "qid": "7081b6909cb87b58a7b85017a2278275be58bf60",
+   "question": "How many twitter users are surveyed using the clinically validated survey?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 1,
+   "new_score": 1
+  },
+  {
+   "pid": "1809.10644",
+   "qid": "a3f108f60143d13fe38d911b1cc3b17bdffde3bd",
+   "question": "what was their system's f1 performance?",
+   "qtype": "ans",
+   "old_status": "fail",
+   "new_status": "fail",
+   "old_score": 2,
+   "new_score": 2
+  }
+ ],
+ "seed": 20260907
+}

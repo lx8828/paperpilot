@@ -1,0 +1,355 @@
+[
+ {
+  "pid": "1804.08186",
+  "qid": "626873982852ec83c59193dd2cf73769bf77b3ed",
+  "qtype": "?",
+  "chars": 167959,
+  "B2": {
+   "score": 5,
+   "reason": "系统回答准确且详细地引用了论文原文，涵盖了所有标准答案中提到的评测方法，包括文档级准确率、精确率、召回率和F-score，以及混淆矩阵。",
+   "level": "L3",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "L3",
+    "answer_L3"
+   ],
+   "time_s": 46.2,
+   "gen": {
+    "calls": 6,
+    "prompt_tokens": 23370,
+    "completion_tokens": 4130
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1751,
+    "completion_tokens": 55
+   }
+  },
+  "B0": {
+   "score": 4,
+   "reason": "回答正确，但缺少了标准答案中提到的“gold-standard”和具体计算方法（INLINEFORM0）的细节。",
+   "full_chars": 170438,
+   "time_s": 6.8,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 35125,
+    "completion_tokens": 487
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 807,
+    "completion_tokens": 43
+   }
+  }
+ },
+ {
+  "pid": "1804.08186",
+  "qid": "b3a09d2e3156c51bd5fdc110a2a00a67bb8c0e42",
+  "qtype": "?",
+  "chars": 167959,
+  "B2": {
+   "score": 4,
+   "reason": "回答正确，但遗漏了LDIG、Polyglot 3000、Lextek Language Identifier和Open Xerox Language Identifier等系统。",
+   "level": "L2",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "answer_L2"
+   ],
+   "time_s": 14.5,
+   "gen": {
+    "calls": 5,
+    "prompt_tokens": 6686,
+    "completion_tokens": 624
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1229,
+    "completion_tokens": 47
+   }
+  },
+  "B0": {
+   "score": 4,
+   "reason": "回答正确，但遗漏了标准答案中提到的LDIG, Polyglot 3000, Lextek Language Identifier and Open Xerox Language Identifier等系统。",
+   "full_chars": 170438,
+   "time_s": 6.1,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 35132,
+    "completion_tokens": 363
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 753,
+    "completion_tokens": 51
+   }
+  }
+ },
+ {
+  "pid": "1810.02100",
+  "qid": "c38a48d65bb21c314194090d0cc3f1a45c549dd6",
+  "qtype": "?",
+  "chars": 166903,
+  "B2": {
+   "score": 4,
+   "reason": "回答正确，但遗漏了gold域中的Weblogs、Newsgroups、Reviews和Answers，以及evidence域中的具体信息。",
+   "level": "L2",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "answer_L2"
+   ],
+   "time_s": 12.8,
+   "gen": {
+    "calls": 5,
+    "prompt_tokens": 6243,
+    "completion_tokens": 644
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 894,
+    "completion_tokens": 45
+   }
+  },
+  "B0": {
+   "score": 4,
+   "reason": "回答正确，但缺少了标准答案中提到的证据部分，即没有引用Table 2.3的内容。",
+   "full_chars": 170717,
+   "time_s": 4.5,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 35410,
+    "completion_tokens": 178
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 417,
+    "completion_tokens": 40
+   }
+  }
+ },
+ {
+  "pid": "1906.10519",
+  "qid": "9c4ed8ca59ba6d240f031393b01f634a9dc3615d",
+  "qtype": "?",
+  "chars": 79145,
+  "B2": {
+   "score": 4,
+   "reason": "系统回答正确地列出了与Blse对比的基线，包括VecMap、Muse、Barista，以及机器翻译（MT）和单语（Mono）上界。但是，系统回答中提到的无监督统计机器翻译基线（由artetxe2018emnlp提出）并未在标准答案中提及，这",
+   "level": "L2",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "answer_L2"
+   ],
+   "time_s": 17.2,
+   "gen": {
+    "calls": 5,
+    "prompt_tokens": 7755,
+    "completion_tokens": 462
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1223,
+    "completion_tokens": 97
+   }
+  },
+  "B0": {
+   "score": 3,
+   "reason": "系统回答列出了多个基线方法，但未提及VecMap Muse Barista作为gold标准，且未明确指出这些方法与Blse的比较。",
+   "full_chars": 81842,
+   "time_s": 6.2,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 17356,
+    "completion_tokens": 302
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 645,
+    "completion_tokens": 49
+   }
+  }
+ },
+ {
+  "pid": "1912.08320",
+  "qid": "53807f435d33fe5ce65f5e7bda7f77712194f6ab",
+  "qtype": "?",
+  "chars": 78710,
+  "B2": {
+   "score": 4,
+   "reason": "回答正确，但遗漏了关于标准化的讨论和不同学科中的元研究及标准化努力的信息。",
+   "level": "L2",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "answer_L2"
+   ],
+   "time_s": 26.8,
+   "gen": {
+    "calls": 6,
+    "prompt_tokens": 11916,
+    "completion_tokens": 2366
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1150,
+    "completion_tokens": 38
+   }
+  },
+  "B0": {
+   "score": 4,
+   "reason": "回答准确，但缺少引用原文，导致无法完全确认信息的来源。",
+   "full_chars": 82873,
+   "time_s": 8.6,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 16055,
+    "completion_tokens": 667
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1098,
+    "completion_tokens": 32
+   }
+  }
+ },
+ {
+  "pid": "1912.08320",
+  "qid": "2ec9c1590c96f17a66c7d4eb95dc5d3a447cb973",
+  "qtype": "?",
+  "chars": 78710,
+  "B2": {
+   "score": 4,
+   "reason": "回答正确，但遗漏了关于Scopus数据库的抽样信息。",
+   "level": "L2",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "answer_L2"
+   ],
+   "time_s": 15.0,
+   "gen": {
+    "calls": 5,
+    "prompt_tokens": 7041,
+    "completion_tokens": 591
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1614,
+    "completion_tokens": 31
+   }
+  },
+  "B0": {
+   "score": 4,
+   "reason": "回答准确，但缺少了关于Scopus数据库中随机采样30篇文章的细节，以及关于该样本中只有29篇被检查的说明。",
+   "full_chars": 82873,
+   "time_s": 6.5,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 16046,
+    "completion_tokens": 284
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 956,
+    "completion_tokens": 48
+   }
+  }
+ },
+ {
+  "pid": "1912.08320",
+  "qid": "208e667982160cfbce49ef49ad96f6ab094292ac",
+  "qtype": "?",
+  "chars": 78710,
+  "B2": {
+   "score": 5,
+   "reason": "系统回答准确且详细地引用了论文原文，涵盖了所有核心最佳实践，包括定义coding scheme、培训编码员、计算inter-annotator agreement、reconciliation过程等。",
+   "level": "L2",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "answer_L2"
+   ],
+   "time_s": 14.4,
+   "gen": {
+    "calls": 5,
+    "prompt_tokens": 6338,
+    "completion_tokens": 503
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1311,
+    "completion_tokens": 55
+   }
+  },
+  "B0": {
+   "score": 4,
+   "reason": "回答准确，但缺少了原文引用，这可能导致无法验证某些细节。",
+   "full_chars": 82873,
+   "time_s": 3.7,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 16046,
+    "completion_tokens": 190
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 710,
+    "completion_tokens": 33
+   }
+  }
+ },
+ {
+  "pid": "1912.08320",
+  "qid": "35eb8464e934a2769debe14148667c61bf1da243",
+  "qtype": "?",
+  "chars": 78710,
+  "B2": {
+   "score": 5,
+   "reason": "系统回答准确且详细地引用了论文原文，全面地描述了数据标注与结构化内容分析在方法论框架、人工劳动分工及质量控制流程上的相似性。",
+   "level": "L2",
+   "route": [
+    "L0",
+    "L1",
+    "L2",
+    "answer_L2"
+   ],
+   "time_s": 18.2,
+   "gen": {
+    "calls": 5,
+    "prompt_tokens": 6802,
+    "completion_tokens": 994
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 1191,
+    "completion_tokens": 53
+   }
+  },
+  "B0": {
+   "score": 5,
+   "reason": "系统回答准确且详细地阐述了数据标注与结构化内容分析之间的相似性，包括方法论、核心流程、术语和面临的挑战，与标准答案一致，没有遗漏核心信息。",
+   "full_chars": 82873,
+   "time_s": 6.8,
+   "gen": {
+    "calls": 1,
+    "prompt_tokens": 16048,
+    "completion_tokens": 405
+   },
+   "judge": {
+    "calls": 1,
+    "prompt_tokens": 810,
+    "completion_tokens": 56
+   }
+  }
+ }
+]

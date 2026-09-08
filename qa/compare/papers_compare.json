@@ -1,0 +1,142 @@
+[
+ {
+  "pid": "1904.05584",
+  "title": "Gating Mechanisms for Combining Character and Word-level Word Representations: An Empirical Study",
+  "n_qas": 4,
+  "n_unans": 0,
+  "full_chars": 30429
+ },
+ {
+  "pid": "1909.04181",
+  "title": "BERT-Based Arabic Social Media Author Profiling",
+  "n_qas": 4,
+  "n_unans": 0,
+  "full_chars": 10128
+ },
+ {
+  "pid": "2002.11402",
+  "title": "Detecting Potential Topics In News Using BERT, CRF and Wikipedia",
+  "n_qas": 5,
+  "n_unans": 1,
+  "full_chars": 15104
+ },
+ {
+  "pid": "1709.08299",
+  "title": "Dataset for the First Evaluation on Chinese Machine Reading Comprehension",
+  "n_qas": 2,
+  "n_unans": 0,
+  "full_chars": 15038
+ },
+ {
+  "pid": "1701.00185",
+  "title": "Self-Taught Convolutional Neural Networks for Short Text Clustering",
+  "n_qas": 5,
+  "n_unans": 0,
+  "full_chars": 36038
+ },
+ {
+  "pid": "1707.01890",
+  "title": "An Interactive Tool for Natural Language Processing on Clinical Text",
+  "n_qas": 1,
+  "n_unans": 1,
+  "full_chars": 34667
+ },
+ {
+  "pid": "1909.08191",
+  "title": "Exploring Scholarly Data by Semantic Query on Knowledge Graph Embedding Space",
+  "n_qas": 4,
+  "n_unans": 0,
+  "full_chars": 17687
+ },
+ {
+  "pid": "1705.03487",
+  "title": "A neural network system for transformation of regional cuisine style",
+  "n_qas": 1,
+  "n_unans": 0,
+  "full_chars": 19990
+ },
+ {
+  "pid": "2003.04973",
+  "title": "Localized Flood DetectionWith Minimal Labeled Social Media Data Using Transfer Learning",
+  "n_qas": 2,
+  "n_unans": 0,
+  "full_chars": 24281
+ },
+ {
+  "pid": "1606.06361",
+  "title": "A Probabilistic Generative Grammar for Semantic Parsing",
+  "n_qas": 2,
+  "n_unans": 0,
+  "full_chars": 48335
+ },
+ {
+  "pid": "1804.08139",
+  "title": "Same Representation, Different Attentions: Shareable Sentence Representation Learning from Multiple ",
+  "n_qas": 3,
+  "n_unans": 0,
+  "full_chars": 20911
+ },
+ {
+  "pid": "1912.11602",
+  "title": "Make Lead Bias in Your Favor: A Simple and Effective Method for News Summarization",
+  "n_qas": 5,
+  "n_unans": 0,
+  "full_chars": 21854
+ },
+ {
+  "pid": "1708.04557",
+  "title": "Database of Parliamentary Speeches in Ireland, 1919-2013",
+  "n_qas": 1,
+  "n_unans": 0,
+  "full_chars": 27544
+ },
+ {
+  "pid": "1803.03786",
+  "title": "We Built a Fake News&Click-bait Filter: What Happened Next Will Blow Your Mind!",
+  "n_qas": 7,
+  "n_unans": 1,
+  "full_chars": 25896
+ },
+ {
+  "pid": "1909.04625",
+  "title": "Representation of Constituents in Neural Language Models: Coordination Phrase as a Case Study",
+  "n_qas": 4,
+  "n_unans": 2,
+  "full_chars": 31772
+ },
+ {
+  "pid": "2003.10816",
+  "title": "Cross-Lingual Adaptation Using Universal Dependencies",
+  "n_qas": 2,
+  "n_unans": 1,
+  "full_chars": 38908
+ },
+ {
+  "pid": "1908.07816",
+  "title": "A Multi-Turn Emotionally Engaging Dialog Model",
+  "n_qas": 5,
+  "n_unans": 0,
+  "full_chars": 24917
+ },
+ {
+  "pid": "2003.08132",
+  "title": "Gender Representation in Open Source Speech Resources",
+  "n_qas": 3,
+  "n_unans": 2,
+  "full_chars": 27565
+ },
+ {
+  "pid": "1910.11491",
+  "title": "Attention Optimization for Abstractive Document Summarization",
+  "n_qas": 2,
+  "n_unans": 0,
+  "full_chars": 12979
+ },
+ {
+  "pid": "1809.02731",
+  "title": "Exploiting Invertible Decoders for Unsupervised Sentence Representation Learning",
+  "n_qas": 2,
+  "n_unans": 0,
+  "full_chars": 26198
+ }
+]

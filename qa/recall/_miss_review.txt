@@ -1,0 +1,464 @@
+
+================================================================================
+qid=fcd0bd2db3  gold_top='Decoding'  targets=['Comparison', 'Experimental Setup']
+Q: Do they compare partially complete sequences (created during steps of beam search) to gold/target sequences?
+  [1] 'Introduction' score=0.546 no-num
+       通过引入束搜索解码过程的连续近似，形成可微的替代目标。
+  [2] 'Discontinuity in Beam Search' score=0.54 no-num
+       束搜索是一种维护beam并扩展元素以寻找近似argmax的过程。
+  [3] 'Introduction' score=0.523 no-num
+       交叉熵训练模型在束搜索下有时性能低于贪心解码。
+  [4] 'Decoding' score=0.519 no-num  << GOLD
+       实验观察到软束搜索与硬束搜索解码在有限小参数下存在差异。
+  [5] 'Introduction' score=0.515 no-num
+       提出一种新的训练过程，直接优化束搜索输出上的最终损失指标。
+  [6] 'Introduction' score=0.503 no-num
+       新训练目标在两个序列任务上优于交叉熵训练的贪心与束搜索基线。
+  [7] 'Decoding' score=0.502 no-num  << GOLD
+       采用软束搜索解码，结合软回指与硬回指以减少训练与测试差距。
+  [8] 'Comparison' score=0.493 no-num  ^^SELECTED
+       比较了三种解码范式：局部归一化解码、硬波束搜索解码和软波束搜索解码。
+  [9] 'Discontinuity in Beam Search' score=0.491 no-num
+       束搜索因top-k-argmax过程产生硬反向指针，限制梯度流动，导致不连续。
+  [10] 'Discontinuity in Beam Search' score=0.49 NUM
+       在seq2seq模型中，全局模型得分定义为各时间步局部输出得分之和。
+  [11] 'Experimental Setup' score=0.485 no-num  ^^SELECTED
+       两个任务的直接损失函数均为汉明距离代价，旨在最大化词级准确率。
+  [12] 'Decoding' score=0.481 no-num  << GOLD
+       软束搜索中通过软连续松弛影响后续分数、LSTM状态及输入嵌入。
+  候选节分布(hits/section): {'Introduction': 4, 'Discontinuity in Beam Search': 3, 'Decoding': 3, 'Comparison': 1, 'Experimental Setup': 1}
+
+================================================================================
+qid=b686e10a72  gold_top='Introduction'  targets=['Experiments']
+Q: How does this compare to contextual embedding methods?
+  [1] 'Introduction' score=0.529 no-num  << GOLD
+       模型能自动发现词的多重含义，并在词相似性和蕴含任务上显著优于其他方法。
+  [2] 'Word Similarity' score=0.527 no-num
+       用Spearman秩相关评估嵌入与人工评分的相关性。
+  [3] 'Skip-Gram' score=0.519 no-num
+       该方法遵循分布假设，即自然语境中共现的词往往语义相关。
+  [4] 'Experiments' score=0.505 no-num  ^^SELECTED
+       模型通过表示多个不同词义，降低了高斯嵌入模型不必要的方差，并改进了词蕴含任务结果。
+  [5] 'Experiments' score=0.496 NUM  ^^SELECTED
+       模型命名为Word to Gaussian Mixture (w2gm)，与Word to Gaussian (w2g)对比，w2g是单混合分量的w2gm实现。
+  [6] 'Implementation' score=0.494 no-num
+       使用输入和输出两套高斯混合嵌入，最终采用输入分布作为词表示。
+  [7] 'Experiments' score=0.482 NUM  ^^SELECTED
+       词采样方案类似word2vec，每个正上下文词配一个负上下文词。
+  [8] 'Word Entailment' score=0.481 no-num
+       使用最大余弦相似度和最小KL散度作为词对蕴含得分。
+  [9] 'Introduction' score=0.481 no-num  << GOLD
+       用高斯混合模型表示每个词，并通过最大间隔能量排序目标学习参数。
+  [10] 'Word Similarity for Polysemous Words' score=0.479 no-num
+       使用SCWS数据集，该数据集选取多义词和同音词对以体现词义变化。
+  [11] 'Experiments' score=0.476 no-num  ^^SELECTED
+       训练后为每个词获得均值向量、协方差矩阵和混合权重，均值向量作为嵌入。
+  [12] 'Hyperparameters' score=0.472 NUM
+       评估模型维度设为D=50，上下文窗口设为l=10。
+  候选节分布(hits/section): {'Introduction': 2, 'Word Similarity': 1, 'Skip-Gram': 1, 'Experiments': 4, 'Implementation': 1, 'Word Entailment': 1, 'Word Similarity for Polysemous Words': 1, 'Hyperparameters': 1}
+
+================================================================================
+qid=f10325d022  gold_top='Models'  targets=['Featurization', 'Analysis']
+Q: How are discourse features incorporated into the model?
+  [1] 'Analysis' score=0.514 no-num  ^^SELECTED
+       话语嵌入模型利用CNN整个计算图的权重学习，而非仅softmax层。
+  [2] 'Introduction' score=0.502 no-num
+       本文探索将话语信息特征化并整合进基于CNN的最优文本分类器，以期在作者归属任务中达到最先进水平。
+  [3] 'Results' score=0.495 NUM
+       多分类任务中，话语嵌入特征提升F1分数，CNN2-DE全局模型配合RST特征提升最大，达2.6点。
+  [4] 'Analysis' score=0.475 NUM  ^^SELECTED
+       CNN2-DE模型性能普遍高于CNN2-PV模型，话语嵌入是更优的特征化技术。
+  [5] 'Analysis' score=0.472 no-num  ^^SELECTED
+       话语特征存在输入长度阈值，对较短文本无贡献。
+  [6] 'Analysis' score=0.47 no-num  ^^SELECTED
+       话语信息能提升作者归属，但需正确编码；词n-gram和词性标注无额外提升。
+  [7] 'Introduction' score=0.461 no-num
+       在输入端将话语特征嵌入并行CNN比在输出层拼接特征向量效果更好。
+  [8] 'Results' score=0.453 NUM
+       变尺寸实验中，话语特征有效时GR模型平均提升1点F1，RST模型约提升2点。
+  [9] 'Featurization' score=0.452 no-num  ^^SELECTED
+       GR话语特征局部读取时每次处理一个句子对，收集实体角色转换。
+  [10] 'Background' score=0.441 NUM
+       本文采用F15的浅层RST风格编码，但使用细粒度关系且不区分句内句间或显著非显著实体。
+  [11] 'Results' score=0.439 NUM
+       在IMDB62短文本输入上，话语特征普遍无额外贡献，最佳CNN2-DE模型仅带来边际提升。
+  [12] 'Experiments' score=0.438 NUM
+       模型配置采用5折交叉验证，嵌入大小在novel-9上调优，学习率0.001，dropout 0.75，运行50轮。
+  候选节分布(hits/section): {'Analysis': 4, 'Introduction': 2, 'Results': 3, 'Featurization': 1, 'Background': 1, 'Experiments': 1}
+
+================================================================================
+qid=5328cc2588  gold_top='Experiments and Results'  targets=['Introduction']
+Q: What was previous state of the art model?
+  [1] 'Conclusions' score=0.428 no-num
+       模型允许灵活权衡识别准确率与延迟。
+  [2] 'Experiments and Results' score=0.42 no-num  << GOLD
+       T-T模型在识别准确率上与现有词片端到端模型相当。
+  [3] 'Introduction' score=0.41 no-num  ^^SELECTED
+       Transformer模型可基于固定数量的过去输入帧和标签进行自注意力训练，以保持流式处理。
+  [4] 'Transformer Transducer' score=0.408 no-num
+       可通过掩码注意力分数使输出仅依赖历史状态。
+  [5] 'Experiments and Results' score=0.404 NUM  << GOLD
+       每层仅用三个先前标签状态即可达到与每层20个状态相近的准确率。
+  [6] 'Experiments and Results' score=0.403 NUM  << GOLD
+       每层2帧右上下文比流式T-T模型提升约30%。
+  [7] 'Experiments and Results' score=0.398 NUM  << GOLD
+       使用LibriSpeech语料库评估模型，含970小时音频及对应文本。
+  [8] 'Experiments and Results' score=0.394 NUM  << GOLD
+       模型含18层音频编码器和2层标签编码器，各层结构相同。
+  [9] 'Transformer Transducer' score=0.391 no-num
+       前馈子层两个稠密层均加dropout，并采用残差连接。
+  [10] 'Transformer Transducer' score=0.389 no-num
+       为限制延迟增长，模型可限制注意力仅关注移动窗口W内的状态，使单步推理复杂度恒定。
+  [11] 'Experiments and Results' score=0.387 NUM  << GOLD
+       学习率先线性升至2.5e-4，保持至30K步后指数衰减至2.5e-6。
+  [12] 'Experiments and Results' score=0.386 NUM  << GOLD
+       每层6帧右上下文时性能比全注意力模型差约16%。
+  候选节分布(hits/section): {'Conclusions': 1, 'Experiments and Results': 7, 'Introduction': 1, 'Transformer Transducer': 3}
+
+================================================================================
+qid=574f17134e  gold_top='Introduction'  targets=['Models And Predictions']
+Q: What new model is proposed for binomial lists?
+  [1] 'Introduction' score=0.619 no-num  << GOLD
+       提出用有向图表示全局二项式排序结构的新方法。
+  [2] 'Introduction' score=0.544 no-num  << GOLD
+       本文聚焦于二项式列表排序，利用大规模在线文本语料扩展研究范围。
+  [3] 'Multinomials' score=0.531 no-num
+       四项式及更长列表在数据中更罕见，难以得出结论。
+  [4] 'Introduction' score=0.53 no-num  << GOLD
+       引入新度量如不对称性，并开发跨社区和时间顺序一致性度量。
+  [5] 'Discussion' score=0.529 no-num
+       对多项式的分析表明其顺序规则可能与二项式不同。
+  [6] 'Dimensions of Binomials' score=0.528 no-num
+       本文采用{A,B}表示无序词对，[A,B]表示有序词对，并定义两种可能方向。
+  [7] 'Introduction' score=0.527 no-num  << GOLD
+       以子版块作为社区，用新度量分析二项式顺序的社区间和时间变化。
+  [8] 'Models And Predictions' score=0.519 no-num  ^^SELECTED
+       使用Google News词嵌入，通过简单逻辑模型预测二项式词序。
+  [9] 'Models And Predictions' score=0.514 NUM  ^^SELECTED
+       采用基于词长、音素数、音节数、字母顺序和频率的规则预测二项式顺序，仅对出现至少30次的二项式进行预测。
+  [10] 'Dimensions of Binomials' score=0.508 no-num
+       本文提出基于不对称性、运动性和一致性三个属性的二项式解释新框架，并可视化为三维立方体。
+  [11] 'Introduction' score=0.505 no-num  << GOLD
+       基于预训练词嵌入位置的模型能可靠预测多数二项式顺序。
+  [12] 'Proper Nouns and the Proximity Principle' score=0.502 NUM
+       用专有名词列表实例数与单字频率之比衡量，限定非英语词且频率至少30。
+  候选节分布(hits/section): {'Introduction': 5, 'Multinomials': 1, 'Discussion': 1, 'Dimensions of Binomials': 2, 'Models And Predictions': 2, 'Proper Nouns and the Proximity Principle': 1}
+
+================================================================================
+qid=81e8d42dad  gold_top='Summarization'  targets=['Introduction']
+Q: What is the state-of-the art?
+  [1] 'Quantitative Evaluation' score=0.436 no-num
+       重要性权重可视化显示，信息量大的词如aeronautics等权重高，虚词如the等权重低。
+  [2] 'Introduction' score=0.432 no-num  ^^SELECTED
+       在Gigaword数据集和DUC竞赛中展示了最先进的性能。
+  [3] 'Neural Machine Translation' score=0.413 no-num
+       本文在解码过程中也利用了注意力机制。
+  [4] 'Experimental Evalaluation' score=0.366 no-num
+       提供了解码过程中复制哪些词的分析和示例。
+  [5] 'Quantitative Evaluation' score=0.366 no-num
+       可视化表明read-again技术确实从第一次阅读提取有用信息以偏置第二次阅读。
+  [6] 'The read again model' score=0.366 no-num
+       提出编码器-解码器结构的文本摘要方法，编码器表示输入文本，解码器逐词生成摘要。
+  [7] 'Learning' score=0.364 no-num
+       通过最大化每个时间步解码正确词的概率来联合学习编码器和解码器。
+  [8] 'Experimental Evalaluation' score=0.363 NUM
+       复制机制将典型词汇量减少5倍，同时性能优于最先进方法。
+  [9] 'Introduction' score=0.36 no-num  ^^SELECTED
+       提出Read-Again模型，先读输入序列再生成每个词的表示，可应用于LSTM和GRU。
+  [10] 'Experimental Evalaluation' score=0.354 NUM
+       复制机制将词汇量减少30倍，同时保持相同性能水平。
+  [11] 'Experimental Evalaluation' score=0.354 no-num
+       模型为输入文本中每个词学习有意义的重读权重分布，强调重要动词和名词，忽略介词等常见词。
+  [12] 'Quantitative Evaluation' score=0.352 NUM
+       带复制机制的Read-Again模型用15K词表，ROUGE分数高于用69K词表的ABS和GRU基线。
+  候选节分布(hits/section): {'Quantitative Evaluation': 3, 'Introduction': 2, 'Neural Machine Translation': 1, 'Experimental Evalaluation': 4, 'The read again model': 1, 'Learning': 1}
+
+================================================================================
+qid=bf25a202ac  gold_top='Experiments'  targets=['Related work']
+Q: What are the state of the art measures?
+  [1] 'Discussions' score=0.429 NUM
+       信息不完整时性能下降但仍良好，AUC为0.96，优于先前技术。
+  [2] 'Experiments' score=0.396 no-num  << GOLD
+       对每个话题检索包含其标签或关键词且在观察窗口内生成的推文。
+  [3] 'Experiments' score=0.392 NUM  << GOLD
+       仅用每条推文140字符时，AUC达到0.88，重叠更大。
+  [4] 'Discussions' score=0.391 no-num
+       本研究承认任务困难且存在一些局限性，并在该节讨论。
+  [5] 'Related work' score=0.383 no-num  ^^SELECTED
+       方法基于图方法但主要关注词汇，实验使用其他工作的数据集及自收集数据集。
+  [6] 'Method' score=0.374 NUM
+       DMC的设计依据：若两类分离良好，标签传播会给两个社区分别赋予接近1和-1的极端值，从而得到较高DMC值。
+  [7] 'Method' score=0.374 no-num
+       将表情符号翻译成不同单词加入训练集，如:)译为happy。
+  [8] 'Introduction' score=0.372 no-num
+       通过检测讨论中是否存在一个或两个主要行话来衡量争议。
+  [9] 'Related work' score=0.37 no-num  ^^SELECTED
+       Matakos等的极化指数通过结合网络结构和用户观点，在识别争议方面表现良好。
+  [10] 'Discussions' score=0.368 NUM
+       检测主要社区的最佳算法是Walktrap，其复杂度为O(mn^2)。
+  [11] 'Related work' score=0.368 NUM  ^^SELECTED
+       Matakos等的方法虽基于观点但非文本相关，且将观点建模为-1到1的实数。
+  [12] 'Experiments' score=0.365 no-num  << GOLD
+       话题被操作化为特定标签或关键词，而非单一标签。
+  候选节分布(hits/section): {'Discussions': 3, 'Experiments': 3, 'Related work': 3, 'Method': 2, 'Introduction': 1}
+
+================================================================================
+qid=442f8da2c9  gold_top='Training Condition'  targets=['Introduction']
+Q: Which are the novel languages on which SRE placed emphasis on?
+  [1] 'Introduction' score=0.426 NUM  ^^SELECTED
+       本文提出利用语言归一化、域适应、语音活动检测和会话补偿技术来缓解2016 NIST SRE中的不利偏差。
+  [2] 'Training Condition' score=0.366 NUM  << GOLD
+       系统训练仅使用LDC发布的电话对话语音数据，包括NIST SRE 2004-2010和Switchboard语料库。
+  [3] 'Acoustic Features' score=0.332 NUM
+       对每个话语用3秒窗口的倒谱均值方差归一化（ST-CMVN）进行特征居中。
+  [4] 'PLDA' score=0.321 NUM
+       将说话人因子数量设置为200。
+  [5] 'Training Condition' score=0.308 NUM  << GOLD
+       训练中加入了NIST提供的2472通未标注电话，涵盖小语种和大语种。
+  [6] 'Calibration' score=0.299 no-num
+       主提交设置目标概率为某值，在开发集上表现最佳。
+  [7] 'Calibration' score=0.286 no-num
+       次提交使用了另一目标概率值。
+  [8] 'Score Computation and Normalization' score=0.283 no-num
+       实验证明得分归一化对识别系统性能有重大影响。
+  [9] 'Speech Activity Detection' score=0.28 NUM
+       使用2状态HMM对应语音和非语音，通过Viterbi解码进行帧级决策。
+  [10] 'i-Vector Features' score=0.272 NUM
+       缩放因子0.33带来轻微优势，得到更好的决策代价函数值。
+  [11] 'Introduction' score=0.27 no-num  ^^SELECTED
+       DNN帧对齐在文本无关说话人识别中未能达到与传统GMM相当的性能。
+  [12] 'Time Analysis' score=0.269 no-num
+       SAD所需时间随段时长线性增加。
+  候选节分布(hits/section): {'Introduction': 2, 'Training Condition': 2, 'Acoustic Features': 1, 'PLDA': 1, 'Calibration': 2, 'Score Computation and Normalization': 1, 'Speech Activity Detection': 1, 'i-Vector Features': 1, 'Time Analysis': 1}
+
+================================================================================
+qid=dd9883f4ad  gold_top='Semantic query framework'  targets=['Exploration tasks and semantic queries conversion']
+Q: What data exploration is supported by the analysis of these semantic structures?
+  [1] 'Introduction' score=0.607 no-num
+       本文提供知识图谱嵌入语义结构的理论理解，并设计通用语义查询框架以支持数据探索。
+  [2] 'Conclusion' score=0.589 no-num
+       本文概述并讨论了源于知识图谱嵌入空间语义结构的传统及前沿探索任务的解决方案。
+  [3] 'Introduction' score=0.573 no-num
+       本文设计通用框架，通过知识图谱嵌入空间上的语义查询实现学术数据探索，核心是任务与查询间的转换。
+  [4] 'Introduction' score=0.525 no-num
+       本文定义知识图谱嵌入空间上的语义查询，即嵌入向量间的代数运算，用于解决相似性和类比查询。
+  [5] 'Exploration tasks and semantic queries conversion' score=0.511 no-num  ^^SELECTED
+       提出类比浏览任务，沿多组正负偏置定义的多个语义方向追踪。
+  [6] 'Introduction' score=0.51 no-num
+       本文提出类比查询和类比浏览等新任务，并讨论其在现代数字图书馆中的应用。
+  [7] 'Introduction' score=0.503 NUM
+       本文分析CP_h模型与word2vec skipgram的对比，以解释其组件并理解语义结构。
+  [8] 'Exploration tasks and semantic queries conversion' score=0.494 no-num  ^^SELECTED
+       支持以不同顺序组合不同操作，实现灵活浏览。
+  [9] 'Semantic query framework' score=0.49 no-num  << GOLD
+       查询处理在嵌入空间执行语义查询，因代数运算线性可并行而高效。
+  [10] 'Exploration tasks and semantic queries conversion' score=0.474 no-num  ^^SELECTED
+       类比查询通过计算正负偏置嵌入均值差定义语义方向，寻找与e和A相似但不与B相似的实体。
+  [11] 'Semantic query framework' score=0.467 no-num  << GOLD
+       框架对具体嵌入模型和嵌入空间不作假设，但要求空间包含丰富语义信息。
+  [12] 'Theoretical analysis' score=0.462 no-num
+       嵌入空间包含语义方向结构，沿该方向仅一个语义方面变化。
+  候选节分布(hits/section): {'Introduction': 5, 'Conclusion': 1, 'Exploration tasks and semantic queries conversion': 3, 'Semantic query framework': 2, 'Theoretical analysis': 1}
+
+================================================================================
+qid=cf15c4652e  gold_top='Introduction'  targets=['Multi-modal Neural Machine Translation', 'Analysis']
+Q: Why is this work different from text-only UNMT?
+  [1] 'Multi-modal Neural Machine Translation' score=0.575 no-num  ^^SELECTED
+       由于注意力涉及三组特征，注意力机制的选择比纯文本NMT更多，解码器可保持循环结构不变。
+  [2] 'Introduction' score=0.537 NUM  << GOLD
+       现有大多数多模态翻译算法在Multi30K上未显著优于纯文本MT模型。
+  [3] 'Analysis' score=0.52 NUM  ^^SELECTED
+       使用图像的性能提升远超仅用文本训练的模型，英法翻译中P-txt-img比P-txt高4个点以上。
+  [4] 'Implementation Details and Baseline Models' score=0.518 no-num
+       对比模型包括MUSE、Game-NMT和UNMT-text三种无监督多模态翻译模型。
+  [5] 'Analysis' score=0.502 NUM  ^^SELECTED
+       在完整Multi30K数据集上训练UMNMN模型，假装源句和目标句不对齐，仍输入图像文本对。
+  [6] 'Unsupervised Learning' score=0.482 no-num
+       无监督问题中训练数据仅含单语文档对，无跨语言配对信息。
+  [7] 'Auto-Encoding Loss' score=0.472 no-num
+       采用去噪损失是因为精确自编码结构可能迫使语言模型学习逐词复制网络。
+  [8] 'Neural Machine Translation' score=0.464 no-num
+       NMT模型通过最大化目标句子的条件似然概率来训练。
+  [9] 'Auto-Encoding Loss' score=0.458 no-num
+       因缺少三元组数据，仅用去噪自编码损失构建前两个模块，不涉及成对的x和y。
+  [10] 'Introduction' score=0.456 no-num  << GOLD
+       提出将多模态翻译问题建模为无监督学习任务，更贴近实际应用。
+  [11] 'Analysis' score=0.455 no-num  ^^SELECTED
+       解码器层越深，文本注意力矩阵越趋于对角，注意力更聚焦。
+  [12] 'Conclusion' score=0.454 no-num
+       提出带多模态注意力的无监督NMT模型，在自编码与循环一致性范式下训练。
+  候选节分布(hits/section): {'Multi-modal Neural Machine Translation': 1, 'Introduction': 2, 'Analysis': 3, 'Implementation Details and Baseline Models': 1, 'Unsupervised Learning': 1, 'Auto-Encoding Loss': 2, 'Neural Machine Translation': 1, 'Conclusion': 1}
+
+================================================================================
+qid=96526a1482  gold_top='Introduction'  targets=['Annotation and Evaluation Methods']
+Q: How was the corpus obtained?
+  [1] 'Annotation and Evaluation Methods' score=0.414 NUM  ^^SELECTED
+       从Wikinews和Wikipedia的Dense集合各抽取1000句，均分开发与测试集。
+  [2] 'Background — QA-SRL' score=0.407 no-num
+       语料库中每个动词由单一生成者标注，并由两名验证者验证。
+  [3] 'Annotation and Evaluation Methods' score=0.406 no-num  ^^SELECTED
+       该整合过程能带来更好的标注覆盖率。
+  [4] 'Background — QA-SRL' score=0.394 no-num
+       该问题所有不重叠答案的集合被视为该角色关联的论元集合。
+  [5] 'Introduction' score=0.38 no-num  << GOLD
+       为提高覆盖率，采用两名独立工人加一名整合工人的标注流程。
+  [6] 'Annotation and Evaluation Methods' score=0.376 no-num  ^^SELECTED
+       约三分之一的参与者因表现良好而被选中，测试基于专家标注。
+  [7] 'Annotation and Evaluation Methods' score=0.374 NUM  ^^SELECTED
+       标注者经过多轮短训练后筛选，每轮最多15个谓词并获个人反馈。
+  [8] 'Dataset Quality Analysis' score=0.373 no-num
+       我们的标注者成功产出了更多角色，包括隐含和显性角色。
+  [9] 'Background — QA-SRL' score=0.364 NUM
+       Dense保留部分用5名验证者密集验证，至少4/5通过才批准问题。
+  [10] 'Dataset Quality Analysis' score=0.362 no-num
+       我们的标注者将更多论元拆分为独立答案，这是先前指南未明确的问题。
+  [11] 'Introduction' score=0.361 no-num  << GOLD
+       为控制工人质量，系统筛选工人、提供简洁有效指南并执行简短培训。
+  [12] 'Annotation and Evaluation Methods' score=0.361 NUM  ^^SELECTED
+       QA生成标注者报酬与fitz2018qasrl相同，整合者每动词5美分、每问题3美分。
+  候选节分布(hits/section): {'Annotation and Evaluation Methods': 5, 'Background — QA-SRL': 3, 'Introduction': 2, 'Dataset Quality Analysis': 2}
+
+================================================================================
+qid=21a96b328b  gold_top='i-Vector Features'  targets=['Training Condition']
+Q: Do they single out a validation set from the fixed SRE training set?
+  [1] 'Score Computation and Normalization' score=0.518 no-num
+       实验证明得分归一化对识别系统性能有重大影响。
+  [2] 'Introduction' score=0.511 NUM
+       本文提出利用语言归一化、域适应、语音活动检测和会话补偿技术来缓解2016 NIST SRE中的不利偏差。
+  [3] 'Training Condition' score=0.509 NUM  ^^SELECTED
+       系统训练仅使用LDC发布的电话对话语音数据，包括NIST SRE 2004-2010和Switchboard语料库。
+  [4] 'PLDA' score=0.474 no-num
+       聚类开发集不成功，故将每个i-vector视为由单一说话人发出。
+  [5] 'Score Computation and Normalization' score=0.473 no-num
+       采用对称s-norm对PLDA得分进行归一化，用未标注集作为冒认者计算均值和标准差。
+  [6] 'Short-Duration Variability Compensation' score=0.459 NUM
+       提出短时变异性补偿方法：从无标注开发集每段音频随机截取10秒语音，生成两个400维i-vector作为一类。
+  [7] 'Score Computation and Normalization' score=0.449 no-num
+       单段注册时用该段长度归一化i-vector作为说话人模型。
+  [8] 'Calibration' score=0.447 no-num
+       利用BOSARIS工具包对分数进行校准。
+  [9] 'Nearest-neighbor Discriminant Analysis (NDA)' score=0.444 no-num
+       降维后的i-vectors使用训练数据和未标注开发集进行白化。
+  [10] 'Training Condition' score=0.443 NUM  ^^SELECTED
+       训练中加入了NIST提供的2472通未标注电话，涵盖小语种和大语种。
+  [11] 'i-Vector Features' score=0.441 no-num  << GOLD
+       该缩放因子在训练和测试i-vector提取器时均被采用。
+  [12] 'Acoustic Features' score=0.44 NUM
+       对每个话语用3秒窗口的倒谱均值方差归一化（ST-CMVN）进行特征居中。
+  候选节分布(hits/section): {'Score Computation and Normalization': 3, 'Introduction': 1, 'Training Condition': 2, 'PLDA': 1, 'Short-Duration Variability Compensation': 1, 'Calibration': 1, 'Nearest-neighbor Discriminant Analysis (NDA)': 1, 'i-Vector Features': 1, 'Acoustic Features': 1}
+
+================================================================================
+qid=f1bd66bb35  gold_top='Introduction'  targets=['Requestable Slot Binary Classifier']
+Q: How do slot binary classifiers improve performance?
+  [1] 'Evaluation Metrics' score=0.526 no-num
+       使用BLEU评估生成代理响应的语言质量，以便与先前工作比较。
+  [2] 'Conclusion' score=0.519 no-num
+       实验表明该架构与最先进模型竞争力相当，并为实际应用提供更实用方案。
+  [3] 'Preprocessing and Hyper-parameters' score=0.515 NUM
+       使用skopt进行贝叶斯优化，目标为验证集BLEU、EMR和SuccF1的乘积。
+  [4] 'Introduction' score=0.514 no-num  << GOLD
+       FSDM新增响应槽位二元分类器模块，在生成最终回复前更精确监督响应槽位。
+  [5] 'Related Work' score=0.509 no-num
+       相关工作通过添加策略网络利用潜在表示，用强化学习持续改进对话系统。
+  [6] 'Requestable Slot Binary Classifier' score=0.506 no-num  ^^SELECTED
+       引入独立的可请求槽位多标签分类器，对每个槽位做二分类，解决TSCP生成非槽位词的问题。
+  [7] 'Loss Function' score=0.5 no-num
+       损失以端到端方式优化，所有模块同时训练并回传梯度。
+  [8] 'Preprocessing and Hyper-parameters' score=0.489 NUM
+       最佳模型使用Adam优化器，学习率0.00025。
+  [9] 'Benchmarks' score=0.487 no-num
+       LIDM通过离散潜变量学习对话行为，并可用强化学习优化。
+  [10] 'Result Analysis' score=0.483 no-num
+       FSDM在CamRest上获得最显著性能提升，证实额外归纳偏置有助于小数据集泛化。
+  [11] 'Evaluation Metrics' score=0.481 no-num
+       作者承认BLEU对评估对话系统而言是糟糕的选择，但为与先前工作比较仍报告。
+  [12] 'Preprocessing and Hyper-parameters' score=0.473 no-num
+       不在GloVe中的词初始化为其他嵌入平均值加随机噪声。
+  候选节分布(hits/section): {'Evaluation Metrics': 2, 'Conclusion': 1, 'Preprocessing and Hyper-parameters': 3, 'Introduction': 1, 'Related Work': 1, 'Requestable Slot Binary Classifier': 1, 'Loss Function': 1, 'Benchmarks': 1, 'Result Analysis': 1}
+
+================================================================================
+qid=dfbab3cd99  gold_top='Datasets'  targets=['Discussion', 'Model Architecture']
+Q: For the purposes of this paper, how is something determined to be domain specific knowledge?
+  [1] 'Problem Definition' score=0.504 no-num
+       本文任务为情感分类。
+  [2] 'Introduction' score=0.489 no-num
+       现有领域适应架构使用不同子网络，计算密集。
+  [3] 'Discussion' score=0.474 no-num  ^^SELECTED
+       门控架构通过训练一个专门识别权重的门，学习对情感贡献最大的词或n-gram。
+  [4] 'Conclusion' score=0.469 no-num
+       GCN中的门控机制用于过滤领域相关知识。
+  [5] 'Related Work' score=0.463 no-num
+       SFA方法通过共同聚类领域特有词与领域无关词于潜在空间，利用其关系进行域适应。
+  [6] 'Datasets' score=0.46 NUM  << GOLD
+       Multi Domain Dataset 每域2000条评论，正负各半，训练/验证/测试划分1280/320/400条。
+  [7] 'Related Work' score=0.46 no-num
+       Blitzer采用枢轴方法，选择在两个领域频繁出现的特征，并假设其能可靠代表源域。
+  [8] 'Discussion' score=0.451 no-num  ^^SELECTED
+       GLU中sigmoid门对领域无关但极性强的trigram给予更高权重，对领域特定词权重较低。
+  [9] 'Introduction' score=0.446 no-num
+       提出GCN模型，用门控机制学习领域无关知识，无需额外子网络。
+  [10] 'Related Work' score=0.445 no-num
+       Yu使用两个辅助任务，借助CNN训练跨领域有效的句子嵌入。
+  [11] 'Implementation details' score=0.421 NUM
+       句子转小写，不去停用词，词表大小20000，嵌入层dropout 0.5，稠密层0.2。
+  [12] 'Model Architecture' score=0.419 no-num  ^^SELECTED
+       卷积层和门控卷积层输出逐元素相乘得到新特征表示。
+  候选节分布(hits/section): {'Problem Definition': 1, 'Introduction': 2, 'Discussion': 2, 'Conclusion': 1, 'Related Work': 3, 'Datasets': 1, 'Implementation details': 1, 'Model Architecture': 1}
+
+================================================================================
+qid=3b995a7358  gold_top='Word Embeddings'  targets=['Commonsense Infusing']
+Q: What types of word representations are they evaluating?
+  [1] 'Lexicon' score=0.512 no-num
+       一个词可有多个义项对应多个定义，本文用词义定义提取常识类比。
+  [2] 'Analogy Datasets' score=0.509 no-num
+       现有中文词类比数据集中多数类比是形态或命名实体关系。
+  [3] 'Lexicon' score=0.505 no-num
+       词义附英文翻译，可用于将提取的类比迁移到英文多词表达。
+  [4] 'Accurate Analogy' score=0.501 no-num
+       在定义图比较与左概念扩展之间加入两次语言学家检查。
+  [5] 'Commonsense Infusing' score=0.499 no-num  ^^SELECTED
+       利用E-HowNet分类法，通过retrofitting将上下位和同分类关系注入分布式词表示。
+  [6] 'Commonsense Analogy' score=0.498 no-num
+       提取算法经多重过滤（含语言学家参与）进一步优化。
+  [7] 'Analogical Word Pairs' score=0.495 no-num
+       评估时，预测属于同义词集即视为正确。
+  [8] 'Commonsense Analogy' score=0.492 no-num
+       通过比较词义定义提取覆盖广泛词与关系的常识词类比。
+  [9] 'Analogical Word Pairs' score=0.487 no-num
+       定义字符串解析：将每个定义解析为有向图，节点为词、概念或函数关系。
+  [10] 'Analogy Datasets' score=0.487 NUM
+       CA-EHN数据集提取了85K个经语言学家检查的类比，覆盖6490个概念对。
+  [11] 'Analogy Datasets' score=0.486 NUM
+       CA8-Morphological数据集使用21个共享前缀字符构成2553个词类比。
+  [12] 'Introduction' score=0.485 no-num
+       将常识知识建模为词级类比推理，从E-HowNet提取类比。
+  候选节分布(hits/section): {'Lexicon': 2, 'Analogy Datasets': 3, 'Accurate Analogy': 1, 'Commonsense Infusing': 1, 'Commonsense Analogy': 2, 'Analogical Word Pairs': 2, 'Introduction': 1}
+
+================================================================================
+qid=5cc937c2dc  gold_top='Continuous Approximation to top-k-argmax'  targets=['Experimental Setup', 'Comparison with Max-Margin Objectives']
+Q: Which loss metrics do they try in their new training procedure evaluated on the output of beam search?
+  [1] 'Introduction' score=0.649 no-num
+       提出一种新的训练过程，直接优化束搜索输出上的最终损失指标。
+  [2] 'CCG Supertagging' score=0.563 no-num
+       采用词级标签准确率作为标准评估指标，对应汉明损失。
+  [3] 'Experimental Setup' score=0.544 no-num  ^^SELECTED
+       两个任务的直接损失函数均为汉明距离代价，旨在最大化词级准确率。
+  [4] 'Decoding' score=0.534 no-num
+       软束搜索中通过软连续松弛影响后续分数、LSTM状态及输入嵌入。
+  [5] 'Introduction' score=0.533 no-num
+       新训练目标在两个序列任务上优于交叉熵训练的贪心与束搜索基线。
+  [6] 'Comparison with Max-Margin Objectives' score=0.532 no-num  ^^SELECTED
+       本文提出将连续近似束搜索修改为结构化铰链损失的近似，使其可通过反向传播训练。
+  [7] 'Decoding' score=0.529 no-num
+       采用软束搜索解码，结合软回指与硬回指以减少训练与测试差距。
+  [8] 'Introduction' score=0.515 no-num
+       交叉熵训练模型在束搜索下有时性能低于贪心解码。
+  [9] 'Comparison' score=0.513 no-num
+       对比了近似直接损失训练目标和近似最大间隔训练目标两种方法。
+  [10] 'Comparison with Max-Margin Objectives' score=0.512 NUM  ^^SELECTED
+       修改算法第5行，计算代价增强最大分数和目标分数，以优化连续近似铰链损失。
+  [11] 'Introduction' score=0.511 no-num
+       通过引入束搜索解码过程的连续近似，形成可微的替代目标。
+  [12] 'Results' score=0.507 no-num
+       通过使优化更具搜索感知性，方法在训练序列到序列模型上有效。
+  候选节分布(hits/section): {'Introduction': 4, 'CCG Supertagging': 1, 'Experimental Setup': 1, 'Decoding': 2, 'Comparison with Max-Margin Objectives': 2, 'Comparison': 1, 'Results': 1}

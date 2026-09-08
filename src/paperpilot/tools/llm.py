@@ -26,6 +26,24 @@ _ENV_PREFIX = "PAPERPILOT_LLM"
 # 独立裁判配置前缀（QA 评测打分用；与主链路异源，防同模型自证偏好）
 _JUDGE_PREFIX = "PAPERPILOT_JUDGE"
 
+# ── 用量统计（评测成本用）──────────────────────────────────────────────
+# 每轮 _chat 成功返回后累加 usage（DeepSeek 等返回 prompt/completion tokens）；
+# 调用方在"一个题目"前后 reset / 读取即可得到该题消耗。向后兼容：不读这些
+# 计数器不影响任何既有功能。
+_USAGE = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
+
+
+def usage_stats() -> dict[str, int]:
+    """返回累计用量（自进程启动或上次 reset 以来）。"""
+    return dict(_USAGE)
+
+
+def reset_usage() -> None:
+    """清零累计用量（每题评测前调用）。"""
+    _USAGE["calls"] = 0
+    _USAGE["prompt_tokens"] = 0
+    _USAGE["completion_tokens"] = 0
+
 
 class LLMError(RuntimeError):
     pass
@@ -104,6 +122,7 @@ def _chat(system: str, user: str, *, temperature: float,
             f"LLM 未配置：请设置 {prefix}_BASE_URL / {prefix}_API_KEY / "
             f"{prefix}_MODEL（或在工作目录放置 .env 文件）"
         )
+    _USAGE["calls"] += 1  # 逻辑调用计数（含内部重试，一次 _chat = 一次逻辑调用）
 
     body: dict[str, Any] = {
         "model": model,
@@ -134,6 +153,10 @@ def _chat(system: str, user: str, *, temperature: float,
         try:
             with opener.open(req, timeout=timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
+            # 累加该轮 usage（有些服务商长输出/长上下文场景必返回 usage；缺省按 0）
+            _usage = data.get("usage") or {}
+            _USAGE["prompt_tokens"] += int(_usage.get("prompt_tokens") or 0)
+            _USAGE["completion_tokens"] += int(_usage.get("completion_tokens") or 0)
             break
         except urllib.error.HTTPError as e:
             if 400 <= e.code < 500:

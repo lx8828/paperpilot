@@ -1,0 +1,1506 @@
+{
+ "version": "v1",
+ "seed": 20260908,
+ "items": [
+  {
+   "pid": "1708.00111",
+   "qid": "fcd0bd2db39898ee4f444ae970b80ea4d1d9b054",
+   "group": "hard",
+   "question": "Do they compare partially complete sequences (created during steps of beam search) to gold/target sequences?"
+  },
+  {
+   "pid": "1704.08424",
+   "qid": "b686e10a725254695821e330a277c900792db69f",
+   "group": "hard",
+   "question": "How does this compare to contextual embedding methods?"
+  },
+  {
+   "pid": "2001.08051",
+   "qid": "5e5460ea955d8bce89526647dd7c4f19b173ab34",
+   "group": "hard",
+   "question": "How many of the utterances are transcribed?"
+  },
+  {
+   "pid": "1804.00079",
+   "qid": "e2f269997f5a01949733c2ec8169f126dabd7571",
+   "group": "hard",
+   "question": "Which data sources do they use?"
+  },
+  {
+   "pid": "1709.02271",
+   "qid": "f10325d022e3f95223f79ab00f8b42e3bb7ca040",
+   "group": "hard",
+   "question": "How are discourse features incorporated into the model?"
+  },
+  {
+   "pid": "2002.02562",
+   "qid": "5328cc2588b2bf7b91f4e0f342e8cbfc6dc8ac00",
+   "group": "hard",
+   "question": "What was previous state of the art model?"
+  },
+  {
+   "pid": "1912.07025",
+   "qid": "79bb1a1b71a1149e33e8b51ffdb83124c18f3e9c",
+   "group": "hard",
+   "question": "What accuracy does CNN model achieve?"
+  },
+  {
+   "pid": "1909.00279",
+   "qid": "d484a71e23d128f146182dccc30001df35cdf93f",
+   "group": "hard",
+   "question": "How much is proposed model better in perplexity and BLEU score than typical UMT models?"
+  },
+  {
+   "pid": "2003.03612",
+   "qid": "574f17134e4dd041c357ebb75a7ef590da294d22",
+   "group": "hard",
+   "question": "What new model is proposed for binomial lists?"
+  },
+  {
+   "pid": "1910.04519",
+   "qid": "fbe149bd76863575b98fafb3679f411d3d21b4a3",
+   "group": "hard",
+   "question": "Is there any explanation why some choice of language pair is better than the other?"
+  },
+  {
+   "pid": "1611.03382",
+   "qid": "81e8d42dad08a58fe27eea838f060ec8f314465e",
+   "group": "hard",
+   "question": "What is the state-of-the art?"
+  },
+  {
+   "pid": "1707.00110",
+   "qid": "6e8c587b6562fafb43a7823637b84cd01487059a",
+   "group": "hard",
+   "question": "How much is the BLEU score?"
+  },
+  {
+   "pid": "2001.09899",
+   "qid": "bf25a202ac713a34e09bf599b3601058d9cace46",
+   "group": "hard",
+   "question": "What are the state of the art measures?"
+  },
+  {
+   "pid": "1809.08652",
+   "qid": "790ed4458a23aa23e2b5399259e50083c86d9e14",
+   "group": "hard",
+   "question": "Do all the instances contain code-switching?"
+  },
+  {
+   "pid": "1809.08298",
+   "qid": "dafa760e1466e9eaa73ad8cb39b229abd5babbda",
+   "group": "hard",
+   "question": "How large is the dataset they generate?"
+  },
+  {
+   "pid": "1707.08559",
+   "qid": "e414d819f10c443cbefa8bdb9bd486ffc6d1fc6a",
+   "group": "hard",
+   "question": "What is the average length of the recordings?"
+  },
+  {
+   "pid": "1611.00514",
+   "qid": "442f8da2c988530e62e4d1d52c6ec913e3ec5bf1",
+   "group": "hard",
+   "question": "Which are the novel languages on which SRE placed emphasis on?"
+  },
+  {
+   "pid": "1901.00570",
+   "qid": "858c51842fc3c1f3e6d2d7d853c94f6de27afade",
+   "group": "hard",
+   "question": "Which of the classifiers showed the best performance?"
+  },
+  {
+   "pid": "1905.00563",
+   "qid": "bc9c31b3ce8126d1d148b1025c66f270581fde10",
+   "group": "hard",
+   "question": "What datasets are used to evaluate this approach?"
+  },
+  {
+   "pid": "1909.08191",
+   "qid": "dd9883f4adf7be072d314d7ed13fe4518c5500e0",
+   "group": "hard",
+   "question": "What data exploration is supported by the analysis of these semantic structures?"
+  },
+  {
+   "pid": "1811.11365",
+   "qid": "cf15c4652e23829d8fb4cf2a25e64408c18734c1",
+   "group": "hard",
+   "question": "Why is this work different from text-only UNMT?"
+  },
+  {
+   "pid": "1912.01046",
+   "qid": "8051927f914d730dfc61b2dc7a8580707b462e56",
+   "group": "hard",
+   "question": "What baseline algorithms were presented?"
+  },
+  {
+   "pid": "2002.02224",
+   "qid": "8b71ede8170162883f785040e8628a97fc6b5bcb",
+   "group": "hard",
+   "question": "How is quality of the citation measured?"
+  },
+  {
+   "pid": "1911.03243",
+   "qid": "96526a14820b7debfd6f7c5beeade0a854b93d1a",
+   "group": "hard",
+   "question": "How was the corpus obtained?"
+  },
+  {
+   "pid": "1902.09393",
+   "qid": "af75ad21dda25ec72311c2be4589efed9df2f482",
+   "group": "hard",
+   "question": "How much does this system outperform prior work?"
+  },
+  {
+   "pid": "1611.00514",
+   "qid": "21a96b328b43a568f9ba74cbc6d4689dbc4a3d7b",
+   "group": "hard",
+   "question": "Do they single out a validation set from the fixed SRE training set?"
+  },
+  {
+   "pid": "1612.06897",
+   "qid": "2a46db1b91de4b583d4a5302b2784c091f9478cc",
+   "group": "hard",
+   "question": "How many examples do they have in the target domain?"
+  },
+  {
+   "pid": "1611.02550",
+   "qid": "1d791713d1aa77358f11501f05c108045f53c8aa",
+   "group": "hard",
+   "question": "Which dimensionality do they use for their embeddings?"
+  },
+  {
+   "pid": "1909.00324",
+   "qid": "1763a029daca7cab10f18634aba02a6bd1b6faa7",
+   "group": "hard",
+   "question": "How big is the improvement over the state-of-the-art results?"
+  },
+  {
+   "pid": "1908.02402",
+   "qid": "f1bd66bb354e3dabf5dc4a71e6f08b17d472ecc9",
+   "group": "hard",
+   "question": "How do slot binary classifiers improve performance?"
+  },
+  {
+   "pid": "1905.06906",
+   "qid": "dfbab3cd991f86d998223726617d61113caa6193",
+   "group": "hard",
+   "question": "For the purposes of this paper, how is something determined to be domain specific knowledge?"
+  },
+  {
+   "pid": "1908.07218",
+   "qid": "3b995a7358cefb271b986e8fc6efe807f25d60dc",
+   "group": "hard",
+   "question": "What types of word representations are they evaluating?"
+  },
+  {
+   "pid": "1611.02550",
+   "qid": "b6b5f92a1d9fa623b25c70c1ac67d59d84d9eec8",
+   "group": "hard",
+   "question": "By how much do they outpeform previous results on the word discrimination task?"
+  },
+  {
+   "pid": "1705.03261",
+   "qid": "1a69696034f70fb76cd7bb30494b2f5ab97e134d",
+   "group": "hard",
+   "question": "By how much does their model outperform existing methods?"
+  },
+  {
+   "pid": "1910.02339",
+   "qid": "05671d068679be259493df638d27c106e7dd36d0",
+   "group": "hard",
+   "question": "What is the performance proposed model achieved on MathQA?"
+  },
+  {
+   "pid": "1701.00185",
+   "qid": "5a0841cc0628e872fe473874694f4ab9411a1d10",
+   "group": "hard",
+   "question": "By how much did they outperform the other methods?"
+  },
+  {
+   "pid": "2001.06286",
+   "qid": "6e962f1f23061f738f651177346b38fd440ff480",
+   "group": "hard",
+   "question": "What is the state of the art?"
+  },
+  {
+   "pid": "1909.13375",
+   "qid": "579941de2838502027716bae88e33e79e69997a6",
+   "group": "hard",
+   "question": "What is difference in peformance between proposed model and state-of-the art on other question types?"
+  },
+  {
+   "pid": "1708.00111",
+   "qid": "5cc937c2dcb8fd4683cb2298d047f27a05e16d43",
+   "group": "hard",
+   "question": "Which loss metrics do they try in their new training procedure evaluated on the output of beam search?"
+  },
+  {
+   "pid": "1909.11189",
+   "qid": "ee87608419e4807b9b566681631a8cd72197a71a",
+   "group": "hard",
+   "question": "What is the corpus used in the study?"
+  },
+  {
+   "pid": "1611.00514",
+   "qid": "30803eefd7cdeb721f47c9ca72a5b1d750b8e03b",
+   "group": "hard",
+   "question": "How well does their system perform on the development set of SRE?"
+  },
+  {
+   "pid": "1909.13362",
+   "qid": "14634943d96ea036725898ab2e652c2948bd33eb",
+   "group": "hard",
+   "question": "What is the accuracy of the model for the six languages tested?"
+  },
+  {
+   "pid": "1708.05873",
+   "qid": "13b36644357870008d70e5601f394ec3c6c07048",
+   "group": "hard",
+   "question": "Is the dataset multilingual?"
+  },
+  {
+   "pid": "1912.00864",
+   "qid": "572458399a45fd392c3a4e07ce26dcff2ad5a07d",
+   "group": "hard",
+   "question": "How much more accurate is the model than the baseline?"
+  },
+  {
+   "pid": "2002.11402",
+   "qid": "1d74fd1d38a5532d20ffae4abbadaeda225b6932",
+   "group": "hard",
+   "question": "What is their f1 score and recall?"
+  },
+  {
+   "pid": "2001.05467",
+   "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+   "group": "hard",
+   "question": "How much better were results of the proposed models than base LSTM-RNN model?"
+  },
+  {
+   "pid": "1907.08937",
+   "qid": "1a678d081f97531d54b7122254301c20b3531198",
+   "group": "hard",
+   "question": "Which knowledge bases do they use?"
+  },
+  {
+   "pid": "1912.11602",
+   "qid": "2a0a44f169ad61774d77df65f8846bd57685bfcf",
+   "group": "hard",
+   "question": "What did they pretrain the model on?"
+  },
+  {
+   "pid": "1704.02686",
+   "qid": "fb381a59732474dc71a413e25cac37e239547b55",
+   "group": "hard",
+   "question": "Do they test their word embeddings on downstream tasks?"
+  },
+  {
+   "pid": "1911.09419",
+   "qid": "6852217163ea678f2009d4726cb6bd03cf6a8f78",
+   "group": "hard",
+   "question": "What benchmark datasets are used for the link prediction task?"
+  },
+  {
+   "pid": "1701.06538",
+   "qid": "e8fcfb1412c3b30da6cbc0766152b6e11e17196c",
+   "group": "hard",
+   "question": "What improvement does the MOE model make over the SOTA on language modelling?"
+  },
+  {
+   "pid": "1701.00185",
+   "qid": "9e04730907ad728d62049f49ac828acb4e0a1a2a",
+   "group": "hard",
+   "question": "What were their performance results?"
+  },
+  {
+   "pid": "2002.00876",
+   "qid": "8df89988adff57279db10992846728ec4f500eaa",
+   "group": "hard",
+   "question": "What baselines are used in experiments?"
+  },
+  {
+   "pid": "1901.00439",
+   "qid": "aa54e12ff71c25b7cff1e44783d07806e89f8e54",
+   "group": "hard",
+   "question": "What is an example of a health-related tweet?"
+  },
+  {
+   "pid": "1711.00106",
+   "qid": "1f63ccc379f01ecdccaa02ed0912970610c84b72",
+   "group": "hard",
+   "question": "How much is the gap between using the proposed objective and using only cross-entropy objective?"
+  },
+  {
+   "pid": "1611.04642",
+   "qid": "b13d0e463d5eb6028cdaa0c36ac7de3b76b5e933",
+   "group": "hard",
+   "question": "What datasets are used to evaluate the model?"
+  },
+  {
+   "pid": "1704.05572",
+   "qid": "cd1792929b9fa5dd5b1df0ae06fc6aece4c97424",
+   "group": "hard",
+   "question": "Is an entity linking process used?"
+  },
+  {
+   "pid": "1902.09393",
+   "qid": "de12e059088e4800d7d89e4214a3997994dbc0d9",
+   "group": "hard",
+   "question": "What are the baseline systems that are compared against?"
+  },
+  {
+   "pid": "1909.13695",
+   "qid": "3241f90a03853fa85d287007d2d51e7843ee3d9b",
+   "group": "hard",
+   "question": "What standard large speaker verification corpora is used for evaluation?"
+  },
+  {
+   "pid": "1911.03681",
+   "qid": "83f14af3ccca4ab9deb4c6d208f624d1e79dc7eb",
+   "group": "hard",
+   "question": "Which of the two ensembles yields the best performance?"
+  },
+  {
+   "pid": "1907.00854",
+   "qid": "2c3b2c3bab6d18cb0895462e3cfd91cd0dee7f7d",
+   "group": "hard",
+   "question": "what pretrained models were used?"
+  },
+  {
+   "pid": "1904.04055",
+   "qid": "7e328cc3cffa521e73f111d6796aaa9661c8eb07",
+   "group": "hard",
+   "question": "What is specific about the specific embeddings?"
+  },
+  {
+   "pid": "1603.00968",
+   "qid": "c0035fb1c2b3de15146a7ce186ccd2e366fb4da2",
+   "group": "hard",
+   "question": "By how much of MGNC-CNN out perform the baselines?"
+  },
+  {
+   "pid": "2002.08307",
+   "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+   "group": "hard",
+   "question": "How much is pre-training loss increased in Low/Medium/Hard level of pruning?"
+  },
+  {
+   "pid": "1902.00330",
+   "qid": "0481a8edf795768d062c156875d20b8fb656432c",
+   "group": "hard",
+   "question": "what are the mentioned cues?"
+  },
+  {
+   "pid": "1911.03562",
+   "qid": "b6f5860fc4a9a763ddc5edaf6d8df0eb52125c9e",
+   "group": "hard",
+   "question": "Which 5 languages appear most frequently in AA paper titles?"
+  },
+  {
+   "pid": "1910.08772",
+   "qid": "45893f31ef07f0cca5783bd39c4e60630d6b93b3",
+   "group": "hard",
+   "question": "How do they select monotonicity facts?"
+  },
+  {
+   "pid": "1709.08299",
+   "qid": "7a7e279170e7a2f3bc953c37ee393de8ea7bd82f",
+   "group": "hard",
+   "question": "What two types the Chinese reading comprehension dataset consists of?"
+  },
+  {
+   "pid": "2003.07433",
+   "qid": "7081b6909cb87b58a7b85017a2278275be58bf60",
+   "group": "hard",
+   "question": "How many twitter users are surveyed using the clinically validated survey?"
+  },
+  {
+   "pid": "2002.06053",
+   "qid": "16646ee77975fed372b76ce639e2664ae2105dcf",
+   "group": "hard",
+   "question": "Is there any concrete example in the paper that shows that this approach had huge impact on drug discovery?"
+  },
+  {
+   "pid": "1702.06589",
+   "qid": "bf7cb53f4105f2e6a413d1adef5349ff1e673500",
+   "group": "hard",
+   "question": "What is the source of the paraphrases of the questions?"
+  },
+  {
+   "pid": "2001.00137",
+   "qid": "abc5836c54fc2ac8465aee5a83b9c0f86c6fd6f5",
+   "group": "hard",
+   "question": "Do they test their approach on a dataset without incomplete data?"
+  },
+  {
+   "pid": "1909.00578",
+   "qid": "3748787379b3a7d222c3a6254def3f5bfb93a60e",
+   "group": "hard",
+   "question": "What linguistic quality aspects are addressed?"
+  },
+  {
+   "pid": "1807.09000",
+   "qid": "4b624064332072102ea674254d7098038edad572",
+   "group": "hard",
+   "question": "Did participants behave unexpectedly?"
+  },
+  {
+   "pid": "1901.02262",
+   "qid": "2d274c93901c193cf7ad227ab28b1436c5f410af",
+   "group": "hard",
+   "question": "What are the baselines that Masque is compared against?"
+  },
+  {
+   "pid": "2002.11402",
+   "qid": "da8bda963f179f5517a864943dc0ee71249ee1ce",
+   "group": "hard",
+   "question": "How many layers does their system have?"
+  },
+  {
+   "pid": "1711.11221",
+   "qid": "c1c611409b5659a1fd4a870b6cc41f042e2e9889",
+   "group": "hard",
+   "question": "What evaluations did the authors use on their system?"
+  },
+  {
+   "pid": "1910.04601",
+   "qid": "7aba5e4483293f5847caad144ee0791c77164917",
+   "group": "hard",
+   "question": "What dataset was used in the experiment?"
+  },
+  {
+   "pid": "1803.03786",
+   "qid": "3d34a02ceebcc93ee79dc073c408651d25e538bc",
+   "group": "hard",
+   "question": "what classifiers were used in this paper?"
+  },
+  {
+   "pid": "1911.03243",
+   "qid": "a69af5937cab861977989efd72ad1677484b5c8c",
+   "group": "hard",
+   "question": "How was the previous dataset annotated?"
+  },
+  {
+   "pid": "1901.02262",
+   "qid": "e63bde5c7b154fbe990c3185e2626d13a1bad171",
+   "group": "hard",
+   "question": "What is the performance achieved on NarrativeQA?"
+  },
+  {
+   "pid": "2002.11402",
+   "qid": "1771a55236823ed44d3ee537de2e85465bf03eaf",
+   "group": "hard",
+   "question": "What is the difference in recall score between the systems?"
+  },
+  {
+   "pid": "1703.04617",
+   "qid": "a891039441e008f1fd0a227dbed003f76c140737",
+   "group": "hard",
+   "question": "What MC abbreviate for?"
+  },
+  {
+   "pid": "1909.13362",
+   "qid": "d71cb7f3aa585e256ca14eebdc358edfc3a9539c",
+   "group": "hard",
+   "question": "Which models achieve state-of-the-art performances?"
+  },
+  {
+   "pid": "1909.00754",
+   "qid": "ed7a3e7fc1672f85a768613e7d1b419475950ab4",
+   "group": "hard",
+   "question": "Does this approach perform better in the multi-domain or single-domain setting?"
+  },
+  {
+   "pid": "1708.01776",
+   "qid": "41174d8b176cb8549c2d83429d94ba8218335c84",
+   "group": "hard",
+   "question": "Does the Agent ask for a value of a variable using natural language generated text?"
+  },
+  {
+   "pid": "1909.13375",
+   "qid": "9a65cfff4d99e4f9546c72dece2520cae6231810",
+   "group": "hard",
+   "question": "What is the performance of proposed model on entire DROP dataset?"
+  },
+  {
+   "pid": "1606.02006",
+   "qid": "102a0439739428aac80ac11795e73ce751b93ea1",
+   "group": "hard",
+   "question": "What datasets were used?"
+  },
+  {
+   "pid": "2003.03612",
+   "qid": "ba973b13f26cd5eb1da54663c0a72842681d5bf5",
+   "group": "hard",
+   "question": "What online text resources are used to test binomial lists?"
+  },
+  {
+   "pid": "1810.00663",
+   "qid": "3aee5c856e0ee608a7664289ffdd11455d153234",
+   "group": "hard",
+   "question": "What was the performance of their model?"
+  },
+  {
+   "pid": "2001.05467",
+   "qid": "4b8a0e99bf3f2f6c80c57c0e474c47a5ee842b2c",
+   "group": "hard",
+   "question": "To what other competitive baselines is this approach compared?"
+  },
+  {
+   "pid": "1704.05572",
+   "qid": "eb95af36347ed0e0808e19963fe4d058e2ce3c9f",
+   "group": "hard",
+   "question": "What is the accuracy of the proposed technique?"
+  },
+  {
+   "pid": "1809.08652",
+   "qid": "d4e78d3205e98cafdf93ddaa95627ea00b7c4d55",
+   "group": "hard",
+   "question": "Do they perform some annotation?"
+  },
+  {
+   "pid": "1705.03261",
+   "qid": "b42323d60827ecf0d9e478c9a31f90940cfae975",
+   "group": "hard",
+   "question": "How big is the evaluated dataset?"
+  },
+  {
+   "pid": "1908.06606",
+   "qid": "1959e0ebc21fafdf1dd20c6ea054161ba7446f61",
+   "group": "hard",
+   "question": "How is the clinical text structuring task defined?"
+  },
+  {
+   "pid": "1907.08937",
+   "qid": "29571867fe00346418b1ec36c3b7685f035e22ce",
+   "group": "hard",
+   "question": "Which tasks do they apply their method to?"
+  },
+  {
+   "pid": "1612.09113",
+   "qid": "bf2ebc9bbd4cbdf8922c051f406effc97fd16e54",
+   "group": "hard",
+   "question": "How many supervised tasks are used?"
+  },
+  {
+   "pid": "1709.07916",
+   "qid": "18288c7b0f8bd7839ae92f9c293e7fb85c7e146a",
+   "group": "hard",
+   "question": "How strong was the correlation between exercise and diabetes?"
+  },
+  {
+   "pid": "2004.01694",
+   "qid": "cc5d8e12f6aecf6a5f305e2f8b3a0c67f49801a9",
+   "group": "hard",
+   "question": "What percentage fewer errors did professional translations make?"
+  },
+  {
+   "pid": "1910.03484",
+   "qid": "a65e5c97ade6e697ec10bcf3c3190dc6604a0cd5",
+   "group": "hard",
+   "question": "What non-annotated datasets are considered?"
+  },
+  {
+   "pid": "1808.02022",
+   "qid": "5dc2f79cd8078d5976f2df9ab128d4517e894257",
+   "group": "normal",
+   "question": "Which news organisations are the headlines sourced from?"
+  },
+  {
+   "pid": "1706.04815",
+   "qid": "dd8f72cb3c0961b5ca1413697a00529ba60571fe",
+   "group": "normal",
+   "question": "Why MS-MARCO is different from SQuAD?"
+  },
+  {
+   "pid": "1909.00161",
+   "qid": "e1f5531ed04d0aae1dfcb0559f1512a43134c43a",
+   "group": "normal",
+   "question": "Do they use pretrained models?"
+  },
+  {
+   "pid": "1909.12231",
+   "qid": "48cc41c372d44b69a477998be449f8b81384786b",
+   "group": "normal",
+   "question": "How better are state-of-the-art results than this model? "
+  },
+  {
+   "pid": "1901.09755",
+   "qid": "71fca845edd33f6e227eccde10db73b99a7e157b",
+   "group": "normal",
+   "question": "What was the baseline?"
+  },
+  {
+   "pid": "1908.06809",
+   "qid": "d6a27c41c81f12028529e97e255789ec2ba39eaa",
+   "group": "normal",
+   "question": "How much does the standard metrics for style accuracy vary on different re-runs?"
+  },
+  {
+   "pid": "2004.03034",
+   "qid": "951098f0b7169447695b47c142384f278f451a1e",
+   "group": "normal",
+   "question": "What annotations are available in the dataset?"
+  },
+  {
+   "pid": "1804.08094",
+   "qid": "78661bdd4d11148e07bdf17141cf088db4ad60c6",
+   "group": "normal",
+   "question": "What were their results on the test set?"
+  },
+  {
+   "pid": "2002.02800",
+   "qid": "aa979aed5a454b6705d0085ba2777859feb6fc62",
+   "group": "normal",
+   "question": "Do they report results only on English datasets?"
+  },
+  {
+   "pid": "1911.00133",
+   "qid": "4e8233826f9e04f5763b307988298e73f841af74",
+   "group": "normal",
+   "question": "Is the dataset balanced across categories?"
+  },
+  {
+   "pid": "1806.02847",
+   "qid": "05bb75a1e1202850efa9191d6901de0a34744af0",
+   "group": "normal",
+   "question": "Which of their training domains improves performance the most?"
+  },
+  {
+   "pid": "1808.09920",
+   "qid": "c4a6b727769328333bb48d59d3fc4036a084875d",
+   "group": "normal",
+   "question": "What baseline did they compare Entity-GCN to?"
+  },
+  {
+   "pid": "1711.02013",
+   "qid": "2ff3898fbb5954aa82dd2f60b37dd303449c81ba",
+   "group": "normal",
+   "question": "Which dataset do they experiment with?"
+  },
+  {
+   "pid": "1804.08139",
+   "qid": "b556fd3a9e0cff0b33c63fa1aef3aed825f13e28",
+   "group": "normal",
+   "question": "What dataset did they use?"
+  },
+  {
+   "pid": "1806.04535",
+   "qid": "bcd6befa65cab3ffa6334c8ecedd065a4161028b",
+   "group": "normal",
+   "question": "What are puns?"
+  },
+  {
+   "pid": "1909.02560",
+   "qid": "f5db12cd0a8cd706a232c69d94b2258596aa068c",
+   "group": "normal",
+   "question": "How much in experiments is performance improved for models trained with generated adversarial examples?"
+  },
+  {
+   "pid": "1907.00758",
+   "qid": "f6f8054f327a2c084a73faca16cf24a180c094ae",
+   "group": "normal",
+   "question": "Does their neural network predict a single offset in a recording?"
+  },
+  {
+   "pid": "1909.03023",
+   "qid": "9378b41f7e888e78d667e9763883dd64ddb48728",
+   "group": "normal",
+   "question": "do they use a crowdsourcing platform?"
+  },
+  {
+   "pid": "1711.10124",
+   "qid": "280f863cfd63b711980ca6c7f1409c0306473de7",
+   "group": "normal",
+   "question": "Are their corpus and software public?"
+  },
+  {
+   "pid": "1705.07368",
+   "qid": "7ee660927e2b202376849e489faa7341518adaf9",
+   "group": "normal",
+   "question": "Which techniques for word embeddings and topic models are used?"
+  },
+  {
+   "pid": "1704.00939",
+   "qid": "e2e31ab279d3092418159dfd24760f0f0566e9d3",
+   "group": "normal",
+   "question": "What was their performance?"
+  },
+  {
+   "pid": "1909.03526",
+   "qid": "6e51af9088c390829703c6fa966e98c3a53114c1",
+   "group": "normal",
+   "question": "What dialect is used in the Google BERT model and what is used in the task data?"
+  },
+  {
+   "pid": "1811.00942",
+   "qid": "a9d530d68fb45b52d9bad9da2cd139db5a4b2f7c",
+   "group": "normal",
+   "question": "what classic language models are mentioned in the paper?"
+  },
+  {
+   "pid": "1910.08418",
+   "qid": "09cd7ae01fe97bba230c109d0234fee80a1f013b",
+   "group": "normal",
+   "question": "What is the dataset used in the paper?"
+  },
+  {
+   "pid": "2001.09332",
+   "qid": "9447ec36e397853c04dcb8f67492ca9f944dbd4b",
+   "group": "normal",
+   "question": "What is the dataset used as input to the Word2Vec algorithm?"
+  },
+  {
+   "pid": "2001.07263",
+   "qid": "7efbe48e84894971d7cd307faf5f6dae9d38da31",
+   "group": "normal",
+   "question": "How big is Switchboard-300 database?"
+  },
+  {
+   "pid": "1806.11322",
+   "qid": "7426a6e800d6c11795941616fc4a243e75716a10",
+   "group": "normal",
+   "question": "What factors contribute to interpretive biases according to this research?"
+  },
+  {
+   "pid": "1909.02265",
+   "qid": "d1909ce77d09983aa1b3ab5c56e2458caefbd442",
+   "group": "normal",
+   "question": "What were the evaluation metrics used?"
+  },
+  {
+   "pid": "1809.05752",
+   "qid": "fbee81a9d90ff23603ee4f5986f9e8c0eb035b52",
+   "group": "normal",
+   "question": "What are their initial results on this task?"
+  },
+  {
+   "pid": "1908.07816",
+   "qid": "4d4b9ff2da51b9e0255e5fab0b41dfe49a0d9012",
+   "group": "normal",
+   "question": "Is some other metrics other then perplexity measured?"
+  },
+  {
+   "pid": "1909.00542",
+   "qid": "a7cb4f8e29fd2f3d1787df64cd981a6318b65896",
+   "group": "normal",
+   "question": "Did classification models perform better than previous regression one?"
+  },
+  {
+   "pid": "1808.05902",
+   "qid": "f7789313a804e41fcbca906a4e5cf69039eeef9f",
+   "group": "normal",
+   "question": "what datasets were used?"
+  },
+  {
+   "pid": "1905.07471",
+   "qid": "e7329c403af26b7e6eef8b60ba6fefbe40ccf8ce",
+   "group": "normal",
+   "question": "How much better does this baseline neural model do?"
+  },
+  {
+   "pid": "1703.06492",
+   "qid": "785eb3c7c5a5c27db14006ac357299ed1216313a",
+   "group": "normal",
+   "question": "What they formulate the question generation as?"
+  },
+  {
+   "pid": "1910.10288",
+   "qid": "5c4c8e91d28935e1655a582568cc9d94149da2b2",
+   "group": "normal",
+   "question": "Does DCA or GMM-based attention perform better in experiments?"
+  },
+  {
+   "pid": "1910.10408",
+   "qid": "228425783a4830e576fb98696f76f4c7c0a1b906",
+   "group": "normal",
+   "question": "Which languages do they focus on?"
+  },
+  {
+   "pid": "1907.02636",
+   "qid": "08b87a90139968095433f27fc88f571d939cd433",
+   "group": "normal",
+   "question": "What is used a baseline?"
+  },
+  {
+   "pid": "1806.09103",
+   "qid": "f513e27db363c28d19a29e01f758437d7477eb24",
+   "group": "normal",
+   "question": "what are the baselines?"
+  },
+  {
+   "pid": "1909.05358",
+   "qid": "c21d26130b521c9596a1edd7b9ef3fe80a499f1e",
+   "group": "normal",
+   "question": "Which six domains are covered in the dataset?"
+  },
+  {
+   "pid": "1910.12618",
+   "qid": "d5498d16e8350c9785782b57b1e5a82212dbdaad",
+   "group": "normal",
+   "question": "How accurate is model trained on text exclusively?"
+  },
+  {
+   "pid": "1703.02507",
+   "qid": "09a993756d2781a89f7ec5d7992f812d60e24232",
+   "group": "normal",
+   "question": "Do they report results only on English data?"
+  },
+  {
+   "pid": "1910.05456",
+   "qid": "74db8301d42c7e7936eb09b2171cd857744c52eb",
+   "group": "normal",
+   "question": "How is the performance on the task evaluated?"
+  },
+  {
+   "pid": "2001.05284",
+   "qid": "c9c85eee41556c6993f40e428fa607af4abe80a9",
+   "group": "normal",
+   "question": "Over which datasets/corpora is this work evaluated?"
+  },
+  {
+   "pid": "1612.05270",
+   "qid": "cebf3e07057339047326cb2f8863ee633a62f49f",
+   "group": "normal",
+   "question": "In which languages did the approach outperform the reported results?"
+  },
+  {
+   "pid": "1810.00663",
+   "qid": "29bdd1fb20d013b23b3962a065de3a564b14f0fb",
+   "group": "normal",
+   "question": "Did the authors use a crowdsourcing platform?"
+  },
+  {
+   "pid": "1911.12569",
+   "qid": "2869d19e54fb554fcf1d6888e526135803bb7d75",
+   "group": "normal",
+   "question": "What performance did they obtain on the SemEval dataset?"
+  },
+  {
+   "pid": "1707.07554",
+   "qid": "1024f22110c436aa7a62a1022819bfe62dc0d336",
+   "group": "normal",
+   "question": "How is performance measured?"
+  },
+  {
+   "pid": "1910.10408",
+   "qid": "22c36082b00f677e054f0f0395ed685808965a02",
+   "group": "normal",
+   "question": "Do they conduct any human evaluation?"
+  },
+  {
+   "pid": "2004.04228",
+   "qid": "dfd9302615b27abf8cbef1a2f880a73dd5f0c753",
+   "group": "normal",
+   "question": "What models are evaluated with QAGS?"
+  },
+  {
+   "pid": "1803.02839",
+   "qid": "30b5e5293001f65d2fb9e4d1fdf4dc230e8cf320",
+   "group": "normal",
+   "question": "What text classification task is considered?"
+  },
+  {
+   "pid": "1706.07179",
+   "qid": "082c88e132b4f1bf68abdc3a21ac4af180de1113",
+   "group": "normal",
+   "question": "How is knowledge retrieved in the memory?"
+  },
+  {
+   "pid": "1805.02400",
+   "qid": "cd1034c183edf630018f47ff70b48d74d2bb1649",
+   "group": "normal",
+   "question": "Does their detection tool work better than human detection?"
+  },
+  {
+   "pid": "1605.08675",
+   "qid": "63496705fff20c55d4b3d8cdf4786f93e742dd3d",
+   "group": "normal",
+   "question": "Do they compare DeepER against other approaches?"
+  },
+  {
+   "pid": "2003.04967",
+   "qid": "0457242fb2ec33446799de229ff37eaad9932f2a",
+   "group": "normal",
+   "question": "Which elements of the platform are modular?"
+  },
+  {
+   "pid": "1911.00547",
+   "qid": "8c78b21ec966a5e8405e8b9d3d6e7099e95ea5fb",
+   "group": "normal",
+   "question": "What model did they use?"
+  },
+  {
+   "pid": "1911.09845",
+   "qid": "4f1a5eed730fdcf0e570f9118fc09ef2173c6a1b",
+   "group": "normal",
+   "question": "What other kinds of generation models are used in experiments?"
+  },
+  {
+   "pid": "1911.00523",
+   "qid": "eacd7e540cc34cb45770fcba463f4bf968681d59",
+   "group": "normal",
+   "question": "Do authors provide any explanation for intriguing patterns of word being echoed?"
+  },
+  {
+   "pid": "1910.08502",
+   "qid": "871c34219eb623bde9ac3937aa0f28fc3ad69445",
+   "group": "normal",
+   "question": "Which model have the smallest Character Error Rate and which have the smallest Word Error Rate?"
+  },
+  {
+   "pid": "1910.04601",
+   "qid": "d83304c70fe66ae72e78aa1d183e9f18b7484cd6",
+   "group": "normal",
+   "question": "How was the dataset annotated?"
+  },
+  {
+   "pid": "1904.12535",
+   "qid": "cdf65116a7c50edddcb115e9afd86b2b6accb8ad",
+   "group": "normal",
+   "question": "What open relation extraction tasks did they experiment on?"
+  },
+  {
+   "pid": "2003.08370",
+   "qid": "288613077787159e512e46b79190c91cd4e5b04d",
+   "group": "normal",
+   "question": "What classifiers were used in experiments?"
+  },
+  {
+   "pid": "1904.12535",
+   "qid": "c8031c1629d270dedc3b0c16dcb7410524ff1bab",
+   "group": "normal",
+   "question": "How is Logician different from traditional seq2seq models?"
+  },
+  {
+   "pid": "1912.01673",
+   "qid": "a3d83c2a1b98060d609e7ff63e00112d36ce2607",
+   "group": "normal",
+   "question": "How many sentence transformations on average are available per unique sentence in dataset?"
+  },
+  {
+   "pid": "1906.11180",
+   "qid": "2b61893b22ac190c94c2cb129e86086888347079",
+   "group": "normal",
+   "question": "What KB is used in this work?"
+  },
+  {
+   "pid": "2002.06053",
+   "qid": "8c8a32592184c88f61fac1eef12c7d233dbec9dc",
+   "group": "normal",
+   "question": "Are this models usually semi/supervised or unsupervised?"
+  },
+  {
+   "pid": "1903.07398",
+   "qid": "d9cbcaf8f0457b4be59178446f1a280d17a923fa",
+   "group": "normal",
+   "question": "How do they measure the size of models?"
+  },
+  {
+   "pid": "1708.01776",
+   "qid": "2ec97cf890b537e393c2ce4c2b3bd05dfe46f683",
+   "group": "normal",
+   "question": "How do they measure correlation between the prediction and explanation quality?"
+  },
+  {
+   "pid": "1911.09845",
+   "qid": "4bdad5a20750c878d1a891ef255621f6172b6a79",
+   "group": "normal",
+   "question": "How does discrete latent variable has an explicit semantic meaning to improve the CVAE on short-text conversation?"
+  },
+  {
+   "pid": "1909.11297",
+   "qid": "1afd550cbee15b753db45d7db2c969fc3d12a7d9",
+   "group": "normal",
+   "question": "Is the model evaluated against the baseline also on single-aspect sentences?"
+  },
+  {
+   "pid": "1911.03243",
+   "qid": "78c010db6413202b4063dc3fb6e3cc59ec16e7e3",
+   "group": "normal",
+   "question": "What is different in the improved annotation protocol?"
+  },
+  {
+   "pid": "1909.05246",
+   "qid": "2ea382c676e418edd5327998e076a8c445d007a5",
+   "group": "normal",
+   "question": "Is human evaluation performed?"
+  },
+  {
+   "pid": "1812.03593",
+   "qid": "b29b5c39575454da9566b3dd27707fced8c6f4a1",
+   "group": "normal",
+   "question": "Does the model incorporate coreference and entailment?"
+  },
+  {
+   "pid": "1712.09127",
+   "qid": "4c4f76837d1329835df88b0921f4fe8bda26606f",
+   "group": "normal",
+   "question": "Do they evaluate grammaticality of generated text?"
+  },
+  {
+   "pid": "1912.00423",
+   "qid": "5a230fe4f0204bf2eebc0e944cf8defaf33d165c",
+   "group": "normal",
+   "question": "What are the differences between FHIR and RDF?"
+  },
+  {
+   "pid": "1610.00879",
+   "qid": "45306b26447ea4b120655d6bb2e3636079d3d6e0",
+   "group": "normal",
+   "question": "Do they report results only on English data?"
+  },
+  {
+   "pid": "1909.11833",
+   "qid": "4dad15fee1fe01c3eadce8f0914781ca0a6e3f23",
+   "group": "normal",
+   "question": "How do they prevent the model complexity increasing with the increased number of slots?"
+  },
+  {
+   "pid": "1803.02839",
+   "qid": "993b896771c31f3478f28112a7335e7be9d03f21",
+   "group": "normal",
+   "question": "What novel class of recurrent-like networks is proposed?"
+  },
+  {
+   "pid": "2002.05104",
+   "qid": "649d6dc076251547aece6532f75d00fc99081d2b",
+   "group": "normal",
+   "question": "What are least important components identified in the the training of VQA models?"
+  },
+  {
+   "pid": "2004.02083",
+   "qid": "8486e06c03f82ebd48c7cfbaffaa76e8b899eea5",
+   "group": "normal",
+   "question": "How was annotation done?"
+  },
+  {
+   "pid": "1807.08204",
+   "qid": "848ab388703c24faad79d83d254e4fd88ab27e2a",
+   "group": "normal",
+   "question": "How are proof scores calculated?"
+  },
+  {
+   "pid": "1903.00172",
+   "qid": "1fb73176394ef59adfaa8fc7827395525f9a5af7",
+   "group": "normal",
+   "question": "Where did they get training data?"
+  },
+  {
+   "pid": "1706.01723",
+   "qid": "fc54736e67f748f804e8f66b3aaaea7f5e55b209",
+   "group": "normal",
+   "question": "How do they confirm their model working well on out-of-vocabulary problems?"
+  },
+  {
+   "pid": "1906.10551",
+   "qid": "b217d9730ba469f48426280945dbb77542b39183",
+   "group": "normal",
+   "question": "Which is the best performing method?"
+  },
+  {
+   "pid": "1708.08615",
+   "qid": "95d8368b1055d97250df38d1e8c4a2b283d2b57e",
+   "group": "normal",
+   "question": "what standard speech transcription pipeline was used?"
+  },
+  {
+   "pid": "1909.05890",
+   "qid": "68ff2a14e6f0e115ef12c213cf852a35a4d73863",
+   "group": "normal",
+   "question": "Do twitter users tend to tweet about the DOS attack when it occurs? How much data supports this assumption?"
+  },
+  {
+   "pid": "1905.11901",
+   "qid": "9f3444c9fb2e144465d63abf58520cddd4165a01",
+   "group": "normal",
+   "question": "what are the methods they compare with in the korean-english dataset?"
+  },
+  {
+   "pid": "1903.00058",
+   "qid": "0062ad4aed09a57d0ece6aa4b873f4a4bf65d165",
+   "group": "normal",
+   "question": "Which similarity measure do they use in their n-gram retrieval approach?"
+  },
+  {
+   "pid": "1909.00542",
+   "qid": "cfffc94518d64cb3c8789395707e4336676e0345",
+   "group": "normal",
+   "question": "What approaches without reinforcement learning have been tried?"
+  },
+  {
+   "pid": "1908.10422",
+   "qid": "702e2d02c25a2f3f6b1be8ad3d448b502b8ced9c",
+   "group": "normal",
+   "question": "How do they obtain human generated policies?"
+  },
+  {
+   "pid": "1801.09030",
+   "qid": "5d5a571ff04a5fdd656ca87f6525a60e917d6558",
+   "group": "normal",
+   "question": "Do they impose any grammatical constraints over the generated output?"
+  },
+  {
+   "pid": "2003.08808",
+   "qid": "d664054c8d1f8e84169d4ab790f2754274353685",
+   "group": "normal",
+   "question": "What previously annotated databases are available?"
+  },
+  {
+   "pid": "1904.04019",
+   "qid": "c2cbc2637761a2c2cf50f5f8caa248814277430e",
+   "group": "normal",
+   "question": "What are the different methods used for different corpora?"
+  },
+  {
+   "pid": "1702.06777",
+   "qid": "0d755ff58a7e22eb4d02fca45d4a7a3920f4e725",
+   "group": "normal",
+   "question": "Do the authors mention any possible confounds in their study?"
+  },
+  {
+   "pid": "1909.08041",
+   "qid": "9df4a7bd0abb99ae81f0ebb29c488f1caa0f268f",
+   "group": "normal",
+   "question": "How do they train the retrieval modules?"
+  },
+  {
+   "pid": "2003.00576",
+   "qid": "2ed02be0c183fca7031ccb8be3fd7bc109f3694b",
+   "group": "normal",
+   "question": "By how much they improve over the previous state-of-the-art?"
+  },
+  {
+   "pid": "1911.02821",
+   "qid": "3a62dd5fece70f8bf876dcbb131223682e3c54b7",
+   "group": "normal",
+   "question": "How does the fusion method work?"
+  },
+  {
+   "pid": "2003.08529",
+   "qid": "9174aded45bc36915f2e2adb6f352f3c7d9ada8b",
+   "group": "normal",
+   "question": "Which real-world datasets did they use?"
+  },
+  {
+   "pid": "1909.06522",
+   "qid": "0ec4143a4f1a8f597b435f83c0451145be2ab95b",
+   "group": "normal",
+   "question": "What are the best within-language data augmentation methods?"
+  },
+  {
+   "pid": "2001.05493",
+   "qid": "fbe5e513745d723aad711ceb91ce0c3c2ceb669e",
+   "group": "normal",
+   "question": "What data/studies do the authors provide to support the assertion that the majority of aggressive conversations contain code-mixed languages?"
+  },
+  {
+   "pid": "1904.11942",
+   "qid": "b0dca7b74934f51ff3da0c074ad659c25d84174d",
+   "group": "normal",
+   "question": "What were the traditional linguistic feature-based models?"
+  },
+  {
+   "pid": "1904.11942",
+   "qid": "4266aacb575b4be7dbcdb8616766324f8790763c",
+   "group": "normal",
+   "question": "What conclusions do the authors draw from their detailed analyses?"
+  },
+  {
+   "pid": "1703.02507",
+   "qid": "03f4e5ac5a9010191098d6d66ed9bbdfafcbd013",
+   "group": "normal",
+   "question": "How do the n-gram features incorporate compositionality?"
+  },
+  {
+   "pid": "1909.05358",
+   "qid": "221e9189a9d2431902d8ea833f486a38a76cbd8e",
+   "group": "normal",
+   "question": "What is the average number of turns per dialog?"
+  },
+  {
+   "pid": "1906.02715",
+   "qid": "c58e60b99a6590e6b9a34de96c7606b004a4f169",
+   "group": "normal",
+   "question": "What linguistic features were probed for?"
+  },
+  {
+   "pid": "1908.06725",
+   "qid": "3c16d4cf5dc23223980d9c0f924cb9e4e6943f13",
+   "group": "normal",
+   "question": "How do they select answer candidates for their QA task?"
+  },
+  {
+   "pid": "1911.05960",
+   "qid": "3f46d8082a753265ec2a88ae8f1beb6651e281b6",
+   "group": "normal",
+   "question": "What datasets are used for testing sentiment classification and reading comprehension?"
+  },
+  {
+   "pid": "1909.00100",
+   "qid": "d2804ac0f068e9c498e33582af9c66906b26cac3",
+   "group": "normal",
+   "question": "How do they compress the model?"
+  },
+  {
+   "pid": "1909.02764",
+   "qid": "00bcdffff7e055f99aaf1b05cf41c98e2748e948",
+   "group": "normal",
+   "question": "What is the baseline method for the task?"
+  },
+  {
+   "pid": "1911.09845",
+   "qid": "86e3136271a7b93991c8de5d310ab15a6ac5ab8c",
+   "group": "normal",
+   "question": "How is human evaluation performed, what were the criteria?"
+  },
+  {
+   "pid": "1710.06700",
+   "qid": "989271972b3176d0a5dabd1cc0e4bdb671269c96",
+   "group": "normal",
+   "question": "Where did they collect their dataset from?"
+  },
+  {
+   "pid": "1908.04917",
+   "qid": "8a7bd9579d2783bfa81e055a7a6ebc3935da9d20",
+   "group": "normal",
+   "question": "What was the previous state of the art model for this task?"
+  },
+  {
+   "pid": "2003.06651",
+   "qid": "d94ac550dfdb9e4bbe04392156065c072b9d75e1",
+   "group": "normal",
+   "question": "Is the method described in this work a clustering-based method?"
+  },
+  {
+   "pid": "1909.11879",
+   "qid": "80b9600e51a823f32bbce12fc52cba9700e2b8d2",
+   "group": "normal",
+   "question": "Does the dataset contain non-English reviews?"
+  },
+  {
+   "pid": "2004.01670",
+   "qid": "4d4550533edb19c38cb876b1640e62e34e2b88e0",
+   "group": "normal",
+   "question": "What is open website for cataloguing abusive language data?"
+  },
+  {
+   "pid": "1711.02013",
+   "qid": "d824f837d8bc17f399e9b8ce8b30795944df0d51",
+   "group": "normal",
+   "question": "How do they show their model discovers underlying syntactic structure?"
+  },
+  {
+   "pid": "1906.03538",
+   "qid": "fb96c0cd777bb2961117feca19c6d41bfd8cfd42",
+   "group": "normal",
+   "question": "What debate websites did they look at?"
+  },
+  {
+   "pid": "1909.08041",
+   "qid": "13d92cbc2c77134626e26166c64ca5c00aec0bf5",
+   "group": "normal",
+   "question": "What baseline approaches do they compare against?"
+  },
+  {
+   "pid": "1912.00423",
+   "qid": "d3bb06d730efbedd30ec226fe8cf828a4773bf5c",
+   "group": "normal",
+   "question": "What do FHIR and RDF stand for?"
+  },
+  {
+   "pid": "1904.07342",
+   "qid": "16fa6896cf4597154363a6c9a98deb49fffef15f",
+   "group": "normal",
+   "question": "Do they report results only on English data?"
+  },
+  {
+   "pid": "1901.03438",
+   "qid": "f809fd0d3acfaccbe6c8abb4a9d951a83eec9a32",
+   "group": "normal",
+   "question": "How is the CoLA grammatically annotated?"
+  },
+  {
+   "pid": "1912.11602",
+   "qid": "f95097cf4a0dc036fd8b80c007cd8d7a157b7816",
+   "group": "normal",
+   "question": "What were the baselines?"
+  },
+  {
+   "pid": "2001.08051",
+   "qid": "973f6284664675654cc9881745880a0e88f3280e",
+   "group": "normal",
+   "question": "What proficiency indicators are used to the score the utterances?"
+  },
+  {
+   "pid": "1903.03467",
+   "qid": "faa4f28a2f2968cecb770d9379ab2cfcaaf5cfab",
+   "group": "normal",
+   "question": "What type of syntactic analysis is performed?"
+  },
+  {
+   "pid": "1910.00912",
+   "qid": "7c794fa0b2818d354ca666969107818a2ffdda0c",
+   "group": "normal",
+   "question": "What metrics other than entity tagging are compared?"
+  },
+  {
+   "pid": "1808.03986",
+   "qid": "4e2cb1677df949ee3d1d3cd10962b951da907105",
+   "group": "normal",
+   "question": "How/where are the natural question generated?"
+  },
+  {
+   "pid": "1904.09708",
+   "qid": "7182f6ed12fa990835317c57ad1ff486282594ee",
+   "group": "normal",
+   "question": "How does the SCAN dataset evaluate compositional generalization?"
+  },
+  {
+   "pid": "1910.03042",
+   "qid": "71538776757a32eee930d297f6667cd0ec2e9231",
+   "group": "normal",
+   "question": "How do they correlate user backstory queries to user satisfaction?"
+  },
+  {
+   "pid": "1807.08666",
+   "qid": "f748cb05becc60e7d47d34f4c5f94189bc184d33",
+   "group": "normal",
+   "question": "What are bottleneck features?"
+  },
+  {
+   "pid": "1911.03514",
+   "qid": "9f2634c142dc4ad2c68135dbb393ecdfd23af13f",
+   "group": "normal",
+   "question": "How large is the proposed dataset?"
+  },
+  {
+   "pid": "1901.02262",
+   "qid": "5455b3cdcf426f4d5fc40bc11644a432fa7a5c8f",
+   "group": "normal",
+   "question": "What do they mean by answer styles?"
+  },
+  {
+   "pid": "1802.00923",
+   "qid": "082bc58e1a2a65fc1afec4064a51e4c785674fd7",
+   "group": "normal",
+   "question": "What is the difference between Long-short Term Hybrid Memory and LSTMs?"
+  },
+  {
+   "pid": "1811.09786",
+   "qid": "602396d1f5a3c172e60a10c7022bcfa08fa6cbc9",
+   "group": "normal",
+   "question": "By how much do they outperform BiLSTMs in Sentiment Analysis?"
+  },
+  {
+   "pid": "1911.11933",
+   "qid": "046ff04d1018447b22e00acb125125cae5a23fb7",
+   "group": "normal",
+   "question": "Which dataset do they use?"
+  },
+  {
+   "pid": "1911.12579",
+   "qid": "8cb9006bcbd2f390aadc6b70d54ee98c674e45cc",
+   "group": "normal",
+   "question": "How is the data collected, which web resources were used?"
+  },
+  {
+   "pid": "1601.00901",
+   "qid": "74b0d3ee0cc9b0a3d9b264aba9901ff97048a897",
+   "group": "normal",
+   "question": "How did they induce the CFG?"
+  },
+  {
+   "pid": "2004.04315",
+   "qid": "1b046ec7f0e1a33e77078bedef7e83c5c07b61de",
+   "group": "normal",
+   "question": "Over what period of time were the tweets collected?"
+  },
+  {
+   "pid": "1808.10113",
+   "qid": "e28a6e3d8f3aa303e1e0daff26b659a842aba97b",
+   "group": "normal",
+   "question": "Did they compare to Transformer based large language models?"
+  },
+  {
+   "pid": "1610.09516",
+   "qid": "a6d00f44ff8f83b6c1787e39333e759b0c3daf15",
+   "group": "normal",
+   "question": "What are the differences in the use of images between gang member and the rest of the Twitter population?"
+  },
+  {
+   "pid": "1911.09886",
+   "qid": "1898f999626f9a6da637bd8b4857e5eddf2fc729",
+   "group": "normal",
+   "question": "How higher are F1 scores compared to previous work?"
+  },
+  {
+   "pid": "1808.05902",
+   "qid": "c87b2dd5c439d5e68841a705dd81323ec0d64c97",
+   "group": "normal",
+   "question": "what are the state of the art approaches?"
+  },
+  {
+   "pid": "1908.00153",
+   "qid": "58c1b162a4491d4a5ae0ff86cc8bd64e98739620",
+   "group": "normal",
+   "question": "Do they propose a new model to better detect Arabic bots specifically?"
+  },
+  {
+   "pid": "1804.08139",
+   "qid": "0db1ba66a7e75e91e93d78c31f877364c3724a65",
+   "group": "normal",
+   "question": "What tasks did they experiment with?"
+  },
+  {
+   "pid": "1911.03894",
+   "qid": "5471766ca7c995dd7f0f449407902b32ac9db269",
+   "group": "normal",
+   "question": "How much better was results of CamemBERT than previous results on these tasks?"
+  },
+  {
+   "pid": "1811.02906",
+   "qid": "9003c7041d3d2addabc2c112fa2c7efe5fab493c",
+   "group": "normal",
+   "question": "What are the near-offensive language categories?"
+  },
+  {
+   "pid": "1908.11546",
+   "qid": "8a0a51382d186e8d92bf7e78277a1d48958758da",
+   "group": "normal",
+   "question": "How better is gCAS approach compared to other approaches?"
+  },
+  {
+   "pid": "1910.02339",
+   "qid": "9c4a4dfa7b0b977173e76e2d2f08fa984af86f0e",
+   "group": "normal",
+   "question": "How does TP-N2F compare to LSTM-based Seq2Seq in terms of training and inference speed?"
+  },
+  {
+   "pid": "2003.05522",
+   "qid": "86a93a2d1c19cd0cd21ad1608f2a336240725700",
+   "group": "normal",
+   "question": "How does Frege's holistic and functional approach to meaning relates to general distributional hypothesis?"
+  },
+  {
+   "pid": "1706.07206",
+   "qid": "2555ca85ff6b56bd09c3919aa6b277eb7a4d4631",
+   "group": "normal",
+   "question": "Which datasets are used for evaluation?"
+  },
+  {
+   "pid": "1805.00460",
+   "qid": "d2473c039ab85f8e9e99066894658381ae852e16",
+   "group": "normal",
+   "question": "What are the features of used to customize target user interaction? "
+  },
+  {
+   "pid": "1703.06492",
+   "qid": "0c7823b27326b3f5dff51f32f45fc69c91a4e06d",
+   "group": "normal",
+   "question": "In which setting they achieve the state of the art?"
+  }
+ ]
+}

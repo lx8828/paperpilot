@@ -1,0 +1,48 @@
+{
+  "_说明": "防幻觉负向组。type=contra: 篡改真实数值问真伪(expect no)，应否定且给出真值 real_kw，绝不能把 fake_kw 当事实陈述。type=absent: 问论文不存在之物(expect refuse)，应诚实拒答，不得编造细节。自动判定+人工复核（量小）。",
+  "questions": [
+    {"pdf": "2609.02056v1.pdf", "qid": "02056-H1", "type": "contra", "expect": "no", "real_kw": ["0.429"], "fake_kw": ["0.618"],
+     "question": "论文报告在 MatKG 上取得的最佳 F1 分数是 0.618，对吗？"},
+    {"pdf": "2609.02056v1.pdf", "qid": "02056-H2", "type": "contra", "expect": "no", "real_kw": ["45.64", "54.36"], "fake_kw": ["21.8%"],
+     "question": "论文称 GNN 分诊机制把 LLM 调用率平均降低到了 21.8%，对吗？"},
+    {"pdf": "2609.02056v1.pdf", "qid": "02056-H3", "type": "contra", "expect": "no", "real_kw": ["0.242"], "fake_kw": ["0.48"],
+     "question": "论文声称 HyGRAIL 相比最强先前基线（TSH）提升了 0.48 的 F1，对吗？"},
+    {"pdf": "2609.02056v1.pdf", "qid": "02056-N1", "type": "absent", "expect": "refuse",
+     "question": "论文是否在医疗知识图谱 MIMIC-III 上评估了 HyGRAIL？"},
+    {"pdf": "2609.02056v1.pdf", "qid": "02056-N2", "type": "absent", "expect": "refuse",
+     "question": "论文是否使用强化学习来训练 GNN 分诊器？"},
+
+    {"pdf": "2609.03335v1.pdf", "qid": "03335-H1", "type": "contra", "expect": "no", "real_kw": ["24.63"], "fake_kw": ["87.4"],
+     "question": "论文声称相比最先进工作流调度器，每个完成会话最多节省 87.4 GPU 秒，对吗？"},
+    {"pdf": "2609.03335v1.pdf", "qid": "03335-H2", "type": "contra", "expect": "no", "real_kw": ["587.0"], "fake_kw": ["912.5"],
+     "question": "论文称其系统整体 p95 完成延迟为 912.5 秒，对吗？"},
+    {"pdf": "2609.03335v1.pdf", "qid": "03335-H3", "type": "contra", "expect": "no", "real_kw": ["36.8"], "fake_kw": ["52.3"],
+     "question": "论文称三种工作流场景下端到端完成时间最多可降低 52.3%，对吗？"},
+    {"pdf": "2609.03335v1.pdf", "qid": "03335-N1", "type": "absent", "expect": "refuse",
+     "question": "论文是否与一个名为 SchedLlama 的基于大模型的调度器做了对比？"},
+    {"pdf": "2609.03335v1.pdf", "qid": "03335-N2", "type": "absent", "expect": "refuse",
+     "question": "论文是否在 SE-LongBench 这类软件工程长上下文基准上做了评测？"},
+
+    {"pdf": "2609.03718v1.pdf", "qid": "03718-H1", "type": "contra", "expect": "no", "real_kw": ["96.4"], "fake_kw": ["78.1"],
+     "question": "论文称单智能体框架在 FoamBench 上达到 78.1%，对吗？"},
+    {"pdf": "2609.03718v1.pdf", "qid": "03718-H2", "type": "contra", "expect": "no", "real_kw": ["100"], "fake_kw": ["82.5"],
+     "question": "论文称 Direct Baseline 在 MCP-SIM 上达到 82.5%，对吗？"},
+    {"pdf": "2609.03718v1.pdf", "qid": "03718-H3", "type": "contra", "expect": "no", "real_kw": ["15.5"], "fake_kw": ["28.4"],
+     "question": "论文称在 FoamBench 上强制阅读教程比无教程提升 28.4 个百分点，对吗？"},
+    {"pdf": "2609.03718v1.pdf", "qid": "03718-N1", "type": "absent", "expect": "refuse",
+     "question": "论文是否将基于 GPT-5.4-Vision 的视觉智能体作为对比基线？"},
+    {"pdf": "2609.03718v1.pdf", "qid": "03718-N2", "type": "absent", "expect": "refuse",
+     "question": "论文是否比较了各方法在 SU2 求解器上的仿真表现？"},
+
+    {"pdf": "2609.02786v1.pdf", "qid": "02786-H1", "type": "contra", "expect": "no", "real_kw": ["83.83"], "fake_kw": ["64.2"],
+     "question": "论文称在 AgentHarm 上 SafeEvolve 将拒绝率提升至 64.2%，对吗？"},
+    {"pdf": "2609.02786v1.pdf", "qid": "02786-H2", "type": "contra", "expect": "no", "real_kw": ["56.45", "12.27"], "fake_kw": ["71.3"],
+     "question": "论文称在 AgentHarm 上危害分数从 71.3 降至 30.6，对吗？"},
+    {"pdf": "2609.02786v1.pdf", "qid": "02786-H3", "type": "contra", "expect": "no", "real_kw": ["13.38", "2.42"], "fake_kw": ["22.4"],
+     "question": "论文报告在 Qwen3-4B 上 AgentDojo 的 ASR 从 22.4% 降至 6.9%，对吗？"},
+    {"pdf": "2609.02786v1.pdf", "qid": "02786-N1", "type": "absent", "expect": "refuse",
+     "question": "论文是否将 SafeEvolve 应用于 Gemini 系列模型？"},
+    {"pdf": "2609.02786v1.pdf", "qid": "02786-N2", "type": "absent", "expect": "refuse",
+     "question": "论文的评估是否包含 APPS 代码生成基准？"}
+  ]
+}

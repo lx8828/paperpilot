@@ -1,0 +1,2122 @@
+[
+ {
+  "column": "B2",
+  "pid": "1904.05584",
+  "qid": "7fe48939ce341212c1d801095517dc552b98e7b3",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "Where do they employ feature-wise sigmoid gating?",
+  "answer": "你问的“feature-wise sigmoid gating”对应论文中的 **vector gate（向量门控）** 机制 [1]。该机制被用于**结合字符级与词级词表示**，即对词向量和字符向量的每一维度独立进行门控 [1]。实验表明，该向量门控在**词相似度任务**中普遍优于其他方法 [10]，并在**句子级语义相似度任务**（如 STSB 和 STS16）中显著优于其他方法 [7][11]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地指出了feature-wise sigmoid gating对应于论文中的vector gate机制，并详细说明了其在词向量和字符向量的每一维度上的应用，与标准答案一致。",
+  "status": "pass",
+  "time_s": 16.7,
+  "time_s_ans": 11.72,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 18560,
+   "completion_tokens": 1146
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 2031,
+   "completion_tokens": 56
+  },
+  "cites_n": 4,
+  "index_warm_s": 11.07
+ },
+ {
+  "column": "B2",
+  "pid": "1904.05584",
+  "qid": "65ad17f614b7345f0077424c04c94971c831585b",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "Which model architecture do they use to obtain representations?",
+  "answer": "你问的“用于获得句子表示”的模型架构，对应论文中的 **BiLSTM with max pooling**（双向长短期记忆网络加最大池化）[1]。该架构将词向量矩阵输入 BiLSTM 得到上下文增强表示，再沿序列维度做最大池化，从而生成最终句子表示[1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，与标准答案一致，且包含了关键信息。",
+  "status": "pass",
+  "time_s": 6.48,
+  "time_s_ans": 4.93,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5039,
+   "completion_tokens": 242
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 545,
+   "completion_tokens": 32
+  },
+  "cites_n": 1,
+  "index_warm_s": 11.07
+ },
+ {
+  "column": "B2",
+  "pid": "1904.05584",
+  "qid": "323e100a6c92d3fe503f7a93b96d821408f92109",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "Which downstream sentence-level tasks do they evaluate on?",
+  "answer": "你问的下游句子级评测任务对应论文中通过 SentEval 评测的 11 个任务，具体包括：情感分类（CR、MPQA、MR、SST2、SST5）、主观性分类（SUBJ）、问题类型分类（TREC）、文本蕴含识别（SICK E）、语义相关性估计（SICK R）以及文本语义相似度测量（STS16、STSB）[4]。其中 STS16 是唯一直接评测表示、而非在验证集上训练线性模型的任务 [4]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地列出了11个下游句子级评测任务，但未提及论文中提到的BIBREF13和BIBREF18，这是原文中明确提到的引用。",
+  "status": "pass",
+  "time_s": 10.85,
+  "time_s_ans": 9.09,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 16059,
+   "completion_tokens": 880
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 859,
+   "completion_tokens": 53
+  },
+  "cites_n": 1,
+  "index_warm_s": 11.07
+ },
+ {
+  "column": "B2",
+  "pid": "1904.05584",
+  "qid": "9f89bff89cea722debc991363f0826de945bc582",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "Which similarity datasets do they use?",
+  "answer": "你问的相似度数据集对应论文中用于词相似度评测的 6 个数据集，分别是：MEN、MTurk287、MTurk771、RG、RW 和 SimLex999 [1]。其中 MEN 含 3000 对词，MTurk287 含 287 对，MTurk771 含 771 对，RG 含 65 对，RW 含 2034 对，SimLex999 含 999 对 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地列出了论文中使用的相似度数据集，但遗漏了标准答案中提到的其他数据集，如RG、RW、WS353、WS353R和WS353S。",
+  "status": "pass",
+  "time_s": 8.33,
+  "time_s_ans": 5.18,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6838,
+   "completion_tokens": 416
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1205,
+   "completion_tokens": 61
+  },
+  "cites_n": 1,
+  "index_warm_s": 11.07
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04181",
+  "qid": "e9cfe3f15735e2b0d5c59a54c9940ed1d00401a2",
+  "qtype": "yes_no",
+  "unanswerable": false,
+  "question": "Does the paper report F1-scores for the age and language variety tasks?",
+  "answer": "根据检索到的原文，**无法确定论文是否报告了年龄和语言变体（方言）任务的F1分数**，因为相关段落中只报告了准确率（accuracy），未提及F1分数。\n\n最相关的原文片段如下：\n\n- [4] 中报告了官方测试集上的准确率结果：“We acquire 54.72% accuracy for age, 81.67% accuracy for gender, 93.75% accuracy for dialect, and 40.97% joint accuracy.”（年龄任务准确率54.72%，性别81.67%，方言93.75%，联合准确率40.97%）\n- [2] 中比较模型性能时也使用准确率表述：“comparing with GRU, BERT is 3.16% better for age, 4.85% better for dialect, and 2.45% higher for gender.”（与GRU相比，BERT在年龄上高3.16%，方言上高4.85%，性别上高2.45%）\n- [6] 中报告数据增强效果时同样使用准确率：“BERT_EXT is 2.18% better than BERT for dialect and 0.75% better than BERT for gender.”\n\n**结论**：由于检索到的所有结果均以准确率（accuracy）作",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地反映了论文中未提及F1分数的事实，并提供了具体的证据支持其结论。",
+  "status": "pass",
+  "time_s": 12.72,
+  "time_s_ans": 9.8,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 12048,
+   "completion_tokens": 672
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1301,
+   "completion_tokens": 40
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04181",
+  "qid": "52ed2eb6f4d1f74ebdc4dcddcae201786d4c0463",
+  "qtype": "yes_no",
+  "unanswerable": false,
+  "question": "Are the models compared to some baseline models?",
+  "answer": "是的，论文将所提出的模型与基线模型进行了比较。你问的基线对应论文中的“a small gated recurrent units (GRU) model”[1]。该GRU模型被用作对比的基线，而BERT和BERT_EXT等核心模型则是在此基础上进行评估的[1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了模型与基线模型进行了比较，并提到了GRU模型作为基线。但是，系统回答中提到的BERT和BERT_EXT模型并未在标准答案中提及，这可能是一个轻微的遗漏。",
+  "status": "pass",
+  "time_s": 7.96,
+  "time_s_ans": 4.36,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5030,
+   "completion_tokens": 213
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 714,
+   "completion_tokens": 64
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04181",
+  "qid": "2c576072e494ab5598667cd6b40bc97fdd7d92d7",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What are the in-house data employed?",
+  "answer": "你问的 in-house 数据对应论文中用于数据增强的自建标注数据集，共两类：一是性别任务的手工标注数据集，含 1,100 个用户（550 名女性、550 名男性），通过抓取其时间线获得 162,829 条推文 [4]；二是方言识别任务的数据集，按与共享任务相同的 15 个类别从自建数据中每类随机采样 20,000 条推文，共 298,929 条（其中苏丹类仅有 18,929 条）[4]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，详细描述了两种自建数据集的来源和内容，与标准答案一致，且引用了论文原文作为支撑。",
+  "status": "pass",
+  "time_s": 11.12,
+  "time_s_ans": 9.01,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 10667,
+   "completion_tokens": 547
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 936,
+   "completion_tokens": 48
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04181",
+  "qid": "8602160e98e4b2c9c702440da395df5261f55b1f",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What are the three datasets used in the paper?",
+  "answer": "你问的“三个数据集”对应论文中使用的三类数据：APDA共享任务官方数据、用于性别任务的EXTENDED_Gender、以及用于方言任务的EXTENDED_Dialect。\n\n- APDA共享任务数据：训练集含2,250个用户、共225,000条推文，测试集含720个用户、72,000条推文 [1]。\n- EXTENDED_Gender：由1,100个用户（550女、550男）的162,829条推文与共享任务性别训练数据合并而成 [2]。\n- EXTENDED_Dialect：从15个方言类别各采样20,000条推文（共298,929条，苏丹仅18,929条），与共享任务方言训练数据合并而成 [2]。\n\n此外，论文还从官方训练数据中划分出90% TRAIN集（202,500条推文）和10% DEV集（22,500条推文）用于实验 [1]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，详细列出了三个数据集的来源、组成和具体数据量，与标准答案一致，没有遗漏关键信息。",
+  "status": "pass",
+  "time_s": 12.83,
+  "time_s_ans": 10.01,
+  "gen": {
+   "calls": 9,
+   "prompt_tokens": 16286,
+   "completion_tokens": 869
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1325,
+   "completion_tokens": 47
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "2002.11402",
+  "qid": "1771a55236823ed44d3ee537de2e85465bf03eaf",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What is the difference in recall score between the systems?",
+  "answer": "根据检索到的原文，无法给出各系统召回率的具体数值差异，因为文中未提供精确的召回率分数对比数据。以下是相关原文片段供参考：\n\n- [1] 提到训练模型时，当训练集和测试集上超过70%精确率、90%召回率时停止训练，但未给出与其他系统的对比数值。\n- [2] 指出“recall is great for our model but precision is not good”，并提到“Stanford did well in Precision but could not catch up with Spacy and our model in terms of Recall”，以及“Flair overall performed poorly”，但均未提供具体召回率分数。\n- [4] 通过示例说明“our model captures NERs with some additional words around them”，并提到“partial match has been enabled”可能影响比较，但同样无具体数值。\n\n**缺口说明**：原文仅定性描述了各系统在召回率上的相对表现（如我们的模型召回率好、Stanford召回率不及Spacy和我们的模型、Flair表现差），但缺少各系统召回率的具体数值或表格数据，因此无法计算或回答召回率分数差异。",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 2,
+  "reason": "系统回答未能准确提供召回率的具体数值差异，而是提供了原文的定性描述，这与问题要求的直接回答具体数值差异不符。系统回答中提到的原文引用并未直接回答问题，而是提供了背景信息。",
+  "status": "fail",
+  "time_s": 10.49,
+  "time_s_ans": 7.7,
+  "gen": {
+   "calls": 7,
+   "prompt_tokens": 13690,
+   "completion_tokens": 550
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1820,
+   "completion_tokens": 61
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.22
+ },
+ {
+  "column": "B2",
+  "pid": "2002.11402",
+  "qid": "1d74fd1d38a5532d20ffae4abbadaeda225b6932",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What is their f1 score and recall?",
+  "answer": "你问的 F1 分数和召回率对应论文中模型在训练和测试集上的表现。论文提到两个模型（序列长度 512 和 64）在训练和测试集上均达到 70% 以上的精确率和 90% 以上的召回率后停止训练 [2]。但文中未给出具体的 F1 分数数值，也未提供精确的召回率数值（仅说明超过 90%）[2]。因此，证据中缺少确切的 F1 分数和召回率数值，无法给出具体数字。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 3,
+  "reason": "系统回答正确地指出了论文中未给出具体的 F1 分数和召回率数值，但未能提供与标准答案一致的精确数值。",
+  "status": "fail",
+  "time_s": 9.26,
+  "time_s_ans": 7.9,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 18309,
+   "completion_tokens": 433
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 618,
+   "completion_tokens": 47
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.22
+ },
+ {
+  "column": "B2",
+  "pid": "2002.11402",
+  "qid": "da8bda963f179f5517a864943dc0ee71249ee1ce",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How many layers does their system have?",
+  "answer": "你问的系统层数对应论文中最终采用的 GRU 架构。论文明确说明，在尝试多种 LSTM/GRU 层数变体后，他们发现仅使用 **1 层 GRU** 比更多层效果更好，并据此确定了最终架构 [1]。因此，该系统的 GRU 层数为 **1 层**。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 2,
+  "reason": "系统回答中提到系统只有1层GRU，与标准答案中的4层不符，且未提及其他层。",
+  "status": "fail",
+  "time_s": 6.64,
+  "time_s_ans": 4.96,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5511,
+   "completion_tokens": 242
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 689,
+   "completion_tokens": 42
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.22
+ },
+ {
+  "column": "B2",
+  "pid": "2002.11402",
+  "qid": "5c059a13d59947f30877bed7d0180cca20a83284",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "Which news corpus is used?",
+  "answer": "你问的新闻语料对应论文中的英文新闻文章数据集。论文使用了过去 4 年间发布的 1500 万篇英文新闻文章作为语料 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 3,
+  "reason": "系统回答提供了相关信息，但未直接引用论文中的具体数据集名称，而是描述了数据集的来源和规模。虽然回答了问题，但缺乏精确的引用，导致信息不够准确。",
+  "status": "fail",
+  "time_s": 6.19,
+  "time_s_ans": 4.74,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6032,
+   "completion_tokens": 189
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 818,
+   "completion_tokens": 59
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.22
+ },
+ {
+  "column": "B2",
+  "pid": "2002.11402",
+  "qid": "a1885f807753cff7a59f69b5cf6d0fdef8484057",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How large is the dataset they used?",
+  "answer": "你问的数据集规模对应论文中用于创建并行语料库的新闻文章数据。论文提到，清洗后保留了 1000 万个维基百科标题作为目标主题 [1]，并使用了过去 4 年发布的 1500 万篇英文新闻文章 [1]。最终，为约 300 万篇新闻文章创建了并行语料库，包含约 1.5 亿个句子、约 30 亿个单词（全部小写）和约 50 亿个 token [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地描述了数据集的规模，包括清洗后的维基百科标题数量、英文新闻文章数量以及并行语料库的句子、单词和token数量。然而，系统回答中提到的“最终，为约300万篇新闻文章创建了并行语料库”与原文中“Finally, for around 3 million news articles, parallel corpus is created”不完全一致，但这是对同一事实的不同表述，因此不影响整",
+  "status": "pass",
+  "time_s": 10.33,
+  "time_s_ans": 4.67,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6127,
+   "completion_tokens": 355
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1025,
+   "completion_tokens": 111
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.22
+ },
+ {
+  "column": "B2",
+  "pid": "1709.08299",
+  "qid": "7a7e279170e7a2f3bc953c37ee393de8ea7bd82f",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What two types the Chinese reading comprehension dataset consists of?",
+  "answer": "你问的“Chinese reading comprehension dataset”对应论文中提出的 CMRC-2017 数据集。该数据集由**大规模自动生成的训练集**和**人工标注的验证集与测试集**两部分组成 [2]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 3,
+  "reason": "系统回答提到了数据集的组成，但未明确指出是 cloze-style reading comprehension 和 user query reading comprehension questions，而是提到了训练集和验证/测试集，虽然这两者相关，但不是完全一致的回答。",
+  "status": "fail",
+  "time_s": 8.74,
+  "time_s_ans": 4.87,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 12157,
+   "completion_tokens": 258
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 478,
+   "completion_tokens": 63
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1709.08299",
+  "qid": "e3981a11d3d6a8ab31e1b0aa2de96f253653cfb2",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "For which languages most of the existing MRC datasets are created?",
+  "answer": "你问的“现有 MRC 数据集主要面向哪种语言”对应论文中提到的既有数据集情况。根据论文，此前提到的 CNN/Daily Mail、Children's Book Test、People Daily 和 Children's Fairy Tale 等 cloze 式数据集均为英文 [1][3]，而 People Daily 和 Children's Fairy Tale 虽由 Cui 等人提出为中文数据集，但论文明确说明“previously mentioned datasets are all in English” [3]。因此，论文指出大多数现有 MRC 数据集是为英语创建的 [1][3]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，与标准答案一致，引用了论文原文作为证据，没有遗漏关键信息。",
+  "status": "pass",
+  "time_s": 7.81,
+  "time_s_ans": 6.08,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 11951,
+   "completion_tokens": 337
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1129,
+   "completion_tokens": 39
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1701.00185",
+  "qid": "62a6382157d5f9c1dce6e6c24ac5994442053002",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What were the evaluation metrics used?",
+  "answer": "你问的评估指标对应论文中的聚类性能度量，共使用了两个指标：准确率（ACC）和归一化互信息（NMI）[1]。ACC 通过匈牙利算法将聚类标签映射到真实标签后计算正确率，NMI 则衡量标签集与聚类集之间的归一化互信息，取值范围为 [0, 1][1]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确且详细地引用了论文原文，提供了准确的信息，包括使用的两个指标和它们的计算方法。",
+  "status": "pass",
+  "time_s": 6.48,
+  "time_s_ans": 4.65,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 16280,
+   "completion_tokens": 420
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 648,
+   "completion_tokens": 41
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.24
+ },
+ {
+  "column": "B2",
+  "pid": "1701.00185",
+  "qid": "9e04730907ad728d62049f49ac828acb4e0a1a2a",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What were their performance results?",
+  "answer": "你问的“their performance results”对应论文中提出的 STC 方法及其变体（STC-AE、STC-LSA、STC-LE、STC-LPI）与各基线方法的聚类性能对比。论文指出，STC-LE 和 STC-LPI 在所有三个数据集上均优于 BoW 和 RecNN 基线，且相比 LE 和 LPI 有大幅提升；而 STC-AE 和 STC-LSA 在 StackOverflow 和 Biomedical 数据集上仅表现出与 RecNN (Ave.) 和 RecNN (Top+Ave.) 相似的水平 [1][3]。此外，用 bi-LSTM 和 bi-GRU 替换 CNN 后，两者表现相当且均较 LPI（最佳）有显著提升，但 CNN 模型在多数情况下仍更优 [3]。论文未在提供的段落中给出 ACC 和 NMI 的具体数值，仅以图表形式报告结果 [1][3]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 3,
+  "reason": "系统回答提供了关于不同方法性能的详细信息，但遗漏了ACC和NMI的具体数值，这是回答中关键的信息。",
+  "status": "fail",
+  "time_s": 13.03,
+  "time_s_ans": 9.23,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 23171,
+   "completion_tokens": 550
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 2054,
+   "completion_tokens": 43
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.24
+ },
+ {
+  "column": "B2",
+  "pid": "1701.00185",
+  "qid": "5a0841cc0628e872fe473874694f4ab9411a1d10",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "By how much did they outperform the other methods?",
+  "answer": "你问的“they”对应论文提出的方法 STC（Self-Taught CNN，含 STC-LE、STC-LPI、STC-AE、STC-LSA）。论文仅给出定性结论，未提供具体数值或百分比，因此无法给出精确的超出幅度。文中指出 STC-LE 和 STC-LPI 在三个数据集上均优于基于 BoW 和 RecNN 的方法，且相比 LE 和 LPI 基线“by a large margin”提升 [1][2]；而 STC-AE 和 STC-LSA 的表现与 RecNN (Ave.) 和 RecNN (Top+Ave.) 相近 [1]。要回答“超出多少”，需补充各方法在 ACC 和 NMI 上的具体数值，但当前证据中未列出这些数字。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 3,
+  "reason": "系统回答正确地指出了论文中未提供具体数值或百分比，并引用了相关段落来支持其说法，但遗漏了标准答案中提到的具体数值和百分比。",
+  "status": "fail",
+  "time_s": 11.16,
+  "time_s_ans": 8.6,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 26746,
+   "completion_tokens": 397
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 2019,
+   "completion_tokens": 54
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.24
+ },
+ {
+  "column": "B2",
+  "pid": "1701.00185",
+  "qid": "a5dd569e6d641efa86d2c2b2e970ce5871e0963f",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "Which popular clustering methods did they experiment with?",
+  "answer": "你问的“popular clustering methods”对应论文中与所提方法对比的基线聚类方法。论文实验涉及以下方法：K-means（基于TF和TF-IDF加权）、Skip-thought Vectors (SkipVec)、Recursive Neural Network (RecNN)、Paragraph Vector (Para2vec)、Average Embedding (AE)、Latent Semantic Analysis (LSA)、Laplacian Eigenmaps (LE) 和 Locality Preserving Indexing (LPI) [1]。此外，还对比了非偏置神经网络模型，如双向RNN（bi-RNN），具体包括bi-LSTM和bi-GRU [2][7]。这些方法均作为基线，与论文提出的自训练CNN框架（STC）进行性能比较 [1][2]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地列出了论文中实验涉及的聚类方法，但遗漏了标准答案中提到的'Paragraph Vector based clustering methods'的细节，以及未提及'evidence'中提到的'Section SECREF11'。",
+  "status": "pass",
+  "time_s": 10.49,
+  "time_s_ans": 8.36,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 20527,
+   "completion_tokens": 631
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1991,
+   "completion_tokens": 62
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.24
+ },
+ {
+  "column": "B2",
+  "pid": "1701.00185",
+  "qid": "785c054f6ea04701f4ab260d064af7d124260ccc",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What datasets did they use?",
+  "answer": "你问的数据集对应论文中的三个公开短文本数据集：SearchSnippets、StackOverflow 和 Biomedical [1]。其中 SearchSnippets 来自 Phan 等人的网络搜索交易结果，StackOverflow 和 Biomedical 分别取自 Kaggle 和 BioASQ 的挑战数据 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地列出了论文中使用的三个数据集，并提供了数据集的来源和相关信息，与标准答案一致。",
+  "status": "pass",
+  "time_s": 9.35,
+  "time_s_ans": 5.51,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5032,
+   "completion_tokens": 223
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 605,
+   "completion_tokens": 45
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.24
+ },
+ {
+  "column": "B2",
+  "pid": "1707.01890",
+  "qid": "b10632eaa0ca48f86522d8ec38b1d702cb0b8c01",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What are the categories being extracted?",
+  "answer": "你问的“被提取的类别”对应论文中从临床文本提取的**二元变量（binary variables）**，即每个变量被预测为 true 或 false 两类值 [3][10]。具体而言，工具从电子健康记录（EHR）的非结构化文本中提取这些二元变量，用于 NLP 模型的预测与反馈 [10]。论文未列出这些变量的具体名称或数量，仅说明网格视图的列显示 14 个变量 [3]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了提取的类别是二元变量，并说明了这些变量用于NLP模型的预测与反馈。然而，系统没有引用论文原文来支持其说法，而是直接引用了论文中的描述，这可能被视为措辞差异。",
+  "status": "pass",
+  "time_s": 11.17,
+  "time_s_ans": 7.94,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 25754,
+   "completion_tokens": 355
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1538,
+   "completion_tokens": 68
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1909.08191",
+  "qid": "b124137e62178a2bd3b5570d73b1652dfefa2457",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What new interesting tasks can be solved based on the uncanny semantic structures of the embedding space?",
+  "answer": "你问的新任务对应论文中提出的**类比查询（analogy query）**和**类比浏览（analogy browsing）**，此外还包括**相似实体查找（similar entity finding）**[3][4]。其中，类比浏览是类比查询的扩展，沿多组正负偏置定义的多个语义方向进行追踪[5]。这些任务被讨论用于现代数字图书馆等应用场景[3]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "score": 4,
+  "reason": "系统回答准确指出了类比查询和类比浏览，但遗漏了标准答案中提到的相似论文预测和相似作者预测等传统数据探索任务。",
+  "status": "pass",
+  "time_s": 4.59,
+  "time_s_ans": 1.98,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2036,
+   "completion_tokens": 104
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 526,
+   "completion_tokens": 48
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1909.08191",
+  "qid": "c6aa8a02597fea802890945f0b4be8d631e4d5cd",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What are the uncanny semantic structures of the embedding space?",
+  "answer": "你问的“embedding space 的语义结构”对应论文中知识图谱嵌入空间的两类语义结构，具体如下：\n\n- **语义相似性结构（Semantic similarity structure）**：语义相似的实体在嵌入空间中彼此接近，可通过向量相似度度量（如两个嵌入向量的点积）来识别 [2]。\n- **语义方向结构（Semantic direction structure）**：嵌入空间中存在语义方向，沿该方向仅一个语义方面发生变化而其他方面保持不变，可通过向量差（如两个嵌入向量的减法）来识别 [2]。\n\n论文并未使用“uncanny”（离奇/神秘）一词来描述这些结构，而是将其称为“语义结构”；上述两类即为文中明确界定的全部语义结构。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地引用了论文原文，并详细解释了两种语义结构，同时指出了论文中未使用‘uncanny’一词，与标准答案一致。",
+  "status": "pass",
+  "time_s": 10.89,
+  "time_s_ans": 8.43,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 17001,
+   "completion_tokens": 607
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 641,
+   "completion_tokens": 53
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1909.08191",
+  "qid": "bfad30f51ce3deea8a178944fa4c6e8acdd83a48",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What is the general framework for data exploration by semantic queries?",
+  "answer": "你问的“通过语义查询进行数据探索的通用框架”对应论文中提出的**通用语义查询框架**，其核心是提供对知识图谱嵌入空间语义结构的理论理解，并以此为基础支持数据探索 [1]。该框架概述并讨论了源于知识图谱嵌入空间语义结构的传统及前沿探索任务的解决方案 [2]。在此框架下，论文提出了相似实体查找、类比查询和类比浏览等新任务 [3][4][5]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地描述了通用框架的三个主要组件，但遗漏了原文中提到的具体名称 'data processing, task processing, and query processing'。",
+  "status": "pass",
+  "time_s": 4.15,
+  "time_s_ans": 2.07,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2022,
+   "completion_tokens": 110
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 557,
+   "completion_tokens": 50
+  },
+  "cites_n": 5,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1909.08191",
+  "qid": "dd9883f4adf7be072d314d7ed13fe4518c5500e0",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What data exploration is supported by the analysis of these semantic structures?",
+  "answer": "你问的“这些语义结构所支持的数据探索”对应论文中源于知识图谱嵌入空间语义结构的探索任务。论文提出并讨论了相似实体查找、类比查询和类比浏览等任务 [3][4][5]。其中，相似实体查找指给定实体找出与其相似的实体 [4]；类比浏览是类比查询的扩展，沿多组正负偏置定义的多个语义方向进行追踪 [5]。这些任务旨在支持对学术数据的语义查询与探索 [1]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地描述了支持的数据探索任务，但未提及将数据探索任务转换为代数运算在嵌入空间上的操作，这是标准答案中的一个关键细节。",
+  "status": "pass",
+  "time_s": 4.99,
+  "time_s_ans": 2.0,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2024,
+   "completion_tokens": 121
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 531,
+   "completion_tokens": 52
+  },
+  "cites_n": 4,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1705.03487",
+  "qid": "91c81807374f2459990e5f9f8103906401abc5c2",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What is barycentric Newton diagram?",
+  "answer": "你问的“barycentric Newton diagram”对应论文中用于可视化食谱区域菜系风格混合程度的方法。其基本思想借鉴牛顿对色光谱的可视化，用重心坐标（barycentric coordinates）将食谱表示为各菜系成分的混合 [1]。该图允许直观解读食谱属于哪个国家：若某国（如日本）的概率高，食谱点就映射到该国附近 [1]。图中各国位置通过谱图绘制（spectral graph drawing）放置，使相似国家在圆上彼此靠近 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答准确描述了barycentric Newton diagram的基本思想，包括其借鉴牛顿色光谱可视化的概念和用重心坐标表示混合物。然而，系统回答中缺少了关于计算和放置国家在图上的具体细节，如相似性矩阵和特征向量的计算方法。",
+  "status": "pass",
+  "time_s": 8.41,
+  "time_s_ans": 5.31,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6735,
+   "completion_tokens": 412
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1408,
+   "completion_tokens": 77
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "2003.04973",
+  "qid": "3ee976add83e37339715d4ae9d8aa328dd54d052",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What were the model's results on flood detection?",
+  "answer": "你问的“模型在洪水检测上的结果”对应论文中的 ULMFiT 模型在洪水相关推文分类上的表现。仅用 5% 的标注数据（500 条推文）微调，模型即达到 95% 准确率 [2][7]。在昆士兰洪水数据上，使用 70% 训练数据时达到 96% 准确率，测试损失 0.118，用时 11 秒 [3]；在阿尔伯塔洪水数据上，相同配置下达到 95% 准确率，测试损失 0.118，用时 19 秒 [4]。此外，ULMFiT 显著优于其他方法，将错误率降低 18-24% [8]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地引用了论文原文，提供了模型在洪水检测上的准确率，但遗漏了测试损失和用时细节。",
+  "status": "pass",
+  "time_s": 3.87,
+  "time_s_ans": 2.13,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2407,
+   "completion_tokens": 180
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 817,
+   "completion_tokens": 44
+  },
+  "cites_n": 5,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "2003.04973",
+  "qid": "ef04182b6ae73a83d52cb694cdf4d414c81bf1dc",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What dataset did they use?",
+  "answer": "你问的数据集对应论文中的 **CrisiLexT6** 数据集 [1]。该数据集包含 2012 和 2013 年六个危机事件的英文推文，按相关性（on-topic 和 off-topic）标注 [1]。实验中仅使用了其中两个洪水事件的数据，即澳大利亚昆士兰洪水（Queensland flood）和加拿大阿尔伯塔洪水（Alberta flood）[1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地引用了论文原文，并详细描述了所使用的CrisiLexT6数据集及其包含的洪水事件数据。",
+  "status": "pass",
+  "time_s": 6.55,
+  "time_s_ans": 5.09,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6428,
+   "completion_tokens": 383
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1024,
+   "completion_tokens": 48
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1606.06361",
+  "qid": "75773ee868c0429ccb913eceb367ff0782eeda8a",
+  "qtype": "yes_no",
+  "unanswerable": false,
+  "question": "Do they evaluate the syntactic parses?",
+  "answer": "否。论文在“Results”部分评估的是两个关系抽取任务（SVO 句子的简单谓词-论元表示抽取，以及带时间范围的关系抽取），并未对句法分析结果本身进行评测 [3]。文中仅提及语法用于生成句子的句法树，但实验证据聚焦于语义解析性能及背景知识的提升作用 [2][3]。\n\n你问的“句法分析评测”对应论文中的实验评估部分，而该部分没有报告句法树的准确率等指标。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地引用了论文原文，并指出了论文中未对句法分析结果本身进行评测的事实，与标准答案一致。",
+  "status": "pass",
+  "time_s": 11.16,
+  "time_s_ans": 8.96,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 31051,
+   "completion_tokens": 407
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1205,
+   "completion_tokens": 48
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1606.06361",
+  "qid": "11ed8c4d98a4e8994990edba54319efe9c6745f2",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What knowledge bases do they use?",
+  "answer": "你问的知识库对应论文中的 **NELL**。\n\n论文明确指出，其概率语义解析器使用一个大型知识库 **NELL** 来形成所解析句子语义的先验概率分布 [1]。该知识库包含数百万条信念，使解析器能够优于不持有此类信念的现有语义解析器 [2]。\n\n因此，论文中使用的知识库是 **NELL**。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，与标准答案一致，且引用了论文原文作为证据。",
+  "status": "pass",
+  "time_s": 6.36,
+  "time_s_ans": 4.42,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 24374,
+   "completion_tokens": 186
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1662,
+   "completion_tokens": 35
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1804.08139",
+  "qid": "0fd678d24c86122b9ab27b73ef20216bbd9847d1",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What evaluation metrics are used?",
+  "answer": "根据检索到的原文，**无法确定该论文使用的具体评估指标**（如准确率、F1值等），因为所有相关段落均未明确提及评估指标的名称或计算方式。\n\n以下是检索到的最相关原文片段，供您参考：\n\n- [2] 中仅提到“Table shows the performances of the different methods”，并描述了各模型的性能对比（如“DA-MTL achieves a further improvement of INLINEFORM0 accuracy”），但未说明该“accuracy”是何种指标（如准确率、宏平均F1等），也未给出其他评估指标的定义。\n- [2] 中提及“We also present the convergence properties of our models on the development datasets”，但未说明用于评估收敛性的具体指标。\n- [3] 和 [4] 中分别讨论了任务间相似性（基于Frobenius范数）和迁移学习性能，但同样未提及评估指标。\n\n**结论**：由于原文未明确列出评估指标（如准确率、精确率、召回率、F1等），无法给出确定答案。缺失的关键信息是“论文在实验部分对模型性能进行量化评估时具体采用了哪些指标”。",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 3,
+  "reason": "系统回答指出了原文中未明确提及评估指标名称或计算方式的问题，但未引用标准答案中提到的具体指标，如准确率。",
+  "status": "fail",
+  "time_s": 9.29,
+  "time_s_ans": 7.33,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 12073,
+   "completion_tokens": 470
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1954,
+   "completion_tokens": 48
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1804.08139",
+  "qid": "b556fd3a9e0cff0b33c63fa1aef3aed825f13e28",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What dataset did they use?",
+  "answer": "你问的数据集对应论文中的情感分类多任务实验所用数据。该实验使用了来自多个流行评论语料库的 **16 个不同数据集**，其中包括 **14 个产品评论数据集**和 **2 个电影评论数据集**[1]。这些数据集被随机划分为训练集、开发集和测试集，比例分别为 70%、10% 和 20%[1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地引用了论文原文，并详细描述了数据集的来源和组成，与标准答案一致。",
+  "status": "pass",
+  "time_s": 8.19,
+  "time_s_ans": 4.39,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6773,
+   "completion_tokens": 261
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1058,
+   "completion_tokens": 43
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1804.08139",
+  "qid": "0db1ba66a7e75e91e93d78c31f877364c3724a65",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What tasks did they experiment with?",
+  "answer": "你问的实验任务对应论文中的情感分类任务（sentiment classification）[1]。该实验使用了16个不同的数据集，其中包含14个产品评论数据集和2个电影评论数据集[1]。这些数据集均来自多个流行的评论语料库[1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了情感分类任务，并提到了使用的数据集类型，但遗漏了其他实验任务，如序列标注。",
+  "status": "pass",
+  "time_s": 8.09,
+  "time_s_ans": 5.3,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6686,
+   "completion_tokens": 266
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1001,
+   "completion_tokens": 45
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1912.11602",
+  "qid": "f95097cf4a0dc036fd8b80c007cd8d7a157b7816",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What were the baselines?",
+  "answer": "你问的 baselines 对应论文中用于对比的摘要模型，分为监督与无监督两类。监督基线包括：Lead-X（取文章前 X 句，X 在 NYT 和 CNN/DailyMail 为 3、在 XSum 为 1）、PTGen（pointer-generator 网络）、DRM（深度强化学习）、TConvS2S（卷积神经网络）、BottomUp（自底向上方法）、ABS（神经注意力）、DRGD（深度循环生成解码器）[1]。无监督基线包括：SEQ³（重建损失与主题损失）、BottleSum（无监督抽取与自监督抽象方法）、GPT-2（大规模预训练语言模型）[1]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地列出了所有基线模型，并正确区分了监督和无监督基线，同时引用了论文原文作为支撑。",
+  "status": "pass",
+  "time_s": 14.86,
+  "time_s_ans": 11.9,
+  "gen": {
+   "calls": 9,
+   "prompt_tokens": 21582,
+   "completion_tokens": 1067
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 927,
+   "completion_tokens": 47
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1912.11602",
+  "qid": "bb8a0035b767688a98602c33f4714f8ac8ae60db",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What metric was used in the evaluation step?",
+  "answer": "你问的评估指标对应论文中的标准 ROUGE 指标，具体为 ROUGE-1、ROUGE-2 和 ROUGE-L [1]。此外，论文在 XSum 和 CNN/DailyMail 上使用 F-measure ROUGE，而在 NYT 和 DUC 上使用有限长度的召回率 ROUGE [3]。",
+  "level": "L1",
+  "route": [
+   "L0",
+   "L1",
+   "answer_L1"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地引用了论文原文，并详细列出了所使用的评估指标和具体应用场景。",
+  "status": "pass",
+  "time_s": 4.84,
+  "time_s_ans": 2.42,
+  "gen": {
+   "calls": 3,
+   "prompt_tokens": 4507,
+   "completion_tokens": 165
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 548,
+   "completion_tokens": 40
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1912.11602",
+  "qid": "2a0a44f169ad61774d77df65f8846bd57685bfcf",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What did they pretrain the model on?",
+  "answer": "你问的“pretrain the model on”对应论文中的预训练数据构造方式。论文提出利用新闻导语偏差，将新闻文章的前三句（Lead-3）作为目标摘要，文章其余部分作为新闻内容，模型的目标是根据后续内容生成Lead-3 [1]。该方法利用大量无标注新闻文章进行预训练 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 3,
+  "reason": "系统回答正确地指出了预训练数据是大量无标注新闻文章，但遗漏了具体的时间范围和来源（2016年6月至2019年6月的在线新闻文章）。",
+  "status": "fail",
+  "time_s": 8.69,
+  "time_s_ans": 5.05,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6408,
+   "completion_tokens": 334
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 856,
+   "completion_tokens": 56
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1912.11602",
+  "qid": "fd6c194632230e392088fc1f574c8626c6a2fa96",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What does the data cleaning and filtering process consist of?",
+  "answer": "你问的数据清洗与过滤流程对应论文正文 [2] 中的预训练数据处理步骤，共包含三类操作：首先，用正则表达式去除新闻开头与内容无关的前缀（如记者名、媒体机构、日期等）[2]；其次，仅保留前三句含 10–150 词、其余部分含 150–1200 词且总句数不少于 6 句的文章，并删除前三句在正文中完全重复的文章以鼓励抽象式摘要 [2]；最后，计算前三句中非停用词在正文其余部分的重叠比例，仅保留该比例高于 0.65 的文章 [2]。这些过滤规则剔除了约 95% 的原始数据，最终得到 2140 万篇新闻文章，其中 1.2 万篇随机抽样用于验证 [2]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地概述了数据清洗和过滤过程，但遗漏了关于鼓励抽象式摘要的细节，以及重叠比例高于0.65的保留标准。",
+  "status": "pass",
+  "time_s": 11.34,
+  "time_s_ans": 8.06,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 8722,
+   "completion_tokens": 871
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1266,
+   "completion_tokens": 51
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1912.11602",
+  "qid": "487dc65bf8a8ecbf052cf05641caf1b90a502853",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What unlabeled corpus did they use?",
+  "answer": "你问的“unlabeled corpus”对应论文中用于预训练的无标注新闻语料。该语料是作者收集的**三年在线新闻文章**（2016年6月至2019年6月）[3][6]。经过数据清洗和过滤后，最终保留了 **21.4M 篇新闻文章**用于预训练，其中 12,000 篇被随机采样作为验证集 [3][6]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 4,
+  "reason": "系统回答准确描述了无标注语料的内容和规模，但遗漏了数据清洗和过滤的具体细节。",
+  "status": "pass",
+  "time_s": 11.59,
+  "time_s_ans": 8.91,
+  "gen": {
+   "calls": 9,
+   "prompt_tokens": 20958,
+   "completion_tokens": 541
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1860,
+   "completion_tokens": 40
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1708.04557",
+  "qid": "5d9b088bb066750b60debfb0b9439049b5a5c0ce",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "what processing was done on the speeches before being parsed?",
+  "answer": "根据检索到的原文，**无法确定演讲在被解析前进行了哪些具体处理**，因为原文未明确描述这一预处理步骤。\n\n不过，原文中提到了与文本处理相关的部分信息，供您参考：\n\n- [3] 提到在应用 Wordscore 分析 2008 年预算辩论演讲时，“we pre-process documents by removing all numbers and interjections”（我们通过移除所有数字和插话对文档进行预处理）。这仅涉及该特定分析中的处理，而非对全部演讲的通用解析前处理。\n\n- [5] 描述了数据库构建过程：官方辩论网站包含 549,292 个 HTML 文件，作者编写了计算机脚本来自动处理所有文件，该脚本能够“find all debate contributions and the names of all speakers in each file”（找到每个文件中的所有辩论贡献和发言者姓名），并检索日期和辩论主题。但此处未说明脚本在处理前对文本本身做了何种清洗或转换。\n\n**结论**：原文缺少对演讲在被解析（即脚本处理）之前所进行的通用预处理步骤（如去除标点、停用词、词形还原等）的系统性描述，因此无法给出确定答案。",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了原文中提到的预处理步骤，但未直接引用原文中的'gold'部分，导致细节不齐全。",
+  "status": "pass",
+  "time_s": 9.09,
+  "time_s_ans": 7.07,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 11576,
+   "completion_tokens": 462
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1625,
+   "completion_tokens": 45
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1803.03786",
+  "qid": "3d34a02ceebcc93ee79dc073c408651d25e538bc",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what classifiers were used in this paper?",
+  "answer": "你问的分类器对应论文中使用的 **SVM** 和 **神经网络** 两类模型 [1]。其中 SVM 采用 RBF 核函数 [1]，神经网络则使用 RMSProp 优化器进行训练 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了SVM和神经网络的使用，但遗漏了SVM使用的RBF核函数这一细节。",
+  "status": "pass",
+  "time_s": 6.97,
+  "time_s_ans": 4.08,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5607,
+   "completion_tokens": 202
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 812,
+   "completion_tokens": 42
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1803.03786",
+  "qid": "96992460cfc5f0b8d065ee427067147293746b7a",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what are their evaluation metrics?",
+  "answer": "你问的评估指标对应论文中用于衡量模型性能的指标，包括 F1 分数和准确率。多数类基线（即虚假新闻类）的 F1 为 41.59%，准确率为 71.22% [1]。此外，论文还提及了精确率（Precision）作为分组特征评估中的指标之一 [1]。这些指标共同用于评估模型在虚假新闻检测任务中的表现 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地提到了F1分数和准确率作为评估指标，并提到了多数类基线的F1和准确率。但是，它错误地提到了精确率（Precision）作为评估指标，而原文中并未将其作为主要评估指标提及。",
+  "status": "pass",
+  "time_s": 8.1,
+  "time_s_ans": 3.96,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5582,
+   "completion_tokens": 248
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 937,
+   "completion_tokens": 70
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1803.03786",
+  "qid": "363ddc06db5720786ed440927d7fbb7d0a8078ae",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what types of features were used?",
+  "answer": "你问的特征类型对应论文中用于虚假新闻与点击诱饵检测的特征，共分为两大类：**手工特征（hand-crafted features）** 和**词表示特征（word representations）** [1]。\n\n手工特征包括：语法特征（停用词使用频率、十个粗粒度词性标注及其出现比率）、以及针对标题和内容分别计算的共二十个特征 [1]。词表示特征包括：基于领域特定词嵌入的平均向量（标题和内容各 300 维，共 600 维）及其余弦相似度，以及通过注意力机制深度神经网络生成的任务特定嵌入 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 3,
+  "reason": "系统回答正确地提到了手工特征和词表示特征，但遗漏了论文中明确提到的 stylometric, lexical, grammatical, and semantic 特征的具体描述，且对特征类型的分类不够精确。",
+  "status": "fail",
+  "time_s": 8.72,
+  "time_s_ans": 5.44,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5405,
+   "completion_tokens": 461
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 820,
+   "completion_tokens": 59
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1803.03786",
+  "qid": "f12a282571f842b818d4bee86442751422b52337",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what lexical features did they experiment with?",
+  "answer": "你问的“lexical features”对应论文中的手工特征（hand-crafted features）类别。论文实验了以下几类词汇/文本特征：与类别强相关的特定词特征（48 个，含 uni-grams、bi-grams 和命名实体各 16 个）[1]、可读性指数（4 个，含 type-token ratio、平均词长、Flesch–Kincaid 和 Gunning-Fog）[1]、正字法特征（12 个，如标题/内容词数、字符数、特定符号数、大写字母数、URL 数及标题-内容重叠度）[1]、不规则词汇使用（4 个，含外来词、俚语和拼写错误计数）[1]，以及 TF.IDF 加权特征（共 1,100 个，其中内容 800 个、标题 300 个）[1]。此外还包含语法特征（20 个，基于停用词频率和 10 种粗粒度词性标注比率）[2]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答完整地列出了论文中实验的所有词汇特征，包括TF.IDF加权特征，并且引用了原文证据来支持其说法。",
+  "status": "pass",
+  "time_s": 13.77,
+  "time_s_ans": 10.11,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 9420,
+   "completion_tokens": 1365
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1739,
+   "completion_tokens": 47
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1803.03786",
+  "qid": "5b1cd21936aeec85233c978ba8d7282931522a3a",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what is the size of the dataset?",
+  "answer": "你问的数据集规模对应论文中的保加利亚语新闻语料库。训练数据集包含 2,815 个样本 [1]，其中 1,940 个（69%）为虚假新闻，1,968 个（70%）为点击诱饵 [1]；另有 761 个测试样本 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 3,
+  "reason": "系统回答提供了数据集的规模，但遗漏了关于重复文章的具体信息，这是标准答案中提到的关键细节。",
+  "status": "fail",
+  "time_s": 5.89,
+  "time_s_ans": 4.48,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5803,
+   "completion_tokens": 233
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 965,
+   "completion_tokens": 42
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1803.03786",
+  "qid": "964705a100e53a9181d1a5ac8150696de12ecaf0",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what datasets were used?",
+  "answer": "你问的数据集对应论文中的保加利亚语新闻语料库（Bulgarian news corpus），该数据集是为 Hack the Fake News 黑客马拉松准备的，由保加利亚公关机构协会提供，并可在 Gitlab 上获取 [1]。该语料库包含来自 377 个不同来源的新闻，涵盖政治、趣闻和技巧等多个领域 [1]。训练集包含 2,815 个样本，其中 1,940 个（69%）为虚假新闻，另有 761 个测试样本 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答提供了数据集的详细信息，包括来源、内容、样本数量等，但遗漏了关于数据集中虚假新闻和点击诱饵之间的98%的相关性这一重要细节。",
+  "status": "pass",
+  "time_s": 9.37,
+  "time_s_ans": 5.67,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 5997,
+   "completion_tokens": 549
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 946,
+   "completion_tokens": 55
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1803.03786",
+  "qid": "f08a66665f01c91cb9dfe082e9d1015ecf3df71d",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "what are the three reasons everybody hates them?",
+  "answer": "根据检索到的原文，**无法回答您的问题**，因为原文中完全没有提及“three reasons everybody hates them”或任何类似表述，且“they”的指代对象在您的问题中不明确。\n\n不过，原文中与“hate/讨厌”或负面评价最相关的内容如下，供您参考：\n\n- [3] 提到“click-baits”（点击诱饵）被描述为“sensational, exaggerated, or deliberately false headlines that grab attention and deceive the user into clicking an article with questionable content”（耸人听闻、夸大或故意虚假的标题，吸引注意力并欺骗用户点击内容可疑的文章），这暗示了用户可能讨厌点击诱饵的原因之一是其欺骗性。\n- [3] 还提到“fake news are written and published with the intent to mislead in order to gain financially or politically”（假新闻的撰写和发布是为了在财务或政治上获利而误导他人），这暗示了用户可能讨厌假新闻的原因之一是其误导性动机。\n- [5] 提到训练数据集中“if an article is reposted, i",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 5,
+  "reason": "系统准确指出了问题无法回答的原因，并提供了与问题相关的原文内容作为参考，同时诚实说明了无法给出具体答案。",
+  "status": "pass",
+  "time_s": 8.78,
+  "time_s_ans": 6.23,
+  "gen": {
+   "calls": 4,
+   "prompt_tokens": 11015,
+   "completion_tokens": 506
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1422,
+   "completion_tokens": 44
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.2
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04625",
+  "qid": "946676f1a836ea2d6fe98cb4cfc26b9f4f81984d",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What is the performance achieved by the model described in the paper?",
+  "answer": "根据检索到的原文，该论文**未提供模型的具体性能指标**（如准确率、F1分数等数值），因此无法给出明确的性能数值。以下是论文中关于模型行为与实验结果的定性描述，供您参考：\n\n- [1] 在对比两种标注方案（PTB-control 与 PTB-coord）训练的 RNNG 模型时，论文指出：**“adding an explicit COORD phrasal label does not drastically change model performance”**，即添加显式 COORD 短语标签并未显著改变模型性能；两个模型仍主要依赖名词数特征的线性组合来驱动单复数预期，但显式表示使协调短语内部对模型更“不透明”（每个特征影响更小），并略微将模型偏好移向复数延续。\n\n- [2] 在讨论部分，论文总结：**“a range of model architectures trained on a variety of datasets can learn fine-grained information about the interaction of CoordNPs and local syntactic context, but their behavior remains unhumanlike in many key ways”**。具体而言，在简单协调实验中，模型能捕捉",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地指出了论文中缺乏具体性能数值，并提供了关于模型行为的详细定性描述，与标准答案一致。",
+  "status": "pass",
+  "time_s": 14.66,
+  "time_s_ans": 12.77,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 14976,
+   "completion_tokens": 924
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 2113,
+   "completion_tokens": 45
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04625",
+  "qid": "3b090b416c4ad7d9b5b05df10c5e7770a4590f6a",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What is the best performance achieved by supervised models?",
+  "answer": "根据检索到的原文，无法给出监督模型“最佳性能”的明确数值或结论，因为文中并未报告任何具体的性能指标（如准确率、F1等）。\n\n不过，与监督模型（RNNG、ActionLSTM等）性能表现最相关的原文片段如下：\n\n- [1] 在简单协调实验中，监督模型（RNNG和ActionLSTM）的表现并未比非监督模型更稳健或更接近人类行为（\"supervision afforded by the RNNG and ActionLSTM models did not translate into more robust or humanlike learning outcomes\"）。\n- [2] 在标注方案对比实验中，两个RNNG模型（PTB-control与PTB-coord）在多数实验（非协调一致、复杂协调控制/关键实验）中表现几乎相同；仅在简单and/or协调实验中，PTB-coord模型的复数延续偏好整体上移且数值范围缩小，但两者仍使用线性组合策略，未出现质的改变（\"adding an explicit COORD phrasal label does not drastically change model performance\"）。\n- [1] 在所有实验中，法语模型在主语/动词数一致上的表现始终优于主语/谓语性一致（\"the French models performed con",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，诚实说明了原文中缺乏具体性能指标，并引用了相关原文来支持其说法。",
+  "status": "pass",
+  "time_s": 13.57,
+  "time_s_ans": 10.51,
+  "gen": {
+   "calls": 7,
+   "prompt_tokens": 14577,
+   "completion_tokens": 642
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1415,
+   "completion_tokens": 41
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04625",
+  "qid": "a1e07c7563ad038ee2a7de5093ea08efdd6077d4",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What is the size of the datasets employed?",
+  "answer": "根据检索到的原文，**无法确定各数据集的具体规模**，因为相关段落未给出明确的句子数或词数等量化信息。\n\n以下是检索到的最相关原文片段，供您参考：\n\n- [1] 提到训练了两个小型语料库模型（`LSTM (PTB)` 和 `LSTM (FTB)`），但仅说明输入词嵌入和 LSTM 隐藏层大小均为 256，未提及语料库规模。对于大型语料库模型，`LSTM (frWaC)` 在 frWaC 数据集的随机子集上训练，该子集约含 **400 万句子、1.38 亿词元**，但未说明其他大型语料库（如 Billion Word、enWiki）的具体规模。\n- [2] 提到训练了两个 RNNG 模型，使用 **38,546 个句子**（来自 Penn Treebank），但这是针对特定实验（标注方案对比）的规模，并非全部数据集。\n- [3] 提及实验 4 使用了英语 37 个项目和法语 24 个项目，但这是实验刺激数量，而非训练数据集规模。\n\n**缺口说明**：检索段落未系统报告各训练数据集（如 PTB、FTB、1B、enWiki 等）的完整规模（如总句子数或总词数），仅个别提及子集或实验样本量，因此无法对“数据集大小”给出确定结论。",
+  "level": "unknown",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_unknown"
+  ],
+  "score": 3,
+  "reason": "系统回答正确地指出了原文中未提供数据集的具体规模，并引用了相关段落。然而，它没有直接引用标准答案中提供的数据集规模信息，而是重复了原文中未提供具体规模的情况。",
+  "status": "fail",
+  "time_s": 16.2,
+  "time_s_ans": 10.35,
+  "gen": {
+   "calls": 7,
+   "prompt_tokens": 13007,
+   "completion_tokens": 730
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1820,
+   "completion_tokens": 64
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "1909.04625",
+  "qid": "a1c4f9e8661d4d488b8684f055e0ee0e2275f767",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What are the baseline models?",
+  "answer": "你问的基线模型对应论文中的两个句法监督神经语言模型：ActionLSTM 和生成式循环神经网络文法（RNNG）。ActionLSTM 通过预测构建短语结构解析所需的下一步动作来建模句子的线性化括号树结构 [1]；RNNG 则联合建模词序列及其底层句法结构 [2]。两者均使用词同步束搜索来估计给定词元的惊异度 [1][2]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，详细描述了ActionLSTM和RNNG的工作原理，并引用了论文原文支持其说法。",
+  "status": "pass",
+  "time_s": 8.71,
+  "time_s_ans": 5.43,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 6354,
+   "completion_tokens": 333
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 600,
+   "completion_tokens": 43
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "2003.10816",
+  "qid": "f63519bb5e116671cebd65cc78880c5cb573c570",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What low-resource languages were used in this work?",
+  "answer": "你问的低资源语言对应论文中的波斯语（Farsi）和法语。证据显示，实验在英语测试上F1为84.2%，而波斯语和法语分别为53.4%和61.2% [1]；改进后的方法将波斯语F1提升至65.2%，法语提升至67.5% [1]。此外，论文还构建了英语-阿拉伯语-波斯语平行数据集，其中波斯语为人工翻译的低资源语言 [1]。因此，本工作涉及的低资源语言为波斯语和法语。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 3,
+  "reason": "系统回答正确地指出了波斯语和法语是低资源语言，并提供了实验结果作为证据。然而，它没有直接引用论文中的具体语言名称，而是通过实验结果间接提及。此外，系统提到了英语-阿拉伯语-波斯语平行数据集，但没有明确指出这是用于低资源语言的数据集。因此，虽然回答部分正确，但存在一些遗漏和措辞上的差异。",
+  "status": "fail",
+  "time_s": 8.2,
+  "time_s_ans": 3.92,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6369,
+   "completion_tokens": 261
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 826,
+   "completion_tokens": 101
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.25
+ },
+ {
+  "column": "B2",
+  "pid": "2003.10816",
+  "qid": "ffa4d4bfb226382ca4ecde65ecdc44a3d9e0ce81",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What classification task was used to evaluate the cross-lingual adaptation method described in this work?",
+  "answer": "你问的跨语言适应方法对应的评测任务是论文中的 **PI（Paraphrase Identification，复述识别）任务** [1][2]。正文明确提到，跨语言实验使用 PTK 和 SPTK 树核在 PI 任务上评测模型 [1]，并基于该任务对阿拉伯语和波斯语测试数据进行跨语言评估 [2]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地指出了论文中使用的评测任务是Paraphrase Identification (PI)任务，并引用了原文中的相关内容来支持其说法。",
+  "status": "pass",
+  "time_s": 8.63,
+  "time_s_ans": 6.16,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 8091,
+   "completion_tokens": 336
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1030,
+   "completion_tokens": 50
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.25
+ },
+ {
+  "column": "B2",
+  "pid": "1908.07816",
+  "qid": "c034f38a570d40360c3551a6469486044585c63c",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How better is proposed method than baselines perpexity wise?",
+  "answer": "你问的“proposed method”对应论文中的 MEED 模型。在困惑度（perplexity）方面，MEED 在验证集和测试集上均取得了最低的困惑度分数 [1]。论文还进行了 t 检验，结果显示 MEED 的改进是显著的（p 值 < 0.05）[1]。不过，证据中未给出 MEED 与基线（S2S、HRAN）之间具体的困惑度数值或差值，因此无法量化“好多少”。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了MEED模型在困惑度上的表现优于基线，并提到了t检验的结果，但未能量化改进的具体数值，因此略低于满分。",
+  "status": "pass",
+  "time_s": 13.03,
+  "time_s_ans": 8.92,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 19148,
+   "completion_tokens": 483
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 844,
+   "completion_tokens": 53
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "1908.07816",
+  "qid": "9cbea686732b5b85f77868ca47d2f93cf34516ed",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How does the multi-turn dialog system learns?",
+  "answer": "你问的多轮对话系统的学习方式对应论文中提出的端到端数据驱动方法。该系统直接通过数据驱动方式学习，无需人工启发式规则，即可从数据中学习情感交互 [1]。具体机制上，它采用 Xing 等人的多轮对话模型，并额外加入一个情感 RNN 来处理每条历史话语中的情感信息 [1]。该情感 RNN 读取并编码输入的情感信息，利用最终隐藏状态作为上下文的情感表示向量；解码时，该情感向量在每个时间步与解码器隐藏状态拼接，经 softmax 层生成词表上的概率分布 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地描述了多轮对话系统的学习方式，包括使用RNN编码情感信息和结合情感向量与上下文向量。但回答中缺少了论文中提到的外部文本分析程序和情感上下文向量$\\mathbf{e}$的具体信息。",
+  "status": "pass",
+  "time_s": 9.86,
+  "time_s_ans": 5.9,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 6173,
+   "completion_tokens": 477
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1174,
+   "completion_tokens": 71
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "1908.07816",
+  "qid": "6aee16c4f319a190c2a451c1c099b66162299a28",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How is human evaluation performed?",
+  "answer": "你问的人工评估流程对应论文中的“Human evaluation setup”部分。评估前，研究者从DailyDialog中筛选出78个情感正向和14个情感负向的四轮对话，并额外招募两名学生按五个主题人工生成50个负向对话，最终随机选出50个正向和50个负向共100个对话作为测试集 [3]。评估时，另招募四名英语母语学生作为评分员，将每个对话的前三轮作为输入，由三个模型（MEED、S2S、HRAN）生成回复 [1][3]。评分员依据三个标准打分：语法正确性、上下文连贯性和情感适切性，每项按0（差）、1（中性）、2（好）三档评分 [3]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地描述了人工评估的过程，包括对话的选择、评分员的招募、评估标准以及评分方式。然而，系统回答中缺少了关于评分员如何被招募的具体信息，这是原文中提到的细节。",
+  "status": "pass",
+  "time_s": 11.47,
+  "time_s_ans": 8.66,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 8225,
+   "completion_tokens": 898
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1386,
+   "completion_tokens": 63
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "1908.07816",
+  "qid": "4d4b9ff2da51b9e0255e5fab0b41dfe49a0d9012",
+  "qtype": "yes_no",
+  "unanswerable": false,
+  "question": "Is some other metrics other then perplexity measured?",
+  "answer": "是的，除困惑度外还采用了其他评估指标。论文主要采用人工评估，并辅以困惑度作为评估指标 [1]。人工评估中招募了四名评分者，按语法正确性、上下文连贯性和情感适当性三项标准对模型生成的回复打分 [5]。此外，论文还提到从机器翻译借用的自动评估指标如 BLEU 与人类判断一致性差 [2]。",
+  "level": "L1",
+  "route": [
+   "L0",
+   "L1",
+   "answer_L1"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了除困惑度外还采用了其他评估指标，并提到了人工评估和BLEU指标的问题，但遗漏了具体提到的其他自动评估指标。",
+  "status": "pass",
+  "time_s": 4.15,
+  "time_s_ans": 2.52,
+  "gen": {
+   "calls": 3,
+   "prompt_tokens": 3951,
+   "completion_tokens": 161
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 493,
+   "completion_tokens": 53
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "1908.07816",
+  "qid": "180047e1ccfc7c98f093b8d1e1d0479a4cca99cc",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What two baseline models are used?",
+  "answer": "你问的两个基线模型对应论文中的 S2S（vanilla sequence-to-sequence model）和 HRAN [4]。其中 S2S 指基础序列到序列模型，HRAN 为层级注意力网络 [4]。论文将提出的 MEED 模型与这两个基线进行比较 [4]。",
+  "level": "L1",
+  "route": [
+   "L0",
+   "L1",
+   "answer_L1"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，与标准答案一致，且引用了论文原文证据。",
+  "status": "pass",
+  "time_s": 4.35,
+  "time_s_ans": 2.67,
+  "gen": {
+   "calls": 3,
+   "prompt_tokens": 4023,
+   "completion_tokens": 126
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 457,
+   "completion_tokens": 34
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.23
+ },
+ {
+  "column": "B2",
+  "pid": "2003.08132",
+  "qid": "20eb673b01d202b731e7ba4f84efc10a18616dd3",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What representations are presented by this paper?",
+  "answer": "你问的“representations”对应论文中关于**性别（gender）**在语音语料库中的表征情况。论文将性别视为二元类别（男性和女性说话者），并指出在所调查的语料库中未发现任何非二元说话者的提及 [2]。研究发现，在说话者数量上总体接近均等（6,072 名说话者中 3,050 名女性和 3,022 名男性）[5]，但在非诱导性语音中（除 Librispeech 外）男性比女性更具代表性 [7]，且在话语层面男性语音也更多 [10]。此外，论文还指出大多数语料库缺乏性别元数据，并建议在资源发布时提供更详尽的人口统计信息 [1][9]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地描述了论文中关于性别在语音语料库中的表征情况，包括性别分类、说话者数量、语音时长等，但遗漏了原文中提到的“手动提取信息”这一细节。",
+  "status": "pass",
+  "time_s": 17.92,
+  "time_s_ans": 12.08,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 14839,
+   "completion_tokens": 1765
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 2223,
+   "completion_tokens": 62
+  },
+  "cites_n": 6,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "2003.08132",
+  "qid": "e8e6719d531e7bef5d827ac92c7b1ab0b8ec3c8e",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What corpus characteristics correlate with more equitable gender balance?",
+  "answer": "你问的“与更均衡性别平衡相关的语料库特征”对应论文中的多个分析维度。证据表明，**诱导型（elicited）语料**和**ASR任务语料**更易实现性别均衡：诱导语料中性别差异仅5.6个百分点，且平台89.1%的语料为诱导型，从而避免了整体性别差距[1]；ASR语料中性别比例几乎均衡，而TTS数据集女性代表更多[3]。此外，**经过精心平衡的语料**（如Librispeech）在说话者层面和语音时长上都确保性别平衡，而移除该语料后非诱导语料呈现1/3-2/3的女性-男性比例[1]。**语料规模**也相关：非诱导语料除Librispeech外均为小语料，且小语料中普遍存在性别差距[1]。最后，**语料的新近程度**与性别信息可得性相关——2017年后发布的资源更可能提供性别信息[5]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了与性别平衡相关的语料库特征，包括诱导型语料、ASR任务语料、精心平衡的语料、语料规模和语料的新近程度。然而，系统回答中提到的'TTS数据集女性代表更多'这一细节并未在提供的原文证据中找到直接支持，因此略降分。",
+  "status": "pass",
+  "time_s": 18.41,
+  "time_s_ans": 13.42,
+  "gen": {
+   "calls": 8,
+   "prompt_tokens": 12647,
+   "completion_tokens": 1247
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1307,
+   "completion_tokens": 91
+  },
+  "cites_n": 3,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "2003.08132",
+  "qid": "f6e5febf2ea53ec80135bbd532d6bb769d843dd8",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What natural languages are represented in the speech resources studied?",
+  "answer": "你问的自然语言对应论文中 OpenSLR 平台所研究语料库的语言。根据证据，这些语料库涵盖 **33 种不同语言**，并包含 **51 种方言/口音变体** [1]。论文未在给定段落中逐一列出这 33 种语言的具体名称，仅提及了示例，如西班牙语（Spanish TEDTalks）[4] 和英语（UK and Ireland English Dialect）[1]。因此，证据提供了语言总数，但未给出完整的语言清单。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "L3",
+   "answer_L3"
+  ],
+  "score": 4,
+  "reason": "系统回答正确地指出了论文中提到的语言总数和方言/口音变体数量，但未提供具体的语言清单，这是次要细节。",
+  "status": "pass",
+  "time_s": 8.48,
+  "time_s_ans": 6.2,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 15917,
+   "completion_tokens": 303
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1294,
+   "completion_tokens": 48
+  },
+  "cites_n": 2,
+  "index_warm_s": 0.21
+ },
+ {
+  "column": "B2",
+  "pid": "1910.11491",
+  "qid": "be7b375b22d95d1f6c68c48f57ea87bf82c72123",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What evaluation metrics do they use?",
+  "answer": "你问的评估指标对应论文中的主要评测指标。论文采用完整长度ROUGE F1和METEOR作为主要评估指标 [6]，并在CNN/Daily Mail数据集上报告了R-1、R-2、R-L及METEOR的具体数值 [4]。此外，论文还进行了人工评估，由标注者对生成摘要的相关性和可读性打分（每项1到5分）[1][2][8]。",
+  "level": "L1",
+  "route": [
+   "L0",
+   "L1",
+   "answer_L1"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地引用了论文原文，并详细列出了使用的评估指标，包括ROUGE F1和METEOR，以及提到了人工评估的方法。",
+  "status": "pass",
+  "time_s": 6.19,
+  "time_s_ans": 3.38,
+  "gen": {
+   "calls": 3,
+   "prompt_tokens": 4051,
+   "completion_tokens": 183
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 617,
+   "completion_tokens": 51
+  },
+  "cites_n": 5,
+  "index_warm_s": 0.35
+ },
+ {
+  "column": "B2",
+  "pid": "1910.11491",
+  "qid": "c4b5cc2988a2b91534394a3a0665b0c769b598bb",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How do they define local variance?",
+  "answer": "你问的 local variance 对应论文中的 **local variance loss**。其定义为注意力分布方差的倒数，期望借此让注意力模型聚焦于更显著的部分 [2]。计算方差时，论文未采用基于均值的标准方差，而是使用中位数（median）替代均值，因为中位数对离群值更稳健 [2]。公式中 $\\hat{\\cdot}$ 表示中位数算子，$\\epsilon$ 用于避免分母为零 [2]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误，包含了所有关键信息，包括定义、计算方法和引用来源。",
+  "status": "pass",
+  "time_s": 9.07,
+  "time_s_ans": 6.59,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 7342,
+   "completion_tokens": 412
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 674,
+   "completion_tokens": 35
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.35
+ },
+ {
+  "column": "B2",
+  "pid": "1809.02731",
+  "qid": "dc5ff2adbe1a504122e3800c9ca1d348de391c94",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How do they evaluate the sentence representations?",
+  "answer": "你问的“如何评估句子表示”对应论文中的无监督评测（Unsupervised Evaluation）环节。评估使用了 SemEval 2012-2016 的五个语义文本相似度（STS）任务以及 SemEval2014 语义相关性任务（SICK-R）[1]。评估方式是通过计算两个句子向量表示的余弦相似度来确定文本相似性，并以模型预测与人工标注之间的 Pearson 相关系数作为性能指标[1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地引用了论文原文，并详细描述了无监督评测环节的评估方法和指标。",
+  "status": "pass",
+  "time_s": 8.06,
+  "time_s_ans": 5.23,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 4936,
+   "completion_tokens": 352
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 646,
+   "completion_tokens": 40
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.24
+ },
+ {
+  "column": "B2",
+  "pid": "1809.02731",
+  "qid": "04b43deab0fd753e3419ed8741c10f652b893f02",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What are the two decoding functions?",
+  "answer": "你问的两种解码函数对应论文中考虑的两种可逆解码函数类型 [1]：\n\n1. **线性投影（linear projection）**：$f_{\\text{de}}()=+$，其中 $W \\in \\mathbb{R}^{d_\\times d_}$ 为可训练权重矩阵，$b \\in \\mathbb{R}^{d_\\times 1}$ 为偏置项 [1]。\n\n2. **双射函数（bijective function）**：采用 NICE 中设计的双射变换，具体包含“加性耦合层”（additive coupling layer）和“仿射耦合层”（affine coupling layer）两种形式 [1]。\n\n这两种函数都需满足可逆性要求，以便在测试时将解码器反转用作辅助编码器 [1]。",
+  "level": "L2",
+  "route": [
+   "L0",
+   "L1",
+   "L2",
+   "answer_L2"
+  ],
+  "score": 5,
+  "reason": "系统回答准确无误地列出了两种解码函数：线性投影和双射函数，并提供了相应的数学表达式和论文中的引用，与标准答案一致。",
+  "status": "pass",
+  "time_s": 7.76,
+  "time_s_ans": 5.77,
+  "gen": {
+   "calls": 5,
+   "prompt_tokens": 7738,
+   "completion_tokens": 416
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 1559,
+   "completion_tokens": 50
+  },
+  "cites_n": 1,
+  "index_warm_s": 0.24
+ }
+]

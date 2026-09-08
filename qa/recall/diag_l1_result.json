@@ -1,0 +1,369 @@
+[
+ {
+  "qid": "fcd0bd2db39898ee4f444ae970b80ea4d1d9b054",
+  "enough": false,
+  "targets": [
+   "Comparison",
+   "Experimental Setup"
+  ],
+  "gold_top": "Decoding",
+  "gap": "缺少对束搜索过程中产生的部分完成序列与金标准序列进行比较的具体描述或结果。"
+ },
+ {
+  "qid": "b686e10a725254695821e330a277c900792db69f",
+  "enough": false,
+  "targets": [
+   "Experiments"
+  ],
+  "gold_top": "Introduction",
+  "gap": "缺少与上下文嵌入方法（如ELMo、BERT等）的直接对比，包括对比对象、指标和结果。"
+ },
+ {
+  "qid": "5e5460ea955d8bce89526647dd7c4f19b173ab34",
+  "enough": false,
+  "targets": [
+   "Manual Transcriptions"
+  ],
+  "gold_top": "Manual Transcriptions",
+  "gap": "需要具体数值说明被转写的话语数量或比例。"
+ },
+ {
+  "qid": "e2f269997f5a01949733c2ec8169f126dabd7571",
+  "enough": false,
+  "targets": [
+   "Evaluation Strategy",
+   "Sentence Characteristics & Syntax"
+  ],
+  "gold_top": null,
+  "gap": "证据仅零散提及1-billion-word数据集、MSCOCO和Quora，未系统列出全部数据源及其用途，需补充完整数据源清单。"
+ },
+ {
+  "qid": "f10325d022e3f95223f79ab00f8b42e3bb7ca040",
+  "enough": false,
+  "targets": [
+   "Featurization",
+   "Analysis"
+  ],
+  "gold_top": "Models",
+  "gap": "缺少话语特征如何具体嵌入模型（如并行CNN的输入构造、特征拼接方式）的完整步骤说明。"
+ },
+ {
+  "qid": "5328cc2588b2bf7b91f4e0f342e8cbfc6dc8ac00",
+  "enough": false,
+  "targets": [
+   "Introduction"
+  ],
+  "gold_top": "Experiments and Results",
+  "gap": "需要具体数值或模型名称来回答之前最先进的模型是什么。"
+ },
+ {
+  "qid": "79bb1a1b71a1149e33e8b51ffdb83124c18f3e9c",
+  "enough": false,
+  "targets": [
+   "Results"
+  ],
+  "gold_top": null,
+  "gap": "需要具体数值（如AP50、AP75或mAP）来回答模型达到的准确率。"
+ },
+ {
+  "qid": "d484a71e23d128f146182dccc30001df35cdf93f",
+  "enough": false,
+  "targets": [
+   "Experiment"
+  ],
+  "gold_top": "Experiment",
+  "gap": "需要具体数值来量化所提模型相比典型UMT模型在困惑度和BLEU分数上的提升幅度。"
+ },
+ {
+  "qid": "574f17134e4dd041c357ebb75a7ef590da294d22",
+  "enough": false,
+  "targets": [
+   "Models And Predictions"
+  ],
+  "gold_top": "Introduction",
+  "gap": "问题询问提出的新模型，但证据仅提及使用Google News词嵌入和简单逻辑模型，未完整描述该模型的具体机制或步骤。"
+ },
+ {
+  "qid": "fbe149bd76863575b98fafb3679f411d3d21b4a3",
+  "enough": false,
+  "targets": [
+   "Experiments",
+   "Discussion and Conclusions"
+  ],
+  "gold_top": "Discussion and Conclusions",
+  "gap": "缺少对不同语言对（如英日 vs 中日）迁移效果差异的系统性解释，现有主张仅零散提及词汇重叠、翻译歧义等，未完整说明为何某些语言对更好。"
+ },
+ {
+  "qid": "81e8d42dad08a58fe27eea838f060ec8f314465e",
+  "enough": false,
+  "targets": [
+   "Introduction"
+  ],
+  "gold_top": "Summarization",
+  "gap": "问题询问最先进性能的具体数值或对比结果，现有主张多为定性描述或部分数值，缺少完整的最先进性能指标。"
+ },
+ {
+  "qid": "6e8c587b6562fafb43a7823637b84cd01487059a",
+  "enough": false,
+  "targets": [
+   "Machine Translation"
+  ],
+  "gold_top": null,
+  "gap": "需要具体的BLEU分数数值。"
+ },
+ {
+  "qid": "bf25a202ac713a34e09bf599b3601058d9cace46",
+  "enough": false,
+  "targets": [
+   "Related work"
+  ],
+  "gold_top": "Experiments",
+  "gap": "用户问的是'state of the art measures'，需要列举当前最优的争议度量方法，但现有主张只零散提及Matakos等的方法和本文方法，未系统列出所有SOTA措施。"
+ },
+ {
+  "qid": "790ed4458a23aa23e2b5399259e50083c86d9e14",
+  "enough": false,
+  "targets": [
+   "Pre-Processing",
+   "Methodology"
+  ],
+  "gold_top": "Pre-Processing",
+  "gap": "需要确认数据集中是否所有实例都包含代码混合，以及代码混合的定义和判定标准。"
+ },
+ {
+  "qid": "dafa760e1466e9eaa73ad8cb39b229abd5babbda",
+  "enough": false,
+  "targets": [
+   "Conclusions"
+  ],
+  "gold_top": null,
+  "gap": "需要具体数值，如生成的训练样本数量或数据集大小。"
+ },
+ {
+  "qid": "e414d819f10c443cbefa8bdb9bd486ffc6d1fc6a",
+  "enough": false,
+  "targets": [
+   "Data Collection"
+  ],
+  "gold_top": "Data Collection",
+  "gap": "需要具体数值，如平均时长或时长范围。"
+ },
+ {
+  "qid": "442f8da2c988530e62e4d1d52c6ec913e3ec5bf1",
+  "enough": false,
+  "targets": [
+   "Introduction"
+  ],
+  "gold_top": "Training Condition",
+  "gap": "问题询问SRE重点强调的新语言，但检索到的主张未明确列出这些新语言，需要从Introduction中获取具体语言列表。"
+ },
+ {
+  "qid": "858c51842fc3c1f3e6d2d7d853c94f6de27afade",
+  "enough": false,
+  "targets": [
+   "Experiments and Results"
+  ],
+  "gold_top": null,
+  "gap": "需要具体数值或明确结论说明哪个分类器性能最佳，当前证据仅提及使用了多种分类器，未给出各分类器的性能对比。"
+ },
+ {
+  "qid": "bc9c31b3ce8126d1d148b1025c66f270581fde10",
+  "enough": false,
+  "targets": [
+   "Experiments"
+  ],
+  "gold_top": null,
+  "gap": "缺少用于评估该方法的具体数据集名称（如WN18、YAGO3-10等）的明确列举。"
+ },
+ {
+  "qid": "dd9883f4adf7be072d314d7ed13fe4518c5500e0",
+  "enough": false,
+  "targets": [
+   "Exploration tasks and semantic queries conversion"
+  ],
+  "gold_top": "Semantic query framework",
+  "gap": "证据仅提及相似实体查找、类比查询和类比浏览等任务示例，未穷举所有受语义结构分析支持的数据探索任务。"
+ },
+ {
+  "qid": "cf15c4652e23829d8fb4cf2a25e64408c18734c1",
+  "enough": false,
+  "targets": [
+   "Multi-modal Neural Machine Translation",
+   "Analysis"
+  ],
+  "gold_top": "Introduction",
+  "gap": "缺少与text-only UNMT在模型结构、训练目标或性能上的直接对比，无法完整说明差异。"
+ },
+ {
+  "qid": "8051927f914d730dfc61b2dc7a8580707b462e56",
+  "enough": false,
+  "targets": [
+   "Baselines"
+  ],
+  "gold_top": "Baselines",
+  "gap": "列举类问题需列出全部基线算法，当前证据仅提及Baseline2和部分描述，缺少对Baseline1及其他基线的完整列举。"
+ },
+ {
+  "qid": "8b71ede8170162883f785040e8628a97fc6b5bcb",
+  "enough": false,
+  "targets": [
+   "Methodology",
+   "Results"
+  ],
+  "gold_top": "Methodology",
+  "gap": "缺少关于引用质量如何衡量的具体方法或指标（如人工评估、准确率/召回率等）的说明。"
+ },
+ {
+  "qid": "96526a14820b7debfd6f7c5beeade0a854b93d1a",
+  "enough": false,
+  "targets": [
+   "Annotation and Evaluation Methods"
+  ],
+  "gold_top": "Introduction",
+  "gap": "缺少语料库获取的完整流程描述，如数据来源、抽样、标注、验证等具体步骤。"
+ },
+ {
+  "qid": "af75ad21dda25ec72311c2be4589efed9df2f482",
+  "enough": false,
+  "targets": [],
+  "gold_top": null,
+  "gap": "需要具体数值来量化系统相对于先前工作的性能提升。"
+ },
+ {
+  "qid": "21a96b328b43a568f9ba74cbc6d4689dbc4a3d7b",
+  "enough": false,
+  "targets": [
+   "Training Condition"
+  ],
+  "gold_top": "i-Vector Features",
+  "gap": "缺少关于是否从固定SRE训练集中单独划分验证集的信息。"
+ },
+ {
+  "qid": "2a46db1b91de4b583d4a5302b2784c091f9478cc",
+  "enough": false,
+  "targets": [],
+  "gold_top": null,
+  "gap": "需要具体数值：目标域（域内）数据量在不同语言对下不同，需分别给出德语-英语和中文-英语的域内句子数。"
+ },
+ {
+  "qid": "1d791713d1aa77358f11501f05c108045f53c8aa",
+  "enough": true,
+  "targets": [],
+  "gold_top": "Classification network details",
+  "gap": "",
+  "score": 3,
+  "pass": false,
+  "answer": "你问的嵌入维度对应论文中探索的维度范围与最终模型设置。论文探索了8到2048维的嵌入维度 [1]，而最终采用的孪生网络输出维度为1024 [3]。此外，全连接隐藏层维度固定为1024 [7]。"
+ },
+ {
+  "qid": "1763a029daca7cab10f18634aba02a6bd1b6faa7",
+  "enough": false,
+  "targets": [
+   "Experiments"
+  ],
+  "gold_top": null,
+  "gap": "需要具体数值来量化与最先进结果的改进幅度，现有主张仅给出部分数据（如DS部分2.4%和1.6%，HDS部分4.2%），但缺少与所有最先进方法的完整对比数值。"
+ },
+ {
+  "qid": "f1bd66bb354e3dabf5dc4a71e6f08b17d472ecc9",
+  "enough": false,
+  "targets": [
+   "Requestable Slot Binary Classifier"
+  ],
+  "gold_top": "Introduction",
+  "gap": "缺少对槽位二元分类器如何提升性能的具体机制说明，如分类器如何与生成过程交互、如何减少错误等。"
+ },
+ {
+  "qid": "dfbab3cd991f86d998223726617d61113caa6193",
+  "enough": false,
+  "targets": [
+   "Discussion",
+   "Model Architecture"
+  ],
+  "gold_top": "Datasets",
+  "gap": "缺少对领域特定知识判定标准或依据的明确说明，需要具体定义或判定规则。"
+ },
+ {
+  "qid": "3b995a7358cefb271b986e8fc6efe807f25d60dc",
+  "enough": false,
+  "targets": [
+   "Commonsense Infusing"
+  ],
+  "gold_top": "Word Embeddings",
+  "gap": "缺少对评估所用词表示类型（如retrofitting嵌入、原始嵌入等）的具体说明。"
+ },
+ {
+  "qid": "b6b5f92a1d9fa623b25c70c1ac67d59d84d9eec8",
+  "enough": false,
+  "targets": [
+   "Introduction"
+  ],
+  "gold_top": null,
+  "gap": "需要具体数值来量化最佳模型在平均精度上相对于先前嵌入模型的提升幅度。"
+ },
+ {
+  "qid": "1a69696034f70fb76cd7bb30494b2f5ab97e134d",
+  "enough": false,
+  "targets": [
+   "Experimental Results"
+  ],
+  "gold_top": "Experimental Results",
+  "gap": "需要具体数值（如准确率、F1分数等）来量化模型相比现有方法的提升幅度。"
+ },
+ {
+  "qid": "05671d068679be259493df638d27c106e7dd36d0",
+  "enough": false,
+  "targets": [
+   "EXPERIMENTS"
+  ],
+  "gold_top": "EXPERIMENTS",
+  "gap": "需要具体数值（如准确率或F1分数）来完整回答TP-N2F在MathQA上的性能表现。"
+ },
+ {
+  "qid": "5a0841cc0628e872fe473874694f4ab9411a1d10",
+  "enough": false,
+  "targets": [
+   "Results and Analysis"
+  ],
+  "gold_top": null,
+  "gap": "需要具体数值来量化STC方法相比其他方法的性能提升幅度。"
+ },
+ {
+  "qid": "6e962f1f23061f738f651177346b38fd440ff480",
+  "enough": false,
+  "targets": [
+   "Related Work"
+  ],
+  "gold_top": null,
+  "gap": "问题询问当前最先进水平，但证据仅提及个别模型（如BERT、CamemBERT）和任务，未系统综述各任务上的最先进结果，需要补充相关工作中的全面对比。"
+ },
+ {
+  "qid": "579941de2838502027716bae88e33e79e69997a6",
+  "enough": false,
+  "targets": [
+   "Results and Discussion"
+  ],
+  "gold_top": null,
+  "gap": "缺少与state-of-the-art在其他问题类型上的具体性能对比数值或描述。"
+ },
+ {
+  "qid": "5cc937c2dcb8fd4683cb2298d047f27a05e16d43",
+  "enough": false,
+  "targets": [
+   "Experimental Setup",
+   "Comparison with Max-Margin Objectives"
+  ],
+  "gold_top": "Continuous Approximation to top-k-argmax",
+  "gap": "证据仅提及汉明损失，未穷举所有尝试的损失指标，需补充实验设置及对比部分中可能列出的其他损失函数。"
+ },
+ {
+  "qid": "ee87608419e4807b9b566681631a8cd72197a71a",
+  "enough": true,
+  "targets": [],
+  "gold_top": "Corpus",
+  "gap": "",
+  "score": 4,
+  "pass": true,
+  "answer": "你问的语料库对应论文中用于诗歌历时研究的德语诗歌语料库。该语料库来自 zeno.org 网站 [7]，覆盖时间范围为 16 世纪中期至 20 世纪前几十年 [7]。语料库中的文本经过处理，使用停用词表过滤了法语、荷兰语和拉丁语等外语材料，以"
+ }
+]

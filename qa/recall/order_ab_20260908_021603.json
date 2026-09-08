@@ -1,0 +1,1082 @@
+[
+ {
+  "qid": "bf25a202ac713a34e09bf599b3601058d9cace46",
+  "rank": 11,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 21452,
+    "completion_tokens": 357
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 20969,
+    "completion_tokens": 1135
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "abc5836c54fc2ac8465aee5a83b9c0f86c6fd6f5",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 17363,
+    "completion_tokens": 609
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 17775,
+    "completion_tokens": 517
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "9a65cfff4d99e4f9546c72dece2520cae6231810",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 12679,
+    "completion_tokens": 448
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 12730,
+    "completion_tokens": 439
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "1a69696034f70fb76cd7bb30494b2f5ab97e134d",
+  "rank": 11,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 14206,
+    "completion_tokens": 246
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 14208,
+    "completion_tokens": 244
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "dd9883f4adf7be072d314d7ed13fe4518c5500e0",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 12561,
+    "completion_tokens": 1790
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 12000,
+    "completion_tokens": 1087
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "ee87608419e4807b9b566681631a8cd72197a71a",
+  "rank": 5,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 8335,
+    "completion_tokens": 465
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 8377,
+    "completion_tokens": 506
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "1d791713d1aa77358f11501f05c108045f53c8aa",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 18494,
+    "completion_tokens": 334
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 18606,
+    "completion_tokens": 372
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "7aba5e4483293f5847caad144ee0791c77164917",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 12292,
+    "completion_tokens": 326
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 12229,
+    "completion_tokens": 250
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "cf15c4652e23829d8fb4cf2a25e64408c18734c1",
+  "rank": 6,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 19070,
+    "completion_tokens": 5481
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 20415,
+    "completion_tokens": 5174
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "574f17134e4dd041c357ebb75a7ef590da294d22",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 23343,
+    "completion_tokens": 616
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 24377,
+    "completion_tokens": 720
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "3b995a7358cefb271b986e8fc6efe807f25d60dc",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 11120,
+    "completion_tokens": 324
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 11004,
+    "completion_tokens": 353
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "5328cc2588b2bf7b91f4e0f342e8cbfc6dc8ac00",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": false,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 1,
+    "prompt_tokens": 4565,
+    "completion_tokens": 35
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 4565,
+    "completion_tokens": 50
+   }
+  },
+  "n_answer": false,
+  "f_answer": false
+ },
+ {
+  "qid": "30803eefd7cdeb721f47c9ca72a5b1d750b8e03b",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 13176,
+    "completion_tokens": 572
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 12850,
+    "completion_tokens": 675
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "7081b6909cb87b58a7b85017a2278275be58bf60",
+  "rank": 5,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 19122,
+    "completion_tokens": 349
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 19134,
+    "completion_tokens": 386
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "3d34a02ceebcc93ee79dc073c408651d25e538bc",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 18611,
+    "completion_tokens": 233
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 18607,
+    "completion_tokens": 242
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "05671d068679be259493df638d27c106e7dd36d0",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 19810,
+    "completion_tokens": 486
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 20464,
+    "completion_tokens": 1274
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "102a0439739428aac80ac11795e73ce751b93ea1",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 16259,
+    "completion_tokens": 255
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 16227,
+    "completion_tokens": 242
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "fbe149bd76863575b98fafb3679f411d3d21b4a3",
+  "rank": 8,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 8940,
+    "completion_tokens": 623
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 9505,
+    "completion_tokens": 787
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "a65e5c97ade6e697ec10bcf3c3190dc6604a0cd5",
+  "rank": 4,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 22187,
+    "completion_tokens": 944
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 22282,
+    "completion_tokens": 2088
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "6852217163ea678f2009d4726cb6bd03cf6a8f78",
+  "rank": 4,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 19733,
+    "completion_tokens": 491
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 18856,
+    "completion_tokens": 203
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "572458399a45fd392c3a4e07ce26dcff2ad5a07d",
+  "rank": 4,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 17940,
+    "completion_tokens": 254
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 18345,
+    "completion_tokens": 215
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "45893f31ef07f0cca5783bd39c4e60630d6b93b3",
+  "rank": 6,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 16020,
+    "completion_tokens": 674
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 16828,
+    "completion_tokens": 1561
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "b686e10a725254695821e330a277c900792db69f",
+  "rank": 4,
+  "qtype": "hard",
+  "natural": {
+   "enough": false,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 1,
+    "prompt_tokens": 6289,
+    "completion_tokens": 50
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 6289,
+    "completion_tokens": 59
+   }
+  },
+  "n_answer": false,
+  "f_answer": false
+ },
+ {
+  "qid": "f10325d022e3f95223f79ab00f8b42e3bb7ca040",
+  "rank": 4,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 21862,
+    "completion_tokens": 2352
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 20012,
+    "completion_tokens": 1597
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 15239,
+    "completion_tokens": 239
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 15669,
+    "completion_tokens": 529
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "d4e78d3205e98cafdf93ddaa95627ea00b7c4d55",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 6149,
+    "completion_tokens": 154
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 6346,
+    "completion_tokens": 194
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "3241f90a03853fa85d287007d2d51e7843ee3d9b",
+  "rank": 9,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 18992,
+    "completion_tokens": 301
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 19692,
+    "completion_tokens": 242
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "a891039441e008f1fd0a227dbed003f76c140737",
+  "rank": 6,
+  "qtype": "hard",
+  "natural": {
+   "enough": false,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 1,
+    "prompt_tokens": 6921,
+    "completion_tokens": 35
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 6921,
+    "completion_tokens": 39
+   }
+  },
+  "n_answer": false,
+  "f_answer": false
+ },
+ {
+  "qid": "7a7e279170e7a2f3bc953c37ee393de8ea7bd82f",
+  "rank": 4,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 9880,
+    "completion_tokens": 171
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 10109,
+    "completion_tokens": 296
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "2a0a44f169ad61774d77df65f8846bd57685bfcf",
+  "rank": 5,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 16064,
+    "completion_tokens": 373
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 16253,
+    "completion_tokens": 599
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "bf7cb53f4105f2e6a413d1adef5349ff1e673500",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": false,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 1,
+    "prompt_tokens": 3380,
+    "completion_tokens": 50
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 3380,
+    "completion_tokens": 66
+   }
+  },
+  "n_answer": false,
+  "f_answer": false
+ },
+ {
+  "qid": "ba973b13f26cd5eb1da54663c0a72842681d5bf5",
+  "rank": 2,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 24448,
+    "completion_tokens": 830
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 23910,
+    "completion_tokens": 571
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "cd1792929b9fa5dd5b1df0ae06fc6aece4c97424",
+  "rank": 7,
+  "qtype": "hard",
+  "natural": {
+   "enough": false,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 1,
+    "prompt_tokens": 4007,
+    "completion_tokens": 56
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 4007,
+    "completion_tokens": 40
+   }
+  },
+  "n_answer": false,
+  "f_answer": false
+ },
+ {
+  "qid": "e8fcfb1412c3b30da6cbc0766152b6e11e17196c",
+  "rank": 10,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 22594,
+    "completion_tokens": 369
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 22694,
+    "completion_tokens": 452
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "21a96b328b43a568f9ba74cbc6d4689dbc4a3d7b",
+  "rank": 10,
+  "qtype": "hard",
+  "natural": {
+   "enough": false,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 1,
+    "prompt_tokens": 3804,
+    "completion_tokens": 44
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 3804,
+    "completion_tokens": 44
+   }
+  },
+  "n_answer": false,
+  "f_answer": false
+ },
+ {
+  "qid": "0481a8edf795768d062c156875d20b8fb656432c",
+  "rank": 5,
+  "qtype": "hard",
+  "natural": {
+   "enough": false,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 1,
+    "prompt_tokens": 6453,
+    "completion_tokens": 38
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 6453,
+    "completion_tokens": 39
+   }
+  },
+  "n_answer": false,
+  "f_answer": false
+ },
+ {
+  "qid": "790ed4458a23aa23e2b5399259e50083c86d9e14",
+  "rank": 6,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": false,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 6667,
+    "completion_tokens": 205
+   },
+   "forced": {
+    "calls": 1,
+    "prompt_tokens": 1666,
+    "completion_tokens": 45
+   }
+  },
+  "n_answer": true,
+  "f_answer": false
+ },
+ {
+  "qid": "2c3b2c3bab6d18cb0895462e3cfd91cd0dee7f7d",
+  "rank": 3,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 12819,
+    "completion_tokens": 491
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 12577,
+    "completion_tokens": 445
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "8051927f914d730dfc61b2dc7a8580707b462e56",
+  "rank": 10,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": true
+  },
+  "forced": {
+   "enough": true,
+   "pass": true
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 16282,
+    "completion_tokens": 791
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 16279,
+    "completion_tokens": 850
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ },
+ {
+  "qid": "fcd0bd2db39898ee4f444ae970b80ea4d1d9b054",
+  "rank": 8,
+  "qtype": "hard",
+  "natural": {
+   "enough": true,
+   "pass": false
+  },
+  "forced": {
+   "enough": true,
+   "pass": false
+  },
+  "gen": {
+   "natural": {
+    "calls": 4,
+    "prompt_tokens": 18531,
+    "completion_tokens": 189
+   },
+   "forced": {
+    "calls": 4,
+    "prompt_tokens": 18150,
+    "completion_tokens": 210
+   }
+  },
+  "n_answer": true,
+  "f_answer": true
+ }
+]
