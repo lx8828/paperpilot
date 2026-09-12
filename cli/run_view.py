@@ -1,4 +1,4 @@
-"""重点摘要视图：读 out_claims/<pdf>.claims.json → 去重 → 打标 → 算分 → Markdown。
+"""重点摘要视图：读 assets/artifacts/out_claims/<pdf>.claims.json → 去重 → 打标 → 算分 → Markdown。
 
 用法：
     uv run python run_view.py 2608.31079v1.pdf              # 单篇全流程（LLM 去重+打标）
@@ -9,8 +9,8 @@
     uv run python run_view.py --all --force                 # 全部重跑
 
 产物：
-    out_views/<pdf>.summary.json   主张组明细（label/importance/score/ev 状态）
-    out_views/<pdf>.md             重点摘要 Markdown
+    assets/artifacts/out_views/<pdf>.summary.json   主张组明细（label/importance/score/ev 状态）
+    assets/artifacts/out_views/<pdf>.md             重点摘要 Markdown
 """
 from __future__ import annotations
 
@@ -31,9 +31,9 @@ from paperpilot.tools.pdf_parser import parse_pdf
 from paperpilot.tools.viewer import dedupe_groups, label_groups, render_markdown, score_groups
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
-CLAIMS_DIR = ROOT / "out_claims"
-VIEW_DIR = ROOT / "out_views"
+PAPERS_DIR = ROOT / "assets" / "papers"
+CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
 
 
 def group_to_dict(g: ClaimGroup) -> dict[str, Any]:

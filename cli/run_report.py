@@ -4,7 +4,7 @@
     uv run python run_report.py 2608.31079v1.pdf           # 单篇（LLM 生成概述）
     uv run python run_report.py 2608.31079v1.pdf --force   # 忽略概述缓存重跑
 
-产物：out_views/<pdf>.report.md（完整报告）+ out_views/<pdf>.overview.json
+产物：assets/artifacts/out_views/<pdf>.report.md（完整报告）+ assets/artifacts/out_views/<pdf>.overview.json
 """
 from __future__ import annotations
 
@@ -22,9 +22,9 @@ from paperpilot.tools.pdf_parser import parse_pdf
 from paperpilot.tools.report import build_guide, build_overview, render_report
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
-CLAIMS_DIR = ROOT / "out_claims"
-VIEW_DIR = ROOT / "out_views"
+PAPERS_DIR = ROOT / "assets" / "papers"
+CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
 
 
 def load_all(pdf: str):

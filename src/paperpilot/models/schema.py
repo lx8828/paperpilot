@@ -60,6 +60,11 @@ class Chunk(BaseModel):
     n_blocks: int          # 组成该 chunk 的 block 数
     part: str | None = None      # 二级切分子块序号 "1/3"；整块为 None
     spans: list[ChunkSpan] = []  # 组成该 chunk 的 block 锚点（块级溯源）
+    embed_text: str | None = None
+    # ↑ **P2 双写**：只给**向量侧**用的替代文本（None = 用 text）。
+    #   动机：表块的 markdown 表体对向量不友好（数字/竖线占多数，语义被稀释），
+    #   故向量喂"一行语义摘要"，而 BM25 与作答仍读 `text`（原表）。
+    #   ⚠️ 改这个字段必须让 `ChunkIndex._fingerprint()` 跟着变，否则会静默复用旧向量。
 
 
 class ParserOutput(BaseModel):
@@ -190,7 +195,7 @@ class PaperReport(BaseModel):
 
     设计原则：
       - 展示层字段（core_points/sections/…）由 summary 聚合而成，渲染/问答直接消费
-      - claims/groups 全量保留，自足一份文件（不依赖 out_claims/out_views 中间产物）
+      - claims/groups 全量保留，自足一份文件（不依赖 assets/artifacts/out_claims/assets/artifacts/out_views 中间产物）
       - 每个展示条目都携带 gid → 可回溯到 claims/groups → 原文证据
     """
 

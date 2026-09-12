@@ -4,7 +4,7 @@
     uv run python run_figures.py 2608.31079v1.pdf
     uv run python run_figures.py 2608.31079v1.pdf --no-guide   # 只做方案1，不调 LLM
     uv run python run_figures.py --all
-产物：out_views/<pdf>.figures.json
+产物：assets/artifacts/out_views/<pdf>.figures.json
 """
 from __future__ import annotations
 
@@ -22,8 +22,8 @@ from paperpilot.tools.figures import extract_figures, generate_guides
 from paperpilot.tools.pdf_parser import parse_pdf
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
-VIEW_DIR = ROOT / "out_views"
+PAPERS_DIR = ROOT / "assets" / "papers"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
 
 
 def process_one(pdf: str, with_guide: bool, force: bool) -> dict[str, Any] | None:

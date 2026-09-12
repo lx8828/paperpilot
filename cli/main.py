@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
 def main() -> int:
     llm._load_dotenv(str(ROOT))
     ap = argparse.ArgumentParser()
-    ap.add_argument("pdfs", nargs="+", help="storage/papers 下的 PDF 文件名")
+    ap.add_argument("pdfs", nargs="+", help="assets/papers 下的 PDF 文件名")
     ap.add_argument("--force", action="store_true", help="全链路重跑（忽略缓存）")
     ap.add_argument("--skip-llm", action="store_true",
                     help="只装配已有产物为 report.json（不调 LLM，缺环节报错）")

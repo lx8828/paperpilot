@@ -5,9 +5,9 @@
     → ⚠️ 局限 → 📖 章节精读 → 🗂 全部主张
 
 读取产物（不重跑旧流程）：
-    out_claims/<pdf>.claims.json   统计信息
-    out_views/<pdf>.summary.json   分组/打标/打分
-    out_views/<pdf>.skeleton.json  Hub 论证关系
+    assets/artifacts/out_claims/<pdf>.claims.json   统计信息
+    assets/artifacts/out_views/<pdf>.summary.json   分组/打标/打分
+    assets/artifacts/out_views/<pdf>.skeleton.json  Hub 论证关系
 """
 from __future__ import annotations
 

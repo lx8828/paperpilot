@@ -5,8 +5,8 @@
     uv run python run_skeleton.py 2608.31079v1.pdf 2608.28433v2.pdf  # 多篇
     uv run python run_skeleton.py --all --force              # 全部（force 重跑）
 
-输入：out_views/<pdf>.summary.json（已有分组/打标/打分）+ out_claims/<pdf>.claims.json
-产物：out_views/<pdf>.skeleton.json（Hub × 关系边，证据已绑定）
+输入：assets/artifacts/out_views/<pdf>.summary.json（已有分组/打标/打分）+ assets/artifacts/out_claims/<pdf>.claims.json
+产物：assets/artifacts/out_views/<pdf>.skeleton.json（Hub × 关系边，证据已绑定）
 """
 from __future__ import annotations
 
@@ -23,8 +23,8 @@ from paperpilot.tools import llm
 from paperpilot.tools.skeleton import build_skeleton
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-CLAIMS_DIR = ROOT / "out_claims"
-VIEW_DIR = ROOT / "out_views"
+CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
 
 
 def load_inputs(pdf: str) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]]] | None:

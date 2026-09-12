@@ -10,12 +10,12 @@
     report = process_pdf("x.pdf", skip_llm=True)       # 只装配已有产物，缺则报错
 
 产物：
-    out_claims/<stem>.claims.json      claims + 溯源锚点
-    out_views/<stem>.summary.json      主张组（label/importance/score）
-    out_views/<stem>.skeleton.json     论证骨架
-    out_views/<stem>.figures.json      图表 + 读图指南
-    out_views/<stem>.overview.json     / .guide.json / .report.md / .md
-    out_views/<stem>.report.json       最终结构化报告（PaperReport）
+    assets/artifacts/out_claims/<stem>.claims.json      claims + 溯源锚点
+    assets/artifacts/out_views/<stem>.summary.json      主张组（label/importance/score）
+    assets/artifacts/out_views/<stem>.skeleton.json     论证骨架
+    assets/artifacts/out_views/<stem>.figures.json      图表 + 读图指南
+    assets/artifacts/out_views/<stem>.overview.json     / .guide.json / .report.md / .md
+    assets/artifacts/out_views/<stem>.report.json       最终结构化报告（PaperReport）
 """
 from __future__ import annotations
 
@@ -36,6 +36,8 @@ from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.evidence import (claim_to_dict, dict_to_claim,
                                        evidence_state, verify_evidence)
 from paperpilot.tools.figures import extract_figures, generate_guides
+from paperpilot.tools.mineru_bridge import (figures_from_mineru_dir,
+                                            title_from_mineru_dir)
 from paperpilot.tools.pdf_parser import parse_pdf
 from paperpilot.tools.report import (build_guide, build_overview,
                                      render_report)
@@ -44,9 +46,10 @@ from paperpilot.tools.viewer import (dedupe_groups, label_groups,
                                      render_markdown, score_groups)
 
 ROOT = Path(__file__).resolve().parents[2]  # src/paperpilot/pipeline.py → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
-CLAIMS_DIR = ROOT / "out_claims"
-VIEW_DIR = ROOT / "out_views"
+PAPERS_DIR = ROOT / "assets" / "papers"
+CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
+MINERU_OUT = ROOT / "assets/artifacts/out_mineru"   # MinerU 解析产物根（current_source=='mineru' 时读取）
 
 MAX_LEN = 4000
 
@@ -79,6 +82,22 @@ def _paper_title(pdf_path: Path) -> str:
         return str(parse_pdf(str(pdf_path)).get("metadata", {}).get("title", "")).strip()
     except Exception:  # noqa: BLE001
         return ""
+
+
+def _payload_source(pdf_name: str) -> str:
+    """产物打标：该 pdf 当前解析源（qasper/mineru/pymupdf）。"""
+    from paperpilot.agents.document_cache import current_source
+    return current_source(pdf_name)
+
+
+def _claims_source(pdf_name: str) -> str | None:
+    """读 claims.json 里记录的解析源；无产物/无字段返回 None。"""
+    stem = _stem(pdf_name)
+    claims_file = CLAIMS_DIR / f"{stem}.claims.json"
+    if not claims_file.exists():
+        return None
+    d = _load(claims_file)
+    return str(d.get("source")) if d and d.get("source") else None
 
 
 # ───────────────────────── QASPER 文本源（无 PDF 版式） ─────────────────────────
@@ -117,17 +136,25 @@ def _qasper_title(pdf_name: str) -> str:
 
 
 def _source_chunks(pdf_name: str, *, max_len: int = MAX_LEN) -> list[Any]:
-    """统一 chunk 源：QASPER 走 full_text 构造；否则 parse PDF → chunk_document。"""
-    if is_qasper(pdf_name):
-        return _qasper_chunks(pdf_name)
-    result = parse_pdf(str(PAPERS_DIR / pdf_name))
-    return chunk_document(result["blocks"], max_len=max_len)
+    """统一 chunk 源：委托 document_cache.ordered_chunks（QASPER / MinerU / pymupdf）。
+
+    报告链与 QA 检索链从这里拿到**同一批 chunk**（同源同 chunk_id），
+    保证 claims.chunk_id 能被 verify / 检索一致回核。max_len 忽略：
+    chunk 切分阈值统一为 document_cache.MAX_CHUNK_LEN(=4000)，与 MAX_LEN 一致。
+    """
+    from paperpilot.agents.document_cache import ordered_chunks
+    return ordered_chunks(pdf_name)
 
 
 def _display_title(pdf_name: str) -> str:
-    """标题源统一：QASPER 用数据集 title，PDF 从元数据读。"""
+    """标题源统一：QASPER 用数据集 title；MinerU 用 content_list 整篇题；否则 PDF 元数据。"""
     if is_qasper(pdf_name):
         return _qasper_title(pdf_name)
+    from paperpilot.agents.document_cache import current_source
+    if current_source(pdf_name) == "mineru":
+        t = title_from_mineru_dir(MINERU_OUT / _stem(pdf_name))
+        if t:
+            return t
     return _paper_title(PAPERS_DIR / pdf_name)
 
 
@@ -147,6 +174,7 @@ def stage_claims(pdf_name: str, *, force: bool, workers: int,
     by_type = Counter(c.type for c in claims)
     payload = {
         "pdf": pdf_name,
+        "source": _payload_source(pdf_name),
         "model": os_model(),
         "n_chunks": len(target),
         "n_claims": len(claims),
@@ -242,8 +270,13 @@ def stage_figures(pdf_name: str, *, force: bool,
         # QASPER 文本源无版面图：写空 figures（QA/报告不依赖图表）
         _dump(fig_file, {"pdf": pdf_name, "figures": []})
         return []
-    result = parse_pdf(str(PAPERS_DIR / pdf_name))
-    figs = extract_figures(result["blocks"])
+    from paperpilot.agents.document_cache import current_source
+    if current_source(pdf_name) == "mineru":
+        # MinerU：直接从 content_list 的 table/chart/image 元素取 caption/页（含图内文字不污染）
+        figs = figures_from_mineru_dir(MINERU_OUT / _stem(pdf_name)) or []
+    else:
+        result = parse_pdf(str(PAPERS_DIR / pdf_name))
+        figs = extract_figures(result["blocks"])
     if figs:
         if verbose:
             print(f"  [figures] 识别 {len(figs)} 个图表，生成指南（LLM）…")
@@ -461,7 +494,7 @@ def process_pdf(pdf_name: str, *, force: bool = False,
     """一个论文源 → 报告产物 → PaperReport（并落盘 report.json）。
 
     支持两种源：
-      - PDF 文件（storage/papers/<pdf_name>）
+      - PDF 文件（assets/papers/<pdf_name>）
       - QASPER 文本源（qasper_<paper_id>.qpdf，从 qasper_data 数据集构造 chunks，
         无 PDF 版面/页码——claims 提取、view、报告、QA 全链路一致）
 
@@ -481,7 +514,20 @@ def process_pdf(pdf_name: str, *, force: bool = False,
     VIEW_DIR.mkdir(parents=True, exist_ok=True)
     CLAIMS_DIR.mkdir(parents=True, exist_ok=True)
 
+    # 解析源一致性：claims 产物若来自不同源（pymupdf vs MinerU）→ 整链重建，
+    # 防止旧 pymupdf claims/report 混入 MinerU 检索或反之（QA 向量缓存会自动重建）
+    src = _payload_source(pdf_name)
+    old_src = _claims_source(pdf_name)
+    stale = old_src is not None and old_src != src
+    eff_force = force or stale
+    if stale and verbose:
+        print(f"  [source] 解析源 {old_src} → {src}，整链重建产物")
+
     if skip_llm:
+        if stale:
+            raise FileNotFoundError(
+                f"产物解析源不一致（claims={old_src}，当前={src}）："
+                f"请用 process_pdf(..., force=True) 重建后再 --skip-llm 装配")
         missing = [p for p in required_files(pdf_name) if not p.exists()]
         if missing:
             raise FileNotFoundError(
@@ -490,16 +536,16 @@ def process_pdf(pdf_name: str, *, force: bool = False,
         report = _assemble(pdf_name, verbose=verbose)
     else:
         # 1. claims 提取
-        claims_payload = stage_claims(pdf_name, force=force, workers=workers,
+        claims_payload = stage_claims(pdf_name, force=eff_force, workers=workers,
                                       verbose=verbose)
         # 2. 去重 / 打标 / 算分
-        groups = stage_view(pdf_name, force=force, verbose=verbose)
+        groups = stage_view(pdf_name, force=eff_force, verbose=verbose)
         # 3. 论证骨架
-        hubs = stage_skeleton(pdf_name, force=force, verbose=verbose)
+        hubs = stage_skeleton(pdf_name, force=eff_force, verbose=verbose)
         # 4. 图表
-        figures = stage_figures(pdf_name, force=force, verbose=verbose)
+        figures = stage_figures(pdf_name, force=eff_force, verbose=verbose)
         # 5. 概述 / 导读 / 报告 md
-        stage_report_text(pdf_name, force=force, groups=groups, hubs=hubs,
+        stage_report_text(pdf_name, force=eff_force, groups=groups, hubs=hubs,
                           figures=figures, verbose=verbose)
         # 6. 装配最终 report.json
         report = _assemble(pdf_name, verbose=verbose)

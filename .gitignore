@@ -14,12 +14,11 @@ wheels/
 .env
 .env.local
 
-# ── 论文 PDF（体积大，不入库）───────────────────────────
-src/paperpilot/storage/papers/*.pdf
+# ── 论文库（体积大，不入库；2026-09-10 从 src/paperpilot/storage/papers 迁入）──
+assets/papers/*.pdf
 
-# ── LLM 生成产物（可重跑，不入库）───────────────────────
-out_claims/
-out_views/
+# ── 产物库（可重跑，不入库；2026-09-10 由 out_claims/out_views/out_mineru 迁入）──
+assets/artifacts/
 *.log
 resp_tmp.json
 

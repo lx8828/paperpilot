@@ -5,8 +5,9 @@
 
 接口：
     GET  /            前端页面（index.html）
-    POST /api/report  上传 PDF → process_pdf() → 返回 PaperReport JSON
-                      （已有产物缓存时秒回；新论文走全链路，耗时可到分钟级）
+    POST /api/report  上传 PDF → ingest()（MinerU 检索解析 + MinerU/pymupdf 报告）
+                      → 返回 PaperReport JSON
+                      （已有产物+同版本 MinerU 时秒回；新论文走全链路，耗时可到分钟级）
 
 预留（下一步问答 RAG 用）：
     POST /api/ask     提问接口
@@ -26,12 +27,12 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from paperpilot.graph import ask as graph_ask
-from paperpilot.pipeline import process_pdf
+from paperpilot.ingest import ingest
 from paperpilot.tools import llm
 
 WEB_DIR = Path(__file__).resolve().parent
 ROOT = WEB_DIR.parent  # web/ → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
+PAPERS_DIR = ROOT / "assets" / "papers"
 VENDOR_DIR = WEB_DIR / "vendor"   # pdf.js 本地静态资源
 
 llm._load_dotenv(str(ROOT))
@@ -58,7 +59,7 @@ async def index() -> str:
 
 @app.get("/pdf/{name}")
 async def serve_pdf(name: str) -> FileResponse:
-    """给前端 pdf.js 渲染用：返回 storage/papers 下的 PDF 文件。"""
+    """给前端 pdf.js 渲染用：返回 assets/papers 下的 PDF 文件。"""
     safe = Path(name or "").name
     if not safe.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="仅支持 .pdf 文件")
@@ -77,7 +78,10 @@ class AskBody(BaseModel):
 
 @app.post("/api/ask")
 async def ask_question(body: AskBody) -> JSONResponse:
-    """论文问答：LangGraph 四层漏斗（L0→L1→L2→L3）。history 支持多轮追问。"""
+    """论文问答：v3 两级（L0 总览直答 → L3 全局检索）+ 输出闸门。history 支持多轮追问。
+
+    若该论文摄取时 MinerU 明确失败，graph.ask 会直接返回拒绝话术与原因（不静默降级）。
+    """
     if not llm.is_configured():
         raise HTTPException(status_code=500, detail="LLM 未配置：请先填写 .env")
     try:
@@ -98,7 +102,7 @@ async def ask_question(body: AskBody) -> JSONResponse:
 
 @app.post("/api/report")
 async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
-    """上传 PDF → process_pdf → report JSON。
+    """上传 PDF → ingest（MinerU 检索解析 + pymupdf 报告）→ report JSON。
 
     关键：同名论文已存在时【不覆盖写盘】——21 篇论文均已有产物缓存，
     直接复用即可，避免 Windows 下文件被 WPS/阅读器占用导致 Permission denied。
@@ -110,10 +114,10 @@ async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
     name = _safe_pdf_name(file.filename)
     dest = PAPERS_DIR / name
 
-    # 论文已在 storage/papers 且 report.json 已生成 → 直接走缓存装配，不写盘
+    # 论文已在 assets/papers 且 report.json 已生成 → 直接走缓存装配，不写盘
     if dest.exists():
         stem = dest.stem
-        report_cache = ROOT / "out_views" / f"{stem}.report.json"
+        report_cache = ROOT / "assets/artifacts/out_views" / f"{stem}.report.json"
         if report_cache.exists():
             try:
                 return JSONResponse(
@@ -144,8 +148,16 @@ async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
             detail="LLM 未配置：请先复制 .env.example 为 .env 并填写。",
         )
     try:
-        report = process_pdf(name, verbose=False)
+        # 摄取全链：MinerU（检索用）→ 报告（pymupdf）。MinerU 失败不影响报告，
+        # 但会落 ingest.json，问答侧据此明确拒绝并说明原因。
+        res = ingest(name, verbose=False)
+        report = res["report"]
         payload = json.loads(report.model_dump_json())
+        m = (res["meta"].get("mineru") or {})
+        if m.get("status") == "failed":
+            payload["mineru_warning"] = (
+                "版面解析（MinerU）失败，问答将不可用；报告已正常生成。"
+                f"原因：{str(m.get('reason') or '')[:200]}")
     except HTTPException:
         raise
     except Exception as e:  # noqa: BLE001

@@ -8,8 +8,8 @@
     uv run python run_claims.py 2608.28433v2.pdf --max-chunks 6         # 单篇试水 N 块
     uv run python run_claims.py --all                                   # 全部论文（每篇一行小结）
     uv run python run_claims.py 2608.28433v2.pdf 2608.30023v1.pdf       # 指定多篇
-    uv run python run_claims.py --all --skip-existing                   # 跳过 out_claims 已存在的篇目（续跑）
-    uv run python run_claims.py --json out_claims/xxx.claims.json       # 复核已有结果（不调 LLM）
+    uv run python run_claims.py --all --skip-existing                   # 跳过 assets/artifacts/out_claims 已存在的篇目（续跑）
+    uv run python run_claims.py --json assets/artifacts/out_claims/xxx.claims.json       # 复核已有结果（不调 LLM）
 """
 from __future__ import annotations
 
@@ -29,8 +29,8 @@ from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.pdf_parser import parse_pdf
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
-DEFAULT_OUT = ROOT / "out_claims"
+PAPERS_DIR = ROOT / "assets" / "papers"
+DEFAULT_OUT = ROOT / "assets/artifacts/out_claims"
 
 # ───────────────────────── 工具（纯函数在 tools/evidence） ─────────────────────────
 
@@ -200,7 +200,7 @@ def main() -> int:
     llm._load_dotenv(str(ROOT))
     ap = argparse.ArgumentParser()
     ap.add_argument("pdfs", nargs="*", help="PDF 文件名（可多个）")
-    ap.add_argument("--all", action="store_true", help="跑 storage/papers 下全部论文")
+    ap.add_argument("--all", action="store_true", help="跑 assets/papers 下全部论文")
     ap.add_argument("--max-chunks", type=int, default=0,
                     help="每篇只跑前 N 个正文 chunk（试水）；0=全部")
     ap.add_argument("--out", default=str(DEFAULT_OUT), help="输出目录")

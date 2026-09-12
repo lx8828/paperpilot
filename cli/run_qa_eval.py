@@ -25,8 +25,8 @@ from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.pdf_parser import parse_pdf
 
 ROOT = Path(__file__).resolve().parents[1]
-VIEW_DIR = ROOT / "out_views"
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
+PAPERS_DIR = ROOT / "assets" / "papers"
 QA_FILE = ROOT / "qa" / "qa_set.json"
 OUT_FILE = ROOT / "qa" / "qa_eval_out.json"
 

@@ -1,4 +1,4 @@
-"""Claim 噪声筛查：识别表格/数字碎片句，保存 out_claims/<pdf>.noise.json。
+"""Claim 噪声筛查：识别表格/数字碎片句，保存 assets/artifacts/out_claims/<pdf>.noise.json。
 
 用法：
     uv run python run_scan_noise.py 2608.31079v1.pdf
@@ -20,7 +20,7 @@ from paperpilot.tools import llm
 from paperpilot.tools.quality import is_abnormal, scan_claims
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-CLAIMS_DIR = ROOT / "out_claims"
+CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
 
 
 def scan_one(pdf: str, force: bool) -> dict[str, Any] | None:

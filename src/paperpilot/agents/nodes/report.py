@@ -17,7 +17,7 @@ from paperpilot.agents.state import QAState
 
 # agents/nodes/report.py → 项目根
 ROOT = Path(__file__).resolve().parents[4]
-VIEW_DIR = ROOT / "out_views"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
 
 
 def _load_report(pdf: str) -> dict[str, Any]:

@@ -1,4 +1,4 @@
-"""全量汇总 + ev✗ 审计：读 out_claims/*.claims.json，重做本地 parse+chunk 核对。
+"""全量汇总 + ev✗ 审计：读 assets/artifacts/out_claims/*.claims.json，重做本地 parse+chunk 核对。
 
 不调用 LLM，可反复运行。
 用法：
@@ -27,7 +27,7 @@ from paperpilot.tools.evidence import (
 from paperpilot.tools.pdf_parser import parse_pdf
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
+PAPERS_DIR = ROOT / "assets" / "papers"
 
 # 复用同目录 run_claims.py 的表打印函数（不触发其 main）
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # cli/
@@ -121,8 +121,8 @@ def audit_miss(pairs: list[tuple[str, dict[str, Any], list[Any]]]) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=str(ROOT / "out_claims"),
-                    help="claims 输出目录（默认 out_claims）")
+    ap.add_argument("--out", default=str(ROOT / "assets/artifacts/out_claims"),
+                    help="claims 输出目录（默认 assets/artifacts/out_claims）")
     ap.add_argument("--audit-miss", action="store_true",
                     help="对未命中(ev✗)做原因分类审计")
     args = ap.parse_args()

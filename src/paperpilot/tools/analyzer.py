@@ -19,8 +19,8 @@ CLAIM_TYPES: set[str] = set(ClaimType.__args__)  # type: ignore[attr-defined]
 SKIP_MARKERS = ("References", "REFERENCES", "Bibliography", "BIBLIOGRAPHY")
 
 # 表格数据行保护：PDF 表格被解析为若干"一行一个值"的短行（如 "58.2%"、"0.11%"），
-# 若喂给提取模型会被拼成伪句子。检测纯数值/百分比/序号类表格单元，
-# 提取前替换为占位符，模型即不会据此生成 claims。
+# 或 MinerU 产出的 markdown 管道表（"| CHM-APL | 1.06 | 0.556 |"）。
+# 若喂给提取模型会被拼成伪句子。检测表格行，提取前替换为占位符。
 _TABLE_CELL_RE = re.compile(r"[0-9.,%()+\-·\s]+$")
 
 
@@ -34,10 +34,20 @@ def _is_table_cell(line: str) -> bool:
     return bool(_TABLE_CELL_RE.fullmatch(s))
 
 
+def _is_md_table_line(line: str) -> bool:
+    """MinerU markdown 管道表行：以 | 开头且至少 2 个非空单元（分隔行纯 --- 除外）。"""
+    s = line.strip()
+    if not s.startswith("|") or not s.endswith("|"):
+        return False
+    cells = [c for c in s.split("|")[1:-1] if c.strip()]
+    return len(cells) >= 2
+
+
 def mask_table_rows(text: str) -> str:
-    """把疑似表格数据行替换为 [TABLE_CELL]，供提取时忽略。"""
-    return "\n".join("[TABLE_CELL]" if _is_table_cell(l) else l
-                     for l in text.splitlines())
+    """把疑似表格数据行（数值短行 / markdown 管道行）替换为 [TABLE_CELL]。"""
+    def _mask(l: str) -> str:
+        return "[TABLE_CELL]" if (_is_table_cell(l) or _is_md_table_line(l)) else l
+    return "\n".join(_mask(l) for l in text.splitlines())
 
 
 def _skip_chunk(chunk: Chunk) -> bool:

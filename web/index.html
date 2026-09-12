@@ -455,16 +455,18 @@ async function ask(){
 }
 function renderAnswer(d){
   const cs=d.cites||[]; const html=esc(d.answer||'');
+  // 引用号 n → cite：后端 cites 每项带 n（= 答案里 [n] 的真实引用号），旧数据无 n 时回退下标
+  const byN=(n)=>cs.find(c=>c.n===n)||cs[n-1];
   const body=html.replace(/\[(\d{1,3})\]/g,(m,n)=>{
     const i=parseInt(n,10);
-    if(i>=1&&i<=cs.length) return `<a class="jump" data-cite="${i-1}">[${n}]</a>`;
-    return `[${n}]`;
+    return byN(i)?`<a class="jump" data-cite="${i}">[${n}]</a>`:`[${n}]`;
   });
   let h=`<div>${body}</div>`;
   if(cs.length){
     h+='<div class="cites"><b class="muted">引用出处（点击跳原文）</b>';
     cs.forEach((c,i)=>{
-      h+=`<div class="ci"><b data-cite="${i}">[${i+1}]</b> ${esc(c.gid?c.ref:'正文片段')}（p${c.page}）`
+      const tag=(c.n!=null?c.n:i+1);   // 展示真实引用号（[3][5] 不再被标成 [1][2]）
+      h+=`<div class="ci"><b data-cite="${tag}">[${tag}]</b> ${esc(c.gid?c.ref:'正文片段')}（p${c.page}）`
         +`<span class="muted"> ${esc((c.evidence||'').slice(0,100))}</span></div>`;
     });
     h+='</div>';
@@ -474,9 +476,10 @@ function renderAnswer(d){
     +`${lastAsk===d?'':'（历史）'}</div>`;
   return h;
 }
-function jumpCite(i){
-  if(!lastAsk||!lastAsk.cites||!lastAsk.cites[i])return;
-  const c=lastAsk.cites[i];
+function jumpCite(n){
+  if(!lastAsk||!lastAsk.cites)return;
+  const c=lastAsk.cites.find(x=>x.n===n)||lastAsk.cites[n-1];
+  if(!c)return;
   goToPdf(c.page||1, c.evidence||'');
 }
 

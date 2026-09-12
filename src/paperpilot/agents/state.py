@@ -93,7 +93,7 @@ class QAMessage(TypedDict):
 class QAState(TypedDict, total=False):
     # ── 输入（图调用方提供）──
     question: str              # 用户问题（本轮）
-    pdf: str                   # storage/papers 下的论文文件名
+    pdf: str                   # assets/papers 下的论文文件名
     history: list[QAMessage]   # 之前轮次的对话（供 judge/answer 理解"这个方法/它"等指代）
 
     # ── L0 · Report（report_l0 节点产出，零检索）──

@@ -128,25 +128,36 @@ def build_chunks(paper: dict[str, Any]) -> list[Chunk]:
     return chunks
 
 
-def gold_answer(q: dict[str, Any]) -> tuple[str | None, str | None]:
-    """取该题最可信的人工答案 → (答案文本, 证据段落)。
+def gold_answer_full(q: dict[str, Any]) -> tuple[str | None, list[str]]:
+    """取该题最可信的人工答案 → (答案文本, **全部**证据段落列表)。
 
-    优先级：free_form_answer > yes_no > extractive_spans 拼装。
-    多 answerer 取第一个非 unanswerable；evidence 取对应答案的证据段（首段）。
-    返回 (answer_text, evidence_text)；unanswerable 返回 (None, None)。
+    QASPER 单题常有多段人工 evidence（实测 recall_set 约 38% 的题 ≥2 段）。
+    检索评测须把全部 evidence 段都算作 gold：只取首段会把"命中第 2/3 段同样正确的
+    证据"误判为 miss，系统性压低 Recall/MRR/NDCG。
+
+    优先级：free_form_answer > yes_no > extractive_spans 拼装；多 answerer 取首个非
+    unanswerable。unanswerable 返回 (None, [])。
     """
     for a in q.get("answers") or []:
         inner = a.get("answer") or {}
         if inner.get("unanswerable"):
             continue
+        evs = [str(e) for e in (inner.get("evidence") or []) if e]
         if inner.get("free_form_answer"):
-            return (str(inner["free_form_answer"]).strip(),
-                    (inner.get("evidence") or [None])[0] or None)
+            return str(inner["free_form_answer"]).strip(), evs
         if inner.get("yes_no") is not None:
-            return ("yes" if inner["yes_no"] else "no",
-                    (inner.get("evidence") or [None])[0] or None)
+            return ("yes" if inner["yes_no"] else "no"), evs
         spans = inner.get("extractive_spans") or []
         if spans:
-            return (" ".join(str(s) for s in spans).strip(),
-                    (inner.get("evidence") or [None])[0] or None)
-    return None, None
+            return " ".join(str(s) for s in spans).strip(), evs
+    return None, []
+
+
+def gold_answer(q: dict[str, Any]) -> tuple[str | None, str | None]:
+    """兼容旧签名：返回 (答案文本, 首条证据)。
+
+    LLM 裁判 prompt 等仍用此首段口径；检索评测请改用 gold_answer_full 取全部证据。
+    unanswerable 返回 (None, None)。
+    """
+    ans, evs = gold_answer_full(q)
+    return ans, (evs[0] if evs else None)

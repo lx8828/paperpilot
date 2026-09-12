@@ -36,7 +36,7 @@ from paperpilot.tools import llm
 
 ROOT = Path(__file__).resolve().parents[1]
 QA_DIR = ROOT / "qa"
-OUT_VIEWS = ROOT / "out_views"
+OUT_VIEWS = ROOT / "assets/artifacts/out_views"
 QASPER_PREFIX = "qasper_"
 QASPER_SUFFIX = ".qpdf"
 PASS_SCORE = 4

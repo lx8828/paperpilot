@@ -11,7 +11,7 @@
     PARS 解析           PDF 能解析、blocks>0
     HDR  标题/分块       能切出正文 chunk 且带 title_path
     EVID 证据溯源        evidence 回原文命中率（miss 占比 ≤ 阈值）
-  产物检查（只读 out_claims / out_views 的 JSON，检测下游环节产物健康）：
+  产物检查（只读 assets/artifacts/out_claims / assets/artifacts/out_views 的 JSON，检测下游环节产物健康）：
     CLA  Claims 提取     claims>0 且无提取错误
     NS   噪声筛查        可选环节：无 noise.json 时跳过（·），不判失败
     DEUP 去重归并        summary.json 存在、groups 数合理
@@ -21,7 +21,7 @@
     RPT  完整报告        overview/guide/report.md 三件齐
 
 用法：
-    uv run python run_bench.py                             # 全量检查 storage/papers 全部
+    uv run python run_bench.py                             # 全量检查 assets/papers 全部
     uv run python run_bench.py 2609.00859v1.pdf            # 指定论文
     uv run python run_bench.py --save-baseline             # 首次：把本次结果固化为基线
     uv run python run_bench.py --no-local                  # 跳过本地解析重算（只查产物层）
@@ -46,9 +46,9 @@ from paperpilot.tools.figures import extract_figures
 from paperpilot.tools.pdf_parser import parse_pdf
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
-PAPERS_DIR = ROOT / "src" / "paperpilot" / "storage" / "papers"
-CLAIMS_DIR = ROOT / "out_claims"
-VIEWS_DIR = ROOT / "out_views"
+PAPERS_DIR = ROOT / "assets" / "papers"
+CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
+VIEWS_DIR = ROOT / "assets/artifacts/out_views"
 BENCH_DIR = ROOT / "bench"
 
 # ───────────────────────── 常量 ─────────────────────────
@@ -394,7 +394,7 @@ def diff_baseline(pdfs: list[str], results: dict[str, dict[str, Any]],
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("pdfs", nargs="*", help="指定论文文件名；默认 storage/papers 全部")
+    ap.add_argument("pdfs", nargs="*", help="指定论文文件名；默认 assets/papers 全部")
     ap.add_argument("--save-baseline", action="store_true",
                     help="把本次结果固化为 baseline.json")
     ap.add_argument("--no-local", action="store_true",
@@ -408,7 +408,7 @@ def main() -> int:
     else:
         pdfs = sorted(p.name for p in PAPERS_DIR.glob("*.pdf"))
     if not pdfs:
-        print("没有可检查的论文（storage/papers 为空）")
+        print("没有可检查的论文（assets/papers 为空）")
         return 1
 
     results: dict[str, dict[str, Any]] = {}

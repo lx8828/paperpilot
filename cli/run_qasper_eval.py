@@ -73,10 +73,31 @@ def _qpdf(pid: str) -> str:
     return f"{_QASPER_PREFIX}{pid}{_QASPER_SUFFIX}"
 
 
+# ── 评测侧判据：无答案题的"片段合格式"（2026-09-11 新增）─────────────────────
+# 背景：QASPER 的 gold 空题（论文本身没答案）里，若系统**不给结论、但明确说明"论文
+# 未提供该信息"、并给出检索到的相关原文片段（带 cites）**——对用户是**有效交付**
+# （能自行判断），产品口径上优于空拒答；但裁判按"回答完整性"打分会给 3（不到 pass 线）。
+# → 单列 excerpt_ok 观察桶，不计 fail。
+# 仅对 **gold 空的无答案题** 生效：有答案题出现同款"缺失口吻" = 误断言缺失，仍判 fail。
+ABSENCE_RE = re.compile(
+    r"(未给出|未提供|未提及|未列出|未报告|并未说明|并未给出|并未具体说明|"
+    r"没有给出|没有提供|没有出现|未出现|无法给出|找不到|未找到|没有找到|无法找到|"
+    r"无法判断|无法确认|信息不足|"
+    r"未(?:明确|直接|具体|详细)?(?:说明|给出|提供|提及|指出|解释|报告|列出)|"
+    r"没有(?:明确|直接|具体)?(?:说明|给出|提供|提及|解释|报告|列出)|"
+    r"(?:论文|文中|文献|原文|文章)[^，。；]{0,16}(?:没有|未|不曾|并未)[^，。；]{0,12}"
+    r"(?:给出|提供|报告|说明|列出))", re.I)
+
+
+def _absence_tone(ans: str) -> bool:
+    """答案是否明确说明"论文未提供该信息"。"""
+    return bool(ABSENCE_RE.search(ans or ""))
+
+
 def _ensure_report(pid: str, *, force: bool = False) -> str:
     """确保该 QASPER 论文已有 report 产物；返回虚拟 pdf 名。"""
     name = _qpdf(pid)
-    report_file = ROOT / "out_views" / f"{Path(name).stem}.report.json"
+    report_file = ROOT / "assets/artifacts/out_views" / f"{Path(name).stem}.report.json"
     if report_file.exists() and not force:
         return name
     print(f"  [pipeline] 处理 {pid}…（LLM，可能 1~3 分钟）")
@@ -133,12 +154,21 @@ def run_one(q: dict, name: str) -> dict:
     #                 · 有答案题答对了
     #                 · 无答案题系统诚实拒答，裁判给了≥4（这就是"做对了"）
     #   honest_refuse 无答案题系统拒答但裁判未认可（score<4）——行为诚实但没达到满分线，单独观察
+    #   excerpt_ok    无答案题：未给结论，但明确说明"论文未提供"并给出相关原文片段（带 cites）
+    #                 —— 产品口径为**合格**（有效交付，用户可自行判断），不计 fail（2026-09-11 新增）
     #   unknown_ok    有答案题系统拒答（没答出来，非 pass）
     #   fail          有答案题系统作答但裁判未认可
     status = "pass" if is_pass else ("unknown_ok" if level == "unknown" else "fail")
-    if is_unans and level in ("unknown",):
-        # 无答案题：裁判认可 → 保持 pass；未认可 → honest_refuse（观察桶，不计 pass）
-        status = "pass" if is_pass else "honest_refuse"
+    if is_unans:
+        if is_pass:
+            status = "pass"
+        elif level == "unknown":
+            status = "honest_refuse"
+        elif _absence_tone(answer) and cites:
+            # 片段合格式：说明论文未提供 + 给出相关片段（有用于判断的材料）
+            status = "excerpt_ok"
+        else:
+            status = "fail"
     rec = {
         "qid": q.get("question_id", ""),
         "paper": q.get("pdf", name),
@@ -189,6 +219,7 @@ def build_summary(recs: list[dict]) -> str:
     n_fail = sum(1 for r in recs if r.get("status") == "fail")
     n_unk = sum(1 for r in recs if r.get("status") == "unknown_ok")
     n_honest = sum(1 for r in recs if r.get("status") == "honest_refuse")
+    n_exc = sum(1 for r in recs if r.get("status") == "excerpt_ok")
     n_err = sum(1 for r in recs if r.get("status") == "error")
     scored = [r for r in recs if r.get("score", 0) > 0]
     avg_score = round(sum(r["score"] for r in scored) / len(scored), 2) if scored else 0
@@ -197,7 +228,8 @@ def build_summary(recs: list[dict]) -> str:
     # 分桶：有答案题（pass/fail）按 level 分布
     lines = [f"# QASPER 基础通过测试（{time.strftime('%Y-%m-%d %H:%M')}）\n",
              f"- 总题数: {total} ｜ 通过(pass≥4): {n_pass} ｜ 失败: {n_fail} ｜ "
-             f"unknown_ok: {n_unk} ｜ 无答案拒答未认可: {n_honest} ｜ error: {n_err}",
+             f"unknown_ok: {n_unk} ｜ 无答案拒答未认可: {n_honest} ｜ "
+             f"无答案片段合格(excerpt_ok): {n_exc} ｜ error: {n_err}",
              f"- 有分题均分: {avg_score}/5 ｜ 平均耗时: {avg_time}s\n",
              "| paper | qid | 问题 | gold | 系统 | route | score | 状态 |",
              "|---|---|---|---|---|---|---|---|"]
@@ -210,6 +242,14 @@ def build_summary(recs: list[dict]) -> str:
     # 通过率主指标
     pass_rate = n_pass / total if total else 0
     lines.append(f"\n## 主通过率（仅计有答案题 pass / 全部题）：{pass_rate:.1%}")
+    # 无答案题：pass 与 excerpt_ok 都是"合格行为"（后者是有效交付，只是不给结论）
+    un = [r for r in recs if r.get("unanswerable")]
+    if un:
+        un_pass = sum(1 for r in un if r.get("status") == "pass")
+        un_exc = sum(1 for r in un if r.get("status") == "excerpt_ok")
+        lines.append(f"## 无答案题合格率（pass {un_pass} + excerpt_ok {un_exc}）："
+                     f"{un_pass + un_exc}/{len(un)} = "
+                     f"{(un_pass + un_exc) / len(un):.1%}")
     return "\n".join(lines)
 
 

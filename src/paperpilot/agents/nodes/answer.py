@@ -14,6 +14,7 @@ answer_unknown：L3 仍不足时的诚实收尾（"我不知道，缺 XX"），�
 """
 from __future__ import annotations
 
+import os
 import re
 from typing import Any
 
@@ -42,6 +43,8 @@ SYSTEM = (
     "7. 问题要『数值/幅度/差量/提升多少』时，只要条目中出现具体数字（分数、百分比、倍率、"
     "   时长等），就必须原样引用该数字作答；**严禁**因'没在第一眼看到'就说『文中未给出数值』——"
     "   除非你把全部条目逐条读完后确认无任何数字。"
+    "   若数字来自【表格】条目，先确认它所在的**列**（复合列名如 Story Generation/Pearson "
+    "   表示层级），只有同一列内不同行的数值才可直接比较。"
     "8. 若答案需由多个数值推算（如平均值=总数÷样本数、差量=A−B），请写出算式并给出计算结果，"
     "   不要只停留在'约/较大/显著'这类定性描述。"
     "9. 列表题（问名称/成员/清单）若证据中逐项出现，必须全部列出并给每项来源；"
@@ -60,6 +63,9 @@ SYSTEM = (
     "   ——问题若带数量（'6 个语言对'『全部 12 个方法』），列出的项数必须与引用段实际出现"
     "   的成员一致；发现还有同行成员未列出（常藏在描述性长句/后半段/相邻条目里）就补上，"
     "   不要因'答案已够长'而省略。"
+    "14. 硬引用：每个承载具体断言/数值/名称/方法/结论的句子都必须带 [n]；若某句内容无法"
+    "   归到任何上方条目——它就没有证据支撑——删除该句，或改写为说明'论文中无法确认这一点'，"
+    "   绝不让无引用支撑的断言留在答案里（宁缺毋编）。"
 )
 
 # 两步法第一步：从给定条目中穷举式提取"与问题直接相关的事实清单"。
@@ -81,9 +87,29 @@ SYSTEM_EXTRACT = (
     "   **不同条目**中的全部成员都捞出来，并尽量让不同成员的数量与问题所示数量一致；"
     "   不得只从一个最相关的条目里取几个就收手。\n"
     "5. 只做提取，不要作答、不要推理、不要下'是否足以回答'的结论。\n"
+    "6. **表格**（条目标着【表格】）：按「列路径 → 行标签 → 数值」逐项提取，"
+    "   例如「Story Generation/Pearson，with skill rating：0.631」；"
+    "   同一列不同行的数值要分别列出，禁止只取一个数字，"
+    "   也禁止只说『表中给出了数值』而不给具体数字。\n"
     '输出为 JSON：{"facts": [{"n": 1, "text": "含原样数字/名称的事实"}, ...]}；'
     "若没有任何相关事实，facts 输出空数组。只输出 JSON，不要其他文字。"
 )
+
+# ── P1+P3 的实验开关（同日配对 A/B 用）────────────────────────────────────────
+# `PAPERPILOT_TABLE_V1=1` → 复现改造前行为（旧表表示 + 旧 prompt 布局）。
+# 只用于评测；线上不设此变量 → 走新行为（表表示由 mineru_bridge 同开关切换）。
+# 背景（2026-09-12 实测）：跨天比较不可靠（上游模型漂移），必须同日配对。
+_TBL_V1 = os.environ.get("PAPERPILOT_TABLE_V1") == "1"
+_TBL_COL_SENTENCE = ("   若数字来自【表格】条目，先确认它所在的**列**（复合列名如 Story Generation/Pearson "
+                     "   表示层级），只有同一列内不同行的数值才可直接比较。")
+_TBL_RULE6 = ("6. **表格**（条目标着【表格】）：按「列路径 → 行标签 → 数值」逐项提取，"
+              "   例如「Story Generation/Pearson，with skill rating：0.631」；"
+              "   同一列不同行的数值要分别列出，禁止只取一个数字，"
+              "   也禁止只说『表中给出了数值』而不给具体数字。\n")
+if _TBL_V1:
+    SYSTEM = SYSTEM.replace(_TBL_COL_SENTENCE, "")
+    SYSTEM_EXTRACT = SYSTEM_EXTRACT.replace(_TBL_RULE6, "")
+
 
 SYSTEM_UNKNOWN = (
     "你是严谨的论文问答助手。面对一个可能无法百分之百确定的问题，按以下顺序处理：\n"
@@ -130,8 +156,32 @@ def _fmt_claim_entry(i: int, e: dict[str, Any]) -> str:
 
 
 def _fmt_chunk_entry(i: int, c: dict[str, Any]) -> str:
-    return (f"[{i}] 正文段落（p{c.get('page','?')} {c.get('section','')}）："
-            f"{c.get('text','')}")
+    """chunk 条目 → 编号文本。
+
+    P3（2026-09-12）：**显式标出条目类型**。表格此前被统一标成"正文段落"，
+    模型不知道要按行列读（业界实证：分区/类型标记对"解析类"任务有增益）。
+    复合列名用 `/` 表示层级，由 `mineru_bridge.table_to_md` 的"多级表头折叠"产生。
+    """
+    text = c.get("text", "")
+    page = c.get("page", "?")
+    if _TBL_V1:      # 实验开关：复现"全部标成正文段落"
+        return f"[{i}] 正文段落（p{page} {c.get('section','')}）：{text}"
+    if str(c.get("chunk_id") or "").startswith("xtbl-"):
+        if str(text).lstrip().startswith("公式:"):
+            return f"[{i}] 【公式】（p{page}）：{text}"
+        return f"[{i}] 【表格】（p{page}）：{text}"
+    return f"[{i}] 正文段落（p{page} {c.get('section','')}）：{text}"
+
+
+def _is_table_entry(e: dict[str, Any]) -> bool:
+    """是否表格块（`xtbl-*` 且非公式）。"""
+    return (str(e.get("chunk_id") or "").startswith("xtbl-")
+            and not str(e.get("text") or "").lstrip().startswith("公式:"))
+
+
+def _has_table(entries: list[dict[str, Any]]) -> bool:
+    """条目里是否含表格块。"""
+    return any(_is_table_entry(e) for e in entries)
 
 
 # ── cites 解析 ────────────────────────────────────────────────────────────────
@@ -151,6 +201,7 @@ def _cites_from(text: str, entries: list[dict[str, Any]], pdf: str) -> list[dict
                 continue
             seen.add(key)
             cites.append({
+                "n": n,  # 答案里的引用号（前端按 n 匹配，不按下标）
                 "ref": f"{stem}#{e.get('gid','')}",
                 "gid": e.get("gid", ""),
                 "claim_id": e.get("rep_claim_id", ""),
@@ -163,6 +214,7 @@ def _cites_from(text: str, entries: list[dict[str, Any]], pdf: str) -> list[dict
                 continue
             seen.add(key)
             cites.append({
+                "n": n,
                 "ref": f"{stem}#{e.get('chunk_id','')}",
                 "gid": "",
                 "claim_id": "",
@@ -227,31 +279,137 @@ def _build_context(state: QAState) -> tuple[str, list[dict[str, Any]], str]:
     return header, entries, "L0"
 
 
-def _extract_facts(question: str, context: str) -> list[dict[str, Any]]:
-    """两步法第一步：通读全部条目，穷举与问题相关的事实清单。
-
-    返回形如 [{"n": 2, "text": "..."}] 的列表；解析/调用失败时返回 []。
-    失败不阻断主流程（降级为单步 answer，仍带防自毁准则）。
-    """
-    user = (f"{context}\n\n用户问题：{question}\n\n"
-            "请逐条通读上方全部条目，穷举提取与问题直接相关的事实，并只输出指定 JSON。")
-    try:
-        obj = llm.chat_json(SYSTEM_EXTRACT, user, temperature=0.0)
-    except Exception:  # noqa: BLE001
-        return []
-    if not isinstance(obj, dict):
-        return []
-    facts = obj.get("facts")
+def _normalize_facts(facts: Any) -> list[dict[str, Any]]:
+    """facts 原始列表 → [{"n": int, "text": str}]（丢弃无 text 项）。"""
     if not isinstance(facts, list):
         return []
-    out = []
+    out: list[dict[str, Any]] = []
     for f in facts:
         if isinstance(f, dict) and f.get("text"):
-            out.append({"n": int(f.get("n") or 0), "text": str(f["text"])})
+            try:
+                n = int(f.get("n") or 0)
+            except (TypeError, ValueError):
+                n = 0
+            out.append({"n": n, "text": str(f["text"]).strip()})
     return out
 
 
+_FACT_SPLIT_RE = re.compile(r'\{\s*"n"\s*:\s*')
+_FACT_HEAD_RE = re.compile(r'(\d+)\s*,\s*"text"\s*:\s*"')
+_FACT_TAIL_RE = re.compile(r'"\s*\}?\s*\]?\s*\}?\s*,?\s*$')
+
+
+def _salvage_facts(raw: str) -> list[dict[str, Any]]:
+    """宽松兜底：严格 JSON 解析失败时按条目边界抢救事实（2026-09-10）。
+
+    触发场景（实测 40 题里 2.5%）：事实文本含**未转义的双引号**（如
+    `the "syntactic" one`）或裸换行 → json.loads 直接失败；旧实现被 except 吞掉，
+    整份清单（实测达 2569 字符）被静默丢弃。这里不修 JSON，只按
+    `{"n": X, "text": "` 逐条切分、剥掉尾部结构串——宁可少几条，也不丢整份。
+    """
+    out: list[dict[str, Any]] = []
+    for b in _FACT_SPLIT_RE.split(raw)[1:]:
+        b = b.lstrip()
+        m = _FACT_HEAD_RE.match(b)
+        if not m:
+            continue
+        seg = _FACT_TAIL_RE.sub("", b[m.end():].rstrip())
+        seg = (seg.replace("\\n", " ").replace("\\t", " ")
+                  .replace('\\"', '"').strip())
+        if seg:
+            out.append({"n": int(m.group(1)), "text": seg})
+    return out
+
+
+def _extract_facts(question: str, context: str) -> list[dict[str, Any]]:
+    """两步法第一步：通读全部条目，穷举与问题相关的事实清单。
+
+    返回形如 [{"n": 2, "text": "..."}] 的列表；调用失败时返回 []。
+    失败不阻断主流程（降级为单步 answer，仍带防自毁准则）。
+
+    2026-09-10：改走**原始文本 + 宽松兜底**——严格 JSON 失败不再丢整份清单
+    （旧路径 `chat_json` 抛错即 return []，见 _salvage_facts）。
+    """
+    # P3：问题**前置**（同上，外部信息在证据之前）；实验开关可复现旧顺序
+    user = ((f"{context}\n\n用户问题：{question}\n\n") if _TBL_V1
+            else f"用户问题：{question}\n\n{context}\n\n")
+    user += "请逐条通读上方全部条目，穷举提取与问题直接相关的事实，并只输出指定 JSON。"
+    try:
+        raw = llm.chat_text(SYSTEM_EXTRACT, user, temperature=0.0)
+    except Exception:  # noqa: BLE001（调用失败 → 降级为单步 answer）
+        return []
+    try:
+        obj = llm._parse_json(raw)
+    except Exception:  # noqa: BLE001（JSON 坏了 → 宽松抢救，别丢整份）
+        return _salvage_facts(raw)
+    if isinstance(obj, dict):
+        return _normalize_facts(obj.get("facts"))
+    if isinstance(obj, list):  # 模型偶尔直接返回数组
+        return _normalize_facts(obj)
+    return []
+
+
+SYSTEM_EXTRACT_TABLE = (
+    "你是论文**表格**提取器。给你若干编号表格条目（markdown，第一行为列名，"
+    "复合列名用 / 表示层级，如 Story Generation/Pearson）与一个问题。\n"
+    "任务：把表里**所有数值型单元格**按「列路径｜行标签：数值」逐条列出，"
+    "**宁多勿少、不做相关性筛选**（筛选留给后续作答步骤）。\n"
+    "规则：\n"
+    "1. 必须给出**具体数字**（原样保留），禁止只说『表中给出了数值』而不给数字；\n"
+    "2. 同一列内不同行（不同方法/设置）的数值要**分别列出**，"
+    "   例如「Story Generation/Pearson｜our approach：0.631」「Story Generation/Pearson｜ADEM：0.302」；\n"
+    "3. 行数很多时最多列 40 条（按表的自然顺序）。\n"
+    "为什么不做筛选：2026-09-12 实测（36 道含表题）——"
+    "**相关性过滤式有 42% 的题空手而归**（模型判定「表里没有直接回答问题的东西」），"
+    "而全列式 0% 空手；筛选改由作答步骤按它的既有规则 b) 完成。\n"
+    '输出为 JSON：{"facts": [{"n": 13, "text": "列路径｜行标签：数值"}, ...]}；只输出 JSON。'
+)
+
+# 表专项抽取的**代码强制上限**（不依赖 prompt 自觉：实测模型会超过提示里的 40 条）
+MAX_TABLE_FACTS = 40
+
+
+def _extract_table_facts(question: str, numbered: list[tuple[int, dict[str, Any]]]
+                         ) -> list[dict[str, Any]]:
+    """P3：**只针对表格**再跑一轮抽取（`numbered` = [(原始条目编号, 条目), ...]）。
+
+    动机（2026-09-12 实测，复现 2/2）：两步法第 1 步"通读全部条目"时，模型会**跳过表条目**
+    ——25k 字上下文里表在末尾，抽取器在正文找到"像答案"的表述后就收手，
+    即使加了【表格】标记 + "按列路径取数"的规则也 0 条表事实。
+    故改为：含表时**单独一轮**只喂表格（保留原始编号，便于 cites 锚定）。
+    """
+    if not numbered:
+        return []
+    body = "\n\n".join(_fmt_chunk_entry(n, e) for n, e in numbered)
+    try:
+        raw = llm.chat_text(SYSTEM_EXTRACT_TABLE, f"用户问题：{question}\n\n{body}",
+                            temperature=0.0)
+    except Exception:  # noqa: BLE001（失败不阻断主流程）
+        return []
+    try:
+        obj = llm._parse_json(raw)
+    except Exception:  # noqa: BLE001
+        return _salvage_facts(raw)
+    if isinstance(obj, dict):
+        return _normalize_facts(obj.get("facts"))
+    if isinstance(obj, list):
+        return _normalize_facts(obj)
+    return []
+
+
 def _fmt_facts_block(facts: list[dict[str, Any]]) -> str:
+    """第 1 步候选事实清单块。
+
+    2026-09-10 实测结论（100 题配对回归，见 qa/recall/FACTS_FIX_REGRESSION_20260910.md）：
+    **空清单时"删掉整块"是错的，保持原样**。
+      - 曾把空清单分支改成返回空串（去掉"（第 1 步未提取到任何候选事实）"这句负向提示），
+        结果：`facts=0` 的 4 题**全部变差**（4/4 同向，p≈6%），其中 3 题是 L0（第 1 步
+        根本不跑、纯属被误注入）；整体 71%→66%（−5，其中约 −1 为 LLM 噪声）。
+      - 反因：本块的**使用规则 c)「禁止因'清单之外没有别的'就断言信息不足」是一条起作用的
+        反拒答护栏**——删掉整块等于把护栏一起删了，其价值盖过了那句负向提示的危害。
+    → 结论：负向提示确实是瑕疵，但**不能靠删整块来修**；若将来要动，须"只换掉那一句、
+      保留规则 c)"，并跑 100 题配对回归验证（效应量在噪声量级，单次小样本不可判）。
+    """
     lines = [
         f"- 条目[{f['n']}]：{f['text']}" if f["n"] else f"- {f['text']}"
         for f in facts
@@ -294,10 +452,28 @@ def _compose(question: str, pdf: str, header: str,
     facts: list[dict[str, Any]] = []
     if level in ("L2", "L3") and entries:
         facts = _extract_facts(question, context)
+        # P3：**条件触发**表专项抽取——只在"通读式那一轮没捞到任何表事实"时补跑。
+        # 动机（2026-09-12 实测）：通读式对表条目的覆盖**极不稳定**（同一调用两次：
+        # 0 条 vs 31 条表事实），空手时就整块丢表；而表专项（全列式）0% 空手。
+        # 条件触发可只在需要时付这一次调用，避免事实清单被重复灌水。
+        tbl = [(i, e) for i, e in enumerate(entries, 1) if _is_table_entry(e)]
+        if tbl and not _TBL_V1 and not any(f["n"] in {i for i, _ in tbl} for f in facts):
+            facts = facts + _extract_table_facts(question, tbl)[:MAX_TABLE_FACTS]
     facts_block = _fmt_facts_block(facts)
 
-    user = (f"{context}{facts_block}\n\n{_fmt_history(state)}\n\n用户问题：{question}\n\n"
-            f"（若信息不足以回答，请说明缺什么，不要编造。）")
+    # P3：**问题前置**（业界实证：外部信息放在表格**之前**；放到之后掉 6.81%）；
+    # 并给一次性表格阅读说明（不逐块重复，避免拖长上下文）。
+    if _TBL_V1:      # 实验开关：复现"问题在最后、无表格阅读说明"
+        user = (f"{context}{facts_block}\n\n{_fmt_history(state)}\n\n用户问题：{question}\n\n"
+                f"（若信息不足以回答，请说明缺什么，不要编造。）")
+    else:
+        head = f"用户问题：{question}\n"
+        if _has_table(entries):
+            head += ("\n本批证据含【表格】：表格为 markdown，**第一行是列名**，"
+                     "复合列名用 / 表示层级（如 Story Generation/Pearson）；"
+                     "核对数值时请先定位到正确的列，再横向比对同一列里各行的数值。\n")
+        user = (f"{head}\n{context}{facts_block}\n\n{_fmt_history(state)}\n\n"
+                f"（请针对上面的用户问题作答；若信息不足以回答，请说明缺什么，不要编造。）")
     answer = llm.chat_text(SYSTEM, user, temperature=0.0)
     cites = _cites_from(answer, entries, pdf)
     return answer, cites, facts
@@ -369,6 +545,10 @@ def generate_answer(state: QAState) -> dict[str, Any]:
         "facts": [f"{f.get('n')}:{(f.get('text') or '')[:80]}" for f in facts][:12],
         "enough": verdict.get("enough"),
         "gap": (verdict.get("gap") or "")[:120],
+        # 诊断用（不影响作答）：本次上下文的条目顺序 + facts 锚点。
+        # 用于离线回答"证据块在候选里的位次 × 通过率"与"facts 有没有覆盖证据块"。
+        "entry_ids": [str(e.get("chunk_id") or e.get("gid") or "") for e in entries],
+        "facts_n": [int(f.get("n") or 0) for f in facts],
     }
     if audit is not None:
         debug["absence_audit"] = {

@@ -2,7 +2,7 @@
 
 职责：
     - 以 report.groups 的 rep_text（中文主张）为检索单元构建向量
-    - 向量缓存到 out_views/<stem>.gvec.npy（+ <stem>.gidx.json 记顺序），
+    - 向量缓存到 assets/artifacts/out_views/<stem>.gvec.npy（+ <stem>.gidx.json 记顺序），
       避免每次问答都重算（CPU encode 一篇约几十秒，缓存后秒回）
     - search(query) 返回 topK 命中（带 score，供组装 ClaimHit）
 
@@ -84,23 +84,95 @@ class BM25Index:
         return out
 
 
-def rrf_merge(vec_scores: np.ndarray, bm_scores: np.ndarray | None,
-              top_k: int, k: int = 60) -> list[int]:
-    """RRF 融合：score = Σ 1/(k + rank)。vec 必给；bm 可选（None 时只按 vec 排）。"""
+def rrf_order(vec_scores: np.ndarray, bm_scores: np.ndarray | None,
+              k: int = 60, w_vec: np.ndarray | None = None,
+              w_bm: np.ndarray | None = None) -> np.ndarray:
+    """RRF 全序（不截断）：score = Σ weight/(k + rank)。返回按 RRF 降序的全部索引。
+
+    w_vec/w_bm: 每块的两路权重（默认 None = 全 1，即生产原样）。
+
+    注 1：曾尝试对**外部块**（MinerU 表格/公式，`xtbl-*`）**屏蔽 BM25 路**，
+    理由是表块的 BM25 位次看起来偏差。**实测证否、已回退**：混池 RRF 里外部块
+    恰恰靠 BM25 路挣分，屏蔽后目标表块 top-12 命中 14/21→**4/21**、位次中位 6→18
+    （见 `qa/recall/TABLE_POLICY_AB_20260911.md`）。**不要**再走这条路。
+    注 2：正确做法是**只调外部块的两路权重（加总）**，文本块完全不动 ——
+    见 `_ext_weights` 与 `qa/recall/WEIGHT_SWEEP_20260911.md`。
+    """
     n = len(vec_scores)
     rrf = np.zeros(n, dtype="float64")
     order_v = np.argsort(-vec_scores)
     for r, i in enumerate(order_v):
-        rrf[i] += 1.0 / (k + r + 1)
+        rrf[i] += (1.0 if w_vec is None else float(w_vec[i])) / (k + r + 1)
     if bm_scores is not None:
         order_b = np.argsort(-bm_scores)
         for r, i in enumerate(order_b):
-            rrf[i] += 1.0 / (k + r + 1)
-    return list(np.argsort(-rrf)[:top_k].tolist())
+            rrf[i] += (1.0 if w_bm is None else float(w_bm[i])) / (k + r + 1)
+    return np.argsort(-rrf)
+
+
+def _ext_weights(chunks: list[Any], alpha: float) -> tuple[np.ndarray, np.ndarray]:
+    """外部块两路权重 (2α, 2(1-α))；文本块恒 (1,1)。
+
+    外部块 = MinerU 表格/公式（`xtbl-*`）。**α=0.5 ⇒ 外部块也是 (1,1) = 生产原样**，
+    此时直接返回全 1（零额外开销，不构建掩码）。
+    离线扫描（250 题 + A 桶 21 题，`qa/recall/WEIGHT_SWEEP_20260911.md`）：
+    α=0.75 时表格块 MRR 0.468→0.591、进 top-12 14/21→15/21（位次中位 7→2），
+    而**纯文本 gold 的 R@k 完全不变**、MRR 仅 −0.3pt。
+    默认 α=0.5（线上行为逐位不变）；调大通过 env `PAPERPILOT_EXT_RRF_ALPHA`。
+    """
+    n = len(chunks)
+    wv = np.ones(n, dtype="float64")
+    wb = np.ones(n, dtype="float64")
+    if abs(alpha - 0.5) < 1e-9:
+        return wv, wb
+    from paperpilot.tools.mineru_bridge import EXT_CHUNK_PREFIX
+    for i, c in enumerate(chunks):
+        if str(getattr(c, "chunk_id", "")).startswith(EXT_CHUNK_PREFIX):
+            wv[i], wb[i] = 2.0 * alpha, 2.0 * (1.0 - alpha)
+    return wv, wb
+
+
+def _ext_quota() -> int:
+    """外部块（表/公式）名额：env `PAPERPILOT_EXT_QUOTA`，**默认 2 = 开启并集**（2026-09-12 起）。
+
+    正数 m：**并集** —— 正文 top_k 不变，额外追加表池 top-m（返回 top_k+m 块，**正文零损失**）。
+    负数 m：**替换** —— 正文 top-(top_k-|m|) ∪ 表池 top-|m|（总数仍是 top_k，正文让出槽位）。
+    `=0` 可退回改动前行为（候选严格 = 混池 top_k）。
+
+    **为什么默认开**（证据见 `qa/recall/UNION_AND_CONTEXT_20260911.md` §7/§8、
+    汇总见 `qa/recall/TABLE_LINE_STATUS_20260912.md`）：
+      · 机制：表块在**混合池**里要和 25~42 个正文块比分数，命中被压低；在**表池内**目标表进
+        top-2 达 86%。故不靠调权重（改不了"和谁比"），而是**给表池独立名额**。
+      · 检索层（生产链路，n=22，口径修正后）确定性：目标表进候选 15/22 → **19/22（+4、零回退）**。
+      · 端到端（A 桶 36 题单轮，同裁判）：15/36 → **19/36（+4）**，churn 6（新增 5 / 回退 1），
+        与检索层预测同向同量；上下文真变长的 4 题里 3 题变好。
+      · 代价：上下文 +m 块（top_k=12 时 +17% 体量）。
+    不采用"替换"模式：m=3 要净丢 11 个正文题才换 +3 个表题。
+    """
+    try:
+        return int(os.environ.get("PAPERPILOT_EXT_QUOTA", "2") or 0)
+    except ValueError:
+        return 2
+
+
+def _ext_mask(chunks: list[Any]) -> np.ndarray:
+    from paperpilot.tools.mineru_bridge import EXT_CHUNK_PREFIX
+    return np.array([str(getattr(c, "chunk_id", "")).startswith(EXT_CHUNK_PREFIX)
+                     for c in chunks])
+
+
+def rrf_merge(vec_scores: np.ndarray, bm_scores: np.ndarray | None,
+              top_k: int, k: int = 60) -> list[int]:
+    """RRF 融合：score = Σ 1/(k + rank)。vec 必给；bm 可选（None 时只按 vec 排）。"""
+    return list(rrf_order(vec_scores, bm_scores, k)[:top_k].tolist())
 
 # agents/embedder.py → 项目根
 ROOT = Path(__file__).resolve().parents[3]
-VIEW_DIR = ROOT / "out_views"
+VIEW_DIR = ROOT / "assets/artifacts/out_views"
+# ChunkIndex 的向量缓存目录（**只这一项**可被 env 覆盖）。
+# 用途：A/B 两臂的表文本不同 → cvec 指纹不同 → 共用目录会来回覆盖重建（每轮白烧 40 分钟）。
+# 用 PAPERPILOT_CHUNK_VIEW_DIR 让每臂各用一份；ClaimIndex 的 gvec 与 report.json 仍在 VIEW_DIR。
+CHUNK_VIEW_DIR = Path(os.environ.get("PAPERPILOT_CHUNK_VIEW_DIR") or VIEW_DIR)
 MAX_DOCS_PER_PDF = 400      # 单篇主张数上限（防御异常大文件）
 EMBED_DIM = 1024
 
@@ -200,7 +272,7 @@ class ChunkIndex:
 
     L2/L3 的正文检索单元是 parse_pdf → chunk_document → extractable 的 chunk
     （复用 document_cache 的 ordered_chunks，避免重复 parse）。
-    向量缓存到 out_views/<stem>.cvec.npy（+ <stem>.cidx.json 记 chunk_id 顺序），
+    向量缓存到 assets/artifacts/out_views/<stem>.cvec.npy（+ <stem>.cidx.json 记 chunk_id 顺序），
     首次 encode 一篇约 3~10s，之后秒级复用。
 
     缓存失效条件：chunk_id 列表与索引时不一致 → 重建。
@@ -211,33 +283,55 @@ class ChunkIndex:
         self.pdf = pdf
         self.stem = Path(pdf).stem
         self._chunks: list[Any] | None = None
-        self._vec_file = VIEW_DIR / f"{self.stem}.cvec.npy"
-        self._cid_file = VIEW_DIR / f"{self.stem}.cidx.json"
+        self._vec_file = CHUNK_VIEW_DIR / f"{self.stem}.cvec.npy"
+        self._cid_file = CHUNK_VIEW_DIR / f"{self.stem}.cidx.json"
 
     # document_cache 延迟 import：Chunk 模型只在 L3 需要，避免 L0 热路径背负解析模块
     def _doc_chunks(self) -> list[Any]:
         if self._chunks is None:
-            from paperpilot.agents.document_cache import ordered_chunks
-            self._chunks = ordered_chunks(self.pdf)
+            from paperpilot.agents.document_cache import retrieval_chunks
+            # 检索视图：chunk_id 同 pymupdf 空间，文本额外含 MinerU 表格/公式
+            self._chunks = retrieval_chunks(self.pdf)
         return self._chunks
 
-    def _chunk_ids(self) -> list[str]:
-        return [c.chunk_id for c in self._doc_chunks()]
+    def _fingerprint(self) -> dict[str, Any]:
+        """缓存判据：chunk_id 顺序 + **文本指纹**。
+
+        只比 chunk_id 不够：检索视图会在**同一批 id** 上把 MinerU 表格/公式注入文本，
+        文本变了而 id 没变 → 旧向量会被静默复用（错且不可见）。故加文本指纹。
+        """
+        import hashlib
+        chunks = self._doc_chunks()
+        h = hashlib.md5()
+        for c in chunks:
+            h.update(c.chunk_id.encode("utf-8", "ignore"))
+            h.update(b"\x00")
+            # 指纹必须含**实际参与 encode 的文本**（`embed_text` 优先）：
+            # P2 双写下向量侧喂的是摘要，若只 hash `text`，改摘要不会让缓存失效 → 静默复用旧向量。
+            h.update((c.embed_text or c.text).encode("utf-8", "ignore"))
+            h.update(b"\x00")
+        return {"ids": [c.chunk_id for c in chunks], "fp": h.hexdigest()}
 
     def vectors(self) -> np.ndarray:
         """返回 (n, 1024) chunk 向量；缓存失效时重建。"""
         if self._vec_file.exists() and self._cid_file.exists():
-            old = json.loads(self._cid_file.read_text(encoding="utf-8"))
-            if old == self._chunk_ids():
+            try:
+                old = json.loads(self._cid_file.read_text(encoding="utf-8"))
+            except Exception:  # noqa: BLE001 缓存损坏 → 重建
+                old = None
+            # 旧格式是纯 id 列表 → 视为失效（一次性迁移重建）
+            if isinstance(old, dict) and old == self._fingerprint():
                 return np.load(self._vec_file)
-        texts = [c.text for c in self._doc_chunks()]
+        # **P2 双写**：向量侧优先用 `embed_text`（表块的一行语义摘要），
+        # BM25/作答仍读 `c.text`（原表）——两路文本解耦，见 `Chunk.embed_text`。
+        texts = [c.embed_text or c.text for c in self._doc_chunks()]
         if not texts:
             return np.zeros((0, EMBED_DIM), dtype="float32")
         print(f"  [embedder] 构建 ChunkIndex：{len(texts)} 个 chunk（encode…）")
         vecs = encode_texts(texts)
-        VIEW_DIR.mkdir(parents=True, exist_ok=True)
+        CHUNK_VIEW_DIR.mkdir(parents=True, exist_ok=True)
         np.save(self._vec_file, vecs)
-        self._cid_file.write_text(json.dumps(self._chunk_ids(), ensure_ascii=False),
+        self._cid_file.write_text(json.dumps(self._fingerprint(), ensure_ascii=False),
                                   encoding="utf-8")
         return vecs
 
@@ -262,11 +356,69 @@ class ChunkIndex:
             })
         return hits
 
+    @staticmethod
+    def _section_of(c: Any) -> str:
+        """chunk 顶层节名（与 document_cache.top_section 同口径，内联避免环依赖）。"""
+        tp = list(getattr(c, "title_path", None) or [])
+        if not tp:
+            return ""
+        head = str(tp[0])
+        return head.split(" · ", 1)[1].strip() if " · " in head else head.strip()
+
+    def _cap_select(self, chunks: list[Any], order: list[int], top_k: int) -> list[int]:
+        """节级配额去重（保序）：每顶层节最多 cap 块；cap<=0 → 直接取前 top_k。
+
+        背景（2026-09-09 离线扫描）：top12 覆盖全篇 78%，但 Introduction×4 / Experiments×3
+        等"同节重复块"挤占配额，把 Methods/Experiments 深处的 gold 挤到 2-5 名。
+        cap=1 离线 Recall/MRR 全胜（R@8 0.897→0.945, MRR 0.490→0.548）。env 默认关。
+        """
+        cap = int(os.environ.get("PAPERPILOT_RETRIEVE_SECTION_CAP", "0") or 0)
+        if cap <= 0:
+            return order[:top_k]
+        out: list[int] = []
+        used: dict[str, int] = {}
+        for idx in order:
+            sec = self._section_of(chunks[int(idx)])
+            if used.get(sec, 0) >= cap:
+                continue
+            out.append(int(idx))
+            used[sec] = used.get(sec, 0) + 1
+            if len(out) >= top_k:
+                break
+        return out
+
+    def _select(self, chunks: list[Any], order: list[int], top_k: int) -> list[int]:
+        """取最终候选：**默认（quota=2）加表池名额**；`PAPERPILOT_EXT_QUOTA=0` 退回原 `_cap_select`。
+
+        见 `_ext_quota()`：正数 = 并集（正文满额 + 追加表池名额），负数 = 替换（正文让槽）。
+        """
+        q = _ext_quota()
+        if q == 0:
+            return self._cap_select(chunks, order, top_k)
+        is_ext = _ext_mask(chunks)
+        # 外部块共用同一伪节名 ("(External Tables)")，走 _cap_select 会被节配额砍到 1 个
+        # → 表池部分直接按表池内 RRF 序取，不套节配额。
+        ext_order = [int(i) for i in order if is_ext[int(i)]]
+        if q > 0:
+            # 并集：**基线候选原样保留**，再"追加"表池前 q 名里基线没有的。
+            # ⚠️ 首版写成「正文池 top_k + 表池 top-q」→ 把"原本混在混池 top_k 里的表块"
+            #    挤掉了（实测 20 题里有 2 题目标表因此掉出候选）。必须做**加法**而非替换。
+            base = [int(i) for i in self._cap_select(chunks, order, top_k)]
+            out = list(base)
+            for i in ext_order[:q]:
+                if i not in out:
+                    out.append(i)
+            return out
+        m = min(-q, max(top_k - 1, 0))
+        text_order = [int(i) for i in order if not is_ext[int(i)]]
+        return self._cap_select(chunks, text_order, top_k - m) + ext_order[:m]
+
     def search_multi_hybrid(self, queries: list[str], top_k: int = 8) -> list[dict[str, Any]]:
         """多 query × 向量+BM25 混合，全部按 RRF 融合成一份 top_k（查询改写主用）。
 
         对每个查询同时累积"向量位次"与"BM25 位次"的 RRF 分；最后按 RRF 取 top_k。
         命中结构与 search_hybrid 一致（score 存平均向量 cosine）。
+        env PAPERPILOT_RETRIEVE_SECTION_CAP=N>0 → 保序节级配额去重。
         """
         chunks = self._doc_chunks()
         vecs = self.vectors()
@@ -277,6 +429,7 @@ class ChunkIndex:
         rrf = np.zeros(n, dtype="float64")
         avg = np.zeros(n, dtype="float64")
         bm_idx = BM25Index(texts)
+        wv, wb = _ext_weights(chunks, float(os.environ.get("PAPERPILOT_EXT_RRF_ALPHA", "0.5") or 0.5))
         used = 0
         for q in queries:
             if not q:
@@ -286,11 +439,11 @@ class ChunkIndex:
             v = (vecs @ qv).astype("float64")
             b = np.asarray(bm_idx.score(q), dtype="float64")
             for r, i in enumerate(np.argsort(-v)):
-                rrf[int(i)] += 1.0 / (60 + r + 1)
+                rrf[int(i)] += (1.0 if wv is None else float(wv[int(i)])) / (60 + r + 1)
                 avg[int(i)] += float(v[int(i)])
             for r, i in enumerate(np.argsort(-b)):
-                rrf[int(i)] += 1.0 / (60 + r + 1)
-        order = np.argsort(-rrf)[: min(top_k, n)]
+                rrf[int(i)] += (1.0 if wb is None else float(wb[int(i)])) / (60 + r + 1)
+        order = self._select(chunks, list(np.argsort(-rrf)), top_k)
         hits = []
         for i in order:
             c = chunks[int(i)]
@@ -318,7 +471,9 @@ class ChunkIndex:
         vec_scores = (q @ vecs.T).astype("float64")
         bm = BM25Index([c.text for c in chunks])
         bm_scores = bm.score(query)
-        order = rrf_merge(vec_scores, bm_scores, min(top_k, n))
+        wv, wb = _ext_weights(chunks, float(os.environ.get("PAPERPILOT_EXT_RRF_ALPHA", "0.5") or 0.5))
+        order = self._select(chunks, list(rrf_order(vec_scores, bm_scores,
+                                                    w_vec=wv, w_bm=wb)), top_k)
         hits = []
         for i in order:
             c = chunks[int(i)]
