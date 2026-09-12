@@ -249,3 +249,26 @@ evidence 型（number/citation/unsupported）→ CRAG（缺口定向检索重答
 - 前端坐标化高亮（bbox 进 cites/report）独立课题，暂缓——前端现用 pdf.js 视觉行+文本模糊匹配，普通正文已够准，表格/公式块是该方案的盲区。
 - MinerU 表格 chunk 文本含 markdown/LaTeX → evidence 回核 hit 率可能轻微波动（mask 已防伪 claim），量级未测。
 
+### 6.5 输出闸门：零引用答案不再"静默放行"（2026-09-13，外部审查修复 A 档）
+
+**问题**：`gate()` 用 `cites` 构造 `entries`，故**零引用 ⇒ entries 空 ⇒ 原语义体检被跳过**，
+机器层只剩一条 LOW，而 `gate` 只对 HIGH 拦 → 一条"纯文字编造 + 零引用"的答案会 `pass`。
+（实测边界：带**显著数字**的编造会被数字层兜住 → `fallback`；漏的只是无数字的纯文字编造。）
+**真实分布**：503 题 + 72 题里零引用共 6 条，**全部是闸门自己的兜底话术**，无一由模型产出；
+`level=L0` 的 70 条零引用 0 条 → 属**防御缺口**而非正在漏水，但"prompt 准则 14 要求硬引用、
+闸门却把零引用当可忽略"的口径不一致必须修。
+
+**改法（只加可观测性，不改 gate 动作）**：
+1. 零引用独立成 `no_citation` 类型；
+2. 机器判据 `_substantive_claim`（剔除拒答话术后看数值/长度）→ 含实质断言 **MID**、纯拒答/过短 **LOW**；
+3. 零引用时**不再跳过检查**：改跑 `_llm_uncited` **格式体检**（无原文 → 只判"该不该有引用"，
+   不判真伪；自带守卫，非实质断言直接返回空、不花调用）；
+4. `no_citation` **不进** MID 触发名单 → 行为不变（仍只对 HIGH 拦），`REPAIR_MID=1` 下也不会变成拒答；
+5. 运行记录新增 `validator_action` / `issues` / `no_citation` / `no_citation_substantive`；
+   `/api/ask` 回传 validator 摘要，前端新增"答案自检（AI 复核）"提示条（此前 **issues 根本没送前端**，
+   等于"mid → 前端标注"这条设计从未落地）。
+
+**验收**：`qa/recall/_selftest_validator_20260913.py`（机器侧 12/12；`PP_LLM=1` 加测真实格式体检）。
+**台账**：`qa/review/RESPONSES_20260913.md`。**未做（B 档）**：按 `route` 分流
+（`global_retrieve` + 零引用 + 实质断言 → 一次 repair 强制补引用）。
+

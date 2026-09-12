@@ -16,6 +16,9 @@
     missing(env 开) / contradiction / vague → MID → 前端标注"AI 复核"，不触发兜底。
   判断题（"X 对吗/是否…"）只走机器守护、不做 LLM 体检（negqa 校准：免费 judge 在
     "复述题干数值并否定"句法上误报 unsupported ~30%，few-shot/豁免难根治；机器 C+A 已足够）。
+  零引用（2026-09-13 审查修复 · A 档）：`no_citation` 独立类型，机器判"含实质断言"→ MID、
+    纯拒答/过短 → LOW；零引用时**不再跳过检查**，改跑一次格式体检（该不该有引用，不判真伪）。
+    **仍不改 gate 动作**（只对 HIGH 拦）；按 route 分流强制补引用属 B 档，未做。
 证据与铁律见 docs/RAG_COMPONENT_NOTES.md §2-⑧。
 """
 from __future__ import annotations
@@ -29,7 +32,12 @@ from typing import Any
 HIGH = "high"
 MID = "mid"
 LOW = "low"
-TYPES = {"citation", "number", "unsupported", "missing", "contradiction", "vague", "off_topic"}
+# `no_citation`：**零引用**（答案里一个 [n] 都没有）独立成类型（2026-09-13）。
+# 为什么要独立：它既可能是**合法的概述直答**（Router 的 l0_answer 分支），也可能是**违规**——
+# 旧实现把它一律记为 LOW 且不区分（`type="citation"`），导致既无法观测也无法分级。
+# 现在用机器判据（`_substantive_claim`，0 LLM 成本）分成 MID / LOW 两档。
+TYPES = {"citation", "no_citation", "number", "unsupported", "missing",
+         "contradiction", "vague", "off_topic"}
 
 _NUMERIC_RE = re.compile(
     r"how much|by how much|how many|how (fast|quick(ly)?|large|big|high|long|often)|"
@@ -67,6 +75,43 @@ def check_cites(text: str, entries: list[dict[str, Any]], pdf: str) -> list[dict
     """解析并校验答案 [n] 引用 → 合法 cites 列表（越界引用丢弃）。委派 answer._cites_from。"""
     from paperpilot.agents.nodes.answer import _cites_from
     return _cites_from(text, entries, pdf)
+
+
+# ── 零引用：机器判据（2026-09-13）────────────────────────────────────────────
+# 审查发现：`gate()` 用 `cites` 构造 `entries`，故**零引用 ⇒ entries 空 ⇒ 原语义体检被跳过**
+# （见 check() 里的 `and entries`），机器层只剩一条 LOW ⇒ 只对 HIGH 触发的 gate 直接 pass。
+# 其后果：一条"纯文字编造 + 零引用"的答案不会被拦（实测 `pass`；带显著数字的编造会被数字层兜住）。
+# 真实分布里暂未发生（503 题 + 72 题里零引用仅 6 条，且**全是闸门自己的兜底话术**，无一由模型产出），
+# 但属**防御缺口**：prompt 准则 14 要求"硬引用"，闸门却把零引用当可忽略 → 口径不一致。
+# 本次（A 档）只做三件事，**不改变 gate 动作**（仍只对 HIGH 拦）：
+#   ① 零引用独立成 `no_citation` 类型；
+#   ② 机器判定"是否含实质断言"→ 含则 MID（前端标注"未标来源"、可统计频次），纯拒答/过短仍 LOW；
+#   ③ 零引用时**不再跳过检查**：改跑一次**格式体检**（只判"该不该有引用"，无原文故不判真伪）。
+_REFUSAL_RE = re.compile(
+    r"未(给出|提供|提到|提及|报告|说明|出现|涉及|包含)|无法(确定|判断|确认|回答|验证)|"
+    r"抱歉|不(能|可)回答|暂无|没有得到|not (mentioned|provided|available|reported)|"
+    r"no (information|data|answer)", re.I)
+
+
+def _substantive_claim(text: str) -> tuple[bool, str]:
+    """零引用答案是否含**必须带引用**的实质断言（纯机器、0 LLM 成本）。
+
+    先剔除拒答/说明性句子（闸门兜底话术本身就是无引用的合法输出），再看剩余正文：
+    含数值 → 实质；否则按长度与陈述性阈值判断。返回 (是否实质, 判据说明)。
+    """
+    body = re.sub(r"\[\d+\]", "", str(text or "")).strip()
+    if not body:
+        return False, "空答案"
+    kept = [s.strip() for s in _SENT_SPLIT.split(body) if s.strip()
+            and not _REFUSAL_RE.search(s.strip())]
+    if not kept:
+        return False, "仅有拒答/说明性表述"
+    joined = "".join(kept)
+    if numbers_in(joined):
+        return True, f"含数值断言（{len(kept)} 句）"
+    if len(joined) >= 30:
+        return True, f"含 {len(kept)} 句陈述性内容（{len(joined)} 字）"
+    return False, "内容过短，属概括性回答"
 
 
 def _entry_text(e: dict[str, Any]) -> str:
@@ -119,8 +164,14 @@ def _machine_checks(question: str, answer: str, entries: list[dict[str, Any]],
                            "sentence": answer[:120],
                            "detail": f"引用 [{n}] 越界（共 {bound} 个证据条目）"})
     elif n_entries and len(answer) > 20:
-        issues.append({"sev": LOW, "type": "citation", "sentence": "",
-                       "detail": "答案未给出任何 [n] 引用（若为概述直答可忽略）"})
+        # 零引用（2026-09-13 独立成类型并分级，见 `_substantive_claim` 上方注释）：
+        #   含实质断言 → MID（前端标注、可统计）；纯拒答/过短 → LOW。
+        # ⚠️ 仍**不进** gate 的 MID 触发名单 → 动作不变（只对 HIGH 拦），本档只加可观测性。
+        sub, why = _substantive_claim(answer)
+        issues.append({"sev": MID if sub else LOW, "type": "no_citation", "sentence": "",
+                       "detail": (f"答案未给出任何 [n] 引用，{why} → 请复核是否为无来源断言"
+                                  if sub else f"答案未给出任何 [n] 引用（{why}）"),
+                       "substantive": sub})
     # C 数值支撑：有证据即核对（任何题型；漏数/编数内部判断）
     ev = [_entry_text(e) for e in entries]
     unverified: list[float] = []
@@ -212,6 +263,57 @@ def _mask_judgement_sentences(text: str) -> str:
         else:
             out.append(p)
     return "".join(out)
+
+
+_SYS_UNCITED = (
+    "你是**引用规范**检查器。输入：论文问题与一条**没有任何 [n] 引用**的答案。"
+    "你没有原文，因此**不要判断对错、不要判断事实真伪、不要猜原文**，只做格式判定："
+    "找出答案里属于『按规范必须带 [n] 引用』的句子，即承载具体数值/名称/方法/结论/比较的断言句；"
+    "概括性表述、寒暄、拒答与说明句不算。只输出 JSON。")
+
+_UNCITED_TPL = """【问题】
+{question}
+
+【答案（一个 [n] 引用都没有）】
+{answer}
+
+只输出 JSON：
+{{
+  "uncited": [{{"sentence": "原句摘录（≤60字）", "why": "为什么这句按规范必须带引用"}}]
+}}
+没有则应输出 {{"uncited": []}}。"""
+
+
+def _llm_uncited(question: str, answer: str) -> list[dict[str, Any]]:
+    """零引用答案的**格式体检**（无原文可比 → 不判真伪，只判"该不该有引用"）。
+
+    为什么要有：`entries` 由 `cites` 构造，零引用 ⇒ 原语义体检（`_llm_physical`）无法进行
+    （没有可比对的原文片段，正是 negqa 里误报高的场景）。但"零引用"本身可能违规
+    （prompt 准则 14：承载具体断言的句子必须带 [n]）→ 这里补一次**格式**判定：
+    只列出"必须引用却没引用"的句子；真伪问题留给检索/数字层。
+    仅在**机器已判含实质断言**时触发（零引用罕见，实测 L3 0.9% / L0 0%），故成本可忽略。
+    只输出一条 MID 汇总 issue（避免逐句刷屏）。
+    自带守卫：非实质断言（拒答话术/过短）直接返回空 —— 调用方虽有同类判断，但函数自身也要安全
+    （实测把"抱歉…未能通过内部事实校验"直接喂给模型时会被误标 1 句）。
+    """
+    from paperpilot.tools import llm
+    if not _substantive_claim(answer)[0]:
+        return []
+    user = _UNCITED_TPL.format(question=question, answer=str(answer or "")[:2000])
+    try:
+        raw = llm.judge_json(_SYS_UNCITED, user, temperature=0.0)
+    except Exception:  # noqa: BLE001  体检失败绝不影响主流程
+        return []
+    if not isinstance(raw, dict):
+        return []
+    items = [x for x in (raw.get("uncited") or []) if isinstance(x, dict)]
+    if not items:
+        return []
+    sents = [str(x.get("sentence", "")).strip()[:80] for x in items[:3] if x.get("sentence")]
+    return [{"sev": MID, "type": "no_citation", "sentence": sents[0] if sents else "",
+             "detail": f"AI 复核：{len(items)} 句含具体断言但未标来源"
+                       + (f"（例：{'；'.join(sents[:2])}）" if sents else ""),
+             "substantive": True}]
 
 
 def _llm_physical(question: str, answer: str, entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -442,8 +544,14 @@ def check(question: str, answer: str,
         extra_chunks=extra_chunks, adjudicate=adjudicate)
     issues: list[dict[str, Any]] = list(machine_issues)
     # 判断题走机器守护（C+A），不做 LLM 语义体检（见 is_judgement_question docstring）
-    if use_llm and not is_judgement_question(question) and entries and (answer or "").strip():
-        issues += _llm_physical(question, answer, entries)
+    if use_llm and not is_judgement_question(question) and (answer or "").strip():
+        if entries:
+            issues += _llm_physical(question, answer, entries)
+        elif n_entries and any(i["type"] == "no_citation" and i.get("substantive")
+                               for i in issues):
+            # **零引用时不再"什么都不查"**（2026-09-13）：无被引原文 → 不做真伪体检，
+            # 改跑格式体检（哪些句子本该带引用）。仅在机器判"含实质断言"时触发，避免多花调用。
+            issues += _llm_uncited(question, answer)
     # 排序：high 在前
     issues.sort(key=lambda x: 0 if x["sev"] == HIGH else 1 if x["sev"] == MID else 2)
     has_high = any(i["sev"] == HIGH for i in issues)

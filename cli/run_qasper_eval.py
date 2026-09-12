@@ -139,7 +139,10 @@ def run_one(q: dict, name: str) -> dict:
                 "answer": "", "route": [], "level": "error",
                 "score": 0, "reason": f"问答异常: {type(e).__name__}: {e}",
                 "unanswerable": is_unans, "time_s": round(time.time() - t0, 2),
-                "llm_calls": 0, "status": "error"}
+                "llm_calls": 0, "status": "error",
+                # 与正常记录的字段保持一致（下游聚合用 .get，但缺键会让"零引用率"统计口径漂移）
+                "validator_action": "", "issues": [],
+                "no_citation": 0, "no_citation_substantive": 0}
     elapsed = time.time() - t0
     answer = r.get("answer") or ""
     cites = list(r.get("cites") or [])
@@ -169,6 +172,13 @@ def run_one(q: dict, name: str) -> dict:
             status = "excerpt_ok"
         else:
             status = "fail"
+    # 输出闸门自检结果（2026-09-13 起落进记录，用于长期观测"无来源断言/零引用"频次）：
+    #   validator_action: pass / repaired / fallback
+    #   issues: 精简为 [sev/type]，避免记录被长文本撑大（完整 issues 在 out['validator']）
+    #   no_citation: 零引用标记（1/0）+ 是否含实质断言（substantive）——A 档新增的观测项
+    vres = r.get("validator") or {}
+    v_issues = list(vres.get("issues") or [])
+    no_cite = next((i for i in v_issues if i.get("type") == "no_citation"), None)
     rec = {
         "qid": q.get("question_id", ""),
         "paper": q.get("pdf", name),
@@ -184,6 +194,10 @@ def run_one(q: dict, name: str) -> dict:
         "reason": reason,
         "time_s": round(elapsed, 2),
         "status": status,
+        "validator_action": vres.get("action", ""),
+        "issues": [{"sev": i.get("sev"), "type": i.get("type")} for i in v_issues],
+        "no_citation": (1 if no_cite else 0),
+        "no_citation_substantive": (1 if (no_cite and no_cite.get("substantive")) else 0),
     }
     return rec
 

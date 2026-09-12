@@ -607,3 +607,27 @@ uv run python cli/run_qa_v2.py             # 176 题全量（新漏斗）；--pd
 uv run python cli/run_bench.py             # report 层回归护栏（勾叉 + baseline diff）
 uv run python web/app.py                   # 开发服务器（上传 → 报告 → 提问）
 ```
+
+---
+
+## 2026-09-13 · 外部代码审查（逐条核验）· 第 1 条：零引用答案"静默放行"
+
+**审查项**：`validator.py:121` 把"答案完全没有 [n] 引用"记为 LOW；`gate()` 只对 HIGH 拦（`:523`）；
+`entries` 为空时 LLM 体检不执行（`:445`）→ 实测"完全虚构 + 零引用"的答案 `action=pass`。
+
+**核验**：复现成立，边界钉清 —— 纯文字编造 + 零引用 → `pass`（漏）；**带显著数字**的编造 →
+`fallback`（数字层兜住）。根因是 `gate()` 用 `cites` 构造 `entries`，零引用 ⇒ entries 空 ⇒
+体检被跳过 + 只剩 LOW ⇒ 只认 HIGH 的 trigger 直接放过。
+**真实分布**：503 题 + 72 题零引用共 6 条，**全部是闸门自己的兜底话术**（无一由模型产出），
+`level=L0` 的 70 条零引用 0 条 → 防御缺口，非正在漏水。
+**附带发现（同一条线）**：`out["validator"]` 的 issues **从未送到前端**（`/api/ask` 不返回、
+`index.html` 不渲染）→ 设计里"mid → 前端标注『AI 复核』"从未落地。
+
+**处置（A 档，不改 gate 动作）**：`no_citation` 独立类型；机器判据 `_substantive_claim` 分级
+（含实质断言 MID / 纯拒答 LOW）；零引用不再跳过检查而是跑 `_llm_uncited` **格式体检**
+（无原文故不判真伪，自带守卫）；`cli/run_qasper_eval.py`、`qa/recall/_qasper_tbl_exp.py`
+记录 `validator_action` / `issues` / `no_citation(_substantive)`；`web/app.py` 回传 validator 摘要、
+`web/index.html` 渲染"答案自检（AI 复核）"提示条。
+**验收**：`qa/recall/_selftest_validator_20260913.py`（机器 12/12；`PP_LLM=1` 加测真实体检）；
+`node --check` 前端内联 JS 通过。**未做（B 档）**：按 route 分流强制补引用。
+台账：`qa/review/RESPONSES_20260913.md`；设计文档：`docs/RAG_COMPONENT_NOTES.md` §6.5。

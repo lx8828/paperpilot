@@ -79,6 +79,7 @@ def main() -> int:
             continue
         name = R._ensure_report(pid)
         dbg: dict = {}
+        r: dict = {}          # 异常路径下也要能安全读 validator（否则 NameError）
         try:
             r = graph_ask(q["question"], name)
             ans = r.get("answer") or ""
@@ -90,6 +91,9 @@ def main() -> int:
             ans, cites, route, level = f"ERR {e}", [], [], "err"
         score, reason, passed = R._judge(q, ans, cites)
         b = base.get(qid, {})
+        vres = r.get("validator") or {}
+        v_iss = list(vres.get("issues") or [])
+        no_cite = next((i for i in v_iss if i.get("type") == "no_citation"), None)
         rec = {"qid": qid, "pid": pid, "question": q["question"], "gold": b.get("gold", ""),
                "score_before": b.get("score"), "status_before": b.get("status"),
                "score": score, "pass": passed, "reason": reason, "level": level,
@@ -98,7 +102,12 @@ def main() -> int:
                # 诊断字段（判据 2/3 用）：上下文条目顺序 + facts 锚点 + judge 判定
                "n_entries": dbg.get("n_entries"), "entry_ids": dbg.get("entry_ids") or [],
                "n_facts": dbg.get("n_facts"), "facts_n": dbg.get("facts_n") or [],
-               "enough": dbg.get("enough")}
+               "enough": dbg.get("enough"),
+               # 输出闸门自检（2026-09-13）：零引用频次观测
+               "validator_action": vres.get("action", ""),
+               "issues": [{"sev": i.get("sev"), "type": i.get("type")} for i in v_iss],
+               "no_citation": 1 if no_cite else 0,
+               "no_citation_substantive": 1 if (no_cite and no_cite.get("substantive")) else 0}
         recs = [x for x in recs if x["qid"] != qid] + [rec]
         OUT.write_text(json.dumps(recs, ensure_ascii=False, indent=1), encoding="utf-8")
         arrow = f"{rec['score_before']}→{score}"
