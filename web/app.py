@@ -90,6 +90,9 @@ async def ask_question(body: AskBody) -> JSONResponse:
         raise HTTPException(status_code=404, detail=f"缺论文上下文: {e}") from e
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=f"问答失败: {e}") from e
+    # validator：**答案自检结果**（issues 的 sev/type/detail/sentence）——前端据此显示"AI 复核"标注。
+    # 只回 action/high/issues 三键：supplements 里带 chunk 原文（可达数千字），前端用不到。
+    v = r.get("validator") or {}
     return JSONResponse({
         "pdf": body.pdf,
         "question": body.question,
@@ -97,6 +100,8 @@ async def ask_question(body: AskBody) -> JSONResponse:
         "cites": r.get("cites", []),
         "debug": r.get("debug", {}),
         "route": r.get("route", []),
+        "validator": {"action": v.get("action", ""), "high": bool(v.get("high")),
+                      "issues": list(v.get("issues") or [])[:8]},
     })
 
 

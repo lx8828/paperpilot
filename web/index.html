@@ -99,6 +99,11 @@
   .cites { margin-top:6px; border-top:1px dashed var(--line); padding-top:4px; }
   .ci { font-size:12px; color:var(--muted); margin:2px 0; }
   .ci b { color:var(--accent); cursor:pointer; }
+  /* 答案自检（validator issues）：mid/low 只提示不拦，故这里只做"提示条"，不是警告弹窗 */
+  .issues { margin-top:6px; border-top:1px dashed var(--line); padding-top:4px; font-size:12px; }
+  .isr { color:var(--muted); margin:2px 0; line-height:1.6; }
+  .isr .warn { color:#a86200; font-weight:600; margin-right:4px; }
+  .isr .bad { color:var(--bad); font-weight:600; margin-right:4px; }
   .flow { margin-top:5px; font-size:11px; color:var(--muted); }
   .input { display:flex; gap:8px; padding:10px; border-top:1px solid var(--line); }
   #qin { flex:1; padding:9px 12px; border:1px solid var(--line); border-radius:10px;
@@ -471,8 +476,22 @@ function renderAnswer(d){
     });
     h+='</div>';
   }
+  // 答案自检（validator）：mid/low 只标注不拦（high 已被闸门换掉，不会走到这里）；
+  // 从未标注来源（no_citation）到"某句可能无原文支撑"（unsupported）都会在这里露出来。
+  const iss=((d.validator||{}).issues)||[];
+  const show=iss.filter(i=>i.sev==='mid'||i.sev==='high');
+  if(show.length){
+    h+='<div class="issues"><b class="muted">答案自检（AI 复核，仅供参考）</b>';
+    show.slice(0,4).forEach(i=>{
+      const tag=i.sev==='high'?'<b class="bad">高</b>':'<b class="warn">复核</b>';
+      const sent=i.sentence?`「${esc(i.sentence.slice(0,60))}」`:'';
+      h+=`<div class="isr">${tag} ${sent} ${esc(i.detail||'')}</div>`;
+    });
+    h+='</div>';
+  }
   const dbg=d.debug||{}; const ans=dbg.answer||{}; const route=(d.route||[]).join('→');
   h+=`<div class="flow">档 <b>${esc(ans.level||'?')}</b> · 证据 ${ans.n_entries||0} 条 · ${esc(route)}`
+    +`${show.length?` · 自检 ${show.length} 条`:''}`
     +`${lastAsk===d?'':'（历史）'}</div>`;
   return h;
 }
