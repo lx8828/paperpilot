@@ -31,7 +31,7 @@ def build_pool():
     papers = load_papers()
     final_lock = json.load(open("qa/qasper_final_lock_20260907_183225.json", encoding="utf-8"))
     hard_qids = {r["qid"] for r in final_lock if r.get("new_status") in ("fail", "unknown_ok")}
-    view = ROOT / "out_views"
+    view = ROOT / "assets/artifacts/out_views"
     index: dict[str, tuple[str, dict]] = {}
     for pid, p in papers.items():
         if not (view / f"qasper_{pid}.report.json").exists():

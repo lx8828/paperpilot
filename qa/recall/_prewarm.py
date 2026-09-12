@@ -9,7 +9,7 @@ from paperpilot.agents.embedder import ChunkIndex
 
 data = json.load(open("qa/recall/recall_set_v1.json", encoding="utf-8"))
 pids = sorted({it["pid"] for it in data["items"]})
-todo = [p for p in pids if not Path(f"out_views/qasper_{p}.cvec.npy").exists()]
+todo = [p for p in pids if not Path(f"assets/artifacts/out_views/qasper_{p}.cvec.npy").exists()]
 prog = Path("qa/recall/_prewarm_progress.txt")
 t0 = time.time()
 prog.write_text(f"todo {len(todo)}\n", encoding="utf-8")

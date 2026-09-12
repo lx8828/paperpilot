@@ -23,7 +23,7 @@ _SIG = re.compile(
 
 def main() -> int:
     papers = load_papers()
-    view = ROOT / "out_views"
+    view = ROOT / "assets/artifacts/out_views"
     pool: list[tuple[str, str, str]] = []  # (qid, pid, question)
     for pid, p in papers.items():
         if not (view / f"qasper_{pid}.report.json").exists():

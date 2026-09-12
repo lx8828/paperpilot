@@ -1,0 +1,682 @@
+[
+ {
+  "qid": "1771a55236823ed44d3ee537de2e85465bf03eaf",
+  "pid": "2002.11402",
+  "question": "What is the difference in recall score between the systems?",
+  "gold": "Between the model and Stanford, Spacy and Flair the differences are 42.91, 25.03, 69.8 with Traditional NERs as reference and  49.88, 43.36, 62.43 with Wikipedia titles as reference.",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 5,
+  "pass": true,
+  "reason": "系统回答准确无误地列出了不同系统之间的召回率差异，并引用了相应的表格和原文证据。",
+  "level": "L3",
+  "answer": "你问的“systems”的 recall 差异，需按论文给出的两张对比表分别说明。以 Wikipedia titles 为参照（Table 3）时，BERT+BiGRU+CRF 的 recall 为 69.76，Stanford 为 19.88，Spacy 为 26.40，Flair 为 7.33 [5]；因此 BERT+BiGRU+CRF 比 Stanford 高 49.88、比 Spacy 高 43.36、比 Flair 高 62.43 [5]。以 Traditional NERs 为参照（Table 2）时，BERT+BiGRU+CRF 的 recall 为 80.08，Stanford 为 37.17，Spacy 为 55.05，Flair 为 10.28 [6]；对应差值分别为 42.91、25.03、69.80 [6]。论文也总结称在捕捉 Wikipedia topics 上其模型在所有指标上明显超过其他模型 [2]，且其模型 recall 很好但 precision 不佳 [2]。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "1d74fd1d38a5532d20ffae4abbadaeda225b6932",
+  "pid": "2002.11402",
+  "question": "What is their f1 score and recall?",
+  "gold": "F1 score and Recall are 68.66, 80.08 with Traditional NERs as reference and 59.56, 69.76 with Wikipedia titles as reference.",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 5,
+  "pass": true,
+  "reason": "系统回答准确无误地引用了论文中的表格，提供了与标准答案一致的F1分数和Recall分数，并且指明了不同的参照集。",
+  "level": "L3",
+  "answer": "你问的“their”对应论文提出的模型 BERT+BiGRU+CRF。其 F1 与 Recall 依参照集不同：以 Wikipedia 标题为参照时，F1 为 59.56、Recall 为 69.76 [2]；以传统 NER 为参照时，F1 为 68.66、Recall 为 80.08 [4]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "5a0841cc0628e872fe473874694f4ab9411a1d10",
+  "pid": "1701.00185",
+  "question": "By how much did they outperform the other methods?",
+  "gold": "on SearchSnippets dataset by 6.72% in ACC, by 6.94% in NMI; on Biomedical dataset by 5.77% in ACC, 3.91% in NMI",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 1,
+  "pass": false,
+  "reason": "答非所问，系统未提供任何关于性能提升的具体数值或百分比。",
+  "level": "L3",
+  "answer": "抱歉，我可能无法准确回答这个问题——该答案未能通过内部事实校验。",
+  "n_cites": 0,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "0fd678d24c86122b9ab27b73ef20216bbd9847d1",
+  "pid": "1804.08139",
+  "question": "What evaluation metrics are used?",
+  "gold": "Accuracy on each dataset and the average accuracy on all datasets.",
+  "score_before": 2,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答指出了论文中未明确提及具体评价指标名称的问题，但未能准确引用原文中提到的评价指标，如准确率（accuracy）和性能（performance）。",
+  "level": "L3",
+  "answer": "提供的证据中没有提及任何评价指标（如准确率、F1 等）。各实验仅报告了“performance”“accuracy”等笼统说法，例如 DA-MTL 相比 SA-MTL 提升了 INLINEFORM0 accuracy [1]，但未指明具体评价指标名称。因此，论文中无法确认使用了哪些评价指标。",
+  "n_cites": 1,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "dccc3b182861fd19ccce5bd00ce9c3f40451ed6e",
+  "pid": "1909.00088",
+  "question": "Does the model proposed beat the baseline models for all the values of the masking parameter tested?",
+  "gold": "no",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了SMERTI在大多数情况下优于基线模型，但未明确提及所有测试的掩码参数取值，而是泛泛地提到了整体性能。",
+  "level": "L3",
+  "answer": "是。论文提出的 SMERTI 在整体上优于所有基线模型：SMERTI 的两个变体在 STES 上均高于其他模型，其中 WordNet 模型表现最差 [6]；人工评测也显示 SMERTI 各变体整体上超过所有基线，尤其在 RE Match 上，SMERTI-Transformer 最佳、SMERTI-RNN 次之 [2]。不过需注意，WordNet 模型在情感保持（SPA）上最强，W2V-STEM 在 RE Match 上可比，但它们的流畅度或内容相似度明显更差 [2][6]。因此就整体性能而言，SMERTI 在所有测试的掩码参数取值下都胜过基线。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "e6c163f80a11bd057bbd0b6e1451ac82edddc78d",
+  "pid": "1908.01060",
+  "question": "Do they test their approach on large-resource tasks?",
+  "gold": "yes",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答正确地指出了实验针对的是低资源语音识别，并且引用了原文来支持这一点。但是，系统回答没有明确提到语料库的规模和多样性，这是标准答案中提到的次要细节。",
+  "level": "L3",
+  "answer": "否。论文的实验目标是低资源语音识别，因此每个语料即使更多也只随机选取 100,000 条语音 [3]；其 16 个语料来自 10 种语言，除 4 个英语和 4 个普通话语料外，其余均为低资源语言语料 [3][10]。评测也以音素错误率（PER）而非词错误率（WER）为主，原因正是部分语料（如 Dutch voxforge）文本量极少 [11]。所以他们的方法并未在“大资源任务”上测试。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "5a06f11aa75a8affde3d595c40fb03e06769e368",
+  "pid": "1911.11933",
+  "question": "Do they trim the search space of possible output sequences?",
+  "gold": "no",
+  "score_before": 2,
+  "status_before": "fail",
+  "score": 2,
+  "pass": false,
+  "reason": "系统回答中提到CTC扩展输出序列并最终还原出原始输出序列，但未明确指出这是否减少了搜索空间的大小。虽然引用了论文原文，但原文并未直接支持系统回答中的结论。",
+  "level": "L3",
+  "answer": "是。论文提出的方法使用 Connectionist Temporal Classification（CTC）来处理插入 `<wait>` 的可能位置上的歧义，CTC 通过允许 token 重复和输出 `<wait>` 把输出序列扩展为长度 T 的路径 π = Ω(y)，再通过移除 `<wait>` 和所有 token 重复还原出原始输出序列 y = Ω⁻¹(π) [1]；其目标函数用前向-后向算法对所有可能路径 π ∈ Ω(y) 的概率求和 [1]。因此，CTC 正是通过对可能输出路径集合 Ω(y) 的建模与求和来约束/处理这一搜索空间 [1][2]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "9555aa8de322396a16a07a5423e6a79dcd76816a",
+  "pid": "1611.03382",
+  "question": "By how much does their model outperform both the state-of-the-art systems?",
+  "gold": "w.r.t Rouge-1 their model outperforms by 0.98% and w.r.t Rouge-L their model outperforms by 0.45%",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答提供了详细的性能比较，包括Rouge-1和Rouge-L的分数，但未明确提及0.98%和0.45%这两个具体数值，这是与标准答案的差异。",
+  "level": "L3",
+  "answer": "你问的“their model”对应论文提出的 Read-Again 模型（含 copy 机制）。在 Gigaword 上，Ours-Opt-2 (C) 取得 Rouge-1 27.96、Rouge-2 12.65、Rouge-L 26.18，而基线 ABS 为 24.12/10.24/22.61、GRU 为 26.79/12.03/25.14 [5]；即相对 ABS 分别高出 3.84、2.41、3.57，相对 GRU 分别高出 1.17、0.62、1.04 [5]。在 DUC2004 上，Ours-LSTM (C) 为 29.89/9.37/25.93，优于 ABS+ 的 28.18/8.49/23.81 和 RAS-Elman 的 28.97/8.26/24.06 [11]。论文还指出其方法在 Rouge-1 和 Rouge-L 上超过所有先前方法，Rouge-2 上相当，且仅用 15K 词表而先前方法用 69K 或 200K [3]。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "d427e3d41c4c9391192e249493be23926fc5d2e9",
+  "pid": "1905.00563",
+  "question": "Can this adversarial approach be used to directly improve model accuracy?",
+  "gold": "yes",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了论文中对抗方法的主要用途是攻击和评估，而非直接提升模型准确率。然而，它遗漏了论文中提到的通过在噪声训练数据上重新训练DistMult来提高模型准确率的细节。引用的论文原文确实支持了系统回答中的观点，但没有完全覆盖问题中询问的直接提升模型准确率的部分。",
+  "level": "L3",
+  "answer": "否。论文中该对抗方法（CRIAGE）的用途是攻击/评估与解释，而非直接提升模型准确率：它通过添加或删除事实来改变目标事实的预测分数，从而降低链接预测模型的排序指标（MRR、Hits@）[1][5]，并用于解释模型预测、总结每个关系最具影响力的事实[1]，以及检测知识图谱中的错误三元组[1][8]。论文提到以往工作把对抗者作为训练的一部分来改进图表示[2]，但本文方法本身是用于攻击与分析的，并未报告用它直接提升准确率。",
+  "n_cites": 4,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "38c74ab8292a94fc5a82999400ee9c06be19f791",
+  "pid": "2002.10361",
+  "question": "How large is the corpus?",
+  "gold": "It contains 106,350 documents",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 5,
+  "pass": true,
+  "reason": "系统回答准确引用了论文中的表格数据，并正确计算了文档总数，与标准答案一致。",
+  "level": "L3",
+  "answer": "你问的语料规模对应论文中 Table 1 报告的多语言语料统计。该语料覆盖英语、意大利语、波兰语、葡萄牙语和西班牙语五种语言，各语言的用户数、文档数与平均 token 数分别为：英语 64,067 用户 / 83,077 文档 / 20.066 tokens，意大利语 3,810 / 5,671 / 19.721，波兰语 86 / 10,919 / 14.285，葡萄牙语 600 / 1,852 / 18.494，西班牙语 4,600 / 4,831 / 19.199 [3]。按文档数合计为 83,077+5,671+10,919+1,852+4,831 = 106,350 篇文档，按用户数合计为 64,067+3,810+86+600+4,600 = 73,163 名用户 [3]。此外，语料被随机划分为训练集 70%、开发集 15%、测试集 15% [6]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "16af38f7c4774637cf8e04d4b239d6d72f0b0a3a",
+  "pid": "2002.10361",
+  "question": "How large is the dataset?",
+  "gold": "over 104k documents",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 2,
+  "pass": false,
+  "reason": "系统回答指出了数据集的来源和语言覆盖，但没有提供具体的数据集规模，这与标准答案中的104k documents不符。",
+  "level": "L3",
+  "answer": "你问的“数据集规模”对应论文中构建的多语言 Twitter 仇恨言论语料库。论文说明其数据来源为请求的 16 个已发布 Twitter 仇恨言论数据集，最终获得其中 7 个，覆盖五种语言（英语、意大利语、波兰语、葡萄牙语、西班牙语）[2]。但给出的证据中**没有**报告该语料库的总推文数、用户数或样本量等具体规模数值，因此无法给出确切的数据集大小。",
+  "n_cites": 1,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "9c4a4dfa7b0b977173e76e2d2f08fa984af86f0e",
+  "pid": "1910.02339",
+  "question": "How does TP-N2F compare to LSTM-based Seq2Seq in terms of training and inference speed?",
+  "gold": "Full Testing Set accuracy: 84.02\nCleaned Testing Set accuracy: 93.48",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 2,
+  "pass": false,
+  "reason": "系统回答正确地指出了论文中缺乏关于训练和推理速度的比较数据，但未提及标准答案中提供的准确率信息，这表明对问题的理解不够全面。",
+  "level": "L3",
+  "answer": "提供的证据中没有关于 TP-N2F 与 LSTM-based Seq2Seq 在训练速度或推理速度上的任何比较数据。各条目只报告了准确率类指标（如 MathQA 的执行准确率与操作序列准确率 [1]、AlgoLisp 的 Acc/50p-Acc/M-Acc [3]），以及模型结构、超参数和训练轮数等实现细节 [5]，并未给出任何速度、耗时或吞吐量数值。因此，论文未提供可回答该问题的训练/推理速度信息。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "05671d068679be259493df638d27c106e7dd36d0",
+  "pid": "1910.02339",
+  "question": "What is the performance proposed model achieved on MathQA?",
+  "gold": "Operation accuracy: 71.89\nExecution accuracy: 55.95",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 5,
+  "pass": true,
+  "reason": "系统回答准确无误地引用了论文原文，提供了TP-N2F模型在MathQA数据集上的Operation Accuracy和Execution Accuracy，并与基线模型进行了比较，没有遗漏关键信息。",
+  "level": "L3",
+  "answer": "你问的 proposed model 对应论文中的 TP-N2F（ours）。在 MathQA 测试集上，TP-N2F 的 Operation Accuracy 为 71.89%，Execution Accuracy 为 55.95% [3]。该结果优于基线 SEQ2PROG-orig（59.4 / 51.9）和 SEQ2PROG-best（66.97 / 54.0），也优于消融变体 LSTM2TP（68.21 / 54.61）与 TP2LSTM（68.84 / 54.61）[3]。论文指出 TP-N2F 在该任务上取得了 state-of-the-art 性能 [1][2]。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "ac706631f2b3fa39bf173cd62480072601e44f66",
+  "pid": "2002.02224",
+  "question": "Did they experiment on this dataset?",
+  "gold": "no",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了论文在该数据集上进行了实验，并引用了相关数据，但遗漏了标准答案中明确指出的'no'这一关键信息。",
+  "level": "L3",
+  "answer": "是。论文确实在该数据集上进行了实验：作者用 CzCDC 1.0 中的法院判决作为数据来源，通过由分割模型和参考识别模型组成的 NLP 流水线提取引用数据 [2][7]，并报告了流水线的性能（严格一致 F1 为 .724，重叠一致 F1 为 .815）[6]。最终从最高法院、最高行政法院和宪法法院的判决中分别提取出 471,319、167,237 和 264,463 条引用 [12]。",
+  "n_cites": 4,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+  "pid": "2002.08307",
+  "question": "How much is pre-training loss increased in Low/Medium/Hard level of pruning?",
+  "gold": "The increase is linearly from lowest on average 2.0 , medium around 3.5, and the largest is 6.0",
+  "score_before": 2,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了不同剪枝水平对预训练损失的影响，但遗漏了具体数值，且措辞与标准答案存在差异。",
+  "level": "L3",
+  "answer": "你问的“Low/Medium/Hard level of pruning”对应论文中的低/中/高剪枝水平。论文指出低水平剪枝（30–40%）完全不增加预训练损失[3]，中等水平剪枝则开始增加预训练损失[7]。因此，若以 30–40% 为低水平，其损失增幅无法从论文中确认；中等水平（如 50–60%）的预训练损失具体数值论文中无法确认；高水平（70–90%）的预训练损失具体数值论文中无法确认。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "1d9b953a324fe0cfbe8e59dcff7a44a2f93c568d",
+  "pid": "2002.00876",
+  "question": "Does API provide ability to connect to models written in some other deep learning framework?",
+  "gold": "yes",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了Torch-Struct遵循TensorFlow和PyTorch的API，但没有提及该API是否允许连接其他深度学习框架所写的模型，这是标准答案中提到的关键信息。",
+  "level": "L3",
+  "answer": "否。Torch-Struct 的分布 API 是集成到深度学习框架中的，论文明确说其库设计遵循 TensorFlow 和 PyTorch 使用的 distributions API [4]，并且它把优化后的结构化分布集成进一个向量化的深度学习系统 [2]。证据中没有任何关于连接其他深度学习框架所写模型的能力的说明，因此不能支持“可以连接其他框架模型”这一说法。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "75b69eef4a38ec16df63d60be9708a3c44a79c56",
+  "pid": "2002.05058",
+  "question": "How much better peformance is achieved in human evaluation when model is trained considering proposed metric?",
+  "gold": "Pearson correlation to human judgement - proposed vs next best metric\nSample level comparison:\n- Story generation: 0.387 vs 0.148\n- Dialogue: 0.472 vs 0.341\nModel level comparison:\n- Story generation:  0.631 vs 0.302\n- Dialogue: 0.783 vs 0.553",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了提升的存在，并引用了相关实验描述，但未能提供具体的提升数值，这是重要遗漏。",
+  "level": "L3",
+  "answer": "你问的是“训练时采用所提指标后，人类评估表现提升多少”，对应论文中关于用所提比较评估器做超参搜索与早停的实验。论文确实做了该实验：进行 10 次运行，用五种指标分别选择最佳超参组合或早停检查点，并以人类评估判断哪个选择最好，评价指标是 10 次中成功选中最佳选择的次数（共 4 个候选）以及所选模型的人类标注平均分 [1][10]。但给出的证据中只说明“从 BLEU 或困惑度换成所提比较评估器可带来不可忽视的提升”，并称结果见 Table 3，**并未给出具体提升数值** [1]。因此无法给出具体差量；缺的是 Table 3 中成功次数与人类平均分的具体数字 [1]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+  "pid": "2001.05467",
+  "question": "How much better were results of the proposed models than base LSTM-RNN model?",
+  "gold": "on diversity 6.87 and on relevance 4.6 points higher",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答提供了详细的模型对比结果，包括自动评测和人工评测的多个指标，但未明确指出在多样性和相关性上的提升点，与标准答案中的6.87和4.6点提升不完全对应。",
+  "level": "L3",
+  "answer": "你问的“proposed models 相比 base LSTM-RNN 的提升”，对应论文中三个基于 AvgOut 的模型（MinAvgOut、LFT、RL）及混合模型 MinAvgOut+RL 相对基线 LSTM 的对比。\n\n在自动评测的 Activity/Entity F1 上，基线 LSTM 为 1.18/0.87，而 MinAvgOut 为 6.83/4.77、LFT 为 7.55/5.05、RL 为 5.80/3.62、MinAvgOut+RL 为 8.05/5.47 [7]。以 Activity F1 为例，MinAvgOut 提升 6.83−1.18=5.65，LFT 提升 7.55−1.18=6.37，RL 提升 5.80−1.18=4.62，MinAvgOut+RL 提升 8.05−1.18=6.87 [7]。\n\n在多样性指标 iAUC-avg 上，基线 LSTM (attn) 为 0.5335，MinAvgOut 为 0.7305、LFT 为 0.6903、RL 为 0.6518、MinAvgOut+RL 为 0.7200 [9]。人工评测中，LSTM (attn) 的 Plausibility/Richness/Avg 为 3.46/2.62/3.04，而 MinAvgOut 为 3.62/3.34/3.48、LFT 为 3.83/3.47/3.65、RL 为 3.61/2.88/3.25、MinAvgOut+RL 为 3.67/3.23/3.45 [5]。论文总结称这些模型在 Plausibility 和 Content Richness 上均显著优于基线模型（RL 在 Content Richness 上略弱）[6]，且整体大幅超越其基模型 LSTM [3]。",
+  "n_cites": 5,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "3604c4fba0a82d7139efd5ced47612c90bd10601",
+  "pid": "2001.10179",
+  "question": "Is their implementation on CNN-DSA compared to GPU implementation in terms of power consumption, accuracy and speed?",
+  "gold": "no",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了功耗和速度的对比，但遗漏了准确率的对比信息，且对“CNN-DSA”的解释可能存在误导。",
+  "level": "L3",
+  "answer": "你问的“CNN-DSA”对应论文中的 CNN 加速器芯片（CNN accelerator chip）方案。就功耗与速度而言，论文明确给出了对比性说明：该 CNN 加速器方案功耗低，处理 3x224x224 RGB 图像时仅消耗 300mw、速度达 140fps，且相比使用 GPU 或 FPGA 的其他模型，它把繁重的 DNN 计算放在 CNN 加速器芯片上，主机只负责内存读写以生成 Super Character 图像 [1]。但关于**准确率**方面与 GPU 实现的对比，证据中并未给出任何数值或结论，因此无法确认这一维度 [1][2]。所以结论是：在功耗和速度上有与 GPU/FPGA 方案的对比说明，但在准确率上没有对比信息。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "8a5254ca726a2914214a4c0b6b42811a007ecfc6",
+  "pid": "2002.06675",
+  "question": "How much transcribed data is available for for Ainu language?",
+  "gold": "Transcribed data is available for duration of 38h 54m 38s for 8 speakers.",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了论文中未给出具体转写数据时长，但遗漏了标准答案中提供的确切时长信息。",
+  "level": "L3",
+  "answer": "你问的“阿伊努语可用的转写数据量”对应论文中为 ASR 构建的语料情况。论文指出，阿伊努博物馆自 1976 年起录制约 700 小时语音数据，但其中大部分尚未转写、未被充分研究 [5]；同样，多数录音尚未被转写和有效利用 [7]。论文并未给出已转写数据的具体小时数，只说明其 ASR 语料是基于阿伊努博物馆和 Nibutani 阿伊努文化博物馆提供的数据构建的 [4][7]。因此，证据中无法确认已转写阿伊努语数据的确切时长，缺少的是转写数据的具体数量/时长数值。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "2d307b43746be9cedf897adac06d524419b0720b",
+  "pid": "1803.07771",
+  "question": "How long are the datasets?",
+  "gold": "Travel dataset contains 4100 raw samples, 11291 clauses, Hotel dataset contains 3825 raw samples, 11264 clauses, and the Mobile dataset contains 3483 raw samples and 8118 clauses",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答正确地列出了三个数据集的规模，但遗漏了标准答案中提到的具体数量，如Travel数据集的原始样本为4100，而非5168。",
+  "level": "L3",
+  "answer": "你问的“数据集有多长/多大”对应论文中三个中文情感语料库的规模。论文编译了三个领域的中文语料库——hotel、mobile、travel [1]，每个语料库由原始样本（句子或段落）和切分后的子句组成 [6]。具体规模为：Travel 原始样本 5168 条、子句 11291 条；Hotel 原始样本 2123 条、子句 11264 条；Mobile 原始样本 2375 条、子句 8118 条 [6]。此外，每个语料库在实验中取 1000 条原始样本作为测试数据，其余作为训练数据 [5]。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "858c51842fc3c1f3e6d2d7d853c94f6de27afade",
+  "pid": "1901.00570",
+  "question": "Which of the classifiers showed the best performance?",
+  "gold": "Logistic regression",
+  "score_before": 2,
+  "status_before": "fail",
+  "score": 2,
+  "pass": false,
+  "reason": "系统回答正确指出了表现最好的分类器是Naive Bayes，但遗漏了标准答案中提到的Logistic regression，并且没有提及Logistic regression在表II中的表现。",
+  "level": "L3",
+  "answer": "你问的“表现最好的分类器”对应论文中最终选用的分类技术。论文明确说明选择 **Naive Bayes（朴素贝叶斯）** 作为分类技术，并给出了三点理由（高偏差降低过拟合、响应变量为二值、词对计数在 0–100 之间使概率方法优于距离方法）[4]。在实验中，模型正是用朴素贝叶斯分类器进行训练与预测，并取得了平均 AUC 90%、F-score 91% 的结果[7]，结论部分也重申训练了朴素贝叶斯分类器来判定事件日/非事件日[9]。因此，表现最好（被论文采用）的分类器是 **Naive Bayes**。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "579941de2838502027716bae88e33e79e69997a6",
+  "pid": "1909.13375",
+  "question": "What is difference in peformance between proposed model and state-of-the art on other question types?",
+  "gold": "For single-span questions, the proposed LARGE-SQUAD improve performance of the MTMSNlarge baseline for 2.1 EM and 1.55 F1.\nFor number type question,  MTMSNlarge baseline  have improvement over LARGE-SQUAD for 3,11  EM and  2,98 F1. \nFor date question,  LARGE-SQUAD have improvements in 2,02 EM but MT",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地比较了模型在单跨度问题上的性能，但遗漏了关于其他问题类型（如数字类型问题和日期问题）的具体性能差异，这些信息在标准答案中有所提及。",
+  "level": "L3",
+  "answer": "你问的“其他问题类型（other question types）”上的性能差异，对应论文中与当时 SOTA（MTMSN）在单跨度（single-span）问题上的比较。论文指出：在单跨度性能上，最佳模型（large-squad）表现略好于 MTMSN，但需注意它保留了 NABERT+ 的单跨度头，而 MTMSN 用同一个头同时预测单跨度和多跨度答案 [8]。为更公平比较，作者去掉单跨度头后，多跨度性能略有提升，但单跨度性能小幅下降，最终在 EM 上落后 MTMSN 0.8、在 F1 上落后 0.6 [8]。此外，论文称其模型在 DROP 测试集上整体（不仅是多跨度问题）是当时最佳 [10]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "d71cb7f3aa585e256ca14eebdc358edfc3a9539c",
+  "pid": "1909.13362",
+  "question": "Which models achieve state-of-the-art performances?",
+  "gold": "CELEX (Dutch and English) - SVM-HMM\nFestival, E-Hitz and OpenLexique - Liang hyphenation\nIIT-Guwahat - Entropy CRF",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答正确地指出了Base模型在多个数据集上达到或接近state-of-the-art性能，并引用了论文原文作为证据。然而，系统回答遗漏了标准答案中提到的其他模型，如CELEX (Dutch and English) - SVM-HMM等，因此没有获得满分。",
+  "level": "L3",
+  "answer": "你问的“达到 state-of-the-art 性能的模型”对应论文中作者提出的 Base 模型（BiLSTM-CNN-CRF）。论文明确指出，Base 模型在 Dutch、Italian、French 和 Basque 数据集上取得了高于任何其他已知系统的准确率，在 English 和 Manipuri 上接近最佳报告准确率 [3]；其中 Dutch 数据集上 Base 达到 99.47 ± 0.04%，超过了此前最佳的 HMM-SVM 的 99.16% [2]。因此，达到（或接近）state-of-the-art 的是作者提出的 Base 模型 [2][3]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "d484a71e23d128f146182dccc30001df35cdf93f",
+  "pid": "1909.00279",
+  "question": "How much is proposed model better in perplexity and BLEU score than typical UMT models?",
+  "gold": "Perplexity of the best model is 65.58 compared to best baseline 105.79.\nBleu of the best model is 6.57 compared to best baseline 5.50.",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答准确描述了模型在困惑度和BLEU分数上的提升，但未提及原文中的'best'一词，且未引用原文中的具体表格编号。",
+  "level": "L3",
+  "answer": "你问的“proposed model”对应论文中的 Transformer + Anti OT&UT，“typical UMT models”对应朴素 Transformer 基线。其困惑度从 105.79 降至 65.58，降低 40.21（105.79−65.58）[3]；BLEU 从 5.50 提升至 6.57，提高 1.07（6.57−5.50）[3]。论文也指出 Anti OT&UT 在基于 Transformer 的模型中表现最佳，且所有 Transformer 类模型均优于 LSTM [1]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "c0035fb1c2b3de15146a7ce186ccd2e366fb4da2",
+  "pid": "1603.00968",
+  "question": "By how much of MGNC-CNN out perform the baselines?",
+  "gold": "In terms of Subj the Average MGNC-CNN is better than the average score of baselines by 0.5.  Similarly, Scores of SST-1, SST-2, and TREC where MGNC-CNN has similar improvements. \nIn case of Irony the difference is about 2.0.",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答正确地提供了MGNC-CNN相对于基线的性能提升，但未明确指出提升的具体数值，而是通过比较分数来间接说明。",
+  "level": "L3",
+  "answer": "你问的“baselines”对应论文中的单嵌入标准 CNN 与简单拼接基线 C-CNN。论文报告 MGNC-CNN 与 MG-CNN 始终优于基线方法（含 C-CNN），且 MGNC-CNN 通常优于 MG-CNN [1]。以三嵌入 MGNC-CNN(w2v+Syn+Glv) 对比单嵌入 CNN 为例：Subj 为 94.09 vs 93.14/93.41/93.24，SST-1 为 48.65 vs 46.99/46.58/45.48，SST-2 为 88.30 vs 87.03/87.36/86.04，TREC 为 95.52 vs 93.32/93.36/94.68，Irony 为 71.53 vs 67.15/67.84/67.93 [10]。在 Irony 数据集上，三嵌入模型相对基线模型在 AUC 上取得 4% 的提升 [1]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "e09e89b3945b756609278dcffb5f89d8a52a02cd",
+  "pid": "1808.06834",
+  "question": "How many speeches are in the dataset?",
+  "gold": "5575 speeches",
+  "score_before": 2,
+  "status_before": "fail",
+  "score": 2,
+  "pass": false,
+  "reason": "系统回答中提到的演讲数量与标准答案不符，存在核心信息遗漏。",
+  "level": "L3",
+  "answer": "你问的“数据集中的演讲数量”对应论文中已标注的演讲数：数据集共标注了 **1201 篇演讲**（1201 speeches）[1]。该标注由两名人文专业学生完成，用于四类目的分类[1]。",
+  "n_cites": 1,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "b0376a7f67f1568a7926eff8ff557a93f434a253",
+  "pid": "1902.00330",
+  "question": "How big is the performance difference between this method and the baseline?",
+  "gold": "Comparing with the highest performing baseline: 1.3 points on ACE2004 dataset, 0.6 points on CWEB dataset, and 0.86 points in the average of all scores.",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 4,
+  "pass": true,
+  "reason": "系统回答正确地提供了与基线方法的性能差异，但遗漏了具体数据集的名称，如ACE2004、CWEB等。",
+  "level": "L3",
+  "answer": "你问的“this method”对应论文提出的 RLEL 模型，“baseline”对应各对比方法。在 AIDA-B 数据集上，RLEL 的 in-KB accuracy 为 94.3%，而此前最好的基线 Phong and Titov (2018) 为 93.1%，差值为 94.3% − 93.1% = 1.2 个百分点 [5]。在跨数据集 micro F1 上，RLEL 平均为 86.56%，最强基线 Guo and Barbosa (2016) 为 85.7%，差值为 86.56% − 85.7% = 0.86 个百分点 [4]。此外，加入全局编码相比不加全局编码可带来 4% 的准确率提升 [3]。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "a02696d4ab728ddd591f84a352df9375faf7d1b4",
+  "pid": "1605.07683",
+  "question": "How large is the Dialog State Tracking Dataset?",
+  "gold": "1,618 training dialogs, 500 validation dialogs, and 1,117 test dialogs",
+  "score_before": 2,
+  "status_before": "fail",
+  "score": 5,
+  "pass": true,
+  "reason": "系统回答准确无误地引用了论文原文，提供了训练、验证和测试对话的数量，与标准答案一致。",
+  "level": "L3",
+  "answer": "你问的 Dialog State Tracking 数据集对应论文中的 Task 6（T6: Dialog state tracking 2），它由第 2 届 Dialog State Tracking Challenge 转换而来 [1]。其规模为：训练对话 1,618 个、验证对话 500 个、测试对话 1,117 个 [1]；词汇量 1,229，候选集大小 2,406 [1]。平均每个对话含 54 条话语（用户 6 条、机器人 8 条、API 调用输出 40 条）[1]。",
+  "n_cites": 1,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "04f72eddb1fc73dd11135a80ca1cf31e9db75578",
+  "pid": "1911.03243",
+  "question": "How much more coverage is in the new dataset?",
+  "gold": "278 more annotations",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答提供了正确的百分比增加信息，但遗漏了具体增加的标注数量（278个），并且没有提及与2015数据集的具体比较。引用原文与系统回答中的百分比信息一致，但未提及精度和召回率的比较。",
+  "level": "L0",
+  "answer": "新数据集比以往多产出 **25%** 的角色标注（coverage）[4]。这一更高产出也与其金标准集相比 Dense 集“精度相当但召回率显著更高”的结果一致[6]。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "answer_L0"
+  ]
+ },
+ {
+  "qid": "8829f738bcdf05b615072724223dbd82463e5de6",
+  "pid": "2003.09520",
+  "question": "Does the paper report translation accuracy for an automatic translation model for Tunisian to Arabish words?",
+  "gold": "yes",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 5,
+  "pass": true,
+  "reason": "系统回答准确无误地指出了论文中报告的是从Arabish到阿拉伯字符的半自动转写准确率，而非突尼斯语到Arabish的自动翻译准确率，并且引用了论文原文作为证据。",
+  "level": "L3",
+  "answer": "否。论文报告的是半自动**转写**（transcription，从 Arabish 到阿拉伯字符）的准确率，而非突尼斯语到 Arabish 的自动**翻译**准确率：10 折交叉验证的 token 级准确率约为 71%[3]，第二块标注准确率约 70%[3]，加入第三块后第四块准确率约 80%[3]，结论中亦给出准确率 = 70%[2]。论文明确指出该半自动流程只涉及从 Arabish 到阿拉伯字符的转写[3]，并未报告任何突尼斯语→Arabish 的自动翻译模型及其准确率。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "1e59263f7aa7dd5acb53c8749f627cf68683adee",
+  "pid": "2004.03061",
+  "question": "Does the work explicitly study the relationship between model complexity and linguistic structure encoding?",
+  "gold": "no",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了论文中关于模型复杂度与语言结构编码关系的讨论，但遗漏了标准答案中提到的'no'这一关键信息，因此不能完全算作准确。",
+  "level": "L0",
+  "answer": "是。论文明确提出，选择最高性能探针（无论其复杂度如何）对估计互信息是最优的 [3]；并从信息论视角把“探针高准确率”与“表示编码结构”视为虚假二分法，认为学任务与表示编码语言结构之间没有区别 [5]。因此该工作确实直接研究了模型复杂度与语言结构编码之间的关系。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "answer_L0"
+  ]
+ },
+ {
+  "qid": "fc65f19a30150a0e981fb69c1f5720f0136325b0",
+  "pid": "2001.08845",
+  "question": "Is is known whether Sina Weibo posts are censored by humans or some automatic classifier?",
+  "gold": "no",
+  "score_before": 0,
+  "status_before": "fail",
+  "score": 0,
+  "pass": false,
+  "reason": "裁判调用失败: HTTP 400: {\"contentFilter\":[{\"level\":1,\"role\":\"user\"}],\"error\":{\"code\":\"1301\",\"message\":\"系统检测到输入或生成内容可能包含不安全或敏感内容，请您避免输入易产生敏感内容的提示语，感谢您的配合。\"}}",
+  "level": "L3",
+  "answer": "你问的是“Sina Weibo 的帖子究竟是被人工审查还是自动分类器删除，这一点是否已知”。论文给出的答案是：**并非已知，论文只是提出假设**——在被最终删除的帖子中，近 30% 在 5–30 分钟内被删、近 90% 在 24 小时内被删，作者据此**假设**前者是自动完成的、后者由人工审查员删除 [1]。论文在讨论与结论中明确表示，区分“自动删除”与“人工删除”的帖子、比较分类器在这两类上的准确率属于**正在进行的工作**，结果将在未来论文中报告 [2][4]。因此，就现有证据而言，Weibo 帖子由人工还是自动机制删除尚无定论，只有待验证的假设 [1][2][4]。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "aa54e12ff71c25b7cff1e44783d07806e89f8e54",
+  "pid": "1901.00439",
+  "question": "What is an example of a health-related tweet?",
+  "gold": "The health benefits of alcohol consumption are more limited than previously thought, researchers say",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了论文中未提供具体健康相关推文示例，并解释了原因，但未直接引用标准答案中的'gold'部分，导致细节上有所遗漏。",
+  "level": "L3",
+  "answer": "根据提供的证据，论文并未给出任何一条完整的健康相关推文示例文本。证据中只提到“Below are several examples of tweets sampled from one of the clusters...”[7]，但具体推文内容未在给出的条目中呈现。此外，证据仅提及推文中可能包含药物名称，如 <acetaminophen> 和 <paracetamol>（两者是同一种药的不同名称）[9]，但这只是词汇层面的举例，并非一条完整推文。因此，现有证据不足以给出健康相关推文的具体示例，缺少的是论文正文中实际列出的推文样例文本。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ]
+ },
+ {
+  "qid": "abc5836c54fc2ac8465aee5a83b9c0f86c6fd6f5",
+  "pid": "2001.00137",
+  "question": "Do they test their approach on a dataset without incomplete data?",
+  "gold": "no",
+  "score_before": 2,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答正确地指出了在不含缺失/错误词语的完整文本数据集上进行了评测，但遗漏了原文中关于数据集构成的具体描述，如数据是如何通过TTS和STT模块获得的。",
+  "level": "L0",
+  "answer": "是。论文在纠正文本数据集（即不含缺失/错误词语的完整文本）上测试了 Stacked DeBERT，准确率为 82%，高于 BERT 的 76%，提升 6% [8]。此外，模型在原始错误文本数据集上准确率为 80%（BERT 为 72%）[7]，在混合数据集上为 80%（次优为 74%）[8]。因此，他们的方法确实也在不含不完整数据的完整/纠正文本数据集上进行了评测。",
+  "n_cites": 2,
+  "route": [
+   "L0",
+   "answer_L0"
+  ]
+ },
+ {
+  "qid": "3aee5c856e0ee608a7664289ffdd11455d153234",
+  "pid": "1810.00663",
+  "question": "What was the performance of their model?",
+  "gold": "For test-repeated set, EM score of 61.17, F1 of 93.54, ED of 0.75 and GM of 61.36. For test-new set, EM score of 41.71, F1 of 91.02, ED of 1.22 and GM of 41.81",
+  "score_before": 3,
+  "status_before": "fail",
+  "score": 3,
+  "pass": false,
+  "reason": "系统回答提供了模型名称和性能提升的百分比，但遗漏了具体的EM、F1、ED和GM分数，这些是回答中关键的性能指标。",
+  "level": "L0",
+  "answer": "你问的“their model”对应论文中提出的最终模型“Ours with Mask and Ordered Triplets”。在已见环境中，该模型在所有指标上均优于基线和消融模型[3]；具体而言，其精确匹配（EM）和目标匹配（GM）分别比基线提升35%和25%[6]。在Test-New集上，该模型比第二好模型在EM和GM上高出约INLINEFORM0[1]。",
+  "n_cites": 3,
+  "route": [
+   "L0",
+   "answer_L0"
+  ]
+ }
+]

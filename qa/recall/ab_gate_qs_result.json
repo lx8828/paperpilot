@@ -1,0 +1,198 @@
+[
+ {
+  "qid": "02056-02",
+  "intent": "method_detail",
+  "off": {
+   "sec": 22.3,
+   "action": "(no gate)",
+   "pass": true,
+   "issues": [],
+   "calls": 4,
+   "prompt": 33453,
+   "level": "L3",
+   "n_cites": 3,
+   "answer": "你问的“验证校准的歧义区间 [a*, b*]”对应论文中 HyGRAIL 的 GNN triage 机制。该区间通过预设纯度参数 m 和 n（依据各 KG 的正负样本比选择）来确定：HyGRAIL 选取满足“低于 a* 的负样本纯度至少为 "
+  },
+  "on": {
+   "sec": 12.4,
+   "action": "pass",
+   "pass": true,
+   "issues": [],
+   "calls": 5,
+   "prompt": 34562,
+   "level": "L3",
+   "n_cites": 3,
+   "answer": "你问的『验证校准的歧义区间 [a*, b*]』对应论文中 HyGRAIL 的 GNN triage 机制。该区间通过预设纯度参数 m 和 n 确定：HyGRAIL 选择最小的区间 [a*, b*]，使得低于 a* 的验证假设中负例纯度至少为"
+  },
+  "p_off": true,
+  "p_on": true
+ },
+ {
+  "qid": "02056-03",
+  "intent": "method_detail",
+  "off": {
+   "sec": 20.2,
+   "action": "(no gate)",
+   "pass": true,
+   "issues": [],
+   "calls": 4,
+   "prompt": 30344,
+   "level": "L3",
+   "n_cites": 3,
+   "answer": "你问的“路由给 LLM 的假设”对应论文中 HyGRAIL 的“Graph Evidence Retrieval”与“Graph Evidence Naturalization”两个环节。对每个路由假设 h=(u,v,r)，HyGRAIL "
+  },
+  "on": {
+   "sec": 40.7,
+   "action": "pass",
+   "pass": true,
+   "issues": [],
+   "calls": 5,
+   "prompt": 28357,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "你问的“检索什么证据、如何自然化、两种策略的取舍”对应论文第 3.2–3.3 节的内容。\n\n对每个路由给 LLM 的假设 h=(u,v,r)，HyGRAIL 检索两类互补证据：**节点级证据**（每个端点节点 x∈{u,v} 的局部关联，按"
+  },
+  "p_off": true,
+  "p_on": true
+ },
+ {
+  "qid": "02056-04",
+  "intent": "method_detail",
+  "off": {
+   "sec": 8.4,
+   "action": "(no gate)",
+   "pass": true,
+   "issues": [],
+   "calls": 4,
+   "prompt": 29673,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "你问的 LLM review agent 对应论文中的 HyGRAIL 假设评审组件。它对每个被路由的假设 h 输出一个二元决策 dh ∈ {True, False} 和一个置信度分数 qh ∈ [0, 100] [2]。\n\n之所以两者都要"
+  },
+  "on": {
+   "sec": 9.9,
+   "action": "pass",
+   "pass": true,
+   "issues": [],
+   "calls": 5,
+   "prompt": 30869,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "你问的 LLM review agent 对应论文中的 **LLM Hypothesis Review Agent**。它针对每个被路由的假设 h 输出一个二元决策 dh ∈ {True, False} 和一个置信度分数 qh ∈ [0, "
+  },
+  "p_off": true,
+  "p_on": true
+ },
+ {
+  "qid": "02056-06",
+  "intent": "detail",
+  "off": {
+   "sec": 19.1,
+   "action": "(no gate)",
+   "pass": true,
+   "issues": [],
+   "calls": 4,
+   "prompt": 34785,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "你问的实验设置对应论文第 4 节（Experimental Setup）的内容。实验在 MatKG 数据集上进行，这是一个从科学文献自动构建的材料科学知识图谱，实验中采样了其 3,000 节点子图 [8]。数据划分上，每个假设类型的正边按时"
+  },
+  "on": {
+   "sec": 22.4,
+   "action": "pass",
+   "pass": true,
+   "issues": [],
+   "calls": 5,
+   "prompt": 36379,
+   "level": "L3",
+   "n_cites": 3,
+   "answer": "你问的实验设置对应论文第 4 节（Experimental Setup）的内容。实验在 MatKG 数据集上进行，这是一个从科学文献自动构建的材料科学知识图谱，实验中采样了一个约 3,000 节点的子图，并使用 7 种 MatKG 假设类型"
+  },
+  "p_off": true,
+  "p_on": true
+ },
+ {
+  "qid": "02056-07",
+  "intent": "detail",
+  "off": {
+   "sec": 1.8,
+   "action": "(no gate)",
+   "pass": true,
+   "issues": [],
+   "calls": 2,
+   "prompt": 2639,
+   "level": "L0",
+   "n_cites": 1,
+   "answer": "你问的 HyGRAIL 在 MatKG 上的最佳 F1 对应论文中的结果：最佳 F1 分数为 **0.429**[1]。它比最强先前基线（prior baseline）高 **0.242** F1 点[1]，比仅用 GNN 的基线（GNN-"
+  },
+  "on": {
+   "sec": 4.3,
+   "action": "pass",
+   "pass": true,
+   "issues": [],
+   "calls": 3,
+   "prompt": 3436,
+   "level": "L0",
+   "n_cites": 1,
+   "answer": "你问的 HyGRAIL 在 MatKG 上的最佳 F1 对应论文中的结果：最佳 F1 分数为 **0.429**[1]。它比最强 prior baseline 高 **0.242** F1 点[1]，比 GNN-only 基线高 **0.3"
+  },
+  "p_off": true,
+  "p_on": true
+ },
+ {
+  "qid": "02056-U2",
+  "intent": "detail",
+  "off": {
+   "sec": 4.7,
+   "action": "(no gate)",
+   "pass": true,
+   "issues": [],
+   "calls": 4,
+   "prompt": 28404,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "你问的 GNN triage 平均 LLM 调用率对应论文中的 45.64%，即 GNN triage 平均将 LLM 调用率降至 45.64% [3]。最省 LLM 调用的 GNN backbone 是 HGT，其 LLM 调用率仅为 2"
+  },
+  "on": {
+   "sec": 7.1,
+   "action": "pass",
+   "pass": true,
+   "issues": [],
+   "calls": 5,
+   "prompt": 29497,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "你问的 GNN triage 对应论文中的 HyGRAIL 框架中的 GNN 分诊模块。平均而言，GNN triage 将 LLM 调用率降至 45.64% [3]。最省 LLM 调用的 GNN backbone 是 HGT，其 LLM 调"
+  },
+  "p_off": true,
+  "p_on": true
+ },
+ {
+  "qid": "02056-U3",
+  "intent": "detail",
+  "off": {
+   "sec": 5.4,
+   "action": "(no gate)",
+   "pass": true,
+   "issues": [],
+   "calls": 4,
+   "prompt": 29452,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "否，论文的 LLM review agent 没有使用闭源/商用前沿模型（如 GPT、Claude）。论文明确评估了四个开源权重（open-weight）LLM 作为假设审查代理：Qwen3-4B-Instruct-2507、Qwen3-1"
+  },
+  "on": {
+   "sec": 8.5,
+   "action": "pass",
+   "pass": true,
+   "issues": [],
+   "calls": 5,
+   "prompt": 30517,
+   "level": "L3",
+   "n_cites": 2,
+   "answer": "否，论文的 LLM review agent 没有使用闭源/商用前沿模型（如 GPT、Claude）。论文明确评估了四个开源权重（open-weight）LLM 作为假设审查代理：Qwen3-4B-Instruct-2507、Qwen3-1"
+  },
+  "p_off": true,
+  "p_on": true
+ }
+]

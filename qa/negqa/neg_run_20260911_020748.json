@@ -1,0 +1,428 @@
+[
+ {
+  "pdf": "2609.02056v1.pdf",
+  "qid": "02056-H1",
+  "type": "contra",
+  "question": "论文报告在 MatKG 上取得的最佳 F1 分数是 0.618，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文报告在 MatKG 上 HyGRAIL 取得的最佳 F1 分数是 **0.429**，而非 0.618 [1]。该结果较最强先前基线提升 0.242 F1，较仅 GNN 基线提升 0.322 [1]；其中较 TSH 提升 0.242、较最佳 KG-FM 提升 0.256、较仅用 R-GCN 的基线提升 0.322 [6][7]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 3,
+  "time_s": 1.7,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2623,
+   "completion_tokens": 125
+  }
+ },
+ {
+  "pdf": "2609.02056v1.pdf",
+  "qid": "02056-H2",
+  "type": "contra",
+  "question": "论文称 GNN 分诊机制把 LLM 调用率平均降低到了 21.8%，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文中 GNN 分诊是把 LLM 调用率**平均降低 54.36%**[3]，即平均降至 **45.64%**[8]，而不是 21.8%。你问的 21.8% 在给定证据中并无对应表述。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 2,
+  "time_s": 1.0,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2629,
+   "completion_tokens": 80
+  }
+ },
+ {
+  "pdf": "2609.02056v1.pdf",
+  "qid": "02056-H3",
+  "type": "contra",
+  "question": "论文声称 HyGRAIL 相比最强先前基线（TSH）提升了 0.48 的 F1，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文声称 HyGRAIL 在 MatKG 上的最佳 F1 为 0.429，较最强先前基线提升 **0.242** F1，而非 0.48 [1]；具体到 TSH，提升同样是 0.242 F1 [6]。因此“提升 0.48”与论文数据不符。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 2,
+  "time_s": 1.6,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2635,
+   "completion_tokens": 94
+  }
+ },
+ {
+  "pdf": "2609.02056v1.pdf",
+  "qid": "02056-N1",
+  "type": "absent",
+  "question": "论文是否在医疗知识图谱 MIMIC-III 上评估了 HyGRAIL？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。论文并未在 MIMIC-III 上评估 HyGRAIL；其评估数据集是材料科学知识图谱 MatKG，作者从 MatKG 中采样了一个 3,000 节点的子图进行实验 [8]。论文明确说明“We evaluate HyGRAIL on MatKG”，并使用其中七种 MatKG 假设类型进行评估 [8]。此外，全文（含摘要、实验设置与结果）均未提及 MIMIC-III 或任何医疗知识图谱上的评估 [8][9]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "cites_n": 2,
+  "time_s": 24.1,
+  "gen": {
+   "calls": 6,
+   "prompt_tokens": 29585,
+   "completion_tokens": 1895
+  }
+ },
+ {
+  "pdf": "2609.02056v1.pdf",
+  "qid": "02056-N2",
+  "type": "absent",
+  "question": "论文是否使用强化学习来训练 GNN 分诊器？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。论文并未使用强化学习训练 GNN 分诊器，而是用监督式二元交叉熵训练：候选分类器在基于时间戳的训练划分上以二元交叉熵训练，并保持 1:20 的正负样本比 [3]；GNN 在训练图上以观测到的假设边为正样本、采样的未连接类型化节点对为负样本进行训练 [8]。各 GNN 主干分别针对每个目标假设类型单独训练，使用 Adam、学习率 10⁻³、随机种子 42 [3]；R-GCN 主干则训练 120 个 epoch，用 Adam、权重衰减 10⁻⁵，并按验证集最大 F1 选择最佳检查点 [10]。分诊阈值（a*、b*）和 LLM 置信阈值 γ 都是在验证集上校准选择的，而非通过强化学习学得 [2][9]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "cites_n": 5,
+  "time_s": 6.0,
+  "gen": {
+   "calls": 3,
+   "prompt_tokens": 25125,
+   "completion_tokens": 1096
+  }
+ },
+ {
+  "pdf": "2609.03335v1.pdf",
+  "qid": "03335-H1",
+  "type": "contra",
+  "question": "论文声称相比最先进工作流调度器，每个完成会话最多节省 87.4 GPU 秒，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文声称的是相比最先进工作流调度器，每个完成会话最多节省 **24.63 GPU秒**，而非87.4 GPU秒[3]。此外，在GSM8K和MBPP场景下，每完成会话分别节省46.9–47.4%和53.8–56.7%的GPU时间[6]。因此87.4 GPU秒这一数字在给定证据中并无依据。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 2,
+  "time_s": 2.0,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2627,
+   "completion_tokens": 111
+  }
+ },
+ {
+  "pdf": "2609.03335v1.pdf",
+  "qid": "03335-H2",
+  "type": "contra",
+  "question": "论文称其系统整体 p95 完成延迟为 912.5 秒，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文给出的整体 p95 是 **587.0 秒**，而非 912.5 秒；该数值比两个基线低 25.4%–25.9% [5]。你问的“整体 p95 完成延迟”对应论文 Evaluation 中报告的 overall p95 指标 [5]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 1,
+  "time_s": 1.4,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2617,
+   "completion_tokens": 89
+  }
+ },
+ {
+  "pdf": "2609.03335v1.pdf",
+  "qid": "03335-H3",
+  "type": "contra",
+  "question": "论文称三种工作流场景下端到端完成时间最多可降低 52.3%，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文称在异构GPU池的三种工作流场景中，端到端完成时间最多降低的是 **36.8%**，而非 52.3% [2]。同一摘要还指出，突发到达下 p95 完成延迟最多降低 25.9% [2]。因此“最多降低 52.3%”这一说法与论文证据不符。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 1,
+  "time_s": 1.7,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2619,
+   "completion_tokens": 99
+  }
+ },
+ {
+  "pdf": "2609.03335v1.pdf",
+  "qid": "03335-N1",
+  "type": "absent",
+  "question": "论文是否与一个名为 SchedLlama 的基于大模型的调度器做了对比？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。论文的对比基线是 Parrot 和 Kairos 两个调度基线，以及 formula-based 和 GBDT 两种预测器替换 [7][5]；Figure 5 中对比的系统为 Parrot、Kairos、Ours、Oracle [7]。全部条目中均未出现名为 SchedLlama 的调度器，因此论文没有与 SchedLlama 做对比。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "cites_n": 2,
+  "time_s": 10.2,
+  "gen": {
+   "calls": 4,
+   "prompt_tokens": 24083,
+   "completion_tokens": 1155
+  }
+ },
+ {
+  "pdf": "2609.03335v1.pdf",
+  "qid": "03335-N2",
+  "type": "absent",
+  "question": "论文是否在 SE-LongBench 这类软件工程长上下文基准上做了评测？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。论文的评测工作负载由三个应用级场景构成，分别是 GSM8K、Sanitized MBPP 和 QMSum [4]，并未涉及 SE-LongBench 这类软件工程长上下文基准。其中与软件工程最接近的是 Sanitized MBPP 的代码修复工作流 [4]，但它并非长上下文基准。因此，证据中没有任何关于 SE-LongBench 的评测记录。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "cites_n": 1,
+  "time_s": 7.0,
+  "gen": {
+   "calls": 4,
+   "prompt_tokens": 20803,
+   "completion_tokens": 737
+  }
+ },
+ {
+  "pdf": "2609.03718v1.pdf",
+  "qid": "03718-H1",
+  "type": "contra",
+  "question": "论文称单智能体框架在 FoamBench 上达到 78.1%，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文给出的单智能体框架在 FoamBench 上的成绩是 **96.4%**，而非 78.1%：该单智能体框架匹配或超越多智能体专用系统（FoamBench 96.4% vs. 88.2%）[4]。此外，执行反馈修复把 FoamBench 从无修复轮的 71.8% 提升到 96.4%[5]。因此 78.1% 这一数字在给定证据中并不存在，正确数值应为 96.4%。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 2,
+  "time_s": 1.7,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2610,
+   "completion_tokens": 136
+  }
+ },
+ {
+  "pdf": "2609.03718v1.pdf",
+  "qid": "03718-H2",
+  "type": "contra",
+  "question": "论文称 Direct Baseline 在 MCP-SIM 上达到 82.5%，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。你问的 Direct Baseline 在 MCP-SIM 上的表现，对应论文中的结果是：四个现成框架（off-the-shelf harnesses）在 MCP-SIM 上均达到 100%，超过专用系统的 91.7% [8]。论文中并未出现 82.5% 这一数值，因此“达到 82.5%”的说法与证据不符。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 1,
+  "time_s": 1.5,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2610,
+   "completion_tokens": 104
+  }
+ },
+ {
+  "pdf": "2609.03718v1.pdf",
+  "qid": "03718-H3",
+  "type": "contra",
+  "question": "论文称在 FoamBench 上强制阅读教程比无教程提升 28.4 个百分点，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文中 FoamBench 上强制阅读教程（must-read tutorial）相对无教程的提升是 **+15.5 个百分点**，而非 28.4 个百分点 [3]。此外，教程带来的最大增益表述为从 80.9% 提升 [2]，与 28.4 个百分点也不吻合。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 2,
+  "time_s": 1.4,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2618,
+   "completion_tokens": 90
+  }
+ },
+ {
+  "pdf": "2609.03718v1.pdf",
+  "qid": "03718-N1",
+  "type": "absent",
+  "question": "论文是否将基于 GPT-5.4-Vision 的视觉智能体作为对比基线？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。论文的对比基线是 Direct Baseline，即把通用大模型接入现成编码智能体 harness 的最小配置，具体实例为 Claude Opus 4.6、GPT-5.5、DeepSeek V4 和 Qwen3.5-Plus 四个 harness [2][3]。其中 GPT 系列对应的是 Codex CLI 驱动 GPT-5.5 [3]，而非 GPT-5.4-Vision。论文全文未出现 GPT-5.4-Vision 或任何视觉智能体作为对比基线 [1][2][3]。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "cites_n": 3,
+  "time_s": 4.7,
+  "gen": {
+   "calls": 4,
+   "prompt_tokens": 17722,
+   "completion_tokens": 212
+  }
+ },
+ {
+  "pdf": "2609.03718v1.pdf",
+  "qid": "03718-N2",
+  "type": "absent",
+  "question": "论文是否比较了各方法在 SU2 求解器上的仿真表现？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。论文并未比较各方法在 SU2 求解器上的仿真表现。论文评估覆盖的求解器家族为 OpenFOAM、FEniCS、COMSOL、OpenSeesPy、PyChrono 五类 [5]，正文中出现的具体求解器包括 OpenFOAM、FEniCS、COMSOL、PyChrono [3][10]，以及 OpenSeesPy [2]，全文未出现 SU2。",
+  "level": "L3",
+  "route": [
+   "L0",
+   "L3",
+   "answer_L3"
+  ],
+  "cites_n": 4,
+  "time_s": 7.7,
+  "gen": {
+   "calls": 4,
+   "prompt_tokens": 15669,
+   "completion_tokens": 943
+  }
+ },
+ {
+  "pdf": "2609.02786v1.pdf",
+  "qid": "02786-H1",
+  "type": "contra",
+  "question": "论文称在 AgentHarm 上 SafeEvolve 将拒绝率提升至 64.2%，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文中 AgentHarm 上的拒绝率是从 28.98% 提升至 **83.83%**，而非 64.2% [3]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 1,
+  "time_s": 2.9,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2543,
+   "completion_tokens": 55
+  }
+ },
+ {
+  "pdf": "2609.02786v1.pdf",
+  "qid": "02786-H2",
+  "type": "contra",
+  "question": "论文称在 AgentHarm 上危害分数从 71.3 降至 30.6，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。论文中 AgentHarm 上的危害分数是从 56.45 降至 12.27，拒绝率从 28.98% 提升至 83.83% [3]，并非你所说的 71.3 降至 30.6。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 1,
+  "time_s": 1.4,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2541,
+   "completion_tokens": 75
+  }
+ },
+ {
+  "pdf": "2609.02786v1.pdf",
+  "qid": "02786-H3",
+  "type": "contra",
+  "question": "论文报告在 Qwen3-4B 上 AgentDojo 的 ASR 从 22.4% 降至 6.9%，对吗？",
+  "expect": "no",
+  "verdict": "OK(给出真值)",
+  "answer": "不对。你问的 Qwen3-4B 上 AgentDojo 的 ASR 变化，论文报告的是从 13.38 降至 2.42，而非 22.4% 降至 6.9% [5]。同一结果还提到该模型上 AgentDojo 效用从 44.33 提升至 60.82 [5]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 1,
+  "time_s": 1.7,
+  "gen": {
+   "calls": 2,
+   "prompt_tokens": 2563,
+   "completion_tokens": 101
+  }
+ },
+ {
+  "pdf": "2609.02786v1.pdf",
+  "qid": "02786-N1",
+  "type": "absent",
+  "question": "论文是否将 SafeEvolve 应用于 Gemini 系列模型？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。论文中 SafeEvolve 的实验仅涉及 Qwen 系列骨干模型：在 Qwen3.5-4B 上实现 AgentDojo 的 ASR 降低 3 倍、良性效用从 59.79% 提升至 61.86% [2]，在 Qwen3-4B 上效用从 44.33 提升至 60.82、ASR 从 13.38 降至 2.42 [5]，并在 AgentHarm 上把危害分数从 56.45 降至 12.27、拒绝率从 28.98% 提升至 83.83% [3]。全部证据中均未出现 Gemini 系列模型，因此论文没有将 SafeEvolve 应用于 Gemini。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 3,
+  "time_s": 4.6,
+  "gen": {
+   "calls": 3,
+   "prompt_tokens": 3483,
+   "completion_tokens": 221
+  }
+ },
+ {
+  "pdf": "2609.02786v1.pdf",
+  "qid": "02786-N2",
+  "type": "absent",
+  "question": "论文的评估是否包含 APPS 代码生成基准？",
+  "expect": "refuse",
+  "verdict": "OK-REFUSE(诚实拒答)",
+  "answer": "否。根据提供的论文概述与全部证据条目，SafeEvolve 的评估基准只提到 AgentDojo [2][5] 和 AgentHarm [3]，未出现 APPS 代码生成基准的任何内容 [1][2][3][4][5][6]。",
+  "level": "L0",
+  "route": [
+   "L0",
+   "answer_L0"
+  ],
+  "cites_n": 6,
+  "time_s": 5.3,
+  "gen": {
+   "calls": 3,
+   "prompt_tokens": 3401,
+   "completion_tokens": 110
+  }
+ }
+]

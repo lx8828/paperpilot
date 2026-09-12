@@ -1,0 +1,812 @@
+[
+ {
+  "column": "B0",
+  "pid": "2001.05467",
+  "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much better were results of the proposed models than base LSTM-RNN model?",
+  "answer": "根据论文全文，所提出的模型在多样性和相关性上都大幅优于基础 LSTM-RNN 模型。具体而言：\n\n- 在自动评估中，所有四个模型（MinAvgOut、LFT、RL 以及 MinAvgOut+RL 混合模型）在多样性和相关性指标上均“by a large margin”优于基础 LSTM-RNN 模型。\n- 在多样性方面，所有模型在句子级多样性上显著优于 VHRED，更不用说 LSTM；在 unigram 多样性上也优于 LSTM；bigram 和 trigram 图显示所有模型都比 LSTM 更多样，但 RL 的多样性低于其他模型。\n- 在相关性方面，F1 结果显示，随着回复变得更多样，它们更可能包含与输入上下文更相关、更具体的信息，从而使模型在多样性和相关性上同时获益。\n- 在人工评估中，所有模型在 Plausibility 和 Content Richness 两个标准上都统计显著地优于基线模型，但 RL 在 Content Richness 上略弱。\n\n论文没有给出具体的数值提升幅度，只说明是“by a large margin”以及统计显著。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确，但遗漏了具体数值提升幅度，且未引用原文。",
+  "status": "fail",
+  "time_s": 5.8,
+  "time_s_ans": 1.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5664,
+   "completion_tokens": 241
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 562,
+   "completion_tokens": 33
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1904.04055",
+  "qid": "7e328cc3cffa521e73f111d6796aaa9661c8eb07",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What is specific about the specific embeddings?",
+  "answer": "The specific embeddings used in the recognition of temporal expressions are the KGR10 FastText word embeddings. Their specificity lies in the following:\n\n1. **Corpus size and source**: They were built using the KGR10 corpus, which contains more than 4 billion words (4,015,569,051 tokens and 18,084,712 unique words). The corpus was created by extending KGR7 using the CorpoGrabber toolchain and DMOZ links.\n\n2. **Subword information**: The embeddings were created using the FastText tool with CBOW and Skip-gram methods. The internal encoding based on embeddings of character n-grams composing each ",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答准确，但遗漏了标准答案中提到的关于预测任务和分布假设的细节。",
+  "status": "pass",
+  "time_s": 5.3,
+  "time_s_ans": 1.8,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3459,
+   "completion_tokens": 307
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 832,
+   "completion_tokens": 36
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1809.08652",
+  "qid": "790ed4458a23aa23e2b5399259e50083c86d9e14",
+  "qtype": "yes_no",
+  "unanswerable": false,
+  "question": "Do all the instances contain code-switching?",
+  "answer": "根据论文全文，无法确认是否所有实例都包含语码转换（code-switching）。论文中并未明确说明数据集中是否所有实例都包含语码转换，只提到研究的是 Hindi 和 English 的语码转换对（Hinglish），以及使用 HEOT 和 BIBREF1 的数据集进行 offensive、abusive 和 none（benign）三类标注。因此，材料不足以回答“是否所有实例都包含 code-switching”。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确，但遗漏了标准答案中关于数据集处理步骤的细节，这些细节可能有助于判断是否所有实例都包含语码转换。",
+  "status": "fail",
+  "time_s": 4.9,
+  "time_s_ans": 1.2,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 1356,
+   "completion_tokens": 97
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 455,
+   "completion_tokens": 48
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1907.00854",
+  "qid": "2c3b2c3bab6d18cb0895462e3cfd91cd0dee7f7d",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what pretrained models were used?",
+  "answer": "Based on the paper, the pretrained models used in Katecheo are:\n\n1. **Topic Classification (NER models):**\n   - For the **Medical Sciences** topic: the `en_ner_bc5cdr_md` model from **scispaCy**, which is trained on the BC5CDR corpus.\n   - For the **Christianity** topic: a **custom spaCy NER model** trained on annotated data from the GotQuestions website.\n\n2. **Reading Comprehension:**\n   - A pretrained version of **BiDAF** (Bi-Directional Attention Flow) available in the **AllenNLP** library. This BiDAF model includes a CNN-based character-level embedding layer, a word embedding layer using p",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了标准答案中提到的BERT模型。",
+  "status": "pass",
+  "time_s": 4.1,
+  "time_s_ans": 1.3,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3346,
+   "completion_tokens": 224
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 540,
+   "completion_tokens": 30
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1908.06606",
+  "qid": "1959e0ebc21fafdf1dd20c6ea054161ba7446f61",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How is the clinical text structuring task defined?",
+  "answer": "The clinical text structuring (CTS) task is defined as extracting or generating a key-value pair from a sequence of paragraph text \\(X=<x_1, x_2, ..., x_n>\\), where the key \\(Q\\) is typically a query term (such as proximal resection margin) and the value \\(V\\) is the result of query term \\(Q\\) according to the paragraph text \\(X\\).",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确地定义了临床文本结构任务，但遗漏了任务在从电子健康记录中获取医疗研究数据的重要性，以及与QA-CTS任务的区别。",
+  "status": "fail",
+  "time_s": 5.8,
+  "time_s_ans": 1.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5849,
+   "completion_tokens": 81
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 398,
+   "completion_tokens": 51
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1910.08210",
+  "qid": "37e8f5851133a748c4e3e0beeef0d83883117a98",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How better is performance of proposed model compared to baselines?",
+  "answer": "根据论文，提出的模型 txt2π 在性能上优于基线模型，具体表现如下：\n\n1. **样本效率与最终胜率**：在 RTFM 的简化变体（一对一团队分配、静止怪物、无自然语言模板描述）上，与 FiLM 和语言条件 CNN 基线以及消融变体相比，txt2π 样本效率更高，并收敛到更高的性能（见 Experiments 部分 \"Comparison to baselines and ablations\"）。\n\n2. **泛化能力**：在未见过的评估环境（dynamics 和世界配置均未在训练中出现）上，除 CNN 基线外所有模型都能泛化，但 txt2π 优于 FiLM 和 CNN 模型（见同节及 Table FIGREF29）。\n\n3. **在 RTFM 上的表现**：在 RTFM 上，txt2π 在训练环境 dynamics 和留出环境 dynamics 上均优于 FiLM，且最终性能方差更小；FiLM 又优于 CNN 模型（见附录 \"txt2π is more sample-efficient and learns better policies\" 及 Figure FIGREF51）。\n\n4. **迁移学习**：在引入新边和新节点的留出环境上，所有模型从训练环境迁移时都显著更样本高效，而 txt2π 在迁移时仍比 FiLM 和 CNN 更样本高效（见附录 \"Reading model",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了具体的数值提升幅度，这是标准答案中明确提到的关键信息。",
+  "status": "pass",
+  "time_s": 6.5,
+  "time_s_ans": 2.6,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 6072,
+   "completion_tokens": 418
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 709,
+   "completion_tokens": 37
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1704.00939",
+  "qid": "6407dae0c095c2c8e15e6769f03925aa4f0e902e",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "How long is the dataset used for training?",
+  "answer": "The training set contains 1142 annotated sentences.",
+  "level": "",
+  "route": [],
+  "score": 2,
+  "reason": "回答了数据集的大小，但没有明确说明是用于训练的数据集。",
+  "status": "fail",
+  "time_s": 2.9,
+  "time_s_ans": 0.7,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 1801,
+   "completion_tokens": 10
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 217,
+   "completion_tokens": 32
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1611.03382",
+  "qid": "81e8d42dad08a58fe27eea838f060ec8f314465e",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What is the state-of-the art?",
+  "answer": "The paper states that its approach achieves **state-of-the-art performance** on the **Gigaword dataset** and the **DUC competition** for abstractive summarization.\n\nSpecifically:\n\n- On **Gigaword**, the Read-Again models outperform the baselines on all ROUGE scores, and adding the copy mechanism further improves performance. The Multiple-Sentences model achieves the best performance.\n- On **DUC2004**, the method outperforms all previous methods on **Rouge-1** and **Rouge-L**, and is comparable on **Rouge-2**, while using only a **15k decoder vocabulary**, compared with previous methods that us",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了关于RNN decoder和RNN encoder-decoder的具体描述，以及关于如何处理整个文本中每个词的条件编码的细节。",
+  "status": "pass",
+  "time_s": 5.2,
+  "time_s_ans": 1.5,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5002,
+   "completion_tokens": 184
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 701,
+   "completion_tokens": 50
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1910.03484",
+  "qid": "a65e5c97ade6e697ec10bcf3c3190dc6604a0cd5",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What non-annotated datasets are considered?",
+  "answer": "The paper considers two datasets for its semi-supervised learning approach, both of which are split into paired (annotated) and unpaired (non-annotated) portions:\n\n1. **E2E NLG Challenge Dataset**: The training set of 42K samples was partitioned into a 10K paired set and a 32K unpaired set. The unpaired data consisted of two separate sets—one containing only Meaning Representations (MRs) and the other containing only natural language texts.\n\n2. **Wikipedia Company Dataset**: After filtering, 35K companies were used for training. This was partitioned into a paired set (10.5K) and unpaired sets ",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了原文中关于Wikipedia Company Dataset的具体描述。",
+  "status": "pass",
+  "time_s": 3.4,
+  "time_s_ans": 1.6,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 6688,
+   "completion_tokens": 214
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 589,
+   "completion_tokens": 33
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1702.06589",
+  "qid": "bf7cb53f4105f2e6a413d1adef5349ff1e673500",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What is the source of the paraphrases of the questions?",
+  "answer": "The paraphrases of the questions are generated by transforming the candidate logical forms (programs) back into interpretable textual representations. Specifically, the paper states that logical forms are transformed into paraphrases using a simple algorithm (Algorithm 1), which recursively traverses the tree representation of the logical form starting at the root. For example, the logical form for \"How many people attended the last Rolling Stones concert?\" is mapped to the paraphrase \"Attendance as number of last table row where act is Rolling Stones.\"",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答提到了生成方法，但没有提及数据集来源，与标准答案不符。",
+  "status": "fail",
+  "time_s": 3.2,
+  "time_s_ans": 0.8,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3161,
+   "completion_tokens": 100
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 354,
+   "completion_tokens": 33
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1606.02006",
+  "qid": "102a0439739428aac80ac11795e73ce751b93ea1",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What datasets were used?",
+  "answer": "The datasets used were **KFTT** and **BTEC** for English-to-Japanese translation experiments, and the larger **ASPEC** dataset for Japanese-English follow-up experiments.",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地提到了KFTT和BTEC，但增加了ASPEC dataset，这并未在标准答案中提及。",
+  "status": "fail",
+  "time_s": 6.1,
+  "time_s_ans": 0.9,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5868,
+   "completion_tokens": 37
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 354,
+   "completion_tokens": 43
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1912.07025",
+  "qid": "79bb1a1b71a1149e33e8b51ffdb83124c18f3e9c",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What accuracy does CNN model achieve?",
+  "answer": "The paper does not report a single overall \"accuracy\" value for the CNN model. Instead, it reports instance segmentation metrics: Average Precision (AP), specifically \\(AP_{50}\\), \\(AP_{75}\\), and an overall AP averaged over IoU thresholds 0.5 to 0.95, as well as class-wise average IoU (cwIoU) and class-wise per-pixel accuracy (cwAcc). The exact numerical values are given in Table 14 and Table 15, but those tables are not included in the provided text. Therefore, the specific accuracy values cannot be determined from the available material.",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了论文中未提供整体准确率，并提到了其他相关指标，但遗漏了标准答案中提到的具体数值74.79。",
+  "status": "fail",
+  "time_s": 4.5,
+  "time_s_ans": 0.8,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5373,
+   "completion_tokens": 124
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 376,
+   "completion_tokens": 50
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1911.03562",
+  "qid": "205163715f345af1b5523da6f808e6dbf5f5dd47",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How many papers are used in experiment?",
+  "answer": "Based on the paper, the number of papers used in the experiment is **44,896 articles**.\n\nThe paper states: \"We are then left with 44,896 articles\" after discarding entries that are not truly research publications (such as forewords, prefaces, table of contents, programs, etc.) from the approximately 50K entries in the ACL Anthology as of June 2019.",
+  "level": "",
+  "route": [],
+  "score": 5,
+  "reason": "系统回答准确引用了原文，并提供了完整的解释。",
+  "status": "pass",
+  "time_s": 4.7,
+  "time_s_ans": 0.7,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 12113,
+   "completion_tokens": 82
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 460,
+   "completion_tokens": 29
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1909.13362",
+  "qid": "d71cb7f3aa585e256ca14eebdc358edfc3a9539c",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "Which models achieve state-of-the-art performances?",
+  "answer": "Based on the paper, the following models achieve state-of-the-art or near state-of-the-art performances:\n\n1. **The proposed Base model (BiLSTM-CNN-CRF)** — It achieves best-known results on the **Dutch, Italian, French, and Basque** datasets, and is near state-of-the-art on **English CELEX**. Specifically, it reports **99.47 ± 0.04%** on Dutch, improving on the previously best-known accuracy of **99.16%** from the HMM-SVM of BIBREF12.\n\n2. **The HMM-SVM of BIBREF12** — Previously held the best-known accuracy on Dutch (**99.16%**), before being surpassed by the proposed Base model.\n\n3. **The Ent",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但缺少了标准答案中提到的其他模型，如CELEX (Dutch and English) - SVM-HMM, Festival, E-Hitz and OpenLexique - Liang hyphenation, IIT-Guwahat - Entropy CRF。",
+  "status": "pass",
+  "time_s": 6.9,
+  "time_s_ans": 1.9,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5961,
+   "completion_tokens": 316
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 596,
+   "completion_tokens": 72
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "2003.07433",
+  "qid": "53712f0ce764633dbb034e550bb6604f15c0cacd",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "Do they evaluate only on English datasets?",
+  "answer": "Yes. The paper states that users were filtered out if their tweets were not at least 75% in English (measured using an automated language ID system). The experimental evaluation was conducted on the collected dataset of 210 clinically validated veteran Twitter users, and the tweets analyzed were English-language tweets. There is no mention of evaluating on non-English datasets.",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但未引用原文支撑。",
+  "status": "pass",
+  "time_s": 3.0,
+  "time_s_ans": 1.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 6479,
+   "completion_tokens": 69
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 277,
+   "completion_tokens": 26
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "2001.08051",
+  "qid": "d7d611f622552142723e064f330d071f985e805c",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How many utterances are in the corpus?",
+  "answer": "根据论文全文，无法给出语料库中话语（utterances）的确切总数。文中提到 Table 报告了已获取口语数据的统计信息，但该表格内容未在提供的全文中给出，因此无法得知具体数量。",
+  "level": "",
+  "route": [],
+  "score": 2,
+  "reason": "系统回答未能准确引用原文中的具体数字，而是给出了无法确定答案的理由。",
+  "status": "fail",
+  "time_s": 3.9,
+  "time_s_ans": 0.8,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5187,
+   "completion_tokens": 49
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 307,
+   "completion_tokens": 34
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1912.00864",
+  "qid": "572458399a45fd392c3a4e07ce26dcff2ad5a07d",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much more accurate is the model than the baseline?",
+  "answer": "The paper does not report a single overall percentage improvement in accuracy over the baselines. Instead, it reports results in several ways:\n\n- **Automatic metrics:** The model (NAGM) achieved much higher ROUGE-L and BLEU-4 scores than the tested baselines, especially CLSTM, but the paper does not state a single “X% more accurate” figure.\n- **Human evaluation:** Human experts were much more satisfied with NAGM outputs than with CLSTM outputs, but the paper reports these as rating percentages rather than as a relative accuracy improvement.\n- **Online evaluation:** In the “Love Advice” service",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了具体数值，如ROUGE-L和BLEU-4的具体分数差异。",
+  "status": "pass",
+  "time_s": 5.9,
+  "time_s_ans": 1.7,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 7914,
+   "completion_tokens": 231
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 770,
+   "completion_tokens": 39
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "2002.08307",
+  "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much is pre-training loss increased in Low/Medium/Hard level of pruning?",
+  "answer": "根据论文全文，**没有给出 Low/Medium/High 三档剪枝下预训练损失增加的具体数值**。论文只做了定性描述：\n\n- **Low levels of pruning (30–40%)**：不增加预训练损失（\"do not increase pre-training loss\"）。\n- **Medium levels of pruning**：会增加预训练损失（\"increase the pre-training loss\"），但没有给出具体增加多少。\n- **High levels of pruning**：论文提到会进一步阻止模型拟合下游数据集，但同样没有给出预训练损失增加的具体数值。\n\n论文中预训练损失的具体结果放在 Table TABREF27 中，但该表格内容未在提供的全文里展开，因此无法从现有材料中提取具体数值。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了论文中没有给出具体数值，并提供了对预训练损失增加的定性描述，但遗漏了标准答案中提到的具体数值。",
+  "status": "fail",
+  "time_s": 4.8,
+  "time_s_ans": 1.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4827,
+   "completion_tokens": 152
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 479,
+   "completion_tokens": 50
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1902.00330",
+  "qid": "0481a8edf795768d062c156875d20b8fb656432c",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what are the mentioned cues?",
+  "answer": "The paper mentions \"the cues of previously disambiguated entities\" in the Abstract. Specifically, it states that previous global models usually ignore \"the cues of previously disambiguated entities, which could contribute to the disambiguation of the subsequent mentions.\" In the Introduction, this idea is further explained: \"if we start with mentions that are easier to disambiguate and gain correct results, it will be effective to utilize information provided by previously referred entities to disambiguate subsequent mentions.\" The paper also refers to \"the information of previously referred e",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确地提到了“先前解歧实体的线索”，但遗漏了标准答案中提到的具体细节，如gold和evidence的具体定义。",
+  "status": "fail",
+  "time_s": 6.1,
+  "time_s_ans": 1.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 8333,
+   "completion_tokens": 136
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 500,
+   "completion_tokens": 47
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "2003.07758",
+  "qid": "ead5dc1f3994b2031a1852ecc4f97ac5760ea977",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How many category tags are considered?",
+  "answer": "根据论文全文，材料中并未说明具体考虑了多少个 category tags。论文只提到从 YouTube API 获取了每个可用 ActivityNet Captions 验证视频的类别标签，并按类别进行了性能对比分析，但没有给出所考虑的类别标签数量。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了论文中没有明确说明类别标签的数量，但遗漏了标准答案中提到的具体类别数量信息。",
+  "status": "fail",
+  "time_s": 5.3,
+  "time_s_ans": 1.3,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 9038,
+   "completion_tokens": 52
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 302,
+   "completion_tokens": 43
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1707.00995",
+  "qid": "ec91b87c3f45df050e4e16018d2bf5b62e4ca298",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What is the baseline used?",
+  "answer": "The baseline used is the multimodal NMT model proposed by CalixtoLC17b (BIBREF6), which is a doubly-attentive decoder. The paper states: \"We notice a nice overall progress over BIBREF6 CalixtoLC17b multimodal baseline\" and \"even though our baseline NMT model is basically the same as BIBREF6 CalixtoLC17b, our experiments results are slightly better.\"",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答提供了使用的基线模型，但未引用原文，且未说明无答案的情况。",
+  "status": "fail",
+  "time_s": 3.5,
+  "time_s_ans": 0.9,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5320,
+   "completion_tokens": 92
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 296,
+   "completion_tokens": 37
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1707.00110",
+  "qid": "6e8c587b6562fafb43a7823637b84cd01487059a",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much is the BLEU score?",
+  "answer": "The paper does not report a single overall BLEU score. It reports BLEU scores in different experimental settings:\n\n- **Toy Copying Experiment**: Table 1 shows BLEU scores for different sequence lengths while varying \\(K\\). The paper states that performance consistently increases with \\(K\\) up to a point depending on data length, and that both the proposed method and the standard attention mechanism beat the non-attention baseline by a significant margin. However, the exact BLEU numbers are not provided in the text.\n\n- **Machine Translation**: The paper reports BLEU on newstest2016 for WMT'17 d",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了标准答案中提到的具体范围（44.22到100.00）。",
+  "status": "pass",
+  "time_s": 5.3,
+  "time_s_ans": 1.3,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4616,
+   "completion_tokens": 244
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 482,
+   "completion_tokens": 38
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1908.02402",
+  "qid": "f1bd66bb354e3dabf5dc4a71e6f08b17d472ecc9",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How do slot binary classifiers improve performance?",
+  "answer": "Slot binary classifiers improve performance in two main ways, according to the paper:\n\n1. **Response slot binary classifiers** add extra supervision to generate the slots that will be present in the response more precisely before generating the final textual agent response. The paper states that FSDM performing better than FSDM/Res (the ablation without the response slot decoder) shows the effectiveness of the response slot decoder for task completion.\n\n2. **Requestable slot binary classifiers** perform binary classification for each slot separately, which greatly resolves the issues of TSCP t",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答准确，但遗漏了原文中提到的关于如何实现灵活性和处理未知词汇的细节。",
+  "status": "pass",
+  "time_s": 6.0,
+  "time_s_ans": 2.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 7830,
+   "completion_tokens": 213
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 655,
+   "completion_tokens": 37
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1907.02030",
+  "qid": "4b0ba460ae3ba7a813f204abd16cf631b871baca",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How is an incoming claim used to retrieve similar factchecked claims?",
+  "answer": "Based on the paper, an incoming claim is compared to an existing corpus of claims using text embeddings, and similar factchecked claims are retrieved from a live system. Specifically, the method uses Google's Universal Sentence Encoder (USE) Large to create a vector representation of the incoming claim, then performs distance calculations between this claim and every existing claim. Claims whose distance is below a threshold are linked in a graph, and Louvain Community Detection is run over the connected subgraph featuring the new claim to determine clusters. This allows factcheckers to work s",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了关于数据稀疏问题和维度约简方法（如LDA）的细节。",
+  "status": "pass",
+  "time_s": 3.7,
+  "time_s_ans": 0.9,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3310,
+   "completion_tokens": 134
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 581,
+   "completion_tokens": 40
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "2002.10361",
+  "qid": "38c74ab8292a94fc5a82999400ee9c06be19f791",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How large is the corpus?",
+  "answer": "The paper does not provide a single total size for the corpus. It reports corpus statistics in Table TABREF8 and full demographic distributions in Table TABREF9, but the actual numbers are not included in the provided text. What is stated is that the corpus covers five languages (English, Italian, Polish, Portuguese, and Spanish), and that the Polish data has the smallest number of users because it focuses on people who own the most popular accounts, while the other datasets collected tweets randomly.",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确指出了论文没有提供总大小，并提到了包含的语言和用户数据，但遗漏了具体文档数量这一关键信息。",
+  "status": "fail",
+  "time_s": 5.4,
+  "time_s_ans": 1.2,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5509,
+   "completion_tokens": 97
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 364,
+   "completion_tokens": 46
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1910.02339",
+  "qid": "4c7ac51a66c15593082e248451e8f6896e476ffb",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What is the performance proposed model achieved on AlgoList benchmark?",
+  "answer": "The paper reports that TP-N2F achieves state-of-the-art performance on the AlgoLisp dataset (referred to in the question as \"AlgoList\"). Specifically, it outperforms all existing models on both the full test set and the cleaned test set, as shown in Table TABREF18. The evaluation metrics used are: accuracy of passing all test cases (Acc), accuracy of passing 50% of test cases (50p-Acc), and accuracy of generating an exactly matching program (M-Acc). However, the actual numerical values of these results are not provided in the text—they are only referenced as being presented in Table TABREF18, ",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确地指出了模型在AlgoLisp数据集上的性能，但遗漏了具体数值，且未提及Full Testing Set Accuracy和Cleaned Testing Set Accuracy。",
+  "status": "fail",
+  "time_s": 6.7,
+  "time_s_ans": 1.2,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 12672,
+   "completion_tokens": 143
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 380,
+   "completion_tokens": 53
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1803.07771",
+  "qid": "0b9021cefca71081e617a362e7e3995c5f1d2a88",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What are the other models they compare to?",
+  "answer": "The paper compares the proposed method against the following models:\n\n- **BOW** (bag-of-words with TF-IDF features and ridge regression as classifier)\n- **CNN** (a three-channel CNN)\n- **LSTM** (one-layer and two-layer bi-LSTM with attention)\n- **CNN-C** (CNN with Chinese character embedding)\n- **CNN-W** (CNN with Chinese word embedding)\n- **CNN-Lex-C** (CNN integrating polar words proposed by Shin et al., with Chinese character embedding)\n- **CNN-Lex-W** (CNN integrating polar words proposed by Shin et al., with Chinese word embedding)\n- **Bi-LSTM-C** (bi-LSTM with Chinese character embedding",
+  "level": "",
+  "route": [],
+  "score": 5,
+  "reason": "系统回答完整地列出了论文中比较的所有模型，与标准答案一致。",
+  "status": "pass",
+  "time_s": 3.2,
+  "time_s_ans": 1.3,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 7659,
+   "completion_tokens": 228
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 544,
+   "completion_tokens": 34
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1911.03243",
+  "qid": "96526a14820b7debfd6f7c5beeade0a854b93d1a",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How was the corpus obtained?",
+  "answer": "The corpus was obtained through a crowdsourcing process on Amazon's Mechanical Turk. Each predicate was annotated independently by two trained crowd workers, and a third worker consolidated their annotations into a final set of roles and arguments. Workers were selected after several short training rounds with personal feedback, and only 1 out of 3 participants were selected based on performance tested against expert annotations. The annotated sample was taken from the Dense set on Wikinews and Wikipedia domains, each with 1000 sentences, equally divided between development and test.",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但缺少了关于数据集规模和召回率的细节。",
+  "status": "pass",
+  "time_s": 3.9,
+  "time_s_ans": 1.5,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3162,
+   "completion_tokens": 105
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 394,
+   "completion_tokens": 32
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "2003.07433",
+  "qid": "7081b6909cb87b58a7b85017a2278275be58bf60",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How many twitter users are surveyed using the clinically validated survey?",
+  "answer": "210 twitter users are surveyed using the clinically validated survey.",
+  "level": "",
+  "route": [],
+  "score": 5,
+  "reason": "系统回答与标准答案完全一致，没有遗漏关键信息。",
+  "status": "pass",
+  "time_s": 3.1,
+  "time_s_ans": 0.6,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 6483,
+   "completion_tokens": 11
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 472,
+   "completion_tokens": 30
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B0",
+  "pid": "1809.10644",
+  "qid": "a3f108f60143d13fe38d911b1cc3b17bdffde3bd",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "what was their system's f1 performance?",
+  "answer": "The paper does not report a single overall F1 score for their system. Instead, it reports performance on three datasets (SR, HATE, and HAR) using weighted F1, with results shown in Table 10 (not included in the provided text). The paper states that their approach \"establishes a new state of the art for classifying hate speech, outperforming previous results by as much as 12 F1 points,\" and that on the SR dataset they outperform BIBREF8's text-based model by 3 F1 points. However, the specific F1 numbers for each dataset are not provided in the text.",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了论文中未提供整体F1分数，并提到了在三个数据集上的加权F1分数，但遗漏了具体数值。",
+  "status": "fail",
+  "time_s": 5.9,
+  "time_s_ans": 1.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3407,
+   "completion_tokens": 127
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 369,
+   "completion_tokens": 50
+  },
+  "cites_n": 0
+ }
+]

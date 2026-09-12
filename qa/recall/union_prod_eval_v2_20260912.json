@@ -1,0 +1,729 @@
+{
+ "res": {
+  "num": {
+   "0": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true
+   ],
+   "2": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true
+   ],
+   "3": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true
+   ]
+  },
+  "or": {
+   "0": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    false,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "2": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "3": [
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ]
+  }
+ },
+ "detail": [
+  {
+   "qid": "1771a55236823ed44d3ee537de2e85465bf03eaf",
+   "pid": "2002.11402",
+   "keys": [
+    "table2",
+    "table3"
+   ],
+   "nums": [
+    "25.03",
+    "42.91",
+    "43.36",
+    "49.88",
+    "62.43",
+    "69.8"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "1d74fd1d38a5532d20ffae4abbadaeda225b6932",
+   "pid": "2002.11402",
+   "keys": [
+    "table2",
+    "table3"
+   ],
+   "nums": [
+    "59.56",
+    "68.66",
+    "69.76",
+    "80.08"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "5a0841cc0628e872fe473874694f4ab9411a1d10",
+   "pid": "1701.00185",
+   "keys": [
+    "table6",
+    "table7"
+   ],
+   "nums": [
+    "3.91",
+    "5.77",
+    "6.72",
+    "6.94"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "0fd678d24c86122b9ab27b73ef20216bbd9847d1",
+   "pid": "1804.08139",
+   "keys": [
+    "table2"
+   ],
+   "nums": [],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": false
+    },
+    "2": {
+     "num": false,
+     "or": false
+    },
+    "3": {
+     "num": false,
+     "or": false
+    }
+   }
+  },
+  {
+   "qid": "dccc3b182861fd19ccce5bd00ce9c3f40451ed6e",
+   "pid": "1909.00088",
+   "keys": [
+    "figure4",
+    "table9"
+   ],
+   "nums": [],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": false
+    },
+    "2": {
+     "num": false,
+     "or": false
+    },
+    "3": {
+     "num": false,
+     "or": false
+    }
+   }
+  },
+  {
+   "qid": "9555aa8de322396a16a07a5423e6a79dcd76816a",
+   "pid": "1611.03382",
+   "keys": [
+    "table2"
+   ],
+   "nums": [
+    "0.45",
+    "0.98"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "38c74ab8292a94fc5a82999400ee9c06be19f791",
+   "pid": "2002.10361",
+   "keys": [
+    "table1"
+   ],
+   "nums": [
+    "106350"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "16af38f7c4774637cf8e04d4b239d6d72f0b0a3a",
+   "pid": "2002.10361",
+   "keys": [
+    "table1"
+   ],
+   "nums": [
+    "104"
+   ],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": false
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "9c4a4dfa7b0b977173e76e2d2f08fa984af86f0e",
+   "pid": "1910.02339",
+   "keys": [
+    "table2"
+   ],
+   "nums": [
+    "84.02",
+    "93.48"
+   ],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": false
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "05671d068679be259493df638d27c106e7dd36d0",
+   "pid": "1910.02339",
+   "keys": [
+    "table1"
+   ],
+   "nums": [
+    "55.95",
+    "71.89"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+   "pid": "2002.08307",
+   "keys": [
+    "figure2"
+   ],
+   "nums": [
+    "2.0",
+    "3.5",
+    "6.0"
+   ],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": true
+    },
+    "2": {
+     "num": false,
+     "or": true
+    },
+    "3": {
+     "num": false,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "75b69eef4a38ec16df63d60be9708a3c44a79c56",
+   "pid": "2002.05058",
+   "keys": [
+    "table1",
+    "table2"
+   ],
+   "nums": [
+    "0.148",
+    "0.302",
+    "0.341",
+    "0.387",
+    "0.472",
+    "0.553",
+    "0.631",
+    "0.783"
+   ],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": false
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+   "pid": "2001.05467",
+   "keys": [
+    "table1"
+   ],
+   "nums": [
+    "4.6",
+    "6.87"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "8a5254ca726a2914214a4c0b6b42811a007ecfc6",
+   "pid": "2002.06675",
+   "keys": [
+    "table1"
+   ],
+   "nums": [],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": false
+    },
+    "2": {
+     "num": false,
+     "or": false
+    },
+    "3": {
+     "num": false,
+     "or": false
+    }
+   }
+  },
+  {
+   "qid": "2d307b43746be9cedf897adac06d524419b0720b",
+   "pid": "1803.07771",
+   "keys": [
+    "table1"
+   ],
+   "nums": [
+    "11264",
+    "11291",
+    "3483",
+    "3825",
+    "4100",
+    "8118"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "579941de2838502027716bae88e33e79e69997a6",
+   "pid": "1909.13375",
+   "keys": [
+    "table2"
+   ],
+   "nums": [
+    "1.55",
+    "2.1",
+    "202",
+    "298",
+    "311",
+    "439"
+   ],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": false
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "d484a71e23d128f146182dccc30001df35cdf93f",
+   "pid": "1909.00279",
+   "keys": [
+    "table3"
+   ],
+   "nums": [
+    "105.79",
+    "5.50",
+    "6.57",
+    "65.58"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "c0035fb1c2b3de15146a7ce186ccd2e366fb4da2",
+   "pid": "1603.00968",
+   "keys": [
+    "table1"
+   ],
+   "nums": [
+    "0.5",
+    "2.0"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "e09e89b3945b756609278dcffb5f89d8a52a02cd",
+   "pid": "1808.06834",
+   "keys": [],
+   "nums": [
+    "5575"
+   ],
+   "hits": {
+    "0": {
+     "num": false,
+     "or": true
+    },
+    "2": {
+     "num": false,
+     "or": true
+    },
+    "3": {
+     "num": false,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "b0376a7f67f1568a7926eff8ff557a93f434a253",
+   "pid": "1902.00330",
+   "keys": [
+    "table3"
+   ],
+   "nums": [
+    "0.6",
+    "0.86",
+    "1.3",
+    "2004"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "a02696d4ab728ddd591f84a352df9375faf7d1b4",
+   "pid": "1605.07683",
+   "keys": [
+    "table1"
+   ],
+   "nums": [
+    "1117",
+    "1618",
+    "500"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  },
+  {
+   "qid": "3aee5c856e0ee608a7664289ffdd11455d153234",
+   "pid": "1810.00663",
+   "keys": [
+    "table3"
+   ],
+   "nums": [
+    "0.75",
+    "1.22",
+    "41.71",
+    "41.81",
+    "61.17",
+    "61.36",
+    "91.02",
+    "93.54"
+   ],
+   "hits": {
+    "0": {
+     "num": true,
+     "or": true
+    },
+    "2": {
+     "num": true,
+     "or": true
+    },
+    "3": {
+     "num": true,
+     "or": true
+    }
+   }
+  }
+ ]
+}

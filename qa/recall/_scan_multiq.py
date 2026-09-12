@@ -23,7 +23,7 @@ _SIG = re.compile(
 
 def main() -> int:
     papers = load_papers()
-    view = ROOT / "out_views"
+    view = ROOT / "assets/artifacts/out_views"
     hits = []
     total_gold = 0
     for pid, p in papers.items():

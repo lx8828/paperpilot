@@ -117,7 +117,7 @@ def main() -> int:
         gc = gold_chunk_top(chunks, ev)
         gold_top = section_from_path(list(gc.title_path)) if gc else None
         overview = ""
-        ovf = Path(f"out_views/{Path(pdf).stem}.overview.json")
+        ovf = Path(f"assets/artifacts/out_views/{Path(pdf).stem}.overview.json")
         if ovf.exists():
             try:
                 overview = json.load(open(ovf, encoding="utf-8")).get("overview", "") or ""

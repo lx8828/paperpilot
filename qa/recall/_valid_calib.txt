@@ -1,0 +1,28 @@
+﻿40 题中: 数值型问题 16 | 漏数(数值型但答案无数) 0
+fail 题 7 中漏数 0（0%）
+pass 题 33 中漏数(误报) 0（0%）
+
+漏数题清单：
+uv : Traceback (most recent call last):
+所在位置 C:\Users\83465\AppData\Local\Temp\genie-ps-1788888488531-7gnujb.ps1:813 字符: 1
++ uv run python qa/recall/_valid_calib.py 2>&1 | Out-File -Encoding utf ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\83465\Desktop\paperpilot\qa\recall\_valid_calib.py", line 48, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\83465\Desktop\paperpilot\qa\recall\_valid_calib.py", line 43, in main
+    out.write_text("", encoding="utf-8")
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\83465\AppData\Local\Python\pythoncore-3.13-64\Lib\pathlib\_local.py", line 555, in write_text
+    return PathBase.write_text(self, data, encoding, errors, newline)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\83465\AppData\Local\Python\pythoncore-3.13-64\Lib\pathlib\_abc.py", line 651, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\83465\AppData\Local\Python\pythoncore-3.13-64\Lib\pathlib\_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'qa\\recall\\_valid_calib.txt'

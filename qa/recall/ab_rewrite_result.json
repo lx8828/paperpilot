@@ -1,0 +1,2302 @@
+[
+ {
+  "qid": "dd9883f4adf7be072d314d7ed13fe4518c5500e0",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2102,
+   "completion": 136
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2102,
+   "completion": 134
+  }
+ },
+ {
+  "qid": "a3f108f60143d13fe38d911b1cc3b17bdffde3bd",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 8021,
+   "completion": 416
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 7329,
+   "completion": 456
+  }
+ },
+ {
+  "qid": "8df89988adff57279db10992846728ec4f500eaa",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9510,
+   "completion": 185
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9698,
+   "completion": 191
+  }
+ },
+ {
+  "qid": "d28260b5565d9246831e8dbe594d4f6211b60237",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9198,
+   "completion": 329
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 9550,
+   "completion": 492
+  }
+ },
+ {
+  "qid": "be595b2017545b0359db6abf4914a155bdd10d23",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12457,
+   "completion": 773
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12788,
+   "completion": 894
+  }
+ },
+ {
+  "qid": "de12e059088e4800d7d89e4214a3997994dbc0d9",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 1,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12586,
+   "completion": 169
+  },
+  "on": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12258,
+   "completion": 202
+  }
+ },
+ {
+  "qid": "c30c3e0f8450b1c914d29f41c17a22764fa078e0",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11464,
+   "completion": 1317
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10825,
+   "completion": 1386
+  }
+ },
+ {
+  "qid": "8051927f914d730dfc61b2dc7a8580707b462e56",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10978,
+   "completion": 1180
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10511,
+   "completion": 1122
+  }
+ },
+ {
+  "qid": "cd1792929b9fa5dd5b1df0ae06fc6aece4c97424",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9139,
+   "completion": 152
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9352,
+   "completion": 189
+  }
+ },
+ {
+  "qid": "05671d068679be259493df638d27c106e7dd36d0",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13127,
+   "completion": 951
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12400,
+   "completion": 924
+  }
+ },
+ {
+  "qid": "13b36644357870008d70e5601f394ec3c6c07048",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10184,
+   "completion": 421
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11089,
+   "completion": 1287
+  }
+ },
+ {
+  "qid": "9555aa8de322396a16a07a5423e6a79dcd76816a",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11853,
+   "completion": 569
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12077,
+   "completion": 640
+  }
+ },
+ {
+  "qid": "1d74fd1d38a5532d20ffae4abbadaeda225b6932",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 8314,
+   "completion": 456
+  },
+  "on": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 8721,
+   "completion": 686
+  }
+ },
+ {
+  "qid": "af75ad21dda25ec72311c2be4589efed9df2f482",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12557,
+   "completion": 191
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12250,
+   "completion": 160
+  }
+ },
+ {
+  "qid": "544b68f6f729e5a62c2461189682f9e4307a05c6",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 7242,
+   "completion": 855
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 7103,
+   "completion": 750
+  }
+ },
+ {
+  "qid": "86cd1228374721db67c0653f2052b1ada6009641",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2193,
+   "completion": 73
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 13446,
+   "completion": 904
+  }
+ },
+ {
+  "qid": "45893f31ef07f0cca5783bd39c4e60630d6b93b3",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11226,
+   "completion": 1087
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11656,
+   "completion": 1073
+  }
+ },
+ {
+  "qid": "0b9021cefca71081e617a362e7e3995c5f1d2a88",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 17565,
+   "completion": 1180
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 15880,
+   "completion": 1097
+  }
+ },
+ {
+  "qid": "5a23f436a7e0c33e4842425cf86d5fd8ba78ac92",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 8220,
+   "completion": 651
+  },
+  "on": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 8780,
+   "completion": 371
+  }
+ },
+ {
+  "qid": "81064bbd0a0d72a82d8677c32fb71b06501830a0",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10089,
+   "completion": 864
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9903,
+   "completion": 533
+  }
+ },
+ {
+  "qid": "6e962f1f23061f738f651177346b38fd440ff480",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10069,
+   "completion": 657
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10402,
+   "completion": 843
+  }
+ },
+ {
+  "qid": "bf25a202ac713a34e09bf599b3601058d9cace46",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 14156,
+   "completion": 961
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13722,
+   "completion": 1210
+  }
+ },
+ {
+  "qid": "d6e2b276390bdc957dfa7e878de80cee1f41fbca",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2370,
+   "completion": 159
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2370,
+   "completion": 190
+  }
+ },
+ {
+  "qid": "aa800b424db77e634e82680f804894bfa37f2a34",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13431,
+   "completion": 390
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 13282,
+   "completion": 483
+  }
+ },
+ {
+  "qid": "79bb1a1b71a1149e33e8b51ffdb83124c18f3e9c",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11483,
+   "completion": 1060
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11154,
+   "completion": 199
+  }
+ },
+ {
+  "qid": "3241f90a03853fa85d287007d2d51e7843ee3d9b",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12670,
+   "completion": 612
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12890,
+   "completion": 574
+  }
+ },
+ {
+  "qid": "f319f2c3f9339b0ce47478f5aa0c32da387a156e",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9203,
+   "completion": 485
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9263,
+   "completion": 400
+  }
+ },
+ {
+  "qid": "3de27c81af3030eb2d9de1df5ec9bfacdef281a9",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 1,
+   "pass": false,
+   "level": "L3",
+   "action": "fallback",
+   "calls": 5,
+   "prompt": 16021,
+   "completion": 1418
+  },
+  "on": {
+   "score": 1,
+   "pass": false,
+   "level": "L3",
+   "action": "fallback",
+   "calls": 6,
+   "prompt": 16471,
+   "completion": 1058
+  }
+ },
+ {
+  "qid": "4b0ba460ae3ba7a813f204abd16cf631b871baca",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9188,
+   "completion": 1406
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9523,
+   "completion": 1606
+  }
+ },
+ {
+  "qid": "7955dbd79ded8ef4ae9fc28b2edf516320c1cb55",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2321,
+   "completion": 119
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2321,
+   "completion": 93
+  }
+ },
+ {
+  "qid": "b42323d60827ecf0d9e478c9a31f90940cfae975",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9410,
+   "completion": 445
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10154,
+   "completion": 379
+  }
+ },
+ {
+  "qid": "fb381a59732474dc71a413e25cac37e239547b55",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L0",
+   "action": "repaired",
+   "calls": 3,
+   "prompt": 3360,
+   "completion": 296
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "repaired",
+   "calls": 3,
+   "prompt": 3322,
+   "completion": 236
+  }
+ },
+ {
+  "qid": "e414d819f10c443cbefa8bdb9bd486ffc6d1fc6a",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 5153,
+   "completion": 137
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 5342,
+   "completion": 162
+  }
+ },
+ {
+  "qid": "83f14af3ccca4ab9deb4c6d208f624d1e79dc7eb",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10834,
+   "completion": 697
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 10760,
+   "completion": 537
+  }
+ },
+ {
+  "qid": "d427e3d41c4c9391192e249493be23926fc5d2e9",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "repaired",
+   "calls": 7,
+   "prompt": 29003,
+   "completion": 2010
+  },
+  "on": {
+   "score": 1,
+   "pass": false,
+   "level": "L3",
+   "action": "fallback",
+   "calls": 8,
+   "prompt": 29909,
+   "completion": 2002
+  }
+ },
+ {
+  "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9228,
+   "completion": 877
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9595,
+   "completion": 687
+  }
+ },
+ {
+  "qid": "5a02a3dd26485a4e4a77411b50b902d2bda3731b",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11202,
+   "completion": 2441
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 10802,
+   "completion": 2347
+  }
+ },
+ {
+  "qid": "3d34a02ceebcc93ee79dc073c408651d25e538bc",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12296,
+   "completion": 496
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12719,
+   "completion": 808
+  }
+ },
+ {
+  "qid": "b13d0e463d5eb6028cdaa0c36ac7de3b76b5e933",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 2150,
+   "completion": 140
+  },
+  "on": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 2339,
+   "completion": 146
+  }
+ },
+ {
+  "qid": "c33d0bc5484c38de0119c8738ffa985d1bd64424",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12976,
+   "completion": 1909
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12083,
+   "completion": 703
+  }
+ },
+ {
+  "qid": "6e8c587b6562fafb43a7823637b84cd01487059a",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10948,
+   "completion": 406
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11137,
+   "completion": 373
+  }
+ },
+ {
+  "qid": "3b995a7358cefb271b986e8fc6efe807f25d60dc",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 7910,
+   "completion": 512
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 7967,
+   "completion": 365
+  }
+ },
+ {
+  "qid": "e4a19b91b57c006a9086ae07f2d6d6471a8cf0ce",
+  "grp": "hard",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11746,
+   "completion": 2599
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12494,
+   "completion": 3354
+  }
+ },
+ {
+  "qid": "aa54e12ff71c25b7cff1e44783d07806e89f8e54",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13760,
+   "completion": 421
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 14011,
+   "completion": 524
+  }
+ },
+ {
+  "qid": "1959e0ebc21fafdf1dd20c6ea054161ba7446f61",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11789,
+   "completion": 2378
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12050,
+   "completion": 2672
+  }
+ },
+ {
+  "qid": "3aa43a0d543b88d40e4f3500c7471e263515be40",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2026,
+   "completion": 129
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2026,
+   "completion": 129
+  }
+ },
+ {
+  "qid": "16af38f7c4774637cf8e04d4b239d6d72f0b0a3a",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 8488,
+   "completion": 534
+  },
+  "on": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 7534,
+   "completion": 958
+  }
+ },
+ {
+  "qid": "5328cc2588b2bf7b91f4e0f342e8cbfc6dc8ac00",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10601,
+   "completion": 626
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10776,
+   "completion": 591
+  }
+ },
+ {
+  "qid": "5d9b088bb066750b60debfb0b9439049b5a5c0ce",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12336,
+   "completion": 419
+  },
+  "on": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12556,
+   "completion": 493
+  }
+ },
+ {
+  "qid": "574f17134e4dd041c357ebb75a7ef590da294d22",
+  "grp": "hard",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2610,
+   "completion": 104
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2610,
+   "completion": 102
+  }
+ },
+ {
+  "qid": "345f65eaff1610deecb02ff785198aa531648e75",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 7603,
+   "completion": 955
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 8293,
+   "completion": 1636
+  }
+ },
+ {
+  "qid": "66f0dee89f084fe0565539a73f5bbe65f3677814",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13147,
+   "completion": 827
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13299,
+   "completion": 821
+  }
+ },
+ {
+  "qid": "d0bc782961567dc1dd7e074b621a6d6be44bb5b4",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 7669,
+   "completion": 301
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 7793,
+   "completion": 258
+  }
+ },
+ {
+  "qid": "f3e96c5487d87557a661a65395b0162033dc05b3",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10157,
+   "completion": 675
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10293,
+   "completion": 644
+  }
+ },
+ {
+  "qid": "5fb6a21d10adf4e81482bb5c1ec1787dc9de260d",
+  "grp": "normal",
+  "oldV_pass": false,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10691,
+   "completion": 1789
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11156,
+   "completion": 2169
+  }
+ },
+ {
+  "qid": "b37fd665dfa5fad43977069d5623f4490a979305",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2550,
+   "completion": 141
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2550,
+   "completion": 143
+  }
+ },
+ {
+  "qid": "bed527bcb0dd5424e69563fba4ae7e6ea1fca26a",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11296,
+   "completion": 656
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11097,
+   "completion": 728
+  }
+ },
+ {
+  "qid": "baeb6785077931e842079e9d0c9c9040947ffa4e",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9349,
+   "completion": 168
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9525,
+   "completion": 439
+  }
+ },
+ {
+  "qid": "dd8f72cb3c0961b5ca1413697a00529ba60571fe",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13477,
+   "completion": 857
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13705,
+   "completion": 942
+  }
+ },
+ {
+  "qid": "93b1b94b301a46251695db8194a2536639a22a88",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 14025,
+   "completion": 2321
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 14366,
+   "completion": 2795
+  }
+ },
+ {
+  "qid": "50c8b821191339043306fd28e6cda2db400704f9",
+  "grp": "normal",
+  "oldV_pass": false,
+  "off": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11571,
+   "completion": 917
+  },
+  "on": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10880,
+   "completion": 849
+  }
+ },
+ {
+  "qid": "5efed109940bf74ed0a9d4a5e97a535502b23d27",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 14238,
+   "completion": 355
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 15767,
+   "completion": 372
+  }
+ },
+ {
+  "qid": "38e11663b03ac585863742044fd15a0e875ae9ab",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 12546,
+   "completion": 860
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12931,
+   "completion": 1495
+  }
+ },
+ {
+  "qid": "d95180d72d329a27ddf2fd5cc6919f469632a895",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10646,
+   "completion": 1432
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11060,
+   "completion": 1953
+  }
+ },
+ {
+  "qid": "6f2118a0c64d5d2f49eee004d35b956cb330a10e",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 8802,
+   "completion": 456
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9002,
+   "completion": 498
+  }
+ },
+ {
+  "qid": "c9e9c5f443649593632656a5934026ad8ccc1712",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9054,
+   "completion": 1430
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 8817,
+   "completion": 1779
+  }
+ },
+ {
+  "qid": "539eb559744641e6a4aefe267cbc4c79e2bcceae",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11487,
+   "completion": 627
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12184,
+   "completion": 727
+  }
+ },
+ {
+  "qid": "537a786794604ecc473fb3ef6222e0c3cb81f772",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 1989,
+   "completion": 132
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 1989,
+   "completion": 88
+  }
+ },
+ {
+  "qid": "86abeff85f3db79cf87a8c993e5e5aa61226dc98",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 8629,
+   "completion": 555
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 8549,
+   "completion": 599
+  }
+ },
+ {
+  "qid": "1083ec9a2a33f7fe2b6b51bbcebd2d9aec4b4de2",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 14465,
+   "completion": 1908
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13290,
+   "completion": 385
+  }
+ },
+ {
+  "qid": "f41c401a4c6e1be768f8e68f774af3661c890ffd",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9711,
+   "completion": 840
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10948,
+   "completion": 2006
+  }
+ },
+ {
+  "qid": "9f89bff89cea722debc991363f0826de945bc582",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10704,
+   "completion": 691
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10900,
+   "completion": 772
+  }
+ },
+ {
+  "qid": "317a6f211ecf48c58f008c12fbd5d41901db3e36",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 12281,
+   "completion": 1093
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 12549,
+   "completion": 1165
+  }
+ },
+ {
+  "qid": "fc33a09401d12f4fe2338b391301380d34a60e5f",
+  "grp": "normal",
+  "oldV_pass": false,
+  "off": {
+   "score": 2,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 4276,
+   "completion": 475
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 4594,
+   "completion": 651
+  }
+ },
+ {
+  "qid": "545ff2f76913866304bfacdb4cc10d31dbbd2f37",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10876,
+   "completion": 958
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10768,
+   "completion": 657
+  }
+ },
+ {
+  "qid": "c2553166463b7b5ae4d9786f0446eb06a90af458",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 6908,
+   "completion": 389
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 6972,
+   "completion": 332
+  }
+ },
+ {
+  "qid": "77cf4379106463b6ebcb5eb8fa5bb25450fa5fb8",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10857,
+   "completion": 981
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10651,
+   "completion": 1065
+  }
+ },
+ {
+  "qid": "d7d41a1b8bbb1baece89b28962d23ee4457b9c3a",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 6986,
+   "completion": 454
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 7174,
+   "completion": 476
+  }
+ },
+ {
+  "qid": "21c104d14ba3db7fe2cd804a191f9e6258208235",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 16982,
+   "completion": 2106
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 16120,
+   "completion": 2576
+  }
+ },
+ {
+  "qid": "94edac71eea1e78add678fb5ed2d08526b51016b",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10032,
+   "completion": 893
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10506,
+   "completion": 1284
+  }
+ },
+ {
+  "qid": "c10f38ee97ed80484c1a70b8ebba9b1fb149bc91",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 14255,
+   "completion": 1105
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 14604,
+   "completion": 1306
+  }
+ },
+ {
+  "qid": "55fb92afa118450f09329764efe22612676c2d85",
+  "grp": "normal",
+  "oldV_pass": false,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 4062,
+   "completion": 238
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 4301,
+   "completion": 296
+  }
+ },
+ {
+  "qid": "828ce5faed7783297cf9ce202364f999b8d4a1f6",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2053,
+   "completion": 113
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2053,
+   "completion": 121
+  }
+ },
+ {
+  "qid": "3bfb8c12f151dada259fbd511358914c4b4e1b0e",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2676,
+   "completion": 133
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2676,
+   "completion": 150
+  }
+ },
+ {
+  "qid": "cf63a4f9fe0f71779cf5a014807ae4528279c25a",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 15990,
+   "completion": 2305
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 5,
+   "prompt": 16190,
+   "completion": 2345
+  }
+ },
+ {
+  "qid": "2ec9c1590c96f17a66c7d4eb95dc5d3a447cb973",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13478,
+   "completion": 1805
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13334,
+   "completion": 1441
+  }
+ },
+ {
+  "qid": "32c149574edf07b1a96d7f6bc49b95081de1abd2",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2067,
+   "completion": 119
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2067,
+   "completion": 119
+  }
+ },
+ {
+  "qid": "f129c97a81d81d32633c94111018880a7ffe16d1",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10425,
+   "completion": 850
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10678,
+   "completion": 995
+  }
+ },
+ {
+  "qid": "b653f55d1dad5cd262a99502f63bf44c58ccc8cf",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 9220,
+   "completion": 497
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 9801,
+   "completion": 463
+  }
+ },
+ {
+  "qid": "37c7c62c9216d6cf3d0858cf1deab6db4b815384",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13293,
+   "completion": 1398
+  },
+  "on": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13722,
+   "completion": 1610
+  }
+ },
+ {
+  "qid": "aee1af55d39145f609da95116ab1b154adb5fa7e",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13791,
+   "completion": 2778
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13394,
+   "completion": 2271
+  }
+ },
+ {
+  "qid": "0117aa1266a37b0d2ef429f1b0653b9dde3677fe",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 14812,
+   "completion": 1072
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 15382,
+   "completion": 1515
+  }
+ },
+ {
+  "qid": "2df910c9806f0c379d7bb1bc2be2610438e487dc",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2107,
+   "completion": 119
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 2107,
+   "completion": 115
+  }
+ },
+ {
+  "qid": "18482658e0756d69e39a77f8fcb5912545a72b9b",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 8437,
+   "completion": 258
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 8631,
+   "completion": 315
+  }
+ },
+ {
+  "qid": "36b5f0f62ee9be1ab50d1bb6170e98328d45997d",
+  "grp": "normal",
+  "oldV_pass": false,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 7744,
+   "completion": 393
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 8074,
+   "completion": 588
+  }
+ },
+ {
+  "qid": "6976296126e4a5c518e6b57de70f8dc8d8fde292",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 11266,
+   "completion": 1070
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 11440,
+   "completion": 1040
+  }
+ },
+ {
+  "qid": "8740c3000e740ac5c0bc8f329d908309f7ffeff6",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 7505,
+   "completion": 374
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 7221,
+   "completion": 427
+  }
+ },
+ {
+  "qid": "a6b99b7f32fb79a7db996fef76e9d83def05c64b",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 10500,
+   "completion": 1569
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 10273,
+   "completion": 958
+  }
+ },
+ {
+  "qid": "a5dd569e6d641efa86d2c2b2e970ce5871e0963f",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 3,
+   "prompt": 13651,
+   "completion": 1674
+  },
+  "on": {
+   "score": 5,
+   "pass": true,
+   "level": "L3",
+   "action": "pass",
+   "calls": 4,
+   "prompt": 13799,
+   "completion": 1635
+  }
+ },
+ {
+  "qid": "9213159f874b3bdd9b4de956a88c703aac988411",
+  "grp": "normal",
+  "oldV_pass": true,
+  "off": {
+   "score": 4,
+   "pass": true,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 1961,
+   "completion": 72
+  },
+  "on": {
+   "score": 3,
+   "pass": false,
+   "level": "L0",
+   "action": "pass",
+   "calls": 2,
+   "prompt": 1961,
+   "completion": 60
+  }
+ }
+]

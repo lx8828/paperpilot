@@ -1,0 +1,1154 @@
+{
+ "rows": [
+  {
+   "pid": "1603.00968",
+   "n_q": 2,
+   "n_m": 2,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Results mean (min, max) achieved with each method. w2v:word2v"
+    ],
+    [
+     "2",
+     "Table 2: Best λ2 value on the validation set for each method w2v:word2"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1605.07683",
+   "n_q": 10,
+   "n_m": 10,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Data used in this paper. Tasks 1-5 were generated using our s"
+    ],
+    [
+     "2",
+     "Table 2: Test results across all tasks and methods. For tasks T1-T5 re"
+    ],
+    [
+     "3",
+     "Table 3: Task 1 (Issue API call) The model learns to direct its attent"
+    ],
+    [
+     "4",
+     "Table 4: Task 2 (Update API call) Out of the multiple memories from th"
+    ],
+    [
+     "5",
+     "Table 5: Task 3 (Displaying options) The model knows it has to display"
+    ],
+    [
+     "6",
+     "Table 6: Task 4 (Providing extra-information) The model knows it must "
+    ],
+    [
+     "7",
+     "Table 7: Concierge Data The model is also able to learn from human-hum"
+    ],
+    [
+     "8",
+     "Table 8: Hyperparameters of Supervised Embeddings. When Use History is"
+    ],
+    [
+     "9",
+     "Table 9: Hyperparameters of Memory Networks. The longer and more compl"
+    ],
+    [
+     "10",
+     "Table 10: Test results across all tasks and methods. For tasks T1-T5 r"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1611.03382",
+   "n_q": 6,
+   "n_m": 5,
+   "n_nocap": 1,
+   "exact": [
+    [
+     "1",
+     "Table 1: Different Read-Again Model. Ours denotes Read-Again models. C"
+    ],
+    [
+     "2",
+     "Table 2: Rouge-N limited-length recall on DUC2004. Size denotes the si"
+    ],
+    [
+     "3",
+     "Table 3: ROUGE Evaluation for Models with Different Decoder Size and 1"
+    ]
+   ],
+   "shifted": [
+    [
+     "6",
+     "5",
+     "Table 6: Visualization of Copy Mechanism",
+     "Table 5: Visualization of Copy Mechanism"
+    ]
+   ],
+   "miss": [],
+   "unknown": [
+    [
+     "4",
+     "Table 4: ROUGE Evaluation for Models with Different Encoder Size and 15k Decoder"
+    ],
+    [
+     "5",
+     "Table 5: Decoding Time (s) per Sentence of Models with Different Decoder Size"
+    ]
+   ],
+   "extra": 1
+  },
+  {
+   "pid": "1701.00185",
+   "n_q": 4,
+   "n_m": 7,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Statistics for the text datasets. C: the number of classes; N"
+    ],
+    [
+     "3",
+     "Table 3: Coverage of word embeddings on three datasets. |V | is the vo"
+    ],
+    [
+     "6",
+     "Table 6: Comparison of ACC of our proposed methods and some other non-"
+    ],
+    [
+     "7",
+     "Table 7: Comparison of NMI of our proposed methods and some other non-"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 3
+  },
+  {
+   "pid": "1803.07771",
+   "n_q": 7,
+   "n_m": 7,
+   "n_nocap": 1,
+   "exact": [
+    [
+     "1",
+     "TABLE 1 Details of the three data corpora. Each corpus consists of raw"
+    ],
+    [
+     "2",
+     "TABLE 2 Numbers of five types of key lexical words."
+    ],
+    [
+     "4",
+     "TABLE 4 The classification accuracies of two-level LSTM without lexico"
+    ],
+    [
+     "3",
+     "TABLE 3 The classification accuracies of existing algorithms on raw sa"
+    ],
+    [
+     "7",
+     "TABLE 7 The accuracies of ρTl-LSTM with different n values in ρ-hot en"
+    ],
+    [
+     "5",
+     "TABLE 5 The classification accuracies of two-level LSTM with lexicon e"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [
+    [
+     "6",
+     "TABLE 6 The accuracy improvement of two-level LSTM when lexicon embedding was us"
+    ]
+   ],
+   "extra": 1
+  },
+  {
+   "pid": "1804.08139",
+   "n_q": 4,
+   "n_m": 4,
+   "n_nocap": 1,
+   "exact": [
+    [
+     "1",
+     "Table 1: Statistics of the 16 datasets. The columns 2-5 denote the num"
+    ],
+    [
+     "2",
+     "Table 2: Performances on 16 tasks. The column of “Single Task” include"
+    ]
+   ],
+   "shifted": [
+    [
+     "4",
+     "6",
+     "Table 4: Average precision of multi-task models with auxilia",
+     "Figure 6: Attention Distributions of four classifiers from t"
+    ]
+   ],
+   "miss": [],
+   "unknown": [
+    [
+     "3",
+     "Table 3: Results of first 6 tasks with multi-task learning and transfer learning"
+    ]
+   ],
+   "extra": 1
+  },
+  {
+   "pid": "1808.06834",
+   "n_q": 10,
+   "n_m": 10,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1. Degrees of Co-Relation"
+    ],
+    [
+     "2",
+     "Table 2. Definition of the categories"
+    ],
+    [
+     "3",
+     "Table 3. Example statements of the categories"
+    ],
+    [
+     "4",
+     "Table 4. Different debate types in Lok Sabha."
+    ],
+    [
+     "5",
+     "Table 5. Statistics of Annotated Data"
+    ],
+    [
+     "6",
+     "Table 6. Inter Annotator agreement metrics of Annotated Data"
+    ],
+    [
+     "7",
+     "Table 7. Sentiment Polarity of Speeches"
+    ],
+    [
+     "8",
+     "Table 8. Accuracy Score for Classification Task 1"
+    ],
+    [
+     "11",
+     "Table 11. Analysis of fastText for Task 2 with varying epochs for Call"
+    ]
+   ],
+   "shifted": [],
+   "miss": [
+    [
+     "9",
+     "Table 9. Accuracy Score for Classification Task 2"
+    ]
+   ],
+   "unknown": [],
+   "extra": 1
+  },
+  {
+   "pid": "1810.00663",
+   "n_q": 3,
+   "n_m": 3,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Behaviors (edges) of the navigation graphs considered in this"
+    ],
+    [
+     "2",
+     "Table 2: Dataset statistics. “# Single” indicates the number of naviga"
+    ],
+    [
+     "3",
+     "Table 3: Performance of different models on the test datasets. EM and "
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1901.00439",
+   "n_q": 2,
+   "n_m": 2,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "TABLE I NUMBER OF TWEETS, TOTAL NUMBER OF WORDS, NUMBER OF UNIQUE WORD"
+    ],
+    [
+     "2",
+     "TABLE II CALINSKI-HARABASZ SCORES FOR SEVERAL CONVENTIONAL METHODS AND"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1901.00570",
+   "n_q": 3,
+   "n_m": 4,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "2",
+     "TABLE II: A comparison of classification AVCs using word-pairs extract"
+    ],
+    [
+     "3",
+     "TABLE III: The average results of event detection in multiple cities u"
+    ],
+    [
+     "4",
+     "TABLE IV: The classification scores compared to benchmarks"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 1
+  },
+  {
+   "pid": "1902.00330",
+   "n_q": 5,
+   "n_m": 5,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Statistics of document and mention numbers on experimental da"
+    ],
+    [
+     "2",
+     "Table 2: In-KB accuracy result on AIDA-B dataset."
+    ],
+    [
+     "3",
+     "Table 3: Compare our model with other baseline methods on different ty"
+    ],
+    [
+     "4",
+     "Table 4: The micro F1 of gold entities with different pageviews on par"
+    ],
+    [
+     "5",
+     "Table 5: Entity selection examples by our RLEL model."
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1905.00563",
+   "n_q": 7,
+   "n_m": 7,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Inverter Functions Accuracy, we calculate the accuracy of our"
+    ],
+    [
+     "2",
+     "Table 2: Data Statistics of the benchmarks."
+    ],
+    [
+     "3",
+     "Table 3: Ranking modifications by their impact on the target. We compa"
+    ],
+    [
+     "4",
+     "Table 4: Robustness of Representation Models, the effect of adversaria"
+    ],
+    [
+     "5",
+     "Table 5: Extracted Rules for identifying the most influential link. We"
+    ],
+    [
+     "6",
+     "Table 6: Error Detection Accuracy in the neighborhood of 100 chosen sa"
+    ],
+    [
+     "7",
+     "Table 7: Top adversarial triples for target samples."
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1908.01060",
+   "n_q": 3,
+   "n_m": 3,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: The collection of training corpora used in the experiment. Bo"
+    ],
+    [
+     "2",
+     "Table 2: Phone error rate (%PER) of the pretrained model, the baseline"
+    ],
+    [
+     "3",
+     "Table 3: The similarity between training corpora. For each target corp"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1909.00088",
+   "n_q": 21,
+   "n_m": 21,
+   "n_nocap": 3,
+   "exact": [
+    [
+     "2",
+     "Table 2: Training and testing splits by dataset"
+    ],
+    [
+     "3",
+     "Table 3: Chosen evaluation noun REs. *Obama does not exist in WordNet,"
+    ],
+    [
+     "4",
+     "Table 4: Chosen evaluation verb REs"
+    ],
+    [
+     "5",
+     "Table 5: Chosen evaluation adjective REs"
+    ],
+    [
+     "6",
+     "Table 6: Chosen evaluation phrase REs"
+    ],
+    [
+     "7",
+     "Table 7: Average results by POS"
+    ],
+    [
+     "8",
+     "Table 8: Average results by dataset"
+    ],
+    [
+     "9",
+     "Table 9: Average results by MRT/RRT"
+    ],
+    [
+     "10",
+     "Table 10: Example outputs for an Amazon evaluation line with noun RE"
+    ]
+   ],
+   "shifted": [
+    [
+     "11",
+     "13",
+     "Table 11: Example outputs for an Amazon evaluation line with",
+     "Table 13: Example outputs for an Amazon evaluation line with"
+    ],
+    [
+     "12",
+     "17",
+     "Table 12: Example outputs for an Amazon evaluation line with",
+     "Table 17: Example outputs for a Yelp evaluation line with ph"
+    ],
+    [
+     "13",
+     "21",
+     "Table 13: Example outputs for an Amazon evaluation line with",
+     "Table 21: Example outputs for a news headlines evaluation li"
+    ],
+    [
+     "15",
+     "19",
+     "Table 15: Example outputs for a Yelp evaluation line with ve",
+     "Table 19: Example outputs for a news headlines evaluation li"
+    ]
+   ],
+   "miss": [],
+   "unknown": [
+    [
+     "1",
+     "Table 1: Example masked outputs. S is the original input text; RE is the replace"
+    ],
+    [
+     "14",
+     "Table 14: Example outputs for a Yelp evaluation line with noun RE"
+    ],
+    [
+     "16",
+     "Table 16: Example outputs for a Yelp evaluation line with adjective RE"
+    ],
+    [
+     "17",
+     "Table 17: Example outputs for a Yelp evaluation line with phrase RE"
+    ],
+    [
+     "18",
+     "Table 18: Example outputs for a news headlines evaluation line with noun RE"
+    ],
+    [
+     "19",
+     "Table 19: Example outputs for a news headlines evaluation line with verb RE"
+    ],
+    [
+     "20",
+     "Table 20: Example outputs for a news headlines evaluation line with adjective RE"
+    ],
+    [
+     "21",
+     "Table 21: Example outputs for a news headlines evaluation line with phrase RE"
+    ]
+   ],
+   "extra": 8
+  },
+  {
+   "pid": "1909.00279",
+   "n_q": 8,
+   "n_m": 8,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Statistics of our dataset"
+    ],
+    [
+     "2",
+     "Table 2: A few poems generated by our model from their corresponding v"
+    ],
+    [
+     "3",
+     "Table 3: Perplexity and BLEU scores of generating poems from vernacula"
+    ],
+    [
+     "4",
+     "Table 4: Human evaluation results of generating poems from vernacular "
+    ],
+    [
+     "5",
+     "Table 5: Human evaluation results for generating poems from various li"
+    ],
+    [
+     "6",
+     "Table 6: Examples of generated poems and their corresponding gold poem"
+    ],
+    [
+     "7",
+     "Table 7: The performance of human discrimination test."
+    ],
+    [
+     "8",
+     "Table 8: Perplexity and BLEU scores of different padding schemas."
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1909.13362",
+   "n_q": 5,
+   "n_m": 5,
+   "n_nocap": 2,
+   "exact": [
+    [
+     "1",
+     "TABLE I DATASETS AND LANGUAGES USED FOR EVALUATION. AVERAGE PHONE AND "
+    ],
+    [
+     "2",
+     "TABLE II REPORTED ACCURACIES OF STATE OF THE ART AND SELECTED HIGH PER"
+    ],
+    [
+     "3",
+     "TABLE III THE ACCURACY OF OUR PROPOSED MODEL ON EACH EVALUATION DATASE"
+    ]
+   ],
+   "shifted": [
+    [
+     "4",
+     "无号",
+     "TABLE IV COMPARISON OF REPORTED ACCURACIES AGAINST THE ENGLI",
+     "COMPARISON OF REPORTED ACCURACIES AGAINST THE ENGLISH CELEX "
+    ]
+   ],
+   "miss": [],
+   "unknown": [
+    [
+     "5",
+     "TABLE V EXAMPLES OF GENERATED SYLLABIFICATIONS WHEN THE Base BILSTM-CNN-CRF MODE"
+    ]
+   ],
+   "extra": 1
+  },
+  {
+   "pid": "1909.13375",
+   "n_q": 4,
+   "n_m": 2,
+   "n_nocap": 0,
+   "exact": [],
+   "shifted": [],
+   "miss": [
+    [
+     "1",
+     "Table 1. Examples of faulty answers for multi-span questions in the training dat"
+    ],
+    [
+     "2",
+     "Table 2. Performance of different models on DROP’s development set in terms of E"
+    ],
+    [
+     "3",
+     "Table 3. Comparing test and development set results of models from the official "
+    ],
+    [
+     "4",
+     "Table 4. Ablation tests results summary on DROP’s development set."
+    ]
+   ],
+   "unknown": [],
+   "extra": 2
+  },
+  {
+   "pid": "1910.02339",
+   "n_q": 2,
+   "n_m": 2,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Results on MathQA dataset testing set"
+    ],
+    [
+     "2",
+     "Table 2: Results of AlgoLisp dataset"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "1911.03243",
+   "n_q": 6,
+   "n_m": 7,
+   "n_nocap": 1,
+   "exact": [],
+   "shifted": [
+    [
+     "2",
+     "4",
+     "Table 2: Automatic and manually-corrected evaluation of our ",
+     "Table 4: Automatic and manually-corrected evaluation of our "
+    ]
+   ],
+   "miss": [],
+   "unknown": [
+    [
+     "1",
+     "Table 1: Running examples of QA-SRL annotations; this set is a sample of the pos"
+    ],
+    [
+     "3",
+     "Table 3: Performance analysis against PropBank. Precision, recall and F1 for all"
+    ],
+    [
+     "4",
+     "Table 4: Automatic and manual parser evaluation against 500 Wikinews sentences f"
+    ],
+    [
+     "6",
+     "Table 6: The consolidation task – A1, A2 refer to the original annotator QAs, C "
+    ],
+    [
+     "7",
+     "Table 7: The parser generates redundant arguments with different paraphrased que"
+    ]
+   ],
+   "extra": 6
+  },
+  {
+   "pid": "1911.11933",
+   "n_q": 4,
+   "n_m": 5,
+   "n_nocap": 2,
+   "exact": [
+    [
+     "1",
+     "Table 1: Number of sentences for each corpus used in the experiments."
+    ],
+    [
+     "2",
+     "Table 2: Latency and automatic evaluation scores with small parallel e"
+    ]
+   ],
+   "shifted": [
+    [
+     "4",
+     "3",
+     "Table 4: Translation examples in small parallel enja. w show",
+     "Table 3: Latency and automatic evaluation scores with ASPEC."
+    ]
+   ],
+   "miss": [],
+   "unknown": [
+    [
+     "3",
+     "Table 3: Latency and automatic evaluation scores with ASPEC."
+    ]
+   ],
+   "extra": 2
+  },
+  {
+   "pid": "2001.00137",
+   "n_q": 7,
+   "n_m": 12,
+   "n_nocap": 1,
+   "exact": [
+    [
+     "1",
+     "Table 1: Types of mistakes on the Twitter dataset."
+    ],
+    [
+     "2",
+     "Table 2: Examples of original tweets and their corrected version."
+    ],
+    [
+     "3",
+     "Table 3: Details about our Twitter Sentiment Classification dataset, c"
+    ],
+    [
+     "4",
+     "Table 4: Details about our Incomplete Intent Classification dataset ba"
+    ],
+    [
+     "6",
+     "Table 6: F1-micro scores for Twitter Sentiment Classification task on "
+    ],
+    [
+     "7",
+     "Table 7: F1-micro scores for original sentences and sentences imbued w"
+    ]
+   ],
+   "shifted": [
+    [
+     "5",
+     "无号",
+     "Table 5: Example of sentence from Chatbot NLU Corpus with di",
+     "Similarly to iBLEU, the lower the WER score, the lower the l"
+    ]
+   ],
+   "miss": [],
+   "unknown": [],
+   "extra": 5
+  },
+  {
+   "pid": "2001.05467",
+   "n_q": 4,
+   "n_m": 4,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Automatic Evaluation Activity/Entity F1 results for baselines"
+    ],
+    [
+     "2",
+     "Table 2: Automatic Evaluation results for the baselines and our propos"
+    ],
+    [
+     "3",
+     "Table 3: Human Evaluation results for all the models we produce on Pla"
+    ],
+    [
+     "4",
+     "Table 4: Selected output examples from all models. Context-X and -Y ar"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "2001.08845",
+   "n_q": 4,
+   "n_m": 4,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Data collected by scraper for classification"
+    ],
+    [
+     "2",
+     "Table 2: Crowdsourcing results"
+    ],
+    [
+     "3",
+     "Table 3: Data extracted from Zhu et al. (2013)’s dataset for classific"
+    ],
+    [
+     "4",
+     "Table 4: MLP classification results. N = number of epochs, H = number "
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "2001.10179",
+   "n_q": 6,
+   "n_m": 6,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1. System Run details on 10-folds validation for the task of Emo"
+    ],
+    [
+     "2",
+     "Table 2. System Run details on 10-folds validation for the task of Inf"
+    ],
+    [
+     "3",
+     "Table 3. System Run details on 10-folds validation for the task of Sup"
+    ],
+    [
+     "4",
+     "Table 4. System Run details on 10-folds validation for the task of Emo"
+    ],
+    [
+     "5",
+     "Table 5. System Run details on 10-folds validation for the task of Inf"
+    ],
+    [
+     "6",
+     "Table 6. System Run details on 10-folds validation for the task of Gen"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "2002.00876",
+   "n_q": 2,
+   "n_m": 3,
+   "n_nocap": 2,
+   "exact": [
+    [
+     "1",
+     "Table 1: Models and algorithms implemented in Torch-Struct. Notation i"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [
+    [
+     "2",
+     "Table 2: (Top) Semirings implemented in Torch-Struct. Backprop/Gradients gives o"
+    ]
+   ],
+   "extra": 2
+  },
+  {
+   "pid": "2002.02224",
+   "n_q": 3,
+   "n_m": 3,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Model performance"
+    ],
+    [
+     "2",
+     "Table 2: References sorted by categories, unlinked"
+    ],
+    [
+     "3",
+     "Table 3: References linked with texts in CzCDC"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "2002.05058",
+   "n_q": 5,
+   "n_m": 5,
+   "n_nocap": 2,
+   "exact": [
+    [
+     "1",
+     "Table 1: Sample-level correlation between metrics and human judgments,"
+    ],
+    [
+     "3",
+     "Table 3: Performance of different metrics in hyperparameter tuning and"
+    ],
+    [
+     "4",
+     "Table 4: Examples of comparison results between two generated samples "
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [
+    [
+     "2",
+     "Table 2: Model-level correlation between metrics and human judgments, with p-val"
+    ],
+    [
+     "5",
+     "Table 5: Model-level correlation between ablated variants and human judgments in"
+    ]
+   ],
+   "extra": 2
+  },
+  {
+   "pid": "2002.06675",
+   "n_q": 5,
+   "n_m": 7,
+   "n_nocap": 2,
+   "exact": [
+    [
+     "1",
+     "Table 1: Speaker-wise details of the corpus"
+    ],
+    [
+     "2",
+     "Table 2: Text excerpted from the prose tale ‘The Boy Who Became Porosi"
+    ],
+    [
+     "3",
+     "Table 3: Examples of four modeling units."
+    ],
+    [
+     "4",
+     "Table 4: ASR performance for each speaker and modeling unit. The lowes"
+    ],
+    [
+     "5",
+     "Table 5: Results of multilingual training."
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 2
+  },
+  {
+   "pid": "2002.08307",
+   "n_q": 3,
+   "n_m": 4,
+   "n_nocap": 2,
+   "exact": [
+    [
+     "1",
+     "Table 1: Pre-training development losses and GLUE task development acc"
+    ],
+    [
+     "3",
+     "Table 3: The values of BERT’s weights are normally distributed in each"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [
+    [
+     "2",
+     "Table 2: We compute the magnitude sorting order of each weight before and after "
+    ]
+   ],
+   "extra": 2
+  },
+  {
+   "pid": "2002.10361",
+   "n_q": 6,
+   "n_m": 8,
+   "n_nocap": 3,
+   "exact": [
+    [
+     "1",
+     "Table 1: Statistical summary of multilingual corpora across English, I"
+    ],
+    [
+     "2",
+     "Table 2: Statistical summary of user attributes in age, country, gende"
+    ],
+    [
+     "4",
+     "Table 4: Top 10 predictable features of race and gender in the English"
+    ],
+    [
+     "5",
+     "Table 5: Overall performance evaluation of baseline classifiers. We ev"
+    ],
+    [
+     "6",
+     "Table 6: Fairness evaluation of baseline classifiers across the five l"
+    ]
+   ],
+   "shifted": [
+    [
+     "3",
+     "无号",
+     "Table 3: Annotator agreement (percentage overlap) and evalua",
+     "Age Race Gender Table 3: Annotator agreement (percentage ove"
+    ]
+   ],
+   "miss": [],
+   "unknown": [],
+   "extra": 2
+  },
+  {
+   "pid": "2002.11402",
+   "n_q": 5,
+   "n_m": 5,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1. Parallel Corpus Preparation with BERT Tokenizer"
+    ],
+    [
+     "2",
+     "Table 2. Comparison with Traditional NERs as reference"
+    ],
+    [
+     "3",
+     "Table 3. Comparison with Wikipedia titles as reference"
+    ],
+    [
+     "4",
+     "Table 4. Recognised Named Entities Per Model - Example 1"
+    ],
+    [
+     "5",
+     "Table 5. Recognised Named Entities Per Model - Example 2"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  },
+  {
+   "pid": "2003.09520",
+   "n_q": 7,
+   "n_m": 8,
+   "n_nocap": 2,
+   "exact": [
+    [
+     "1",
+     "Table 1: Arabish code-system for TUN"
+    ],
+    [
+     "3",
+     "Table 3: An Excerpt of the TArC structure. In the column Var, \"Bnz\" st"
+    ],
+    [
+     "7",
+     "Table 7: Circumfix negation marks in the corpus. Glosses: w14-15:we co"
+    ],
+    [
+     "4",
+     "Table 4: Loanword example in the corpus. Glosses: w4:we were, w5:happy"
+    ],
+    [
+     "5",
+     "Table 5: Prosody example in the corpus. Glosses: w1:recipe, w2:pâté, w"
+    ],
+    [
+     "6",
+     "Table 6: Phono-Lexical exceptions in the corpus. Glosses: w1:divorced,"
+    ]
+   ],
+   "shifted": [],
+   "miss": [],
+   "unknown": [
+    [
+     "2",
+     "Table 2: Example of the fifteen thematic categories"
+    ]
+   ],
+   "extra": 2
+  },
+  {
+   "pid": "2004.03061",
+   "n_q": 4,
+   "n_m": 4,
+   "n_nocap": 0,
+   "exact": [
+    [
+     "1",
+     "Table 1: Amount of information BERT, fastText or one-hot embeddings sh"
+    ],
+    [
+     "2",
+     "Table 2: Amount of information BERT, fastText or one-hot embeddings sh"
+    ],
+    [
+     "4",
+     "Table 4: Accuracies of the models trained on BERT, fastText, one-hot a"
+    ]
+   ],
+   "shifted": [
+    [
+     "3",
+     "1",
+     "Table 3: Accuracies of the models trained on BERT, fastText,",
+     "Figure 1: Derivation of the estimation error. Table 3: Accur"
+    ]
+   ],
+   "miss": [],
+   "unknown": [],
+   "extra": 0
+  }
+ ],
+ "thr_same": 0.4,
+ "thr_any": 0.5
+}

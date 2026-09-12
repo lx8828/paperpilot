@@ -18,7 +18,7 @@ from paperpilot.tools.pdf_parser import parse_pdf  # noqa: E402
 
 PDFS = ["2609.04170v1.pdf", "2609.03035v1.pdf", "2608.31079v1.pdf",
         "2609.02056v1.pdf", "2609.02786v1.pdf"]
-PAPERS = ROOT / "src" / "paperpilot" / "storage" / "papers"
+PAPERS = ROOT / "assets" / "papers"
 
 # 百分比 或 小数 或 ≥4 位整数
 NUM_RE = re.compile(r"(\d{1,3}(?:,\d{3})*\.\d+%|\.\d+%|\d+\.\d+%|\d+%|"
@@ -41,9 +41,9 @@ def units_of(pdf: str) -> list[tuple[str, str]]:
     """(来源, 文本)。overview/guide 全文 + 每条 core_point。"""
     stem = pdf.replace(".pdf", "")
     out = []
-    ov = json.load(open(ROOT / f"out_views/{stem}.overview.json", encoding="utf-8"))
-    gd = json.load(open(ROOT / f"out_views/{stem}.guide.json", encoding="utf-8"))
-    rep = json.load(open(ROOT / f"out_views/{stem}.report.json", encoding="utf-8"))
+    ov = json.load(open(ROOT / f"assets/artifacts/out_views/{stem}.overview.json", encoding="utf-8"))
+    gd = json.load(open(ROOT / f"assets/artifacts/out_views/{stem}.guide.json", encoding="utf-8"))
+    rep = json.load(open(ROOT / f"assets/artifacts/out_views/{stem}.report.json", encoding="utf-8"))
     out.append(("overview", str(ov.get("overview", ""))))
     out.append(("guide", str(gd.get("guide", ""))))
     for cp in (rep.get("core_points") or [])[:8]:

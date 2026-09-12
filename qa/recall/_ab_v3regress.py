@@ -74,7 +74,7 @@ def main() -> int:
     for pid, p in papers.items():
         for q in p.get("qas") or []:
             qmap[str(q.get("question_id") or "")] = (pid, q)
-    view = ROOT / "out_views"
+    view = ROOT / "assets/artifacts/out_views"
     overnight = json.load(open("qa/qasper_overnight_full_20260907_142814.json", encoding="utf-8"))
     # 有答案(gold 可定位) + report 存在 的官方样本
     cand = []

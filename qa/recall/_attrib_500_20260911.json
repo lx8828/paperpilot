@@ -1,0 +1,516 @@
+{
+ "A 输入通道缺口": [
+  {
+   "pid": "qasper_2002.11402.qpdf",
+   "qid": "1771a55236823ed44d3ee537de2e85465bf03eaf",
+   "question": "What is the difference in recall score between the systems?",
+   "gold": "Between the model and Stanford, Spacy and Flair the differences are 42.91, 25.03, 69.8 with Traditional NERs as reference and  49.88, 43.36, 62.43 with Wikipedia titles as reference.",
+   "score": 3,
+   "answer": "你问的“系统间 recall 分数差异”对应论文中与开源 NER 库（Flair-NER、Stanford-caseless-NER、Spacy-NER）及本文模型的对比。证据只给出定性描述：本文模型 recall 很好，但 precision 不佳，因为它还试图检测参考集中不存在的新潜在主题 [2]；Stanford 在 Precision 上表现好，但在 Recall 上赶不上 Spacy 和本文模型 [2]；Spacy 在 F1 和整体稳定性上优于 Stanford NER [2]；Flair 整体表现很差 [4]。论文未给出各系统 recall 的具体数值或差值，因此无法计算“差异是多少”。"
+  },
+  {
+   "pid": "qasper_2002.11402.qpdf",
+   "qid": "1d74fd1d38a5532d20ffae4abbadaeda225b6932",
+   "question": "What is their f1 score and recall?",
+   "gold": "F1 score and Recall are 68.66, 80.08 with Traditional NERs as reference and 59.56, 69.76 with Wikipedia titles as reference.",
+   "score": 3,
+   "answer": "你问的 F1 与 recall 对应论文中作者自己模型在训练/测试集上的停止训练阈值：论文只给出 recall 为 90%，未给出对应的 F1 数值 [2]。具体而言，两个模型在训练集和测试集上达到 70% precision、90% recall 时停止训练，约在第 16 个 epoch 达到该点 [2]。此外，论文提到在 Wikipedia 标题匹配任务上其模型在所有指标上均超过其他模型，但未列出具体 F1 数值 [1]。因此，可确认的 recall 是 90%，F1 分数在给定证据中未提供具体数值 [2]。"
+  },
+  {
+   "pid": "qasper_1701.00185.qpdf",
+   "qid": "5a0841cc0628e872fe473874694f4ab9411a1d10",
+   "question": "By how much did they outperform the other methods?",
+   "gold": "on SearchSnippets dataset by 6.72% in ACC, by 6.94% in NMI; on Biomedical dataset by 5.77% in ACC, 3.91% in NMI",
+   "score": 3,
+   "answer": "你问的“outperform the other methods”对应论文中提出的 STC 方法相对各基线的提升幅度。论文正文并未给出具体的提升数值（如百分比或分数差），只做了定性描述：STC-LE 和 STC-LPI 在全部三个数据集上都优于 BoW 和 RecNN 类方法 [1]，且相比 LE 和 LPI 有“大幅”（by a large margin）提升 [2]；而 STC-AE 和 STC-LSA 在 StackOverflow 和 Biomedical 上仅与 RecNN (Ave.)、RecNN (Top+Ave.) 表现相近 [1]，其提升有限 [2]。因此，证据中缺少可引用的具体数值，无法给出确切的提升幅度。"
+  },
+  {
+   "pid": "qasper_1804.08139.qpdf",
+   "qid": "0fd678d24c86122b9ab27b73ef20216bbd9847d1",
+   "question": "What evaluation metrics are used?",
+   "gold": "Accuracy on each dataset and the average accuracy on all datasets.",
+   "score": 2,
+   "answer": "提供的证据中没有提及任何评价指标（如准确率、F1 等）的名称，因此无法回答该问题。证据里只出现了“accuracy”一词，但那是描述 DA-MTL 相对 SA-MTL 的提升幅度（“a further improvement of INLINEFORM0 accuracy”）[2]，并未说明论文采用何种评价指标来评估模型。"
+  },
+  {
+   "pid": "qasper_1909.00088.qpdf",
+   "qid": "dccc3b182861fd19ccce5bd00ce9c3f40451ed6e",
+   "question": "Does the model proposed beat the baseline models for all the values of the masking parameter tested?",
+   "gold": "no",
+   "score": 3,
+   "answer": "是。你问的“论文提出的模型”对应 SMERTI（含 SMERTI-Transformer 与 SMERTI-RNN 两个变体），它在整体上优于所有基线模型 [1][2][10]。自动评估中，两个 SMERTI 变体都取得更高的 STES 并整体胜过其他模型，WordNet 模型表现最差 [10]；人工评估中 SMERTI 变体也整体优于所有基线，尤其在 RE Match 上，SMERTI-Transformer 最佳、SMERTI-RNN 次之 [1]。不过需注意，基线中 NWN-STEM 和 GWN-STEM 只能评估有限的词性，且其最大替换率受限 [9]，因此“所有掩码参数取值”的完整对比并非对所有基线都成立。"
+  },
+  {
+   "pid": "qasper_1908.01060.qpdf",
+   "qid": "e6c163f80a11bd057bbd0b6e1451ac82edddc78d",
+   "question": "Do they test their approach on large-resource tasks?",
+   "gold": "yes",
+   "score": 3,
+   "answer": "否。论文的实验目标是低资源语音识别，因此每个语料即使更大也只随机选取 100,000 条 utterance [2]，评测使用音素错误率（PER）而非词错误率，原因正是聚焦声学模型且部分语料文本极少 [10]。其对比实验是在 16 个语料（来自 10 种语言，含 4 个英语和 4 个普通话语料）上进行的 [2][4][5]，并非大规模资源任务。"
+  },
+  {
+   "pid": "qasper_1911.11933.qpdf",
+   "qid": "5a06f11aa75a8affde3d595c40fb03e06769e368",
+   "question": "Do they trim the search space of possible output sequences?",
+   "gold": "no",
+   "score": 2,
+   "answer": "是。论文提出的方法确实对可能输出序列的搜索空间做了裁剪/约束：CTC 把输出序列扩展为路径 π = Ω(y)，通过允许 token 重复和输出 `<wait>` 将序列扩展到长度 T，反过来又可通过去除 `<wait>` 和所有 token 重复还原出原始输出序列 y = Ω⁻¹(π) [1]。其目标函数只对所有可能路径 π ∈ Ω(y) 的概率求和，并用前向-后向算法计算 [1]。此外，训练时对延迟 token 的损失设为 0，即模型可输出 `<wait>` 的时间步 t（t ≤ g(I)）或源句输入期间 [5]。"
+  },
+  {
+   "pid": "qasper_1611.03382.qpdf",
+   "qid": "9555aa8de322396a16a07a5423e6a79dcd76816a",
+   "question": "By how much does their model outperform both the state-of-the-art systems?",
+   "gold": "w.r.t Rouge-1 their model outperforms by 0.98% and w.r.t Rouge-L their model outperforms by 0.45%",
+   "score": 3,
+   "answer": "你问的“outperform both the state-of-the-art systems”对应论文在 DUC2004 上的评测结果：论文称其方法在 Rouge-1 和 Rouge-L 上优于所有先前方法，在 Rouge-2 上与之相当 [2]。但证据中并未给出具体的提升数值（如分数差或百分比），只说明其模型仅用 15k 解码词表，而先前方法用 69k 或 200k [2]。因此，论文未提供“超出多少”的具体数值，仅给出定性结论。"
+  },
+  {
+   "pid": "qasper_1905.00563.qpdf",
+   "qid": "d427e3d41c4c9391192e249493be23926fc5d2e9",
+   "question": "Can this adversarial approach be used to directly improve model accuracy?",
+   "gold": "yes",
+   "score": 3,
+   "answer": "不能。论文中该对抗方法（CRIAGE）的用途是攻击/评估与解释，而非直接提升模型准确率：它通过添加或删除事实来最大程度改变目标三元组的预测分数，用于衡量鲁棒性、提供可解释性并检测知识图谱中的错误 [2][8][10]。文中提到以往工作把对抗样本作为训练的一部分来改进图表示 [1]，但本文方法本身并未被用于提升准确率。其效果体现为降低 Hits@1 等排序指标（WN18 与 YAGO3-10 上分别最多下降 27.3% 和 50.7%）[8]，以及错误检测准确率最高 55% [5][8]。"
+  },
+  {
+   "pid": "qasper_2002.10361.qpdf",
+   "qid": "38c74ab8292a94fc5a82999400ee9c06be19f791",
+   "question": "How large is the corpus?",
+   "gold": "It contains 106,350 documents",
+   "score": 3,
+   "answer": "提供的证据中没有给出该语料库的总规模（如推文总数或用户总数），因此无法给出具体数值。可确认的只有语料库覆盖五种语言（英语、意大利语、波兰语、葡萄牙语、西班牙语）[1][3]，并包含四项作者人口统计标注（年龄、性别、种族、国家）[3][5]。此外，语料被随机划分为训练集70%、开发集15%、测试集15%[6]。若需回答“语料库有多大”，缺少的是各语言或整体的文档/用户数量统计。"
+  },
+  {
+   "pid": "qasper_2002.10361.qpdf",
+   "qid": "16af38f7c4774637cf8e04d4b239d6d72f0b0a3a",
+   "question": "How large is the dataset?",
+   "gold": "over 104k documents",
+   "score": 3,
+   "answer": "你问的“数据集规模”对应论文中构建的多语言 Twitter 仇恨言论语料库。论文说明其数据来源为请求的 16 个已发布 Twitter 仇恨言论数据集中最终获得的 7 个，覆盖五种语言（英语、意大利语、波兰语、葡萄牙语、西班牙语）[2]。但给出的证据中并未报告该语料库的总推文数、用户数或各语言样本量等具体规模数值，仅提到波兰数据用户最少、仇恨言论标签分布更稀疏[5]。因此，除“7 个数据集、5 种语言”外，具体规模（如推文总数）在提供的证据中无法确认。"
+  },
+  {
+   "pid": "qasper_1910.02339.qpdf",
+   "qid": "9c4a4dfa7b0b977173e76e2d2f08fa984af86f0e",
+   "question": "How does TP-N2F compare to LSTM-based Seq2Seq in terms of training and inference speed?",
+   "gold": "Full Testing Set accuracy: 84.02\nCleaned Testing Set accuracy: 93.48",
+   "score": 3,
+   "answer": "提供的证据中没有关于 TP-N2F 与 LSTM-based Seq2Seq 在训练速度或推理速度上的任何比较数据。各条目只报告了准确率类指标（如 MathQA 的执行准确率与操作序列准确率 [1][4]、AlgoLisp 的 Acc/50p-Acc/M-Acc [4][5]），以及模型架构与训练设置（如 Adam 优化器、teacher-forcing、学习率 0.00115、训练 60/50 个 epoch [3][4]），并未给出任何训练或推理耗时、速度或效率的数值或结论。因此，关于训练与推理速度的对比，证据不足，无法作答。"
+  },
+  {
+   "pid": "qasper_1910.02339.qpdf",
+   "qid": "05671d068679be259493df638d27c106e7dd36d0",
+   "question": "What is the performance proposed model achieved on MathQA?",
+   "gold": "Operation accuracy: 71.89\nExecution accuracy: 55.95",
+   "score": 3,
+   "answer": "你问的“proposed model”对应论文中的 TP-N2F 模型。论文在 MathQA 任务上报告了两种指标：执行准确率（execution accuracy，即运行执行引擎后最终多选答案的准确率）和操作序列准确率（operation sequence accuracy，即生成的序列必须与标准序列完全一致）[2][3]。论文称 TP-N2F 在该任务上取得了 state-of-the-art 性能，并优于 SEQ2PROG-orig 和 SEQ2PROG-best 两个基线[1][2]。但所给证据中未给出 MathQA 上具体的准确率数值（表格内容未包含在检索到的正文中），因此无法提供具体分数[2][3]。"
+  },
+  {
+   "pid": "qasper_2002.02224.qpdf",
+   "qid": "ac706631f2b3fa39bf173cd62480072601e44f66",
+   "question": "Did they experiment on this dataset?",
+   "gold": "no",
+   "score": 3,
+   "answer": "是。论文提出的方法正是在该数据集上进行的：他们处理了 CzCDC 1.0 中包含的法院判决，用 NLP 流水线（分割模型 + 参考识别模型的部分）从中抽取引用数据 [2][12]。具体而言，CzCDC 1.0 被用作抽取引用的数据集 [6]，其中每份文档先经文本分割模型处理，再对法院论证部分做参考识别 [12]。最终从最高法院、最高行政法院和宪法法院的判决中分别抽取了 471,319、167,237 和 264,463 条引用 [11]。"
+  },
+  {
+   "pid": "qasper_2002.08307.qpdf",
+   "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+   "question": "How much is pre-training loss increased in Low/Medium/Hard level of pruning?",
+   "gold": "The increase is linearly from lowest on average 2.0 , medium around 3.5, and the largest is 6.0",
+   "score": 2,
+   "answer": "论文并未按“Low/Medium/Hard”三档分别给出预训练损失增加的具体数值，只给出了定性描述：低水平剪枝（30–40%）完全不增加预训练损失，也不影响向任务的迁移[4][8][10]；中等水平剪枝会使预训练损失上升，并阻碍有用的预训练信息迁移到下游任务[1][4]；高水平剪枝则可能进一步因阻止模型拟合下游数据集而损害性能[4][7]。因此，证据中缺少各档对应的具体损失增量数值，无法给出量化答案。"
+  },
+  {
+   "pid": "qasper_2002.00876.qpdf",
+   "qid": "1d9b953a324fe0cfbe8e59dcff7a44a2f93c568d",
+   "question": "Does API provide ability to connect to models written in some other deep learning framework?",
+   "gold": "yes",
+   "score": 3,
+   "answer": "否。Torch-Struct 的分布 API 是集成到深度学习框架中的，其库设计遵循 TensorFlow 和 PyTorch 使用的 distributions API [4]，但论文并未提供连接到其他深度学习框架所写模型的接口。论文强调的是将优化后的结构化分布库集成进一个向量化的深度学习系统 [2]，并让模型以标准灵活的 API 表示为分布 [3]，而非跨框架连接外部模型。"
+  },
+  {
+   "pid": "qasper_2002.05058.qpdf",
+   "qid": "75b69eef4a38ec16df63d60be9708a3c44a79c56",
+   "question": "How much better peformance is achieved in human evaluation when model is trained considering proposed metric?",
+   "gold": "Pearson correlation to human judgement - proposed vs next best metric\nSample level comparison:\n- Story generation: 0.387 vs 0.148\n- Dialogue: 0.472 vs 0.341\nModel level comparison:\n- Story generation:  0.631 vs 0.302\n- Dialogue: 0.783 vs 0.553",
+   "score": 3,
+   "answer": "你问的是“训练时采用所提指标（comparative evaluator）后，人类评估表现提升多少”。论文确实报告了该实验：用 5 个指标分别做超参搜索与 early-stopping，共 10 次运行，以成功选中最佳超参组合/检查点的次数（满分 10，候选 4 个）及所选模型的人类评分来衡量 [1][10]。但证据中只给出“conventional automated metrics perform poorly…Converting evaluation metric from BLEU or perplexity to the proposed comparative evaluator can yield non-neglectable improvements”这类定性结论 [1]，以及“our model is much more reliable” [2]，**并未给出具体提升数值**（如提升多少分或多少次）。因此无法给出具体幅度；缺的是 Table 3 中 comparative evaluator 相对 BLEU/perplexity 的成功次数与人类评分的具体数字 [1]。"
+  },
+  {
+   "pid": "qasper_2001.05467.qpdf",
+   "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+   "question": "How much better were results of the proposed models than base LSTM-RNN model?",
+   "gold": "on diversity 6.87 and on relevance 4.6 points higher",
+   "score": 3,
+   "answer": "你问的“proposed models 相比 base LSTM-RNN 好多少”，对应论文中的对比对象是基线 LSTM。论文给出的结论是：所有提出的模型在句子级多样性上都显著优于 VHRED，更不用说 LSTM [2]；在 bigram 和 trigram 上，除 RL 外所有模型都比 LSTM 更多样 [2]；在 unigram 多样性上也优于 LSTM，但与 VHRED 难以区分 [2]。在人工评测中，所有提出模型在 Plausibility 和 Content Richness 两项上均统计显著优于基线模型，只有 RL 在 Content Richness 上略弱 [5]。此外，这些模型不仅大幅优于其基线 LSTM，还可与 MMI 和 VHRED 相比或更好 [3]。不过，证据中只给出“显著更好/大幅优于”等定性表述，未给出具体提升数值或百分比 [2][3][5]。"
+  },
+  {
+   "pid": "qasper_2001.10179.qpdf",
+   "qid": "3604c4fba0a82d7139efd5ced47612c90bd10601",
+   "question": "Is their implementation on CNN-DSA compared to GPU implementation in terms of power consumption, accuracy and speed?",
+   "gold": "no",
+   "score": 3,
+   "answer": "你问的“CNN-DSA 与 GPU 实现的对比”对应论文中 CNN 加速器芯片方案与其他 GPU/FPGA 模型的对比。论文确实给出了功耗与速度方面的对比：该 CNN 加速器方案功耗仅 300mw，处理 3x224x224 RGB 图像时速度为 140fps，而其他使用 GPU 或 FPGA 的模型则把繁重的 DNN 计算放在加速器芯片上、主机只负责内存读写 [1]。因此，在**功耗和速度**上，论文明确将 CNN 加速器实现与 GPU/FPGA 实现进行了对比 [1]。但在**准确率**方面，论文并未给出 CNN-DSA 与 GPU 实现之间的准确率对比数值，只提到该方案在系统实现上对 NLP 应用效果良好 [1]，以及整体结果仍不够好、不如 AffCon19 CLAFF 和 Wikipedia 数据集上的表现 [3]。所以：功耗和速度有对比，准确率没有与 GPU 的直接对比数据。"
+  },
+  {
+   "pid": "qasper_2002.06675.qpdf",
+   "qid": "8a5254ca726a2914214a4c0b6b42811a007ecfc6",
+   "question": "How much transcribed data is available for for Ainu language?",
+   "gold": "Transcribed data is available for duration of 38h 54m 38s for 8 speakers.",
+   "score": 3,
+   "answer": "你问的“阿伊努语可用的转写数据量”对应论文中为 ASR 构建语料库时所用的转写数据。论文指出，此前 ainutrans 的尝试仅使用了 2.5 小时的阿伊努民俗数据 [5]；而本文自己构建的 ASR 语料库由文本和语音组成，其转写语音按每位说话者切分为 IPU，具体数量见 Table 1 [10][12]。不过，所给证据中并未直接给出本文语料库转写数据的总时长或总规模数值，只提到 Table 1 列出了每位说话者的集数与总语音时长 [12]。因此，除“ainutrans 用了 2.5 小时”这一具体数字外 [5]，本文语料库的转写数据总量在给定证据中无法确认。"
+  },
+  {
+   "pid": "qasper_1803.07771.qpdf",
+   "qid": "2d307b43746be9cedf897adac06d524419b0720b",
+   "question": "How long are the datasets?",
+   "gold": "Travel dataset contains 4100 raw samples, 11291 clauses, Hotel dataset contains 3825 raw samples, 11264 clauses, and the Mobile dataset contains 3483 raw samples and 8118 clauses",
+   "score": 3,
+   "answer": "你问的“datasets 的时长/规模”对应论文中三个中文情感语料库的规模信息。论文并未给出数据集的“时长”（如时间跨度），只给出了样本数量与划分方式：三个语料库分别来自 “hotel”“mobile phone (mobile)”“travel” 三个领域 [3]；每个语料库用 1000 条原始样本作测试数据，其余作训练数据 [4]，且后续实验的测试数据仍是这每个语料库的 1000 条样本 [4]。此外，每个文本样本先按中文分词切分为子句，从而得到三个子句集 [3]。因此，证据中能确认的是“每语料库 1000 条测试样本、其余为训练样本”，而数据集的时长/时间跨度论文未提及。"
+  },
+  {
+   "pid": "qasper_1901.00570.qpdf",
+   "qid": "858c51842fc3c1f3e6d2d7d853c94f6de27afade",
+   "question": "Which of the classifiers showed the best performance?",
+   "gold": "Logistic regression",
+   "score": 2,
+   "answer": "你问的“表现最好的分类器”对应论文最终选用的分类技术：Naive Bayes（朴素贝叶斯）。论文明确说明选择 Naive Bayes 作为分类技术，理由包括其高偏差可降低过拟合风险、响应变量为二值、以及词对计数在 0–100 之间使概率方法优于基于距离的方法 [4]；训练与预测阶段也均使用 Naive Bayes 分类器 [6][8]。因此，表现最好/被采用的分类器是 Naive Bayes [4][6][8]。"
+  },
+  {
+   "pid": "qasper_1909.13375.qpdf",
+   "qid": "579941de2838502027716bae88e33e79e69997a6",
+   "question": "What is difference in peformance between proposed model and state-of-the art on other question types?",
+   "gold": "For single-span questions, the proposed LARGE-SQUAD improve performance of the MTMSNlarge baseline for 2.1 EM and 1.55 F1.\nFor number type question,  MTMSNlarge baseline  have improvement over LARGE-SQUAD for 3,11  EM and  2,98 F1. \nFor date question,  LARGE-SQUAD have improvements in 2,02 EM but MTMSNlarge have improvement of 4,39 F1.",
+   "score": 3,
+   "answer": "你问的“其他问题类型（other question types）”上的性能差异，对应论文中与当时 state-of-the-art（MTMSN）在单跨度（single-span）问题上的对比。论文指出：在单跨度性能上，本文最佳模型（large-squad）表现略好于 MTMSN，但需注意它保留了 NABERT+ 的单跨度头，而 MTMSN 用同一个头同时预测单跨度和多跨度答案 [8]。为更公平比较，作者去掉单跨度头后，多跨度性能略有提升，但单跨度性能小幅下降，最终在 EM 上落后 MTMSN 0.8、在 F1 上落后 0.6 [8]。此外，论文称其模型在整体 DROP 测试集上（不仅多跨度问题）是当时最佳 [11]，且基础模型在每一项指标上都超过了 NABERT+ 基线 [4]。"
+  },
+  {
+   "pid": "qasper_1909.13362.qpdf",
+   "qid": "d71cb7f3aa585e256ca14eebdc358edfc3a9539c",
+   "question": "Which models achieve state-of-the-art performances?",
+   "gold": "CELEX (Dutch and English) - SVM-HMM\nFestival, E-Hitz and OpenLexique - Liang hyphenation\nIIT-Guwahat - Entropy CRF",
+   "score": 3,
+   "answer": "你问的“哪些模型达到 state-of-the-art 性能”，对应论文中提出的 Base 模型（BiLSTM-CNN-CRF）。论文报告 Base 在荷兰语数据集上达到 99.47±0.04% 的准确率，超过此前最佳的 HMM-SVM 的 99.16% [2]；在意大利语、法语和巴斯克语数据集上也取得了最佳已知结果 [2]，在英语 CELEX 上接近 state-of-the-art [2]。此外，论文称该模型在荷兰语、意大利语、法语和巴斯克语上准确率高于能找到的任何其他系统，在英语和曼尼普尔语上接近最佳报告准确率 [1]。因此，达到或接近 state-of-the-art 的是论文提出的 Base 模型 [1][2]。"
+  },
+  {
+   "pid": "qasper_1909.00279.qpdf",
+   "qid": "d484a71e23d128f146182dccc30001df35cdf93f",
+   "question": "How much is proposed model better in perplexity and BLEU score than typical UMT models?",
+   "gold": "Perplexity of the best model is 65.58 compared to best baseline 105.79.\nBleu of the best model is 6.57 compared to best baseline 5.50.",
+   "score": 3,
+   "answer": "根据提供的证据，论文并未给出所提模型（Anti OT&UT）相对典型 UMT 模型在困惑度（perplexity）和 BLEU 分数上的具体数值差量。证据中只有定性结论：在基于 transformer 的模型中，+Anti OT 与 +Anti UT 均优于朴素 transformer，而 Anti OT&UT 表现最佳 [1]；2-2-3 分段方案在困惑度和 BLEU 上大幅优于 2-3-2 与 3-2-2 方案 [5]。但所有具体分数均写在论文的表格中（如 Table），而表格内容未包含在给定证据里 [1][5]。因此，缺少的是表格中报告的具体 perplexity 与 BLEU 数值，无法计算或引用确切差量。"
+  },
+  {
+   "pid": "qasper_1603.00968.qpdf",
+   "qid": "c0035fb1c2b3de15146a7ce186ccd2e366fb4da2",
+   "question": "By how much of MGNC-CNN out perform the baselines?",
+   "gold": "In terms of Subj the Average MGNC-CNN is better than the average score of baselines by 0.5.  Similarly, Scores of SST-1, SST-2, and TREC where MGNC-CNN has similar improvements. \nIn case of Irony the difference is about 2.0.",
+   "score": 3,
+   "answer": "你问的“MGNC-CNN 相对基线的提升幅度”对应论文中报告的具体数值：在 irony 数据集上，使用三个词嵌入的模型相比基线模型在 AUC 上取得了 4% 的提升 [1]。此外，论文指出 MGNC-CNN 和 MG-CNN 始终优于基线方法（包括 C-CNN），且 MGNC-CNN 通常优于 MG-CNN [1]；在 Subj 数据集上 MG-CNN 略优于对比模型，而 MGNC-CNN 表现相当但并未更好 [1]。在 TREC 数据集上，已知最佳准确率为 96.0%，落在三词嵌入 MGNC-CNN 模型的结果范围内 [1]。在 SST-1 和 SST-2 上，该模型略逊于对比模型 [1]。"
+  },
+  {
+   "pid": "qasper_1808.06834.qpdf",
+   "qid": "e09e89b3945b756609278dcffb5f89d8a52a02cd",
+   "question": "How many speeches are in the dataset?",
+   "gold": "5575 speeches",
+   "score": 2,
+   "answer": "你问的“数据集中的演讲数量”对应论文中标注的演讲数：数据集共包含 **1201 篇演讲**，这 1201 篇演讲被标注为四个类别 [1]。此外，这 1201 篇演讲的标注由两名人文专业学生完成 [1]。"
+  },
+  {
+   "pid": "qasper_1902.00330.qpdf",
+   "qid": "b0376a7f67f1568a7926eff8ff557a93f434a253",
+   "question": "How big is the performance difference between this method and the baseline?",
+   "gold": "Comparing with the highest performing baseline: 1.3 points on ACE2004 dataset, 0.6 points on CWEB dataset, and 0.86 points in the average of all scores.",
+   "score": 3,
+   "answer": "你问的“this method 与 baseline 的性能差距”对应论文中 RLEL 与其对比基线/消融变体的比较。论文明确给出的具体数值只有一处：加入全局编码（global encoding）的模型比不加全局编码的方法在准确率上提升 **4%** [3]。此外，论文定性说明 RLEL 在 AIDA-B 上取得最佳结果 [2]、在 ACE2004、CWEB、WIKI 上表现较好 [2]，并最终取得最佳整体性能 [2]，但未给出与各基线之间的具体数值差量。因此，除“全局编码带来 4% 准确率提升”这一具体数字外，论文未提供与基线差距的量化数值 [3]。"
+  },
+  {
+   "pid": "qasper_1605.07683.qpdf",
+   "qid": "a02696d4ab728ddd591f84a352df9375faf7d1b4",
+   "question": "How large is the Dialog State Tracking Dataset?",
+   "gold": "1,618 training dialogs, 500 validation dialogs, and 1,117 test dialogs",
+   "score": 2,
+   "answer": "提供的证据中没有关于 Dialog State Tracking Dataset 规模的任何信息。现有条目只涉及餐厅预订任务的数据来源（模拟生成的前五个任务、最后一个用真实人机对话，数据见 http://fb.ai/babi）[1]，以及一个来自在线餐厅预订服务的专有数据集[1][2]，均未提及 Dialog State Tracking Dataset 或其大小。因此无法回答该问题，缺少的是该数据集规模（如对话数、轮数或样本量）的相关描述。"
+  },
+  {
+   "pid": "qasper_1911.03243.qpdf",
+   "qid": "04f72eddb1fc73dd11135a80ca1cf31e9db75578",
+   "question": "How much more coverage is in the new dataset?",
+   "gold": "278 more annotations",
+   "score": 3,
+   "answer": "新数据集比以往多产出 **25%** 的角色标注 [4]。这一更高产出也与其金标准集相比 Dense 集召回率显著更高相一致 [6]。"
+  },
+  {
+   "pid": "qasper_2003.09520.qpdf",
+   "qid": "8829f738bcdf05b615072724223dbd82463e5de6",
+   "question": "Does the paper report translation accuracy for an automatic translation model for Tunisian to Arabish words?",
+   "gold": "yes",
+   "score": 3,
+   "answer": "否。论文报告的是半自动**转写**（transcription，从 Arabish 到阿拉伯字符）的准确率，而非突尼斯语到 Arabish 的自动**翻译**准确率：10 折交叉验证的 token 级准确率约为 71% [3]，第二块标注准确率约 70% [3]，加入第三块后第四块准确率约 80% [2][3]。论文中并未报告任何自动翻译模型的翻译准确率。"
+  },
+  {
+   "pid": "qasper_2004.03061.qpdf",
+   "qid": "1e59263f7aa7dd5acb53c8749f627cf68683adee",
+   "question": "Does the work explicitly study the relationship between model complexity and linguistic structure encoding?",
+   "gold": "no",
+   "score": 3,
+   "answer": "否。论文并未把“模型复杂度与语言结构编码之间的关系”作为研究问题；相反，它主张选择最高性能探针（无论复杂度）对估计互信息是最优的 [3]，并从信息论视角把“探针高准确率”与“表示编码结构”视为虚假二分法 [5]。论文真正考察的是表示与语言属性之间的互信息 [1]，以及控制函数用于理解句子语境对词级句法任务的影响而非表征 [6]。"
+  },
+  {
+   "pid": "qasper_2001.08845.qpdf",
+   "qid": "fc65f19a30150a0e981fb69c1f5720f0136325b0",
+   "question": "Is is known whether Sina Weibo posts are censored by humans or some automatic classifier?",
+   "gold": "no",
+   "score": 0,
+   "answer": "是，论文对这一点给出了明确判断：被审查的帖子中，近 30% 在 5–30 分钟内被删除，近 90% 在 24 小时内被删除，作者据此假设前者是自动完成的，后者由人工审查员删除 [1]。也就是说，论文认为微博的审查同时包含自动机制和人工审查两种方式 [1]。此外，论文提到正在进行的后续工作会比较分类器在“自动删除”与“人工删除”帖子上的准确率，结果将在未来发表 [3][4][7]。"
+  },
+  {
+   "pid": "qasper_1901.00439.qpdf",
+   "qid": "aa54e12ff71c25b7cff1e44783d07806e89f8e54",
+   "question": "What is an example of a health-related tweet?",
+   "gold": "The health benefits of alcohol consumption are more limited than previously thought, researchers say",
+   "score": 3,
+   "answer": "根据提供的证据，论文并未给出任何一条完整的健康相关推文示例文本。证据中只提到推文示例可在 Figure 1 中查看典型推文的外观 [3]，以及 Figure 3 下方给出了从 k-means 在 50 簇情形下某一簇中采样的若干推文示例（fastText 嵌入输入 L₂-CAE）[6]，但这些示例的具体文本内容并未在正文中列出。因此，无法从给定证据中给出健康相关推文的具体例子。"
+  },
+  {
+   "pid": "qasper_2001.00137.qpdf",
+   "qid": "abc5836c54fc2ac8465aee5a83b9c0f86c6fd6f5",
+   "question": "Do they test their approach on a dataset without incomplete data?",
+   "gold": "no",
+   "score": 2,
+   "answer": "是。论文确实在**不含不完整数据**的数据集上测试了其方法：在纠正文本数据集（corrected text dataset）上，Stacked DeBERT 准确率为 82%，而 BERT 为 76%，提升 6% [8]。此外，在原始错误文本数据集上准确率为 80%（BERT 为 72%）[7]，在混合数据集上为 80%（次优为 74%）[8]。因此，除不完整/含噪数据外，模型也在纠正后的完整文本上进行了评测 [8]。"
+  },
+  {
+   "pid": "qasper_1810.00663.qpdf",
+   "qid": "3aee5c856e0ee608a7664289ffdd11455d153234",
+   "question": "What was the performance of their model?",
+   "gold": "For test-repeated set, EM score of 61.17, F1 of 93.54, ED of 0.75 and GM of 61.36. For test-new set, EM score of 41.71, F1 of 91.02, ED of 1.22 and GM of 41.81",
+   "score": 3,
+   "answer": "你问的“their model”对应论文中提出的最终模型“Ours with Mask and Ordered Triplets”。在已见环境中，该模型在所有指标上均优于基线和消融模型[3]；具体而言，其精确匹配（EM）和目标匹配（GM）分别比基线提升35%和25%[6]。在Test-New集上，该模型比第二好模型在EM和GM上高出约INLINEFORM0[1]。"
+  }
+ ],
+ "C answer 层漏用": [
+  {
+   "pid": "qasper_2002.11402.qpdf",
+   "qid": "da8bda963f179f5517a864943dc0ee71249ee1ce",
+   "question": "How many layers does their system have?",
+   "gold": "4 layers",
+   "score": 3,
+   "answer": "你问的“their system”对应论文最终采用的架构。论文没有给出该最终架构的层数，只说明他们尝试了多种 LSTM 和 GRU 层（含/不含 CRF 层）的变体，发现用**一层 GRU** 比用更多层效果更好，并据此确定了最终架构 [1]。因此，证据中能确认的是“最终采用单层 GRU”，但论文未给出整个系统的总层数。"
+  },
+  {
+   "pid": "qasper_1709.08299.qpdf",
+   "qid": "7a7e279170e7a2f3bc953c37ee393de8ea7bd82f",
+   "question": "What two types the Chinese reading comprehension dataset consists of?",
+   "gold": "cloze-style reading comprehension and user query reading comprehension questions",
+   "score": 2,
+   "answer": "你问的“Chinese reading comprehension dataset 由哪两种类型组成”，对应论文提出的 CMRC-2017 数据集：它由大规模自动生成的训练集（automatically generated training set）与人工标注的验证集和测试集（human-annotated validation and test set）两部分组成 [2]。"
+  },
+  {
+   "pid": "qasper_1803.03786.qpdf",
+   "qid": "5b1cd21936aeec85233c978ba8d7282931522a3a",
+   "question": "what is the size of the dataset?",
+   "gold": "The number of fake news that have a duplicate in the training dataset are 1018 whereas, the number of articles with genuine content that have a duplicate article in the training set is 322.",
+   "score": 3,
+   "answer": "你问的 dataset 对应论文中的保加利亚语假新闻/点击诱饵数据集：训练集有 2,815 条样本，测试集有 761 条样本 [1][2]。训练集中 1,940 条（69%）为假新闻，1,968 条（70%）为点击诱饵 [1]。此外，该语料来自 377 个不同来源 [1]。"
+  },
+  {
+   "pid": "qasper_1909.13695.qpdf",
+   "qid": "3241f90a03853fa85d287007d2d51e7843ee3d9b",
+   "question": "What standard large speaker verification corpora is used for evaluation?",
+   "gold": "non-native speech from the BULATS test",
+   "score": 3,
+   "answer": "你问的“用于评估的标准大规模说话人验证语料库”对应论文中的 VoxCeleb。论文使用的是 Kaldi 发布的 VoxCeleb x-vector/PLDA 系统，该系统在增强后的 VoxCeleb 1 和 VoxCeleb 2 上训练 [6]；VoxCeleb 含超过 7,000 名说话人、超过 2,000 小时音频，是当时最大的公开说话人识别数据集 [6]。不过需注意，VoxCeleb 在此是作为“域外”预训练模型来源，用于适配到 BULATS 任务 [2][6]，而实际评测是在 BULATS 与 Linguaskill 测试集上进行的 [6][9]。"
+  },
+  {
+   "pid": "qasper_2002.00876.qpdf",
+   "qid": "8df89988adff57279db10992846728ec4f500eaa",
+   "question": "What baselines are used in experiments?",
+   "gold": "Typical implementations of dynamic programming algorithms are serial in the length of the sequence Computational complexity is even more of an issue for parsing algorithms, which cannot be as easily parallelized Unfortunately for other semirings, such as log and max, these operations are either slow or very memory inefficient",
+   "score": 3,
+   "answer": "提供的证据中没有关于实验所用基线（baselines）的信息。各条目主要介绍 Torch-Struct 的技术方法（CRF、半环、并行扫描、向量化解析等）[1][2][5][7]、库设计[6]、动机案例[4]、优化[10][11]及相关工作[12]，均未列出任何实验对比基线。因此无法回答该问题——缺少的是论文实验部分（experiments）中基线方法的描述。"
+  },
+  {
+   "pid": "qasper_1703.04617.qpdf",
+   "qid": "a891039441e008f1fd0a227dbed003f76c140737",
+   "question": "What MC abbreviate for?",
+   "gold": "machine comprehension",
+   "score": 2,
+   "answer": "根据提供的证据，论文中并未出现“MC”这一缩写，也没有给出其全称或含义，因此无法确认它指代什么。证据中只提到 MCTest（由 500 篇短篇虚构开放域故事和 2000 个问题组成）[1]，但未说明“MC”是否为该数据集的缩写。"
+  },
+  {
+   "pid": "qasper_1611.01400.qpdf",
+   "qid": "fbb85cbd41de6d2818e77e8f8d4b91e431931faa",
+   "question": "what crowdsourcing platform is used?",
+   "gold": "asked the authors to rank by closeness five citations we selected from their paper",
+   "score": 3,
+   "answer": "你问的 crowdsourcing platform 对应论文中提到的 Amazon Mechanical Turk (AMT)。论文在讨论众包标注时明确提到传统众包技术（例如 AMT）难以找到科学领域的专家 [9]，并在对比付费与无偿参与者时使用了通过 Amazon Mechanical Turk (AMT) 招募的付费工作者 [5]。因此，论文中使用的众包平台是 Amazon Mechanical Turk (AMT) [5][9]。"
+  }
+ ],
+ "B0 闸门兜底（系统自伤）": [
+  {
+   "pid": "qasper_1705.03487.qpdf",
+   "qid": "91c81807374f2459990e5f9f8103906401abc5c2",
+   "question": "What is barycentric Newton diagram?",
+   "gold": "The basic idea of the visualization, drawing on Isaac Newton’s visualization of the color spectrum BIBREF8 , is to express a mixture in terms of its constituents as represented in barycentric coordinates.",
+   "score": 1,
+   "answer": "抱歉，我可能无法准确回答这个问题——该答案未能通过内部事实校验。"
+  },
+  {
+   "pid": "qasper_1708.05873.qpdf",
+   "qid": "13b36644357870008d70e5601f394ec3c6c07048",
+   "question": "Is the dataset multilingual?",
+   "gold": "no",
+   "score": 1,
+   "answer": "抱歉，我可能无法准确回答这个问题——该答案未能通过内部事实校验。"
+  },
+  {
+   "pid": "qasper_1910.07134.qpdf",
+   "qid": "aaed6e30cf16727df0075b364873df2a4ec7605b",
+   "question": "What is WNGT 2019 shared task?",
+   "gold": "efficiency task aimed  at reducing the number of parameters while minimizing drop in performance",
+   "score": 1,
+   "answer": "抱歉，我可能无法准确回答这个问题——该答案未能通过内部事实校验。"
+  },
+  {
+   "pid": "qasper_1909.09491.qpdf",
+   "qid": "923b12c0a50b0ee22237929559fad0903a098b7b",
+   "question": "What experiments with large-scale features are performed?",
+   "gold": "Plackett-Luce Model for SMT Reranking",
+   "score": 1,
+   "answer": "抱歉，我可能无法准确回答这个问题——该答案未能通过内部事实校验。"
+  }
+ ],
+ "B 送达/检索失败": [
+  {
+   "pid": "qasper_1804.08139.qpdf",
+   "qid": "b556fd3a9e0cff0b33c63fa1aef3aed825f13e28",
+   "question": "What dataset did they use?",
+   "gold": "16 different datasets from several popular review corpora used in BIBREF20 CoNLL 2000 BIBREF22",
+   "score": 3,
+   "answer": "论文使用的是 16 个不同的情感分类任务（sentiment classification tasks）作为实验数据集 [3]。"
+  },
+  {
+   "pid": "qasper_2004.04228.qpdf",
+   "qid": "dfd9302615b27abf8cbef1a2f880a73dd5f0c753",
+   "question": "What models are evaluated with QAGS?",
+   "gold": "bert-large-wwm bert-base bert-large",
+   "score": 2,
+   "answer": "你问的“用 QAGS 评估的模型”对应论文中在句子排序实验里被评估的各类事实一致性检测方法。证据显示，被评估的包括两个在 MultiNLI 上微调的 NLI 模型 BERT NLI 和 ESIM，以及基于 NLI 的事实核查模型 FactCC，QAGS 与它们对比并表现更优 [5]。此外，QAGS 本身也作为评估指标被用于衡量摘要模型生成摘要的事实一致性，例如在 CNN/DM 和 XSUM 上评估摘要模型输出 [2][6]。证据中未给出这些被评估摘要模型的具体名称。"
+  },
+  {
+   "pid": "qasper_1707.03904.qpdf",
+   "qid": "dcb18516369c3cf9838e83168357aed6643ae1b8",
+   "question": "Which retrieval system was used for baselines?",
+   "gold": "The dataset comes with a ranked set of relevant documents. Hence the baselines do not use a retrieval system.",
+   "score": 2,
+   "answer": "你问的“baselines 使用的检索系统”对应论文中为 Quasar-S 和 Quasar-T 构建上下文文档所用的检索系统：两者都使用 **Lucene** 索引来检索伪文档。具体而言，Quasar-S 把整个语料的伪文档载入基于磁盘的 Lucene 索引，并用 Lucene 语法查询每个 cloze [6]；Quasar-T 则把池中的伪文档收集进内存中的 Lucene 索引，仅用问题文本查询 [6]。此外，Quasar-T 的池文本来自 ClueWeb09，其问答对先被转换为 Indri 查询语言的 #combine 查询以符合 ClueWeb09 批量查询服务 [6]。"
+  },
+  {
+   "pid": "qasper_1911.03681.qpdf",
+   "qid": "83f14af3ccca4ab9deb4c6d208f624d1e79dc7eb",
+   "question": "Which of the two ensembles yields the best performance?",
+   "gold": "Answer with content missing: (Table 2) CONCAT ensemble",
+   "score": 3,
+   "answer": "你问的“两个 ensemble 中哪个表现最好”，对应论文中的 AVG 与 CONCAT 两种 ensemble 方式。证据中只说明二者是 BERT 与 E-BERT 的两种集成方式（AVG 为输出分布平均，CONCAT 为用斜杠拼接实体与其名称）[11][4]，并笼统称 ensembles 在未过滤 LAMA 和 FewRel 上优于 BERT 与 E-BERT、在 LAMA-UHN 上能挽回 E-BERT 的损失[1][2][3]，但并未给出 AVG 与 CONCAT 之间谁更优的直接比较或数值。因此，论文未提供足以判定两者中哪一个最好的信息。"
+  },
+  {
+   "pid": "qasper_1905.06906.qpdf",
+   "qid": "dfbab3cd991f86d998223726617d61113caa6193",
+   "question": "For the purposes of this paper, how is something determined to be domain specific knowledge?",
+   "gold": "reviews under distinct product categories are considered specific domain knowledge",
+   "score": 3,
+   "answer": "你问的“domain specific knowledge 如何被判定”对应论文中门控机制对 n-gram 的加权判断。论文指出，门控结构会学习哪些词或 n-gram 对情感贡献最大，这些通常与**域无关词**相关；而对**域特定**或仅起语法作用的功能词块则赋予较低权重 [4]。具体地，像 “quality functional case”“sell entire kitchen” 这类含域特定词的 trigram 得到最低权重，而 “would have to” 这类纯功能词也得到最低权重 [4]。因此判定依据是：该 n-gram 是否只在特定域内承载情感知识、对整体情感贡献小，若是则被视为域特定/低权重 [4]。此外，GCN 的门控单元控制流向池化层的域信息，门控层学习过滤出域无关表示 [7][9]。"
+  },
+  {
+   "pid": "qasper_2001.06888.qpdf",
+   "qid": "0106bd9d54e2f343cc5f30bb09a5dbdd171e964b",
+   "question": "Which social media platform is explored?",
+   "gold": "twitter",
+   "score": 3,
+   "answer": "你问的社交媒体平台对应论文中的微博（micro-blogging social media）。论文明确指出，CWI 方法用于解决微博社交媒体中的命名实体识别任务 [1]。因此答案是：微博（micro-blogging social media）[1]。"
+  },
+  {
+   "pid": "qasper_2003.03612.qpdf",
+   "qid": "574f17134e4dd041c357ebb75a7ef590da294d22",
+   "question": "What new model is proposed for binomial lists?",
+   "gold": "null model",
+   "score": 3,
+   "answer": "你问的“新模型”对应论文中提出的**用有向图表示全局二项式排序结构的新方法**：构建一个有向图，边从 i 指向 j 表示 i 在二项式中倾向于排在 j 之前 [4]。此外，论文还提出了基于**不对称性、运动性和一致性**三个属性的解释框架，并可视化为三维立方体 [7]，以及**近因原则**（用户最认同的群体在二项式排序中居前）[1]。"
+  },
+  {
+   "pid": "qasper_1909.13375.qpdf",
+   "qid": "9ab43f941c11a4b09a0e4aea61b4a5b4612e7933",
+   "question": "What approach did previous models use for multi-span questions?",
+   "gold": "Only MTMSM specifically tried to tackle the multi-span questions. Their approach consisted of two parts: first train a dedicated categorical variable to predict the number of spans to extract and the second was to generalize the single-span head method of extracting a span",
+   "score": 3,
+   "answer": "你问的 previous models 对应论文中的 NAQANET 和 NABERT+ 这两个基线模型。它们没有能输出多跨度问题正确答案的 head，因此在训练时采用“semi-correct answers”策略：把多跨度答案中的每一个 span 都当作（仅训练时的）正确答案，通过鼓励模型给出部分答案来提升相应的 F1 分数 [4]。论文还指出，在尝试解决 DROP 的现有模型中，只有一个模型是直接针对多跨度问题的，而非仅作为整体性能的副产品 [1]。"
+  },
+  {
+   "pid": "qasper_1602.01208.qpdf",
+   "qid": "d557752c4706b65dcdb7718272180c59d77fb7a7",
+   "question": "Which method do they use for word segmentation?",
+   "gold": "unsupervised word segmentation method latticelm",
+   "score": 3,
+   "answer": "你问的 word segmentation 方法对应论文中的 SpCoA 所采用的分词方式：它通过语音识别结果的格（lattices）进行分词，从而实现更准确的词汇获取 [5]。"
+  },
+  {
+   "pid": "qasper_1909.09986.qpdf",
+   "qid": "92d09654011d424cfef5691eec28ee934f88d954",
+   "question": "What is the effectiveness plan generation?",
+   "gold": "clear mapping between plans and text helps to reduce these issues greatly, the system in BIBREF0 still has 2% errors work in neural text generation and summarization attempt to address these issues",
+   "score": 3,
+   "answer": "你问的“plan generation（规划生成）的有效性”对应论文中的新规划生成机制。证据显示，该规划器在边数上线性运行，在7条边的图上耗时0.0025秒，比基线快5个数量级[3]。因此，其有效性主要体现在运行效率上：速度快、可扩展性好。论文概述也将其列为四项独立扩展之一[2]。"
+  },
+  {
+   "pid": "qasper_1911.03243.qpdf",
+   "qid": "f74eaee72cbd727a6dffa1600cdf1208672d713e",
+   "question": "How was coverage measured?",
+   "gold": "QA pairs per predicate",
+   "score": 3,
+   "answer": "你问的 coverage 对应论文中对标注覆盖度的衡量。论文主要通过三条途径衡量覆盖度：一是与 PropBank（CoNLL-2009）标注对比，报告对 PropBank 角色的召回率很高，从而印证标注协议获得的覆盖 [1]；二是与 2015 数据集对比，本 gold 产出 1593 条标注（989 core、604 adjuncts），而 2015 为 1315 条（979 core、336 adjuncts），显示覆盖更好 [1]；三是与 Dense 集对比，本 gold 在精度相当的情况下召回显著更高，对应约 25% 更高的产出 [4][9]。此外，与专家标注样本对比也显示本 gold 覆盖更高，尤其对隐含角色 [4][5]。"
+  },
+  {
+   "pid": "qasper_1911.03243.qpdf",
+   "qid": "96526a14820b7debfd6f7c5beeade0a854b93d1a",
+   "question": "How was the corpus obtained?",
+   "gold": "trained annotators BIBREF4 crowdsourcing BIBREF5",
+   "score": 3,
+   "answer": "你问的“corpus 如何获得”对应论文中新构建的 gold standard 语料。它是从 Dense 集中抽取样本，覆盖 Wikinews 和 Wikipedia 两个领域，各 1000 句，并平均分为开发集与测试集 [8]。标注采用 Amazon Mechanical Turk 的标注机制，每个谓词由 2 名受训工人独立标注，再由第三名工人将其合并为最终的角色与论元集合 [4]。合并者会依据指南验证问题、合并/拆分或修改同一角色的答案，并通过选择表述更自然的问题来去除冗余角色 [4][11]。"
+  },
+  {
+   "pid": "qasper_1911.03243.qpdf",
+   "qid": "a69af5937cab861977989efd72ad1677484b5c8c",
+   "question": "How was the previous dataset annotated?",
+   "gold": "the annotation machinery of BIBREF5",
+   "score": 3,
+   "answer": "你问的“previous dataset”对应论文中的 2015 QA-SRL 数据集。它由非专家众包工人在完成简短训练后标注，共标注 7.8K 个动词，平均每个谓词 2.4 个 QA 对，且每个动词只由单个标注者完成 [2]。后续的 2018 大规模语料则众包了 133K 个动词，平均每个谓词 2.0 个 QA 对，每个动词由一名 QA 生成工人标注、另两名工人验证 [2]。"
+  },
+  {
+   "pid": "qasper_2001.09899.qpdf",
+   "qid": "2df910c9806f0c379d7bb1bc2be2610438e487dc",
+   "question": "What datasets did they use?",
+   "gold": "BIBREF32, BIBREF23, BIBREF33 discussions in four different languages: English, Portuguese, Spanish and French, occurring in five regions over the world: South and North America, Western Europe, Central and Southern Asia.",
+   "score": 3,
+   "answer": "你问的“datasets”对应论文中用于评测的数据集。根据证据，论文在 **Garimella 数据集**上测试了所提方法，Walktrap 和 Louvain 的 AUC ROC 分别为 0.99 和 0.989 [2]；同时论文报告结果是在 **Twitter** 上取得的 [5]。因此可确认使用的数据集/平台为 Garimella 数据集与 Twitter [2][5]。"
+  }
+ ],
+ "D 疑似判分过严": [
+  {
+   "pid": "qasper_1909.00542.qpdf",
+   "qid": "f60629c01f99de3f68365833ee115b95a3388699",
+   "question": "What classification approaches were experimented for this task?",
+   "gold": "NNC SU4 F1 NNC top 5 Support Vector Classification (SVC)",
+   "score": 3,
+   "answer": "你问的“classification approaches”对应论文中用于句子分类的**数据标注（labelling）方案**，论文实验了两种：一是把 ROUGE 分数高于阈值 t 的输入句子标为“summary”[3]；二是把 ROUGE 分数最高的 m 个输入句子标为“summary”[3]。分类器本身用的是 Support Vector Classification (SVC)[3]，并在深度学习部分构建了神经分类器 NNC，分“NNC top 5”（用分类标签）和“NNC SU4 F1”（用回归标签，即各句 ROUGE-SU4 F1 分数）两种设置[6]。实验最终发现最优标注方案是用 top 5 句子作为目标摘要，而非此前工作中的阈值 0.1[3]。"
+  },
+  {
+   "pid": "qasper_1603.00968.qpdf",
+   "qid": "a8e4a67dd67ae4a9ebf983a90b0d256f4b9ff6c6",
+   "question": "What dataset/corpus is this evaluated over?",
+   "gold": "SST-1 SST-2 Subj  TREC  Irony",
+   "score": 3,
+   "answer": "你问的评测数据集对应论文中提到的 TREC 数据集和 irony 数据集。论文在 TREC 数据集上报告 MGNC-CNN 三词嵌入结果覆盖已知最佳准确率 96.0% [5]，并在 irony 数据集上报告三嵌入模型相比基线在 AUC 上提升 4% [6]。因此，论文的评测覆盖 TREC 与 irony 两个数据集 [5][6]。"
+  }
+ ]
+}

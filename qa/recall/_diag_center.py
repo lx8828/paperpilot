@@ -27,7 +27,7 @@ from paperpilot.agents.document_cache import ordered_chunks, section_from_path  
 from paperpilot.agents.nodes.retrieve import retrieve_claims  # noqa: E402
 from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
 
-VIEW = ROOT / "out_views"
+VIEW = ROOT / "assets/artifacts/out_views"
 
 
 def ev_sent_keys(ev: str, k: int = 60) -> list[str]:

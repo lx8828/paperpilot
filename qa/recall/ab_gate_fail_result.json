@@ -1,0 +1,175 @@
+[
+ {
+  "qid": "d7d611f622552142723e064f330d071f985e805c",
+  "pid": "2001.08051",
+  "grp": "hard",
+  "action": "repaired",
+  "issues": [
+   [
+    "high",
+    "citation"
+   ],
+   [
+    "high",
+    "citation"
+   ]
+  ],
+  "score": 2,
+  "pass": false,
+  "level": "unknown",
+  "calls": 5,
+  "prompt": 18788,
+  "q": "How many utterances are in the corpus?",
+  "answer": "你问的“corpus”对应论文中的“TLT-school”语料库。根据提供的正文段落，文中并未给出该语料库中话语（utterances）的总数量。相关段落仅提及了参与学生人数（如2018年约2500名学生[7]）、问题提示数量（2017/2018年共47个[12]）以及部分转录数据（如约20分钟音频[14]），但未明确"
+ },
+ {
+  "qid": "3604c4fba0a82d7139efd5ced47612c90bd10601",
+  "pid": "2001.10179",
+  "grp": "hard",
+  "action": "pass",
+  "issues": [],
+  "score": 3,
+  "pass": false,
+  "level": "unknown",
+  "calls": 3,
+  "prompt": 5275,
+  "q": "Is their implementation on CNN-DSA compared to GPU implementation in terms of power consum",
+  "answer": "根据检索到的原文，**无法给出明确结论**，因为文中未提及“CNN-DSA”，也未与GPU实现进行功耗、精度和速度的直接对比。以下是相关原文片段，供您参考：\n\n- [1] 文中描述的是“CNN accelerator chip”（CNN加速器芯片）而非CNN-DSA，并提到其功耗优势：“The advantage of"
+ },
+ {
+  "qid": "be595b2017545b0359db6abf4914a155bdd10d23",
+  "pid": "1610.08597",
+  "grp": "hard",
+  "action": "repaired",
+  "issues": [
+   [
+    "high",
+    "citation"
+   ]
+  ],
+  "score": 3,
+  "pass": false,
+  "level": "unknown",
+  "calls": 5,
+  "prompt": 20679,
+  "q": "How is the ground truth of gang membership established in this dataset?",
+  "answer": "你问的“ground truth of gang membership”对应论文中数据集里“gang member profiles”的判定方式。该数据集通过使用 gang members 在美国各地 Twitter 资料中使用的、与地点无关的种子词（seed words）查询 Followerwonk Web 服务 "
+ },
+ {
+  "qid": "21663d2744a28e0d3087fbff913c036686abbb9a",
+  "pid": "1905.13497",
+  "grp": "hard",
+  "action": "pass",
+  "issues": [],
+  "score": 3,
+  "pass": false,
+  "level": "L3",
+  "calls": 4,
+  "prompt": 12018,
+  "q": "How does their model differ from BERT?",
+  "answer": "你问的“their model”对应论文中提出的基于注意力引导的常识推理方法（Maximum Attention Score, MAS），而非一个新的预训练模型。该方法与 BERT 的差异在于：它直接利用现成的、未经任务微调的 BERT（out-of-the-box BERT）所产生的注意力张量，通过最大池化（max-"
+ },
+ {
+  "qid": "cf93a209c8001ffb4ef505d306b6ced5936c6b63",
+  "pid": "1703.09684",
+  "grp": "hard",
+  "action": "pass",
+  "issues": [],
+  "score": 3,
+  "pass": false,
+  "level": "unknown",
+  "calls": 3,
+  "prompt": 8276,
+  "q": "From when are many VQA datasets collected?",
+  "answer": "根据检索到的原文，**无法确定VQA数据集的收集时间**。\n\n最相关的原文片段如下：\n\n[1] 文中提到：\"Six datasets for VQA with natural images have been released between 2014–2016: DAQUAR, COCO-QA, FM-IQA, Th"
+ },
+ {
+  "qid": "aa54e12ff71c25b7cff1e44783d07806e89f8e54",
+  "pid": "1901.00439",
+  "grp": "hard",
+  "action": "pass",
+  "issues": [],
+  "score": 3,
+  "pass": false,
+  "level": "L3",
+  "calls": 4,
+  "prompt": 19745,
+  "q": "What is an example of a health-related tweet?",
+  "answer": "你问的“健康相关推文示例”对应论文中用于聚类分析的推文数据。论文提到，数据集中每条推文包含推文文本，且多数情况下后附指向原始新闻文章的 URL [3]。但论文并未给出任何一条具体推文的完整文本示例，仅说明推文经过预处理（如移除 URL、“RT”前缀和“@用户名”等）[3]。因此，证据中无法提供一条具体的健康推文实例。"
+ },
+ {
+  "qid": "8df89988adff57279db10992846728ec4f500eaa",
+  "pid": "2002.00876",
+  "grp": "hard",
+  "action": "repaired",
+  "issues": [
+   [
+    "high",
+    "citation"
+   ],
+   [
+    "high",
+    "citation"
+   ]
+  ],
+  "score": 4,
+  "pass": true,
+  "level": "unknown",
+  "calls": 5,
+  "prompt": 16667,
+  "q": "What baselines are used in experiments?",
+  "answer": "你问的实验基线对应论文中用于对比的基线方法。根据正文，论文在实验部分并未明确列出所采用的基线方法名称，仅在第 [1] 段提到“flat RNN”作为无法捕获层次结构的对比模型示例，以及“self-critical baseline”作为策略梯度中的方差缩减基线 [1]。此外，第 [9] 段在相关工作部分列举了其他结构化"
+ },
+ {
+  "qid": "cc5d8e12f6aecf6a5f305e2f8b3a0c67f49801a9",
+  "pid": "2004.01694",
+  "grp": "hard",
+  "action": "repaired",
+  "issues": [
+   [
+    "high",
+    "citation"
+   ]
+  ],
+  "score": 3,
+  "pass": false,
+  "level": "unknown",
+  "calls": 5,
+  "prompt": 18664,
+  "q": "What percentage fewer errors did professional translations make?",
+  "answer": "你问的“professional translations”对应论文中的 H_A（专业人工翻译）。论文未直接给出“专业翻译比机器翻译少百分之多少错误”的单一百分比数值，而是按错误类别分别报告了显著性差异，如 MT_1 在 Incorrect Word、Named Entity 和 Word Order 类别中错误显著更"
+ },
+ {
+  "qid": "4e9684fd68a242cb354fa6961b0e3b5c35aae4b6",
+  "pid": "1910.03814",
+  "grp": "hard",
+  "action": "pass",
+  "issues": [],
+  "score": 3,
+  "pass": false,
+  "level": "L0",
+  "calls": 2,
+  "prompt": 2135,
+  "q": "What is the results of multimodal compared to unimodal models?",
+  "answer": "你问的多模态模型与单模态模型的对比结果，对应论文中的核心结论：**多模态模型未超越单模态文本模型** [2]。具体而言，尽管图像被证明对仇恨言论检测有用，但所提出的多模态模型在性能上并未超过仅使用文本的单模态模型 [2]。论文同时评估了多模态模型在该任务上的表现，并与单模态检测进行了对比 [3]。"
+ },
+ {
+  "qid": "e63bde5c7b154fbe990c3185e2626d13a1bad171",
+  "pid": "1901.02262",
+  "grp": "hard",
+  "action": "repaired",
+  "issues": [
+   [
+    "high",
+    "citation"
+   ]
+  ],
+  "score": 1,
+  "pass": false,
+  "level": "unknown",
+  "calls": 5,
+  "prompt": 23304,
+  "q": "What is the performance achieved on NarrativeQA?",
+  "answer": "你问的 NarrativeQA 性能对应论文中并未涉及的内容——该论文的实验全部基于 MS MARCO 2.1 数据集，包括其 Q&A 和 NLG 两个任务 [1][3][5]，全文未提及 NarrativeQA 数据集或相关性能结果。因此，论文中无法确认在 NarrativeQA 上取得的任何性能数值。"
+ }
+]

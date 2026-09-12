@@ -5,7 +5,7 @@
     全局 L3；L2 的服务对象是 "judge_l1 判不够但给了 target_sections（有局部方向）"的
     题（多为中等问题），L2 在局部扩窗解决以省下全文 L3 的 token。
 本实验：
-    样本 = 全量 QASPER 抽题（要求 out_views 有 report、gold 可定位），按
+    样本 = 全量 QASPER 抽题（要求 assets/artifacts/out_views 有 report、gold 可定位），按
            final_lock fail/unknown(hard 倾向) 与其余(normal) 分层混抽；
     每臂只变"judge_l1 判不够后怎么办"：A=现状(进 expand_l2 扩窗) / B=noL2(直接 search_l3)，
     同 judge_l1 判定同题端到端 + 同一外部裁判(glm-4-flash)；
@@ -108,7 +108,7 @@ def build_pool():
     papers = load_papers()
     final_lock = json.load(open("qa/qasper_final_lock_20260907_183225.json", encoding="utf-8"))
     lock = {r["qid"]: r for r in final_lock}
-    view = ROOT / "out_views"
+    view = ROOT / "assets/artifacts/out_views"
     hard_qids = {r["qid"] for r in final_lock if r.get("new_status") in ("fail", "unknown_ok")}
     index: dict[str, tuple[str, dict]] = {}
     for pid, p in papers.items():

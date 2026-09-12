@@ -1,0 +1,8 @@
+[2609.02056v1.pdf] q=这篇论文的核心方法是什么？
+  route=L0,answer_L0 level=L0 n_cites=0
+  gate action=fallback issues=2
+  ans: 抱歉，我可能无法准确回答这个问题——该答案未能通过内部事实校验。
+[qasper_1901.00570.qpdf] q=What is the main contribution of this pa
+  route=L0,answer_L0 level=L0 n_cites=6
+  gate action=pass issues=0
+  ans: 你问的“本文主要贡献”对应论文中提出的尖峰匹配方法与概率分类框架。论文的核心贡献是提出一种新颖的尖峰匹配方法（spike matching）来识别关键词，并利用概率分类评估事件发生的概率 [1]。此外，该方法旨在克服Twitter数据中的缩

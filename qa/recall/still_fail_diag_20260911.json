@@ -1,0 +1,383 @@
+[
+ {
+  "qid": "5a0841cc0628e872fe473874694f4ab9411a1d10",
+  "pid": "1701.00185",
+  "score": 1,
+  "bucket": "C 进了候选答案没用",
+  "cap_targets": [
+   "Table 6: Comparison of ACC of our proposed methods and some other non-biased models on three datasets. For LPI, we project the text under the best dimension as described in Section 4.3. For both bi-LSTM and bi-GRU based clustering methods, the binary codes generated from LPI are used to guide the learning of bi-LSTM/bi-GRU models.",
+   "Table 7: Comparison of NMI of our proposed methods and some other non-biased models on three datasets. For LPI, we project the text under the best dimension as described in Section 4.3. For both bi-LSTM and bi-GRU based clustering methods, the binary codes generated from LPI are used to guide the learning of bi-LSTM/bi-GRU models."
+  ],
+  "n_mn_tables": 7,
+  "want": [
+   "table6",
+   "table7"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": 0.0,
+  "xtbl_in_hits": 5,
+  "gold_n": 4,
+  "hit_n": 0,
+  "question": "By how much did they outperform the other methods?"
+ },
+ {
+  "qid": "0fd678d24c86122b9ab27b73ef20216bbd9847d1",
+  "pid": "1804.08139",
+  "score": 3,
+  "bucket": "B 表没进 top-12",
+  "cap_targets": [
+   "Table 2: Performances on 16 tasks. The column of “Single Task” includes bidirectional LSTM (BiLSTM), bidirectional LSTM with attention (att-BiLSTM) and the average accuracy of the two models. The column of “Multiple Tasks” shows several multi-task models. * is from [Liu et al., 2017] ."
+  ],
+  "n_mn_tables": 4,
+  "want": [
+   "table2"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 0,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "What evaluation metrics are used?"
+ },
+ {
+  "qid": "dccc3b182861fd19ccce5bd00ce9c3f40451ed6e",
+  "pid": "1909.00088",
+  "score": 3,
+  "bucket": "B 表没进 top-12",
+  "cap_targets": [
+   "Figure 4: Graph of average results by MRT/RRT",
+   "Table 9: Average results by MRT/RRT"
+  ],
+  "n_mn_tables": 28,
+  "want": [
+   "figure4",
+   "table9"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 2,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Does the model proposed beat the baseline models for all the values of the maski"
+ },
+ {
+  "qid": "5a06f11aa75a8affde3d595c40fb03e06769e368",
+  "pid": "1911.11933",
+  "score": 2,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 5,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 2,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Do they trim the search space of possible output sequences?"
+ },
+ {
+  "qid": "d427e3d41c4c9391192e249493be23926fc5d2e9",
+  "pid": "1905.00563",
+  "score": 3,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 7,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 0,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Can this adversarial approach be used to directly improve model accuracy?"
+ },
+ {
+  "qid": "16af38f7c4774637cf8e04d4b239d6d72f0b0a3a",
+  "pid": "2002.10361",
+  "score": 2,
+  "bucket": "B 表没进 top-12",
+  "cap_targets": [
+   "Table 1: Statistical summary of multilingual corpora across English, Italian, Polish, Portuguese and Spanish. We present number of users (Users), documents (Docs), and average tokens per document (Tokens) in the corpus, plus the label distribution (HS Ratio, percent of documents labeled positive for hate speech)."
+  ],
+  "n_mn_tables": 8,
+  "want": [
+   "table1"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": 1.0,
+  "xtbl_in_hits": 1,
+  "gold_n": 1,
+  "hit_n": 0,
+  "question": "How large is the dataset?"
+ },
+ {
+  "qid": "9c4a4dfa7b0b977173e76e2d2f08fa984af86f0e",
+  "pid": "1910.02339",
+  "score": 2,
+  "bucket": "B 表没进 top-12",
+  "cap_targets": [
+   "Table 2: Results of AlgoLisp dataset"
+  ],
+  "n_mn_tables": 2,
+  "want": [
+   "table2"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": 1.0,
+  "xtbl_in_hits": 0,
+  "gold_n": 2,
+  "hit_n": 0,
+  "question": "How does TP-N2F compare to LSTM-based Seq2Seq in terms of training and inference"
+ },
+ {
+  "qid": "ac706631f2b3fa39bf173cd62480072601e44f66",
+  "pid": "2002.02224",
+  "score": 3,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 3,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 1,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Did they experiment on this dataset?"
+ },
+ {
+  "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+  "pid": "2002.08307",
+  "score": 3,
+  "bucket": "A 表未解析",
+  "cap_targets": [
+   "Figure 2: (Left) Pre-training loss predicts information deletion GLUE accuracy linearly as sparsity increases. We believe the slope of each line tells us how much a bit of BERT is worth to each task. (CoLA at 90% is excluded from the line of best fit.) (Right) The cosine similarities of features extracted for a subset of the pre-training development data before and after pruning. Features are extracted from activations of all 12 layers of BERT and compared layer-wise to a model that has not been pruned. As performance degrades, cosine similarities of features decreases."
+  ],
+  "n_mn_tables": 4,
+  "want": [
+   "figure2"
+  ],
+  "have_in_parsed": false,
+  "gold_in_parsed": 0.0,
+  "xtbl_in_hits": 1,
+  "gold_n": 3,
+  "hit_n": 0,
+  "question": "How much is pre-training loss increased in Low/Medium/Hard level of pruning?"
+ },
+ {
+  "qid": "1d9b953a324fe0cfbe8e59dcff7a44a2f93c568d",
+  "pid": "2002.00876",
+  "score": 3,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 3,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 1,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Does API provide ability to connect to models written in some other deep learnin"
+ },
+ {
+  "qid": "75b69eef4a38ec16df63d60be9708a3c44a79c56",
+  "pid": "2002.05058",
+  "score": 3,
+  "bucket": "B 表没进 top-12",
+  "cap_targets": [
+   "Table 1: Sample-level correlation between metrics and human judgments, with p-values shown in brackets.",
+   "Table 2: Model-level correlation between metrics and human judgments, with p-values shown in brackets."
+  ],
+  "n_mn_tables": 5,
+  "want": [
+   "table1",
+   "table2"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": 0.75,
+  "xtbl_in_hits": 0,
+  "gold_n": 8,
+  "hit_n": 0,
+  "question": "How much better peformance is achieved in human evaluation when model is trained"
+ },
+ {
+  "qid": "3604c4fba0a82d7139efd5ced47612c90bd10601",
+  "pid": "2001.10179",
+  "score": 3,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 6,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 3,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Is their implementation on CNN-DSA compared to GPU implementation in terms of po"
+ },
+ {
+  "qid": "8a5254ca726a2914214a4c0b6b42811a007ecfc6",
+  "pid": "2002.06675",
+  "score": 3,
+  "bucket": "B 表没进 top-12",
+  "cap_targets": [
+   "Table 1: Speaker-wise details of the corpus"
+  ],
+  "n_mn_tables": 7,
+  "want": [
+   "table1"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": 1.0,
+  "xtbl_in_hits": 0,
+  "gold_n": 2,
+  "hit_n": 0,
+  "question": "How much transcribed data is available for for Ainu language?"
+ },
+ {
+  "qid": "858c51842fc3c1f3e6d2d7d853c94f6de27afade",
+  "pid": "1901.00570",
+  "score": 2,
+  "bucket": "A 表未解析",
+  "cap_targets": [
+   "TABLE II: A comparison of classification AVCs using word-pairs extracted by different feature selection methods"
+  ],
+  "n_mn_tables": 4,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 2,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Which of the classifiers showed the best performance?"
+ },
+ {
+  "qid": "579941de2838502027716bae88e33e79e69997a6",
+  "pid": "1909.13375",
+  "score": 3,
+  "bucket": "B 表没进 top-12",
+  "cap_targets": [
+   "Table 2. Performance of different models on DROP’s development set in terms of Exact Match (EM) and F1."
+  ],
+  "n_mn_tables": 2,
+  "want": [
+   "table2"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": 0.0,
+  "xtbl_in_hits": 0,
+  "gold_n": 6,
+  "hit_n": 0,
+  "question": "What is difference in peformance between proposed model and state-of-the art on "
+ },
+ {
+  "qid": "e09e89b3945b756609278dcffb5f89d8a52a02cd",
+  "pid": "1808.06834",
+  "score": 2,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 11,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": 1.0,
+  "xtbl_in_hits": 1,
+  "gold_n": 1,
+  "hit_n": 0,
+  "question": "How many speeches are in the dataset?"
+ },
+ {
+  "qid": "04f72eddb1fc73dd11135a80ca1cf31e9db75578",
+  "pid": "1911.03243",
+  "score": 3,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 7,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": 0.0,
+  "xtbl_in_hits": 1,
+  "gold_n": 1,
+  "hit_n": 0,
+  "question": "How much more coverage is in the new dataset?"
+ },
+ {
+  "qid": "1e59263f7aa7dd5acb53c8749f627cf68683adee",
+  "pid": "2004.03061",
+  "score": 3,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 4,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 0,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Does the work explicitly study the relationship between model complexity and lin"
+ },
+ {
+  "qid": "fc65f19a30150a0e981fb69c1f5720f0136325b0",
+  "pid": "2001.08845",
+  "score": 0,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 4,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 0,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Is is known whether Sina Weibo posts are censored by humans or some automatic cl"
+ },
+ {
+  "qid": "aa54e12ff71c25b7cff1e44783d07806e89f8e54",
+  "pid": "1901.00439",
+  "score": 3,
+  "bucket": "A 表未解析",
+  "cap_targets": [
+   "Fig. 1. Proposed representation learning method depicting the overall flow starting from a tweet to the learned features, including the architecture of the convolutional autoencoder.",
+   "Fig. 1. Proposed representation learning method depicting the overall flow starting from a tweet to the learned features, including the architecture of the convolutional autoencoder."
+  ],
+  "n_mn_tables": 2,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 1,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "What is an example of a health-related tweet?"
+ },
+ {
+  "qid": "abc5836c54fc2ac8465aee5a83b9c0f86c6fd6f5",
+  "pid": "2001.00137",
+  "score": 3,
+  "bucket": "E 非表格题（启发式误判）",
+  "cap_targets": [],
+  "n_mn_tables": 12,
+  "want": [],
+  "have_in_parsed": false,
+  "gold_in_parsed": null,
+  "xtbl_in_hits": 3,
+  "gold_n": 0,
+  "hit_n": 0,
+  "question": "Do they test their approach on a dataset without incomplete data?"
+ },
+ {
+  "qid": "3aee5c856e0ee608a7664289ffdd11455d153234",
+  "pid": "1810.00663",
+  "score": 3,
+  "bucket": "C 进了候选答案没用",
+  "cap_targets": [
+   "Table 3: Performance of different models on the test datasets. EM and GM report percentages, and ED corresponds to average edit distance. The symbol ↑ indicates that higher results are better in the corresponding column; ↓ indicates that lower is better."
+  ],
+  "n_mn_tables": 3,
+  "want": [
+   "table3"
+  ],
+  "have_in_parsed": true,
+  "gold_in_parsed": 1.0,
+  "xtbl_in_hits": 1,
+  "gold_n": 8,
+  "hit_n": 0,
+  "question": "What was the performance of their model?"
+ }
+]

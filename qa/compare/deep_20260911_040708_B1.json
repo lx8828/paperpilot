@@ -1,0 +1,812 @@
+[
+ {
+  "column": "B1",
+  "pid": "2001.05467",
+  "qid": "5e9732ff8595b31f81740082333b241d0a5f7c9a",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much better were results of the proposed models than base LSTM-RNN model?",
+  "answer": "根据检索片段，无法给出具体数值。片段[5]仅提到，所提模型“大幅优于”（outperform by a large margin）其基础模型 LSTM，但未提供具体提升幅度。片段[1]和[2]分别涉及人类评估和自动评估结果，但均未直接给出与基础 LSTM-RNN 模型对比的具体数值。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答指出了无法直接给出具体数值，但未提及标准答案中提到的具体提升幅度，如6.87和4.6点。",
+  "status": "fail",
+  "time_s": 16.7,
+  "time_s_ans": 12.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 2956,
+   "completion_tokens": 77
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 408,
+   "completion_tokens": 48
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1904.04055",
+  "qid": "7e328cc3cffa521e73f111d6796aaa9661c8eb07",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What is specific about the specific embeddings?",
+  "answer": "The specific embeddings referred to are the **EC group** of word embeddings, and their distinctive feature is that they were built using **binary FastText Skip-gram with subword information**. The best model, **EC1**, used:\n\n- **Vector dimension**: 300\n- **Negative sampling**: 10\n- **Subword information**: character n-grams, allowing vector representations for **unknown words** (words not seen during training)\n\nThe paper states that \"The ability of the model to provide vector representation for the unknown words seems to be the most important.\" This is what sets the EC embeddings apart from ea",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答提供了关于EC group的具体信息，包括其构建方法和一些技术细节，但遗漏了关于word embeddings的一般性描述，如分布假设和CBOW/Skip-gram的背景信息。此外，系统回答没有引用原文，但提供的信息与标准答案中的内容相符。",
+  "status": "fail",
+  "time_s": 7.3,
+  "time_s_ans": 1.9,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3088,
+   "completion_tokens": 170
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 690,
+   "completion_tokens": 76
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1809.08652",
+  "qid": "790ed4458a23aa23e2b5399259e50083c86d9e14",
+  "qtype": "yes_no",
+  "unanswerable": false,
+  "question": "Do all the instances contain code-switching?",
+  "answer": "根据检索片段，无法确定是否所有实例都包含语码转换（code-switching）。\n\n片段中仅提到数据集包含三种标注类别（offensive、abusive、benign），以及模型在 Hinglish 数据上进行训练和分类，但没有说明数据集中每个实例是否都包含语码转换。片段 [1] 讨论了 Hinglish 作为语码转换语言的特点，片段 [3] 和 [4] 描述了数据集和预处理步骤，但均未明确说明所有实例是否都含有语码转换。因此，依据现有材料无法回答该问题。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答部分正确，但遗漏了标准答案中关于数据集处理步骤的细节，这些步骤可能有助于判断是否所有实例都包含语码转换。",
+  "status": "fail",
+  "time_s": 8.2,
+  "time_s_ans": 1.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 1143,
+   "completion_tokens": 121
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 486,
+   "completion_tokens": 49
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1907.00854",
+  "qid": "2c3b2c3bab6d18cb0895462e3cfd91cd0dee7f7d",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what pretrained models were used?",
+  "answer": "Based on the provided text, the pretrained models used in the Katecheo system are:\n\n1. **BiDAF (Bi-Directional Attention Flow)** — used for reading comprehension. The system uses a pre-trained version of BiDAF available in the AllenNLP library. This model includes a CNN-based character-level embedding layer, a word embedding layer using pre-trained GloVE embeddings, an LSTM-based contextual embedding layer, an attention flow layer, and a modeling layer with bi-directional LSTMs.\n\n2. **en_ner_bc5cdr_md from scispaCy** — used as the NER model for the Medical Sciences topic. It is trained on the ",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了标准答案中提到的BERT模型。",
+  "status": "pass",
+  "time_s": 3.5,
+  "time_s_ans": 1.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3145,
+   "completion_tokens": 215
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 530,
+   "completion_tokens": 30
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1908.06606",
+  "qid": "1959e0ebc21fafdf1dd20c6ea054161ba7446f61",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How is the clinical text structuring task defined?",
+  "answer": "Based on the provided passages, the clinical text structuring (CTS) task is defined as follows:\n\nGiven a sequence of paragraph text \\(X = <x_1, x_2, ..., x_n>\\), clinical text structuring can be regarded as extracting or generating a key-value pair where the key \\(Q\\) is typically a query term (such as proximal resection margin) and the value \\(V\\) is a result of query term \\(Q\\) according to the paragraph text \\(X\\) [6]. It is a critical task for fetching medical research data from electronic health records (EHRs), where structural patient medical data—such as whether the patient has specific",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答准确，但遗漏了标准答案中提到的'our QA-CTS task aims to discover the most related text from original paragraph text'这一细节。",
+  "status": "pass",
+  "time_s": 8.9,
+  "time_s_ans": 2.2,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3711,
+   "completion_tokens": 319
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 642,
+   "completion_tokens": 48
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1910.08210",
+  "qid": "37e8f5851133a748c4e3e0beeef0d83883117a98",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How better is performance of proposed model compared to baselines?",
+  "answer": "根据检索片段，所提模型（文中以空白占位符表示）相比基线在性能上更优，具体体现在以下几个方面：\n\n1. **样本效率更高、收敛性能更好**：在简化变体上，与基线和消融变体相比，所提模型样本效率更高，并收敛到更高的性能（片段[1]）。\n\n2. **优于 FiLM 和 CNN**：所提模型优于 FiLM 和 CNN 模型，并且在最终性能上方差更小、表现更一致（片段[2]）。在留出集上训练时，它比 FiLM 和 CNN 模型样本效率更高、胜率更高；迁移到留出集时，仍比其他模型样本效率更高（片段[2]）。\n\n3. **泛化能力更强**：除 CNN 基线外，所有模型都能泛化到训练中未见过的动态和世界配置，其中所提模型优于 FiLM 和 CNN 模型（片段[1]）。\n\n4. **消融验证**：没有任何单一消融变体能解决任务，只有各消融特征的组合才能使所提模型持续获胜；消融变体往往收敛到局部最优策略，胜率约为 50%（片段[1]）。\n\n5. **课程学习下的表现**：课程学习对在所提任务上取得进展至关重要；不过尽管使用了课程学习，最终模型的性能仍落后于人类玩家（片段[5]）。\n\n综上，所提模型在样本效率、最终胜率、泛化能力和稳定性上均优于 FiLM 与 CNN 等基线，但尚未达到人类玩家水平。",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但缺少了具体的数值对比，如66+-22、13+-1和32+-3等具体数据。",
+  "status": "pass",
+  "time_s": 35.2,
+  "time_s_ans": 30.7,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 2553,
+   "completion_tokens": 333
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 635,
+   "completion_tokens": 43
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1704.00939",
+  "qid": "6407dae0c095c2c8e15e6769f03925aa4f0e902e",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "How long is the dataset used for training?",
+  "answer": "The training set contains 1142 annotated sentences.",
+  "level": "",
+  "route": [],
+  "score": 2,
+  "reason": "回答了数据集的大小，但没有明确说明是用于训练的数据集。",
+  "status": "fail",
+  "time_s": 2.4,
+  "time_s_ans": 0.8,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 1663,
+   "completion_tokens": 10
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 217,
+   "completion_tokens": 32
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1611.03382",
+  "qid": "81e8d42dad08a58fe27eea838f060ec8f314465e",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What is the state-of-the art?",
+  "answer": "The state-of-the-art is the RNN encoder-decoder architecture for summarization, as proposed by extending earlier work with an RNN decoder. Both techniques are currently the state-of-the-art on the DUC competition.",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了关于卷积编码器和RNN编码器的内容。",
+  "status": "pass",
+  "time_s": 3.9,
+  "time_s_ans": 0.8,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4135,
+   "completion_tokens": 44
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 557,
+   "completion_tokens": 34
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1910.03484",
+  "qid": "a65e5c97ade6e697ec10bcf3c3190dc6604a0cd5",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What non-annotated datasets are considered?",
+  "answer": "The non-annotated (unpaired) datasets considered are derived from the two datasets used in the study:\n\n1. **E2E NLG challenge dataset**: The 42K training set was partitioned into a 10K paired set and a 32K unpaired set. The unpaired data consisted of two sets — one containing only MRs and the other containing only natural texts.\n\n2. **Wikipedia Company Dataset**: After filtering, the 35K training set was partitioned into a paired set (10.5K), an unpaired text set (24.5K), and an unpaired MR set (24.5K).\n\nSo in both cases, the non-annotated data consists of unpaired MRs and unpaired natural tex",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确，但遗漏了Wikipedia Company Dataset的具体分割情况，且未引用原文。",
+  "status": "fail",
+  "time_s": 6.1,
+  "time_s_ans": 1.2,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5744,
+   "completion_tokens": 153
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 528,
+   "completion_tokens": 36
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1702.06589",
+  "qid": "bf7cb53f4105f2e6a413d1adef5349ff1e673500",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What is the source of the paraphrases of the questions?",
+  "answer": "The paraphrases of the questions come from the logical forms. Specifically, logical forms are transformed into interpretable textual representations called \"paraphrases\" [1].",
+  "level": "",
+  "route": [],
+  "score": 2,
+  "reason": "系统回答提到了逻辑形式转换为文本表示，但没有提及数据集来源，与标准答案不符。",
+  "status": "fail",
+  "time_s": 4.4,
+  "time_s_ans": 1.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 2857,
+   "completion_tokens": 33
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 286,
+   "completion_tokens": 37
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1606.02006",
+  "qid": "102a0439739428aac80ac11795e73ce751b93ea1",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What datasets were used?",
+  "answer": "The datasets used were KFTT and BTEC for English-to-Japanese translation, and the Japanese-English ASPEC dataset for larger-scale follow-up experiments.",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地提到了KFTT和BTEC，但遗漏了关于KFTT和BTEC的具体描述，如KFTT是关于京都的维基百科文章集合，BTEC是旅行对话语料库。",
+  "status": "fail",
+  "time_s": 5.7,
+  "time_s_ans": 0.7,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4573,
+   "completion_tokens": 31
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 348,
+   "completion_tokens": 66
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1912.07025",
+  "qid": "79bb1a1b71a1149e33e8b51ffdb83124c18f3e9c",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What accuracy does CNN model achieve?",
+  "answer": "The provided excerpts do not contain a specific accuracy value achieved by the CNN model. While the paper reports quantitative results using Average Precision (AP), class-wise average IoUs (cwIoU), and per-pixel accuracies (cwAcc) in Section 3 (Results) and Section 5 (Evaluation), the actual numerical values are not included in the retrieved text. The excerpts only describe the evaluation measures and note qualitative observations (e.g., that Holes, Character line segments, Page boundary, and Pictures are parsed the best, while Physical degradations are difficult to parse). Therefore, the spec",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了原文中没有提供具体的准确率数值，并解释了原文中提到的评估指标，但没有直接引用原文中的具体数值。",
+  "status": "fail",
+  "time_s": 5.4,
+  "time_s_ans": 1.5,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3844,
+   "completion_tokens": 134
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 385,
+   "completion_tokens": 48
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1911.03562",
+  "qid": "205163715f345af1b5523da6f808e6dbf5f5dd47",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How many papers are used in experiment?",
+  "answer": "The provided passages do not contain a direct answer to \"How many papers are used in experiment?\"  \n\nThe closest relevant information is in [2] and [4]:  \n- [2] states that the analysis includes only AA’ papers published in 2016 or earlier, and there are **26,949 such papers**.  \n- [4] states that citation information was extracted for about **75% of the papers (33,051 out of the 44,896 papers)**, referred to as AA’.  \n\nHowever, the passages do not explicitly say that all of these papers were “used in experiment.” If the question refers to the citation analysis dataset, the relevant number is ",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答提供了与问题相关的信息，但未明确指出所有26,949或33,051篇论文都被用于实验。标准答案中明确指出44,896篇文章用于分析，但系统回答没有直接引用这一数字。",
+  "status": "fail",
+  "time_s": 8.3,
+  "time_s_ans": 1.7,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 6770,
+   "completion_tokens": 164
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 545,
+   "completion_tokens": 67
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1909.13362",
+  "qid": "d71cb7f3aa585e256ca14eebdc358edfc3a9539c",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "Which models achieve state-of-the-art performances?",
+  "answer": "Based on the provided text, the **Base model** achieves state-of-the-art or near state-of-the-art performances.\n\nSpecifically, the text states:\n\n- The **Base model** \"is near state-of-the art performance on English CELEX\" and achieves \"Best-known results\" on the **Italian, French, and Basque datasets**.\n- For the **Dutch dataset**, the Base model reports an accuracy of **99.47 ± 0.04%**, which \"improves on the previously best-known accuracy of 99.16%\".\n- The **Small model** performed best on **Manipuri**, but the text does not describe this as state-of-the-art; rather, it says the Base model's",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了Base模型在多个数据集上达到或接近最先进的性能，但遗漏了标准答案中提到的其他模型和细节，如CELEX (Dutch and English) - SVM-HMM，Liang hyphenation等。",
+  "status": "fail",
+  "time_s": 5.9,
+  "time_s_ans": 1.6,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3088,
+   "completion_tokens": 175
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 454,
+   "completion_tokens": 70
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "2003.07433",
+  "qid": "53712f0ce764633dbb034e550bb6604f15c0cacd",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "Do they evaluate only on English datasets?",
+  "answer": "Based on the provided passages, the answer is **yes, they evaluate only on English datasets**.\n\nThe relevant evidence is in **[6] (sec: Pre-processing)**, which states:\n\n> \"This categorization results in 456 work-related Tweets, about 5.4% of all Tweets written in English (and 75 unique Twitter users).\"\n\nAdditionally, **[11] (sec: Data Collection)** describes filtering out users \"whose tweets were not at least 75% in English (measured using an automated language ID system).\" This indicates that the dataset used for evaluation was restricted to English-language tweets.\n\nThe passages do not ment",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确，但缺少原文引用的具体位置，导致无法确认引用的真实性。",
+  "status": "fail",
+  "time_s": 4.2,
+  "time_s_ans": 1.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4616,
+   "completion_tokens": 136
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 346,
+   "completion_tokens": 34
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "2001.08051",
+  "qid": "d7d611f622552142723e064f330d071f985e805c",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How many utterances are in the corpus?",
+  "answer": "根据提供的检索片段，无法确定语料库中话语（utterances）的具体数量。片段中提到了语料库包含口语和书面数据，并给出了部分统计数据（如书面数据中的句子数和词符数、口语数据的相关统计表），但未提供话语总数的具体数值。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了原文中没有提供话语总数，但遗漏了标准答案中给出的具体数字。",
+  "status": "fail",
+  "time_s": 3.3,
+  "time_s_ans": 0.9,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3656,
+   "completion_tokens": 60
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 318,
+   "completion_tokens": 39
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1912.00864",
+  "qid": "572458399a45fd392c3a4e07ce26dcff2ad5a07d",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much more accurate is the model than the baseline?",
+  "answer": "The retrieved passages do not provide a direct comparison of overall accuracy between the proposed model and a single baseline. What they do report is:\n\n- The neural answer-sentence classifier used to build the nfL6 training data was judged by human experts to be about **81% accurate** (56,762 of 70,000 sentences correctly classified) [1].\n- In performance comparisons, the full model **NAGM** is described as consistently superior to conventional attentive encoder-decoders, with **ROUGE-L and BLEU-4 scores much higher than those of CLSTM** [11].\n- **NAGMWA** is reported to be much better than t",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确地指出了没有提供具体的准确度差异数值，但遗漏了标准答案中提到的具体分数差异（例如，ROUGE-L和BLEU-4分数的差异）。",
+  "status": "fail",
+  "time_s": 5.0,
+  "time_s_ans": 2.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5267,
+   "completion_tokens": 226
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 765,
+   "completion_tokens": 54
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "2002.08307",
+  "qid": "c4c9c7900a0480743acc7599efb359bc81cf3a4d",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much is pre-training loss increased in Low/Medium/Hard level of pruning?",
+  "answer": "根据检索片段，材料中没有给出 Low/Medium/Hard 三档剪枝下预训练损失增加的具体数值。\n\n片段中只有定性描述：\n\n- **Low levels of pruning (30–40%)**：不增加预训练损失（\"Low levels of pruning (30-40%) do not increase pre-training loss\"）[8]。\n- **Medium levels of pruning**：会增加预训练损失（\"Medium levels of pruning increase the pre-training loss\"）[8]，且从 40% 剪枝后性能开始下降、预训练损失上升 [1]。\n- **High levels of pruning (70% 以上)**：除信息删除外，还会因复杂度限制而妨碍拟合下游数据集 [9]，但片段未给出该档预训练损失增加的具体数值。\n\n因此，检索片段只能说明 Low 档不增加、Medium 档增加，但**没有提供任何一档预训练损失增加的具体数值**。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答部分正确，但遗漏了具体数值，且未引用原文。",
+  "status": "fail",
+  "time_s": 3.7,
+  "time_s_ans": 1.7,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3781,
+   "completion_tokens": 196
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 526,
+   "completion_tokens": 32
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1902.00330",
+  "qid": "0481a8edf795768d062c156875d20b8fb656432c",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "what are the mentioned cues?",
+  "answer": "The retrieved fragments do not mention “cues” as a defined term or list any specific cues. The only related wording appears in the context of entity linking, where the model uses “local features,” “contextual words,” “topical coherence,” and “previously referred entities” to disambiguate mentions, but these are not explicitly called “cues.” Therefore, based on the provided material, I cannot identify what “the mentioned cues” refers to.",
+  "level": "",
+  "route": [],
+  "score": 2,
+  "reason": "系统回答指出了原文中没有明确提到“cues”，并列举了模型中使用的相关特征，但没有完全准确地引用标准答案中的信息。",
+  "status": "fail",
+  "time_s": 4.7,
+  "time_s_ans": 1.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4974,
+   "completion_tokens": 93
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 454,
+   "completion_tokens": 47
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "2003.07758",
+  "qid": "ead5dc1f3994b2031a1852ecc4f97ac5760ea977",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How many category tags are considered?",
+  "answer": "根据提供的检索片段，无法确定具体考虑了多少个类别标签。片段[11]仅提到从YouTube API检索了每个可用验证视频的类别标签，并按类别比较了不同版本MDVC的性能，但未说明类别标签的总数。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答指出了无法确定具体类别标签的数量，但未提及标准答案中提到的具体数字和细节。",
+  "status": "fail",
+  "time_s": 39.3,
+  "time_s_ans": 36.2,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3822,
+   "completion_tokens": 51
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 299,
+   "completion_tokens": 40
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1707.00995",
+  "qid": "ec91b87c3f45df050e4e16018d2bf5b62e4ca298",
+  "qtype": "unanswerable",
+  "unanswerable": true,
+  "question": "What is the baseline used?",
+  "answer": "The baseline used is the CalixtoLC17b multimodal baseline [1].",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答提供了使用的基线，但没有引用原文支撑，可能存在编造风险。",
+  "status": "fail",
+  "time_s": 20.1,
+  "time_s_ans": 17.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3679,
+   "completion_tokens": 17
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 221,
+   "completion_tokens": 35
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1707.00110",
+  "qid": "6e8c587b6562fafb43a7823637b84cd01487059a",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How much is the BLEU score?",
+  "answer": "The provided excerpts do not contain the actual BLEU score values. They only mention that BLEU scores were calculated and reported in tables (e.g., Table 1 for the Toy Copy Task and Table 2 for Machine Translation), but the numeric results are not included in the retrieved text. Therefore, I cannot provide the specific BLEU score values based on the given material.",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确地指出了原文中没有提供具体的BLEU分数，但遗漏了标准答案中提到的分数范围信息。",
+  "status": "fail",
+  "time_s": 4.2,
+  "time_s_ans": 1.1,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4359,
+   "completion_tokens": 78
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 319,
+   "completion_tokens": 41
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1908.02402",
+  "qid": "f1bd66bb354e3dabf5dc4a71e6f08b17d472ecc9",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How do slot binary classifiers improve performance?",
+  "answer": "根据检索片段，槽位二分类器（slot binary classifiers）通过以下方式提升性能：\n\n**1. 解决 TSCP 的生成问题**\n\n可请求槽位二分类器（requestable slot binary classifier）对每个槽位进行独立的二分类，这解决了 TSCP 使用单一解码器、每一步都有不受约束的词汇量选择、可能生成非槽位词的问题（片段[1]）。\n\n**2. 消除槽位间的不良依赖**\n\n与 informable slot 解码器类似，独立的分类器消除了槽位之间不期望的依赖关系（片段[1]）。\n\n**3. 在可请求槽位跟踪上表现更好**\n\n在轮次级别上，FSDM 和 FSDM/Res 在信念状态跟踪上优于 TSCP 和 TSCP/RL，尤其是在可请求槽位上。FSDM 和 FSDM/Res 使用独立的二分类器处理可请求槽位，能够在所有这些情况下预测出正确的槽位（片段[4]）。\n\n**4. 响应槽位二分类器提升任务完成度**\n\nFSDM 表现优于 FSDM/Res，表明响应槽位解码器对任务完成的有效性。FSDM 相比 FSDM/Res 的改进显示了响应槽位解码器的作用（片段[4]）。\n\n**5. 提供额外的监督信号**\n\n响应槽位二分类器在生成最终文本代理响应之前，为更精确地生成将出现在响应中的槽位增加了额外监督（片段[9]）。\n\n**6. 帮助泛化**\n\n在 Ca",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但缺少了标准答案中提到的关于如何通过添加额外监督来生成槽位的细节。",
+  "status": "pass",
+  "time_s": 5.5,
+  "time_s_ans": 2.2,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 5844,
+   "completion_tokens": 363
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 812,
+   "completion_tokens": 39
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1907.02030",
+  "qid": "4b0ba460ae3ba7a813f204abd16cf631b871baca",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How is an incoming claim used to retrieve similar factchecked claims?",
+  "answer": "根据检索片段，论文并未描述“用新来的 claim 去检索已核查过的相似 claim”这一具体流程。片段中只提到：\n\n- 系统目标是自动检测文章中的 claim，并将其与“previously submitted claims”进行比较，把结果存储起来，以便 factchecker 对其中一个 claim 的工作能转移到同一 cluster 中的其他 claim 上（[2]）。\n- 聚类方法采用基于 DBScan 的思路，并存储 claim 之间的连接图，再用 Louvain Community Detection 划分最终 cluster；逐个加入 claim 时，可对包含新 claim 的连通子图运行该算法以减少计算量（[5]）。\n- 加入一个 claim 时需要计算它与所有已有 claim 的距离，时间大致随已有 claim 数量线性增长，经过优化后约为每个 claim 300ms（[5]）。\n\n因此，检索片段只能说明系统会把新 claim 与已有 claim 进行距离计算并聚类，但**没有说明如何用 incoming claim 去检索相似的、已经 factcheck 过的 claim**。材料不足，无法回答该具体检索机制。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答部分正确，但遗漏了关于文本嵌入和聚类的关键信息。",
+  "status": "fail",
+  "time_s": 15.5,
+  "time_s_ans": 12.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 3081,
+   "completion_tokens": 228
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 680,
+   "completion_tokens": 33
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "2002.10361",
+  "qid": "38c74ab8292a94fc5a82999400ee9c06be19f791",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "How large is the corpus?",
+  "answer": "根据提供的检索片段，无法确定语料库的具体规模。片段中未给出语料库的文档总数、用户数量或任何具体的规模数值，仅提及了语料库的统计信息以表格形式呈现（见片段[1]），但表格内容未包含在片段中。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答指出了原文中未提供具体规模数值，但未引用原文中的具体数据。",
+  "status": "fail",
+  "time_s": 35.6,
+  "time_s_ans": 33.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 2240,
+   "completion_tokens": 61
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 328,
+   "completion_tokens": 37
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1910.02339",
+  "qid": "4c7ac51a66c15593082e248451e8f6896e476ffb",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "What is the performance proposed model achieved on AlgoList benchmark?",
+  "answer": "The proposed model (TP-N2F) achieved state-of-the-art performance on the AlgoLisp benchmark. According to the retrieved passages, TP-N2F outperforms all existing models on both the full test set and the cleaned test set [1]. The AlgoLisp dataset uses three evaluation metrics: accuracy of passing all test cases (Acc), accuracy of passing 50% of test cases (50p-Acc), and accuracy of generating an exactly matching program (M-Acc) [1][4]. However, the retrieved passages do not provide the specific numerical values of these metrics achieved by TP-N2F.",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "回答正确，但遗漏了具体数值，且未直接引用原文。",
+  "status": "fail",
+  "time_s": 3.5,
+  "time_s_ans": 1.4,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4983,
+   "completion_tokens": 127
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 365,
+   "completion_tokens": 32
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1803.07771",
+  "qid": "0b9021cefca71081e617a362e7e3995c5f1d2a88",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "What are the other models they compare to?",
+  "answer": "The paper compares its proposed method against several other models. According to the retrieved passages, the competing algorithms used in the experiments are:\n\n- **BOW** (Bag-of-Words) — with term frequency-inverse document frequency features and Ridge regression as classifier [5][7].\n- **CNN** (Convolutional Neural Network) — specifically a three-channel CNN, with variants CNN-C (character embedding) and CNN-W (word embedding) [7].\n- **CNN-Lex** — the algorithm proposed by Shin et al. that integrates polar words into CNN, with variants CNN-Lex-C (character embedding) and CNN-Lex-W (word embe",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了标准答案中提到的'gold'模型，如CNN-C, CNN-W, CNN-Lex-C, CNN-Lex-W, Bi-LSTM-C, Bi-LSTM-W, Lex-rule。",
+  "status": "pass",
+  "time_s": 29.2,
+  "time_s_ans": 26.0,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 6814,
+   "completion_tokens": 264
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 576,
+   "completion_tokens": 62
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1911.03243",
+  "qid": "96526a14820b7debfd6f7c5beeade0a854b93d1a",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How was the corpus obtained?",
+  "answer": "The corpus was obtained through crowdsourcing. According to the retrieved passages, the 2015 QA-SRL dataset was annotated by non-expert workers after a brief training procedure, covering 7.8K verbs with an average of 2.4 QA pairs per predicate, using only a single annotator per verb. In subsequent work, a large-scale corpus was constructed by crowdsourcing 133K verbs with 2.0 QA pairs per verb on average. Since crowd-workers had no prior training, quality was established using an additional validation step, where workers had to ascertain the validity of the question, but not of its answers; in",
+  "level": "",
+  "route": [],
+  "score": 4,
+  "reason": "回答正确，但遗漏了关于训练 annotators 和 gold standard 的信息。",
+  "status": "pass",
+  "time_s": 3.7,
+  "time_s_ans": 1.3,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 1760,
+   "completion_tokens": 196
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 485,
+   "completion_tokens": 33
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "2003.07433",
+  "qid": "7081b6909cb87b58a7b85017a2278275be58bf60",
+  "qtype": "extractive",
+  "unanswerable": false,
+  "question": "How many twitter users are surveyed using the clinically validated survey?",
+  "answer": "Based on the provided text, **210 Twitter users** were surveyed using the clinically validated survey.",
+  "level": "",
+  "route": [],
+  "score": 5,
+  "reason": "系统回答准确引用了原文中的数字210，并正确回答了问题。",
+  "status": "pass",
+  "time_s": 2.6,
+  "time_s_ans": 0.8,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 4595,
+   "completion_tokens": 19
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 480,
+   "completion_tokens": 33
+  },
+  "cites_n": 0
+ },
+ {
+  "column": "B1",
+  "pid": "1809.10644",
+  "qid": "a3f108f60143d13fe38d911b1cc3b17bdffde3bd",
+  "qtype": "free_form",
+  "unanswerable": false,
+  "question": "what was their system's f1 performance?",
+  "answer": "根据提供的检索片段，**无法确定该系统具体的 F1 数值**。片段中只给出了相对比较，没有报告绝对 F1 分数：\n\n- 片段 [1] 提到，该方法“outperforming previous results by as much as 12 F1 points”（比先前结果最多高出 12 个 F1 点），并在 SR 数据集上“outperform 's text based model by 3 F1 points”（比某文本模型高出 3 个 F1 点），但未给出自身 F1 的具体数值。\n- 片段 [1] 还提到精确率和召回率的详细结果放在补充材料中，而检索片段未包含这些数值。\n- 片段 [6] 说明结果来自 10 折交叉验证，但同样没有列出 F1 分数。\n\n因此，材料不足以回答该系统 F1 的具体表现，只能确认其相对提升幅度（最多 12 个 F1 点、SR 数据集上高 3 个 F1 点）。",
+  "level": "",
+  "route": [],
+  "score": 3,
+  "reason": "系统回答正确地指出了无法从提供的片段中确定具体的 F1 数值，并解释了原因，但遗漏了标准答案中提供的具体 F1 分数信息。",
+  "status": "fail",
+  "time_s": 16.2,
+  "time_s_ans": 12.6,
+  "gen": {
+   "calls": 1,
+   "prompt_tokens": 2561,
+   "completion_tokens": 212
+  },
+  "judge": {
+   "calls": 1,
+   "prompt_tokens": 449,
+   "completion_tokens": 54
+  },
+  "cites_n": 0
+ }
+]
