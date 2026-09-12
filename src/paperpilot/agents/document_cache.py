@@ -35,8 +35,11 @@ MINERU_OUT = ROOT / "assets/artifacts/out_mineru"   # MinerU 解析产物根（e
 
 MAX_CHUNK_LEN = 4000   # 与 pipeline / run_qa_eval 的二级切分阈值一致
 
-# MinerU 的 `table_caption` 里"真正表标题"的锚点（见 `_clean_table_captions`）
-_TBL_CAP_RE = re.compile(r"Table\s+[IVXLC]*\d+", re.I)
+# MinerU 的 `table_caption` 里"真正表标题"的锚点（见 `_clean_table_captions`）。
+# ⚠️ 必须同时接受**罗马数字**表号（`TABLE IV`）与带后缀的阿拉伯号（`Table 5a`）：
+#    首版写成 `Table\s+[IVXLC]*\d+` 只认"罗马前缀 + 数字"，于是 `TABLE IV COMPARISON`
+#    不匹配 → **整段真 caption 被删掉**（自测抓到，语料里确有罗马数字表的论文）。
+_TBL_CAP_RE = re.compile(r"Table\s+(?:[IVXLC]+|\d+(?:\.\d+)*[A-Za-z]?)", re.I)
 
 
 def _clean_table_captions(el: dict) -> list[str]:

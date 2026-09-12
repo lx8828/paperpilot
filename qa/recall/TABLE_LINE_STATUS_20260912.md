@@ -43,6 +43,9 @@
 
 - `qa/recall/_tgt.py`：目标表定位 = **编号命中 ∪ 内容命中**（块含答案的显著数值 / 短答案实词全命中）。
   `PP_TGT=num` 可复现旧口径。
+- **边界自测**：`qa/recall/_selftest_tables_20260912.py`（秒级、不联网）覆盖 caption 清噪（含
+  **罗马数字表号**）、表头/摘要、口径解析、并集默认值与按块类型加权。项目未安装 ruff/mypy/basedpyright，
+  故用它兜底 —— **它已抓到 1 个真 bug**（清噪正则漏罗马数字表号，见 `EXT_REPR_20260911.md` §6.5）。
 - 已切换：`_union_prod_eval.py`、`_only_table_retr.py`、`_table_policy_ab.py`、`_ext_variants.py`、`_weight_sweep.py`。
 - 尚未切换（均为诊断/单次 A/B）：`_judge_facts_pos.py`、`_p1_retrieval_ab.py`、`_diag_still_fail.py`、`_diag_tbl_rank.py`。
 
