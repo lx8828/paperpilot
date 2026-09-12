@@ -478,10 +478,16 @@ function renderAnswer(d){
   }
   // 答案自检（validator）：mid/low 只标注不拦（high 已被闸门换掉，不会走到这里）；
   // 从未标注来源（no_citation）到"某句可能无原文支撑"（unsupported）都会在这里露出来。
-  const iss=((d.validator||{}).issues)||[];
+  // 文案按 action 区分：repaired/fallback 时这些 issues 是**修正前**发现的，别说成"当前答案的问题"。
+  const vv=d.validator||{};
+  const iss=vv.issues||[];
   const show=iss.filter(i=>i.sev==='mid'||i.sev==='high');
   if(show.length){
-    h+='<div class="issues"><b class="muted">答案自检（AI 复核，仅供参考）</b>';
+    const act=vv.action||'pass';
+    const head=act==='repaired'?'答案自检（发现的问题已自动修正，下列为修正前记录）'
+             :act==='fallback'?'答案自检（未通过校验，已拒答）'
+             :'答案自检（AI 复核，仅供参考）';
+    h+=`<div class="issues"><b class="muted">${head}</b>`;
     show.slice(0,4).forEach(i=>{
       const tag=i.sev==='high'?'<b class="bad">高</b>':'<b class="warn">复核</b>';
       const sent=i.sentence?`「${esc(i.sentence.slice(0,60))}」`:'';
