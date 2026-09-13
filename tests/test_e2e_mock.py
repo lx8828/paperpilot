@@ -97,21 +97,34 @@ def test_job_reuses_cached_products_second_time(e2e, tmp_assets, tiny_pdf):
 
 
 def test_cancel_running_job_is_honoured(e2e, tmp_assets, tiny_pdf, monkeypatch):
-    """取消走**真实** worker：阶段边界生效，终态是 cancelled（不是 failed）。"""
+    """取消走**真实** worker 状态机：阶段边界生效，终态是 cancelled。
+
+    刻意**不依赖时序**：报告 lane 被换成"一直等到取消信号才抛 `JobCancelled`"，
+    所以不可能出现"任务跑太快、取消来不及生效"的假失败（首版就是这么挂的）。
+    """
     from paperpilot import worker
 
-    # 让报告链在阶段边界停一下，保证"取消"来得及插入（真实场景是分钟级）
-    real_report = worker._lane_report
+    def _wait_for_cancel(job, ev):
+        worker._mark(job, "report", status="running")
+        deadline = time.time() + 15
+        while time.time() < deadline:
+            if ev.is_set():
+                raise worker.JobCancelled()
+            time.sleep(0.02)
+        raise AssertionError("测试超时：取消信号一直没到")
 
-    def _slow_report(job, ev):
-        time.sleep(0.3)
-        return real_report(job, ev)
-
-    monkeypatch.setattr(worker, "_lane_report", _slow_report)
+    monkeypatch.setattr(worker, "_lane_report", _wait_for_cancel)
     raw = (tmp_assets.papers / tiny_pdf).read_bytes()
     job_id = e2e.post("/api/report", files={"file": (tiny_pdf, raw, "application/pdf")}
                       ).json()["job_id"]
-    e2e.post(f"/api/job/{job_id}/cancel")
+
+    # 等它真的进到 report（running）再点取消；然后等终态
+    t0 = time.time()
+    while time.time() - t0 < 15:
+        if e2e.get(f"/api/job/{job_id}").json()["status"] == "running":
+            break
+        time.sleep(0.05)
+    assert e2e.post(f"/api/job/{job_id}/cancel").status_code == 200
     final = _wait_ready(e2e, job_id)
     assert final["status"] == jobs.STATUS_CANCELLED
     assert "取消" in final["error"]

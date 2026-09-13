@@ -57,7 +57,7 @@
 | 口径 | 成绩 | 说明 |
 |---|---|---|
 | **v3 两级定稿 A/B**（250 题，同裁判） | V0(v3) **203/250 = 81.2%** ≥ A(v2 四层) 201/250 = 80.4% | LLM 调用 **3.7 vs 5.6（−34%）**；据此 v2 四层图下线归档（`archive/qa_funnel_v2/`），**不提供 ask_v2 回退** |
-| QASPER 503 题（1000 随机样本的无偏子集，**2026-09-11 口径**） | **424/503 = 84.3%**｜有答案题 **388/451 = 86.0%** | 异源裁判（GLM）1~5 分，≥4 pass。原始记录 `qa/qasper_run_20260911_072510.json` |
+| QASPER 503 题（1000 随机样本的无偏子集，**2026-09-11 口径**） | **424/503 = 84.3%**｜有答案题 **388/451 = 86.0%** | 异源裁判（GLM）1~5 分，≥4 pass。原始记录 `qa/qasper_run_20260911_072510.json`（**本地运行记录，未入库**） |
 | └ 剔除不可归因项后〔能力上限口径〕 | 有答案题 **388/413 = 93.9%** | 剔除 36 题"表格=PNG 无解" + 2 题判分存疑；**须与上一行并列，不得单独宣称**｜`qa/recall/FAIL_ATTRIB_20260911.md` |
 | └ ＋ arXiv 原始 PDF **表格通道**（MinerU） | **438/503 = 87.1%**｜有答案题 402/451 = 89.1% | 那 36 题在 QASPER 里 gold 出自表格、而 QASPER 只给 PNG；补原始 PDF 后**回收 14/36（39%）**｜`qa/recall/QASPER_TBL_EXP_20260911.md` |
 | 中文 QA 回归（21 篇手写题集） | **176/176** ✅ | 关键词自动判定（v2.0） |
@@ -72,43 +72,110 @@
 
 ## 🚀 快速开始
 
-### 1) 环境准备
+**先选一条路**（不想配 Key 就走 A —— 2 分钟能看到全部效果）：
 
-- Python **≥ 3.13**（项目用 [uv](https://docs.astral.sh/uv/) 管理依赖）
-- 一个 OpenAI 兼容的 LLM API（默认 DeepSeek）
-- 〔可选〕**MinerU**：用于把表格/公式解析进**检索视图**（见「架构」）。缺失时报告照常生成、**问答不可用**（会明确告知原因，不静默降级）
+| | 安装（一条命令） | 启动（一条命令） | 需要什么 |
+|---|---|---|---|
+| **A. 演示模式**（推荐先试） | `uv sync --no-install-package sentence-transformers` | `uv run python web/app.py --mock` | **只要 uv** |
+| **B. 真跑**（真 LLM + 真向量） | `uv sync` | 配好 `.env` → `uv run python web/app.py` | OpenAI 兼容 API Key（可选 GPU + MinerU） |
+
+### 0) 前置：装 uv（一行，不需要先装 Python）
+
+```bash
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# Windows PowerShell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+uv 会按 `requires-python` 自动装好 Python 3.13。
+
+### 1) 安装（一条命令）
 
 ```bash
 git clone <repo-url> && cd paperpilot
-uv sync                       # 安装依赖（pyproject.toml + uv.lock）
+uv sync            # 依赖 + 锁文件（uv.lock）
 ```
 
-论文 PDF 放 **`assets/papers/`**；产物落在 **`assets/artifacts/`**（`out_claims` / `out_views` / `out_mineru` / `out_jobs`，均不入库）。
+> 演示模式用不到向量模型（bge-m3 / torch，约 2~3 GB）→ 可以省掉：
+> `uv sync --no-install-package sentence-transformers`（`uv run pytest -q` 也用这条）。
 
-### 2) 配置 LLM
+### 2) 启动（一条命令，免 Key）
 
 ```bash
-cp .env.example .env          # 然后编辑 .env，填入你的 key
+uv run python web/app.py --mock
+```
+
+打开 **http://127.0.0.1:8000** → 拖入仓库自带的 **[`demo/demo_paper.pdf`](demo/demo_paper.pdf)** →
+**几秒**出报告 → 右侧提问。
+
+**演示模式（`--mock`）的诚实边界**（页面顶部会有黄色横幅提示）：
+
+| | |
+|---|---|
+| 内容是 | 概述 / 主张 / 导读 / 答案是**固定示例**（带"（演示内容）"前缀） |
+| 仍然是**真的** | 摄取 → 索引 → 检索 → 输出闸门 → **引用锚点**（答案里的 `[n]` 解析成真实页码 + 原文片段） |
+| 不需要 | API Key、GPU、模型下载、MinerU（实测一篇 **0.3 秒**跑完，`sentence_transformers` 从未加载） |
+| 细粒度开关 | `PAPERPILOT_MOCK_LLM=1`、`PAPERPILOT_MOCK_EMBED=1`、`PAPERPILOT_MINERU=0`（`--mock` 一键打开前两个） |
+
+### 3) 真跑：配置 API Key
+
+```bash
+cp .env.example .env          # 然后填入你的 key
 ```
 
 ```ini
-PAPERPILOT_LLM_BASE_URL=https://api.deepseek.com/v1
+PAPERPILOT_LLM_BASE_URL=https://api.deepseek.com/v1    # 任何 OpenAI 兼容端点
 PAPERPILOT_LLM_API_KEY=sk-你的key
 PAPERPILOT_LLM_MODEL=deepseek-chat
 PAPERPILOT_LLM_TIMEOUT=120
+
+# 〔可选〕异源裁判模型：评测打分用（不配也能跑产品）
+PAPERPILOT_JUDGE_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+PAPERPILOT_JUDGE_API_KEY=...
+PAPERPILOT_JUDGE_MODEL=glm-4-flash
 ```
 
-### 3) 启动 Web 工作台
+没配 key 就启动 → 上传时返回**明确的**"LLM 未配置"提示（不静默失败）。
+
+### 4) 模型预下载（可选，建议）
+
+向量检索用 `BAAI/bge-m3`（约 2.2 GB）。**首次提问**会自动下载；想提前下好 / 离线部署：
 
 ```bash
-uv run python web/app.py      # 或 .venv\Scripts\python.exe web\app.py（Windows）
+uv run python -c "from sentence_transformers import SentenceTransformer as S; S('BAAI/bge-m3')"
 ```
 
-打开 **http://127.0.0.1:8000** → 拖入一篇 PDF → 报告生成（**新论文首次数分钟**，需 LLM + MinerU；
-已有产物的论文秒回）→ 中间读报告/原文，右侧提问。
+- 缓存位置：`~/.cache/huggingface`（Windows：`C:\Users\<你>\.cache\huggingface`）
+- 已缓存后想彻底离线：设 `HF_HUB_OFFLINE=1`
+- **不想下**：用演示模式（`PAPERPILOT_MOCK_EMBED=1`，确定性词袋哈希向量）
 
-**摄取是后台任务（2026-09-13 起）**：上传**立即返回**（`202 + job_id`），页面实时显示阶段与耗时，
-可**取消 / 重试**；问答在产物就绪前会被闸门明确告知"正在解析，请稍候"（不是失败）。
+### 5) MinerU（可选，只影响表格/公式）
+
+**不装会怎样（明确降级，不静默）**：
+
+| 场景 | 行为 |
+|---|---|
+| 没装 MinerU | 报告**照常生成**；问答可用，但**表格数值**类问题会弱（PDF 里表格常是图片或碎行，检索不到数值） |
+| MinerU **明确失败**（如无 GPU/显存不足） | 报告照常生成 + 前端提示"问答不可用及原因"；提问被闸门**明确拒答并说明原因**（不假装能答） |
+| **主动跳过**（`PAPERPILOT_MINERU=0`） | 同"没装"，但**不会**把问答判不可用（`skipped` ≠ `failed`） |
+
+**安装**（独立 venv，与主环境隔离；实测 MinerU 3.4.5 / Python 3.12 / torch cu128）：
+
+```bash
+uv venv .venv-mineru --python 3.12
+.venv-mineru/Scripts/pip install -U "mineru[all]"     # Windows
+# .venv-mineru/bin/pip install -U "mineru[all]"       # macOS / Linux
+uv run python web/app.py        # 摄取时自动调用（默认 backend=pipeline）
+```
+
+需要 GPU/显存；包名与版本以 [MinerU 官方文档](https://github.com/opendatalab/MinerU) 为准。
+已装在别处可用 `PAPERPILOT_MINERU_VENV` / `PAPERPILOT_MINERU_CMD` 指过来。
+
+### 6) 上传后的接口
+
+**摄取是后台任务**：上传**立即返回**（`202 + job_id`），页面实时显示阶段与耗时，可**取消 / 重试**；
+问答在产物就绪前会被闸门明确告知"正在解析，请稍候"（不是失败）。
 
 | 接口 | 作用 |
 |---|---|
@@ -118,7 +185,11 @@ uv run python web/app.py      # 或 .venv\Scripts\python.exe web\app.py（Window
 | `POST /api/job/{id}/cancel` | 请求取消（阶段边界生效；MinerU 会真终止子进程） |
 | `POST /api/job/{id}/retry` | 重试（已完成的阶段**自动复用**，通常快很多） |
 | `GET /api/report/{name}` | 取报告 JSON（含 `upload_note` / `mineru_warning`） |
+| `GET /api/meta` | 运行模式（演示模式横幅用它；也便于排查"为什么答案都是示例"） |
 | `POST /api/ask` | 提问（摄取未完成时明确拒答并说明原因） |
+
+论文 PDF 放 **`assets/papers/`**；产物落在 **`assets/artifacts/`**（`out_claims` / `out_views` /
+`out_mineru` / `out_jobs`，均不入库）。
 
 ---
 
@@ -170,6 +241,9 @@ uv run python cli/run_view.py <pdf名>        # 装配视图 / 产物检查
 | `PAPERPILOT_PDF_ID_STRICT` | 关 | 论文身份按**内容指纹**校验；默认对**历史产物**（无指纹记录）按 mtime 收编并补写指纹，`=1` 时连收编也强制重建（存量库排雷用） |
 | `PAPERPILOT_USE_MINERU` | 关 | `=1` 走遗留"全链 MinerU"模式（chunks 直接用 MinerU） |
 | `PAPERPILOT_CHUNK_VIEW_DIR` | 空 | 向量缓存目录覆盖（A/B 两臂各用一份，避免来回覆盖重建） |
+| `PAPERPILOT_MOCK_LLM` | 关 | **演示模式·LLM**：固定响应，无需 API Key（`web/app.py --mock` 会打开） |
+| `PAPERPILOT_MOCK_EMBED` | 关 | **演示模式·向量**：词袋哈希，不加载 bge-m3（缓存写 `out_views__mock/`，与真向量**物理隔离**） |
+| `PAPERPILOT_MINERU` | `1` | `=0` 跳过 MinerU（`skipped`，**不**判问答不可用）；与"失败"区分：失败才拦问答 |
 
 MinerU 相关：`PAPERPILOT_MINERU_VENV`（默认 `.venv-mineru`）、`PAPERPILOT_MINERU_BACKEND`（`pipeline`）、
 `PAPERPILOT_MINERU_CMD`（覆盖可执行入口）、`PAPERPILOT_MINERU_TIMEOUT`（900s）。
@@ -236,6 +310,7 @@ src/paperpilot/
 ├── ingest.py          # 摄取流水线：论文库 → MinerU(检索) → pipeline(报告) → 产物库
 ├── pipeline.py        # 报告编排层：一个 PDF → 各环节产物 → report.json（process_pdf）
 ├── tools/             # 引擎：pdf_parser/heading/chunker/analyzer/evidence/viewer/
+│                      #       mock_llm.py：演示模式（无 Key/模型的假 LLM + 假向量）
 │                      #       skeleton/figures/report/llm/mineru_bridge
 ├── prompts/           # 各环节 LLM 提示词（与逻辑分离）
 ├── models/schema.py   # pydantic 强类型（Chunk/Claim/ClaimGroup/PaperReport…）
@@ -248,6 +323,7 @@ src/paperpilot/
 web/                   # FastAPI + 前端三栏工作台（index.html）
 cli/                   # 命令行入口 + 评测工具
 tests/                 # pytest 测试套件（离线：假 LLM/假向量/假 MinerU；CI 跑这个）
+demo/                  # 自带 demo 论文（合成内容、无版权）+ 生成脚本 make_demo_pdf.py
 qa/                    # 手写问题集 + 各轮评测报告与复算脚本（质量评测，需真模型）
 bench/                 # 回归基线（baseline.json）
 assets/papers/         # 论文 PDF（不入库）
@@ -262,7 +338,7 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 **一条命令，5 分钟内出确定结果，不需要任何 API Key / GPU / 本地模型：**
 
 ```bash
-uv run pytest -q        # 124 passed in ~3s（本地；CI 上含装依赖约 1~2 分钟）
+uv run pytest -q        # 135 passed in ~3s（本地；CI 上含装依赖约 1~2 分钟）
 ```
 
 规矩很简单，两条命令分两类事：
@@ -291,14 +367,15 @@ uv run pytest -q        # 124 passed in ~3s（本地；CI 上含装依赖约 1~2
 | `test_jobs_worker.py` | 16 | 任务状态机：阶段耗时、取消、重试、重启恢复、**异常兜底不卡死** |
 | `test_llm_client.py` | 16 | JSON 解析容错、**坏 JSON**、**超长输入**、未配置时明确报错 |
 | `test_tgt.py` | 15 | 目标表定位口径（编号 ∪ 内容）—— 所有表格类指标的尺子 |
-| `test_api.py` | 14 | API 集成：202 早返回、幂等 200、任务查询、取消/重试、404/400、拒答话术 |
+| `test_api.py` | 15 | API 集成：202 早返回、幂等 200、任务查询、取消/重试、404/400、拒答话术、状态快照 |
 | `test_validator_offline.py` | 12 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归 |
 | `test_e2e_mock.py` | **3** | **mock LLM 端到端**：上传 → 后台 job → 报告 → 提问 → 带 `[n]` 引用的答案 |
+| `test_mock_mode.py` | 10 | **演示模式**（`--mock`）：无 Key / 无模型 / 无 MinerU 也能跑通（上面 README 承诺的技术保障） |
 
 CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任何 secret**）。
 
-<!-- 推上 GitHub 后把 <用户名> 换成你的账号，并取消下面这行注释即可显示徽章 -->
-<!-- [![CI](https://github.com/<用户名>/paperpilot/actions/workflows/ci.yml/badge.svg)](https://github.com/<用户名>/paperpilot/actions/workflows/ci.yml) -->
+[![CI](https://github.com/lx8828/paperpilot/actions/workflows/ci.yml/badge.svg)](https://github.com/lx8828/paperpilot/actions/workflows/ci.yml)
+<!-- 若 GitHub 用户名或仓库名不同，把上面两处 lx8828 / paperpilot 一起改掉 -->
 
 **回归纪律**：改核心逻辑后 → `uv run pytest -q`（秒级，离线）→ 再 `run_bench.py` 看产物无退化 → 最后跑定向评测。
 
@@ -341,10 +418,16 @@ CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任�
 
 - **类型检查**：`pyproject.toml` 里配了 `[tool.basedpyright]`，但**当前环境未安装**该工具
   （`uv run basedpyright` 会失败）。需要类型门禁时先 `uv add --dev basedpyright`；
-  日常改动用 `python -m compileall src cli web qa` + 上面的自测脚本兜底。
-- **产物不入库**：`assets/artifacts/`、`assets/papers/*.pdf`、`*.log`、`.env` 均在 `.gitignore` 内；
-  `qa/questions/`、`qa/**/*.md`（报告）、`bench/baseline.json`、复算脚本 `_*.py` 是**资产，入库**。
+  日常改动用 `uv run python -m compileall src cli web tests` + `uv run pytest -q` 兜底。
+- **产物不入库**：`assets/artifacts/`、`assets/papers/*.pdf`、`*.log`、`.env` 均在 `.gitignore` 内。
+- **入库的是"资产"**：`qa/questions/`（手写题集）、`qa/**/*.md`（报告）、`qa/**/_*.py`（复算脚本）、
+  `qa/*_set*.json`（题集）、`bench/baseline.json`（回归基线）、`tests/`（测试套件）。
+- **不入库的是"运行记录"**（2026-09-13 起统一排除）：`qa/recall/*.json`、`qa/compare/{deep_,run_}*.json`、
+  `qa/negqa/neg_run_*.json`、`qa/reader|robust|stress/*_result.json`、`qa/qasper_*` 等——
+  机器产出、可重跑、体积约 7 MB，且**含论文原文片段**（gold 证据/答案）不宜大段转载。
+  ⚠️ 代价：复算脚本若依赖某个记录文件，**先在本地跑上游脚本生成**（README 里引用的原始记录均为本地文件）。
 - **评测口径**：目标表定位用 `qa/recall/_tgt.py`（编号 ∪ 内容联合判定），不要在各脚本里另写 `cap_key`。
+  `qa/` 下的测试类断言已迁到 `tests/`（pytest），别再新增散装 `_selftest_*.py`。
 
 ---
 
@@ -358,3 +441,6 @@ CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任�
 > 以及"跨时间的三列对比不可归因"这类评测口径问题——都记在 `DEVELOPMENT_LOG.md` 与各专题报告里。
 
 作者：lx（834659376@qq.com）
+
+许可证：[MIT](LICENSE)——可自由使用 / 修改 / 分发（保留版权声明即可）。
+

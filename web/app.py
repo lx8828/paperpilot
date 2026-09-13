@@ -207,8 +207,16 @@ async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
 
 
 def _job_view(j: dict[str, Any]) -> dict[str, Any]:
-    """job → 前端用的精简视图（含阶段文案与各阶段耗时）。"""
+    """job → 前端用的精简视图（含阶段文案与各阶段耗时）。
+
+    ⚠️ **必须是快照**（逐层浅拷贝）：`/api/report` 的 202 路径传入的是 worker
+    **正在写**的同一个 dict（job 线程会继续往里加 `stages` 键）→ 直接把引用交给
+    JSON 序列化，可能撞上 `RuntimeError: dictionary changed size during iteration`
+    （低频但真实）；`/api/job/{id}` 那条读的是磁盘快照，不受影响。
+    """
     status = str(j.get("status") or "")
+    stages = {str(k): dict(v) for k, v in (j.get("stages") or {}).items()
+              if isinstance(v, dict)}
     return {
         "job_id": j.get("job_id", ""),
         "pdf": j.get("pdf", ""),
@@ -218,7 +226,7 @@ def _job_view(j: dict[str, Any]) -> dict[str, Any]:
         "cancelled": status == jobs.STATUS_CANCELLED,
         "stage": j.get("stage", ""),
         "stage_label": jobs.stage_label(str(j.get("stage") or "")),
-        "stages": j.get("stages") or {},
+        "stages": stages,
         "created_at": j.get("created_at", ""),
         "started_at": j.get("started_at", ""),
         "finished_at": j.get("finished_at", ""),
@@ -255,6 +263,23 @@ def _report_payload(name: str) -> dict[str, Any] | None:
         payload["job"] = {"job_id": j.get("job_id"), "elapsed": j.get("elapsed") or 0.0,
                           "stages": j.get("stages") or {}}
     return payload
+
+
+@app.get("/api/meta")
+async def api_meta() -> JSONResponse:
+    """运行模式（前端据此显示"演示模式"横幅，也方便排查"为什么答案都是示例"）。"""
+    from paperpilot.tools.mock_llm import (banner, embed_enabled, llm_enabled,
+                                          mineru_enabled)
+    mock = llm_enabled()
+    return JSONResponse({
+        "mock_llm": mock,
+        "mock_embed": embed_enabled(),
+        "mineru": mineru_enabled(),
+        "llm_configured": llm.is_configured(),
+        "banner": banner() if mock else "",
+        "note": ("演示模式：概述/主张/答案为固定示例；引用锚点仍来自真实检索"
+                 if mock else ""),
+    })
 
 
 @app.get("/api/report/{name}")
@@ -307,7 +332,36 @@ async def job_retry(job_id: str) -> JSONResponse:
     return JSONResponse(_job_view(j), status_code=202)
 
 
+def apply_cli_args(argv: list[str] | None = None) -> tuple[str, int]:
+    """解析命令行参数（含 `--mock` 演示模式）→ (host, port)。
+
+    **不启动服务**（所以能被测试直接调用）：启动只发生在 `__main__`。
+    `--mock` 一次性打开三个开关；若你已显式设过 `PAPERPILOT_MINERU`（如 `=1`）则尊重你的设置。
+    """
+    import argparse
+    import os
+
+    ap = argparse.ArgumentParser(description="PaperPilot 开发服务器")
+    ap.add_argument("--mock", action="store_true",
+                    help="演示模式：不需要 API Key / 模型 / GPU（内容为固定示例）")
+    ap.add_argument("--port", type=int, default=8000)
+    ap.add_argument("--host", default="127.0.0.1")
+    args = ap.parse_args(argv)
+
+    if args.mock:
+        os.environ["PAPERPILOT_MOCK_LLM"] = "1"
+        os.environ["PAPERPILOT_MOCK_EMBED"] = "1"
+        os.environ.setdefault("PAPERPILOT_MINERU", "0")
+    return args.host, args.port
+
+
 if __name__ == "__main__":
+    import os
+
     import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    _host, _port = apply_cli_args()
+    if os.environ.get("PAPERPILOT_MOCK_LLM") == "1":
+        print(f"\n🧪 演示模式：{_host}:{_port}"
+              f"（无需 Key / 模型 / GPU；内容为固定示例，引用锚点是真实的）\n")
+    uvicorn.run(app, host=_host, port=_port)

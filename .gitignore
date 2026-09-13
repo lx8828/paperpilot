@@ -57,6 +57,27 @@ qa/qasper_overnight_w*.jsonl
 qa/_archive/
 qa/_scratch/
 
+# ── 2026-09-13 评测**运行记录**统一不入库（只留本地）──────────────
+# 原因：① 机器产出、可重跑；② 体积（约 7 MB）；③ **含论文原文片段**（gold 证据/答案），
+# 公开仓库里不宜大段转载。
+# **仍然入库**的是：`qa/questions/`（手写题集）、`qa/**/*.md`（报告）、
+# `qa/**/_*.py`（复算脚本）、`qa/*_set*.json`（题集）、`bench/baseline.json`（回归基线）。
+# ⚠️ 代价：复算脚本若依赖某个记录文件，先在本地跑上游脚本生成（或保留本地副本）。
+qa/recall/*.json
+qa/recall/*.jsonl
+qa/compare/deep_*.json
+qa/compare/run_*.json
+qa/negqa/neg_run_*.json
+qa/reader/*_result.json
+qa/reader/reader_run_*.json
+qa/robust/robust_run_*.json
+qa/stress/*_result.json
+qa/stress/a_overflow_probe.json
+qa/baseline.json
+qa/qasper_*.json
+qa/qasper_*.jsonl
+qa/qasper_*.md
+
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db
 .DS_Store

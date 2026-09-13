@@ -26,6 +26,8 @@ from collections import Counter
 
 import numpy as np
 
+from paperpilot.tools import mock_llm   # 演示模式（PAPERPILOT_MOCK_EMBED=1）的实现
+
 MODEL_NAME = "BAAI/bge-m3"
 QUERY_PREFIX = "为这个句子生成表示以用于检索相关文章："
 
@@ -190,10 +192,27 @@ def _get_model():
     return _model
 
 
+def _mock_vec_dir(base: Path) -> Path:
+    """向量缓存目录；**演示模式单独一份**（`*__mock/`）。
+
+    为什么必须分开：演示模式用"词袋哈希"假向量，真模式用 bge-m3。
+    两者共用缓存目录会**静默互相污染**（假向量被真查询复用 → 检索结果毫无意义，且不报错）。
+    """
+    if mock_llm.embed_enabled():
+        return base.parent / f"{base.name}__mock"
+    return base
+
+
 def encode_texts(texts: list[str]) -> np.ndarray:
-    """批量 encode（归一化，shape (n, 1024)）。"""
+    """批量 encode（归一化，shape (n, 1024)）。
+
+    `PAPERPILOT_MOCK_EMBED=1`（演示模式）→ 用内置"词袋哈希"向量，
+    **不加载 bge-m3**（省 2 GB 下载），保证无模型也能跑通检索链路。
+    """
     if not texts:
         return np.zeros((0, EMBED_DIM), dtype="float32")
+    if mock_llm.embed_enabled():
+        return mock_llm.encode_texts(list(texts), EMBED_DIM)
     model = _get_model()
     vecs = model.encode(list(texts), normalize_embeddings=True)
     return np.asarray(vecs, dtype="float32")
@@ -201,6 +220,8 @@ def encode_texts(texts: list[str]) -> np.ndarray:
 
 def encode_query(query: str) -> np.ndarray:
     """query 加 bge 官方指令前缀后 encode。"""
+    if mock_llm.embed_enabled():
+        return mock_llm.hash_vector(query, EMBED_DIM)
     return encode_texts([QUERY_PREFIX + query])[0]
 
 
@@ -211,8 +232,9 @@ class ClaimIndex:
         self.pdf = pdf
         self.stem = Path(pdf).stem
         self._report: dict[str, Any] | None = None
-        self._vec_file = VIEW_DIR / f"{self.stem}.gvec.npy"
-        self._gid_file = VIEW_DIR / f"{self.stem}.gidx.json"
+        vec_dir = _mock_vec_dir(VIEW_DIR)
+        self._vec_file = vec_dir / f"{self.stem}.gvec.npy"
+        self._gid_file = vec_dir / f"{self.stem}.gidx.json"
 
     # ── report 加载 ──────────────────────────────────────
     @property
@@ -244,7 +266,8 @@ class ClaimIndex:
         texts = [g.get("rep_text", "") for g in self._groups()]
         print(f"  [embedder] 构建索引：{len(texts)} 条主张（encode…）")
         vecs = encode_texts(texts)
-        VIEW_DIR.mkdir(parents=True, exist_ok=True)
+        # 按**实际目标目录**建目录（演示模式写 `out_views__mock/`，首次不存在）
+        self._vec_file.parent.mkdir(parents=True, exist_ok=True)
         np.save(self._vec_file, vecs)
         self._gid_file.write_text(json.dumps(self._group_ids(), ensure_ascii=False),
                                   encoding="utf-8")
@@ -283,8 +306,9 @@ class ChunkIndex:
         self.pdf = pdf
         self.stem = Path(pdf).stem
         self._chunks: list[Any] | None = None
-        self._vec_file = CHUNK_VIEW_DIR / f"{self.stem}.cvec.npy"
-        self._cid_file = CHUNK_VIEW_DIR / f"{self.stem}.cidx.json"
+        vec_dir = _mock_vec_dir(CHUNK_VIEW_DIR)
+        self._vec_file = vec_dir / f"{self.stem}.cvec.npy"
+        self._cid_file = vec_dir / f"{self.stem}.cidx.json"
 
     # document_cache 延迟 import：Chunk 模型只在 L3 需要，避免 L0 热路径背负解析模块
     def _doc_chunks(self) -> list[Any]:
@@ -310,7 +334,11 @@ class ChunkIndex:
             # P2 双写下向量侧喂的是摘要，若只 hash `text`，改摘要不会让缓存失效 → 静默复用旧向量。
             h.update((c.embed_text or c.text).encode("utf-8", "ignore"))
             h.update(b"\x00")
-        return {"ids": [c.chunk_id for c in chunks], "fp": h.hexdigest()}
+        out = {"ids": [c.chunk_id for c in chunks], "fp": h.hexdigest()}
+        if mock_llm.embed_enabled():
+            # 只在自己这侧加标记：真模式的指纹保持**逐字不变**（不触发无意义重建）
+            out["enc"] = "mock"
+        return out
 
     def vectors(self) -> np.ndarray:
         """返回 (n, 1024) chunk 向量；缓存失效时重建。"""
@@ -329,7 +357,8 @@ class ChunkIndex:
             return np.zeros((0, EMBED_DIM), dtype="float32")
         print(f"  [embedder] 构建 ChunkIndex：{len(texts)} 个 chunk（encode…）")
         vecs = encode_texts(texts)
-        CHUNK_VIEW_DIR.mkdir(parents=True, exist_ok=True)
+        # 按**实际目标目录**建目录（演示模式写 `out_views__mock/`，首次不存在）
+        self._vec_file.parent.mkdir(parents=True, exist_ok=True)
         np.save(self._vec_file, vecs)
         self._cid_file.write_text(json.dumps(self._fingerprint(), ensure_ascii=False),
                                   encoding="utf-8")

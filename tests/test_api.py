@@ -144,6 +144,25 @@ def test_get_report_404_then_200(client, tmp_assets):
     assert r.status_code == 200 and r.json()["title"] == "T"
 
 
+def test_job_view_is_a_snapshot(webapp):
+    """`_job_view` 必须返回**快照**。
+
+    202 那条路径把它交给 JSON 序列化的同时，worker 线程还在往同一个 dict 里加
+    `stages` 键 → 直接传引用会偶发 `RuntimeError: dictionary changed size during iteration`。
+    （读磁盘的 `/api/job/{id}` 没这个问题，只有 202 这条共享内存。）
+    """
+    live = jobs.new_job("a.pdf")
+    live["stages"]["mineru"] = {"status": "running", "seconds": 0.0}
+    view = webapp._job_view(live)
+
+    live["stages"]["report"] = {"status": "ok", "seconds": 1.0}   # 模拟 worker 继续写
+    live["stage"] = "index"
+
+    assert "report" not in view["stages"]
+    assert view["stages"]["mineru"]["status"] == "running"
+    assert view["stage"] != "index"
+
+
 def test_get_report_includes_mineru_warning(client, tmp_assets):
     """MinerU 失败必须**明确告知**（报告可用、问答不可用），不能静默。"""
     (tmp_assets.views / "x.report.json").write_text(

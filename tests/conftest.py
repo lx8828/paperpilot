@@ -27,6 +27,15 @@ from types import SimpleNamespace
 
 import pytest
 
+# Windows 的 GBK 控制台下，生产代码里的中文/`✔` 输出会抛 UnicodeEncodeError，
+# 表现为"测试偶发失败"（与业务无关、极难定位）。
+# `paperpilot/__init__.py` 里已统一 reconfigure；这里再兜一次**捕获流**（pytest 会替换 sys.stdout）。
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
+    except Exception:  # noqa: BLE001
+        pass
+
 ROOT = Path(__file__).resolve().parents[1]
 # 生产代码（src）、仓库根（web/app.py 等）、评测口径模块（qa/recall/_tgt.py）
 for _p in (ROOT / "src", ROOT, ROOT / "qa" / "recall"):
@@ -41,6 +50,8 @@ _ENV_KEYS = (
     "PAPERPILOT_QUERY_REWRITE", "PAPERPILOT_VALIDATOR_GATE", "PAPERPILOT_VALIDATOR_LLM",
     "PAPERPILOT_VALIDATOR_MISSING", "PAPERPILOT_VALIDATOR_REPAIR_MID",
     "PAPERPILOT_CHUNK_VIEW_DIR",
+    # 演示模式开关：默认必须关（否则测试会误走假实现，漏测真实路径）
+    "PAPERPILOT_MOCK_LLM", "PAPERPILOT_MOCK_EMBED", "PAPERPILOT_MINERU",
     # LLM/裁判的 key 也必须清掉：否则"本机 .env 里有 key"会让
     # `is_configured()` 变 True，测试结果**取决于开发者的机器**（CI 上则相反）。
     "PAPERPILOT_LLM_BASE_URL", "PAPERPILOT_LLM_API_KEY", "PAPERPILOT_LLM_MODEL",

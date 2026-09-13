@@ -118,12 +118,16 @@
   .mini { margin-left:6px; padding:1px 8px; font-size:12px; cursor:pointer;
     border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--fg); }
   .mini:hover { background:#f2eee6; }
+  /* 演示模式横幅：明确告诉看的人"内容是固定的示例"，避免被误当真实产出 */
+  #mockbar { padding:6px 14px; font-size:12.5px; background:#fff7e6; color:#8a6a00;
+    border-bottom:1px solid #f0e0b8; }
   @keyframes sp { to { transform:rotate(360deg); } }
   .scr { scroll-margin-top:8px; }
   ::-webkit-scrollbar{width:9px;height:9px} ::-webkit-scrollbar-thumb{background:#c6cad1;border-radius:5px}
 </style>
 </head>
 <body>
+<div id="mockbar" hidden></div>
 <header>
   <div class="logo">⚡Paper<em>Pilot</em></div>
   <div class="docname" id="docname">未加载论文 —— 拖入 PDF 或上传</div>
@@ -530,6 +534,17 @@ async function upload(f){
     }
   }catch(e){ b.remove(); addMsg('ai',`<span style="color:var(--bad)">上传失败：${esc(e.message)}</span>`); }
 }
+// 顶栏模式提示（演示模式必须让看的人一眼知道"内容是固定示例"）
+async function showMode(){
+  try{
+    const r=await fetch('/api/meta'); const m=await r.json();
+    if(!m.banner) return;
+    const b=$('mockbar'); b.hidden=false;
+    b.innerHTML='🧪 '+esc(m.banner)+' —— 概述 / 主张 / 答案是**固定示例**，'
+      +'但 <b>引用锚点</b>（[n] → 页码与原文片段）来自**真实检索**。'
+      +(m.mineru?'':' 未启用 MinerU（版面解析跳过，报告与问答照常可用）。');
+  }catch(e){}
+}
 // 刷新页面后恢复：产物在就直接渲染；否则看 job 是否还在跑
 async function resumeJob(){
   let saved=null;
@@ -628,7 +643,7 @@ $msgs.addEventListener('click',e=>{
   const c=e.target.closest('[data-cite]'); if(c) jumpCite(+c.dataset.cite);
   const x=e.target.closest('[data-cancel]'); if(x) cancelJob(x.dataset.cancel);
   const rt=e.target.closest('[data-retry]'); if(rt) retryJob(rt.dataset.retry);});
-window.addEventListener('load',()=>{ $qin.focus(); resumeJob(); });
+window.addEventListener('load',()=>{ $qin.focus(); showMode(); resumeJob(); });
 </script>
 </body>
 </html>

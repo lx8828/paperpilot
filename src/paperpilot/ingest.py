@@ -180,6 +180,14 @@ def run_mineru(pdf_name: str, *, timeout: int | None = None,
     if not pdf.exists():
         return {"status": "failed", "reason": f"论文库缺少 PDF：{pdf}", "seconds": 0.0}
 
+    from paperpilot.tools import mock_llm
+    if not mock_llm.mineru_enabled():
+        # `PAPERPILOT_MINERU=0`（演示模式默认）→ **跳过**而不是失败：
+        # status='skipped' 不会被问答闸门拦（闸门只拦 'failed'），
+        # 检索视图退化为纯 pymupdf —— 报告与问答都照常可用。
+        return {"status": "skipped", "reason": "PAPERPILOT_MINERU=0（演示/无 GPU 模式）",
+                "seconds": 0.0}
+
     ok, why = mineru_available()
     if not ok:
         return {"status": "failed", "reason": why, "seconds": 0.0}

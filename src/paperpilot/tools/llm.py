@@ -21,6 +21,8 @@ import urllib.error
 import urllib.request
 from typing import Any
 
+from paperpilot.tools import mock_llm   # 演示模式（PAPERPILOT_MOCK_LLM=1）的实现
+
 # 主链路（问答/生成）配置前缀
 _ENV_PREFIX = "PAPERPILOT_LLM"
 # 独立裁判配置前缀（QA 评测打分用；与主链路异源，防同模型自证偏好）
@@ -57,12 +59,17 @@ def config(prefix: str = _ENV_PREFIX) -> tuple[str, str, str]:
 
 
 def is_configured(prefix: str = _ENV_PREFIX) -> bool:
+    # 演示模式（PAPERPILOT_MOCK_LLM=1）：视为"已配置"，否则 Web 上传会直接 500
+    if mock_llm.llm_enabled():
+        return True
     base, key, model = config(prefix)
     return bool(base and key and model)
 
 
 def judge_configured() -> bool:
     """裁判模型是否已配置（独立于主链路）。"""
+    if mock_llm.llm_enabled():
+        return True
     return is_configured(_JUDGE_PREFIX)
 
 
@@ -115,6 +122,10 @@ def _parse_json(content: str):
 def _chat(system: str, user: str, *, temperature: float,
           max_tokens: int | None, prefix: str = _ENV_PREFIX) -> str:
     """单轮对话，返回模型原始文本内容。prefix 切换主链路 / 裁判模型。"""
+    if mock_llm.llm_enabled():
+        # 演示模式：**绝不联网**，返回固定响应（见 tools/mock_llm.py）
+        _USAGE["calls"] += 1
+        return mock_llm.response(system, user)
     base, key, model = config(prefix)
     timeout_env = f"{prefix}_TIMEOUT"
     if not base or not key or not model:

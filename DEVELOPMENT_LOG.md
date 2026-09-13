@@ -761,3 +761,92 @@ MinerU 产物只经 `retrieval_chunks` 注入**检索视图** → 两条路**互
 
 **遗留**：`-m local` 目前只有 1 个真实模型用例（闸门体检）——以后可把 QASPER 定向冒烟接进来；
 `qa/**/_*.py` 里还有一批复算脚本（口径/分母/覆盖率），它们是**评测工具**、不是单测，继续保持原样。
+
+---
+
+## 2026-09-13 · 公开仓库前的清理（把"运行记录"移出库 + MIT）
+
+**背景**：准备把仓库推到 GitHub（公开）。公开前按"任何人都会翻"的标准自查，结论与处置：
+
+| 检查项 | 结果 |
+|---|---|
+| 真 API key（`sk-` + 20 位以上）/ 历史提交里的 key | ✅ 无（`.env` **从未**被提交过；只有 `.env.example` 的占位符） |
+| 论文 PDF / 解析产物 / QASPER 数据集本体 | ✅ 一个都没有跟踪（`assets/` 跟踪数 = 0） |
+| 大文件 | ✅ 最大 1 MB（pdf.js） |
+| **本机用户名泄露** | ❌ 6 个文件含本机 Windows 用户目录路径（在 `qa/recall/` 下）→ **已删除**（3 个失效的 `.ps1` 后台脚本 + 3 个 PowerShell 报错转储，均为一次性垃圾） |
+| **评测运行记录** | ⚠️ 123 个（约 7 MB，**含论文原文片段**：gold 证据/答案）→ **移出 git（本地保留）** |
+
+**处置原则**（写进 `.gitignore` 注释与 README「开发约定」）：
+- **入库**＝资产：手写题集（`qa/questions/`、`*_set*.json`）、报告（`qa/**/*.md`）、复算脚本（`qa/**/_*.py`）、
+  回归基线（`bench/baseline.json`）、测试套件（`tests/`）；
+- **不入库**＝运行记录：`qa/recall/*.json`、`qa/compare/{deep_,run_}*.json`、`qa/*_result.json`、
+  `qa/qasper_*`（json/jsonl/md 转储）等 —— 机器产出、可重跑、体积大、含他人论文原文。
+
+**手法**：用 `git rm --cached`（**只移出索引，本地文件一个都没删**）→ 复算脚本在本地照常可跑；
+只有那 6 个带用户名的垃圾文件是真删（`git rm`）。代价：README 里引用的原始记录变成"本地文件"，
+已在 README 就地标注。
+
+**另加**：`LICENSE`（MIT）+ README 许可证行 + CI 徽章（指向 `lx8828/paperpilot`，用户名/仓库名不同需改）。
+
+---
+
+## 2026-09-13 · 干净环境"一条命令跑起来"：内置**演示模式** + 自带 demo 论文
+
+**审查意见**：招聘方不会花两小时装项目。README 必须提供：一条安装命令、模型预下载说明、
+MinerU 可选安装说明、没有 MinerU 时的**明确**降级行为、API Key 配置方式、**自带一篇 demo 论文**、
+2 分钟演示视频/GIF；并建议增加 **mock LLM 模式**（不用 Key 也能跑通上传/报告/引用/问答 UI）。
+
+**判断**：光写文档没用——只要"没 Key 就没法启动"，README 写得再好也白搭。
+所以先把**能免 Key 跑通**做成产品能力，再写文档。
+
+**实现**（新增 `src/paperpilot/tools/mock_llm.py`，约 160 行 + 少量接线）：
+
+| 开关 | 行为 |
+|---|---|
+| `PAPERPILOT_MOCK_LLM=1` | `llm._chat` 短路 → 按 system prompt 返回固定响应（claim/去重/打标/骨架/概述/导读/判够/作答/质检） |
+| `PAPERPILOT_MOCK_EMBED=1` | `embedder.encode_texts/encode_query` → **确定性词袋哈希**（MD5 分桶 + 归一化），不加载 bge-m3 |
+| `PAPERPILOT_MINERU=0` | `run_mineru` 直接返回 `status="skipped"`（**skipped ≠ failed**：问答闸门只拦 failed，所以问答照常可用） |
+| `web/app.py --mock` | 以上三个一键打开（`MINERU` 若已被显式设置则尊重用户设置） |
+
+关键设计（都是"不这么做就会静默出错"的点）：
+1. **假向量必须与真向量物理隔离**：演示模式把 cvec/gvec 写到 `out_views__mock/`，并在指纹里加
+   `enc: "mock"`（**只在自己这侧加**，真模式的指纹逐字不变 → 不触发无意义重建）。
+   否则假向量会被真查询复用 → 检索结果毫无意义且**不报错**。
+2. **固定文案里带一句从输入正文逐字摘的证据**（`_quote_from`）：于是"证据回核"是真跑通的，
+   引用锚点（`[n]` → 页码 + 原文片段）也是真的——**只有概述/主张/答案的措辞是固定的**。
+3. `is_configured()` 在演示模式返回 True（否则 Web 上传会 500）；前端 `/api/meta` + 顶部黄色横幅
+   明确标注"演示模式"，避免被误当真实产出。
+4. 拆出 `apply_cli_args()`（不启动服务）→ `--mock` 的开关行为**能被单测覆盖**。
+
+**自带 demo 论文**：`demo/make_demo_pdf.py` 生成 `demo/demo_paper.pdf`（合成内容、MIT 可再分发，
+含标题/摘要/方法/结果表/结论）。招聘方不必去 arXiv 找 PDF。
+
+**实测（干净环境模拟）**：清掉所有 key + 三个开关打开 → 上传 demo 论文 → **0.3 秒** `ready`
+（mineru=skipped / report=ok / index=ok）→ 报告 5 claims → 提问得到答案 + **真实 cites**
+（page 1 + 逐字原文片段）→ 断言 `sentence_transformers` **从未被 import**（真的没下模型）。
+
+**测试**：新增 `tests/test_mock_mode.py`（10 个用例，含一条走 `--mock` 路径的端到端）。
+**总用例 124 → 135**（其中 1 个是下面那处"状态快照"竞态的回归用例），仍全绿（~3s）。README 重写「快速开始」为 A/B 两条路（演示 / 真跑），
+补齐模型预下载、MinerU 可选安装与三档降级行为、API Key 配置、自带 demo 论文。
+
+**演示视频/GIF**：**用户决定先不做**（2026-09-13），README 里原先的占位与录屏脚本已移除，
+不留空位（宁可没有，也不要一个"待补"的坑）。
+
+### 附带修掉一个"干净环境"杀手：Windows GBK 控制台下中文 print 会崩
+
+连跑测试查竞态时暴露：**pytest 的捕获流在创建时按 `sys.stdout.encoding` 定编码**，
+Windows 上是 GBK；而生产代码里有 `print("✔ report.json 已保存…")` 这类输出
+（`✔`/`⚠`/emoji 不在 GBK 里）→ 写捕获流时抛 `UnicodeEncodeError`，现象是
+**测试偶发失败、且报错与业务逻辑毫无关系**（我前几次没踩到，只因命令里带了
+`PYTHONIOENCODING=utf-8`）。对"招聘方一条命令跑测试"这个要求来说，这是**真拦路虎**。
+
+两处修（都是根治，不是绕过）：
+1. `src/paperpilot/__init__.py`：包入口统一把 stdout/stderr `reconfigure(encoding="utf-8",
+   errors="replace")`（失败静默）——直接跑 CLI / `python web/app.py` 也不再受 GBK 控制台影响；
+2. `pyproject.toml` 的 pytest `addopts` 增加 **`-s`（关掉输出捕获）**：捕获流的编码是
+   pytest 在导入 conftest 之前就定死的，改不了；关掉捕获后输出直达已 UTF-8 的真实 stdout。
+
+验证：在**不设** `PYTHONIOENCODING` 的恶劣条件下连跑 5 遍 → 5/5 全绿（此前 5 遍里会挂 1 遍）。
+另注：本机反复跑测试时 `%TEMP%` 里 pytest 临时目录会累积，本机 IDE 的批量删除保护会拒绝其清理
+（表现为 pytest `rc=1` 但没有失败用例）——**这是本机环境特性，不是测试问题**；
+用 `--basetemp=<工作区内目录>` 可避免。
