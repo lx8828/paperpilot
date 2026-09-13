@@ -47,12 +47,20 @@ def _now_iso() -> str:
 
 
 def _mark(job: dict[str, Any], stage: str, *, status: str,
-          seconds: float | None = None, error: str = "") -> None:
+          seconds: float | None = None, error: str = "", note: str = "") -> None:
+    """打点一个阶段。
+
+    `note` 是**阶段自己的说明**（如"index 为何被跳过"），与 `error` 不同：
+    `error` 会写进 job 顶层 `error`（只有失败/取消才该有），而 `note` 只挂在该
+    阶段上、不污染终态语义（ready 的 job 也能带 note）。
+    """
     with _JOB_LOCK:
         st = job.setdefault("stages", {}).setdefault(stage, {})
         st["status"] = status
         if seconds is not None:
             st["seconds"] = round(float(seconds), 1)
+        if note:
+            st["note"] = note
         st["at"] = _now_iso()
         job["stage"] = stage
         if error:
@@ -146,14 +154,29 @@ def _lane_report(job: dict[str, Any], ev: threading.Event) -> None:
 
 
 def _lane_index(job: dict[str, Any], ev: threading.Event) -> None:
-    """向量索引收口（问答首次提问不再现建）。必须在 MinerU 之后。"""
+    """向量索引收口（问答首次提问不再现建）。必须在 MinerU 之后。
+
+    ⚠️ **编码前后各查一次取消**（2026-09-14 审查）：`idx.vectors()` 内部的
+    `encode_texts()` 是**一次不可中断**的调用（可能几秒~几十秒），它是本 lane 里
+    "边界之后"的唯一工作。只查开头 → 用户在编码期间点取消会被吞掉：
+    编码跑完照样标 `index: ok`、job 照样变 `ready`。
+    中途打断做不到（要改 embedder），所以这里是**在编码结束后立刻再查一次** ——
+    取消的代价是"等这次编码跑完"，但**终态必须是 cancelled**。
+    """
     from paperpilot.agents.embedder import ChunkIndex
 
     _check_cancel(ev)
     _mark(job, "index", status="running")
     t0 = time.time()
-    idx = ChunkIndex(job["pdf"])
-    idx.vectors()                             # 触发 encode + 落 cvec 缓存
+    try:
+        idx = ChunkIndex(job["pdf"])
+        idx.vectors()                         # 触发 encode + 落 cvec 缓存
+        _check_cancel(ev)                     # ← 编码可能耗时几十秒，这里必须再查
+    except JobCancelled:
+        # 记下"编码跑了多久才被取消"（`_run_job` 的处理器只标状态、不带秒数，
+        # 而 `_mark` 不会覆盖已写入的 seconds）——排查"取消为何要等这么久"靠它。
+        _mark(job, "index", status="cancelled", seconds=time.time() - t0)
+        raise
     _mark(job, "index", status="ok", seconds=time.time() - t0)
 
 
@@ -190,15 +213,37 @@ def _run_job(job: dict[str, Any]) -> None:
                         errs.append(e)
                 if errs:
                     raise errs[0]
-                mineru_status = "ok" if not f_m.cancelled() else "cancelled"
+                # ⚠️ **必须取 lane 的返回值**，不能凭"future 没抛异常"推断 ok
+                # （2026-09-14 审查）：MinerU 失败是**正常返回** `failed`（不抛异常），
+                # 旧写法 `"ok" if not f_m.cancelled() else "cancelled"` 会把它误标 ok
+                # → ①白跑一次索引 ②任务状态说错。
+                # 另外 `f.cancelled()` 在这里恒为 False（已启动的 future 不会变 cancelled），
+                # 所以旧写法连 cancelled 也基本测不到。
+                mineru_status = str(f_m.result() or "failed")
 
-        # 索引：MinerU 失败也无妨（检索视图退化为纯 pymupdf），但问答会被闸门拦，
-        # 此时**不建索引**（省 3~10s，避免给一份不可问答的论文做无用功）。
+        # MinerU lane 报了 cancelled（用户取消，且报告链**恰好已先跑完**）→ 终态也必须是
+        # cancelled；否则取消看起来"失效"，job 会变成 ready。
+        if mineru_status == "cancelled":
+            raise JobCancelled()
+
+        # 索引：只在"检索视图可用"时建。
+        #   · ok      → 正常建；
+        #   · skipped → 也建：QASPER / 演示模式（`PAPERPILOT_MINERU=0`）只是**没有**
+        #     MinerU 增厚，检索视图退化为纯 pymupdf，问答照常可用；
+        #   · failed/cancelled → 不建：问答会被闸门（`qa_blocked_reason`）明确拦住，
+        #     建了也没人用（首次 encode 可能几秒~几分钟，纯浪费）。
         if mineru_status in ("ok", "skipped"):
             _lane_index(job, ev)
         else:
-            _mark(job, "index", status="skipped")
+            _mark(job, "index", status="skipped",
+                  note=f"MinerU {mineru_status}：检索视图不完整、问答会被闸门拦，"
+                       f"跳过索引构建（报告不受影响）")
 
+        # **写终态前的最后一道门**（2026-09-14 审查）：各 lane 只在各自的阶段边界
+        # 检查取消，而这些"边界"到写终态之间仍有工作在跑（索引编码、跳过索引的分支、
+        # 最后一个 `_mark` 落盘）。少了这一道，取消信号只要晚到一步就会被吞掉、
+        # 任务变成 `ready`（用户点了取消却看到成功）。
+        _check_cancel(ev)
         _finish(job, jobs.STATUS_READY)
 
     except JobCancelled:

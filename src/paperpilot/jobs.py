@@ -99,15 +99,29 @@ def save(job: dict[str, Any]) -> None:
             tmp.unlink(missing_ok=True)
 
 
+def _read_job_file(p: Path) -> dict[str, Any] | None:
+    """读一个 job 文件：**只在"确实不存在"时返回 None**，一时读不到则短重试。
+
+    ⚠️ **读写竞态（Windows 实测，2026-09-14）**：`save()` 用 `os.replace` 落盘时，
+    并发的读会**瞬时**失败（sharing violation）——旧实现把所有异常一律吞成 `None`，
+    于是"存在但正被写"被当成"不存在"：探针实测 **15230 次并发读里 11 次读到 None**
+    → API 回 404「任务不存在」。对"分钟级任务 + 前端轮询"这是致命的：
+    用户会看到"任务没了"。故与 `save()` 的重试对称：**读也重试**，
+    `None` 只表示"真的没有这个 job"（前端据此显示 404 才是对的）。
+    """
+    for attempt in range(10):
+        if not p.exists():
+            return None                      # 真不存在 → 快速返回（404 路径不该慢）
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+            return d if isinstance(d, dict) else None
+        except Exception:  # noqa: BLE001  正被写者占用/正在替换 → 退避重试
+            time.sleep(0.02 * (attempt + 1))
+    return None
+
+
 def load(job_id: str) -> dict[str, Any] | None:
-    p = job_path(job_id)
-    if not p.exists():
-        return None
-    try:
-        d = json.loads(p.read_text(encoding="utf-8"))
-        return d if isinstance(d, dict) else None
-    except Exception:  # noqa: BLE001  损坏的 job 文件按不存在处理
-        return None
+    return _read_job_file(job_path(job_id))
 
 
 def update(job_id: str, **fields: Any) -> dict[str, Any] | None:
@@ -122,14 +136,17 @@ def update(job_id: str, **fields: Any) -> dict[str, Any] | None:
 
 
 def all_jobs() -> list[dict[str, Any]]:
+    """目录里所有 job。
+
+    ⚠️ 也必须走 `_read_job_file`（带重试）：旧实现"读失败就 `continue`"会让**正在跑的
+    job 从这个列表里消失** → `find_active()`（问答门控）以为"没有进行中的解析"而放行、
+    `latest()`（刷新恢复进度）找不到它。静默漏掉一个 job 比报错更糟。
+    """
     out: list[dict[str, Any]] = []
     if not JOB_DIR.is_dir():
         return out
     for p in JOB_DIR.glob("j-*.json"):
-        try:
-            d = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:  # noqa: BLE001
-            continue
+        d = _read_job_file(p)
         if isinstance(d, dict):
             out.append(d)
     return out

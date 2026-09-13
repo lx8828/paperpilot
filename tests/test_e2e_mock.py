@@ -128,3 +128,52 @@ def test_cancel_running_job_is_honoured(e2e, tmp_assets, tiny_pdf, monkeypatch):
     final = _wait_ready(e2e, job_id)
     assert final["status"] == jobs.STATUS_CANCELLED
     assert "取消" in final["error"]
+
+
+def test_mineru_failed_end_to_end(webapp_tmp, tmp_assets, tiny_pdf,
+                                  fake_llm, fake_embed, monkeypatch):
+    """**审查项回归（端到端）**：MinerU 失败 → 报告仍可用、**不建索引**、问答被闸门拦住。
+
+    走的是**真实**代码路径（只把"是否可用"换成 False）：
+    真 `_lane_mineru` → 真 `run_mineru`（failed 是**正常返回**，不抛异常）
+    → 真 meta 落盘 → 真 `qa_blocked_reason()` → 真 graph 拒绝分支。
+
+    这正是"凭 future 没抛异常就当成 ok"那个 bug 会漏掉的场景：状态说错、索引白跑。
+    """
+    from paperpilot import ingest, worker
+
+    monkeypatch.setattr(ingest, "mineru_available", lambda: (False, "无 GPU：CUDA 不可用"))
+    seen = {"index": 0}
+    real_index = worker._lane_index
+
+    def _spy_index(job, ev):                 # 只观察，不改变行为
+        seen["index"] += 1
+        return real_index(job, ev)
+
+    monkeypatch.setattr(worker, "_lane_index", _spy_index)
+
+    client = TestClient(webapp_tmp.app)
+    raw = (tmp_assets.papers / tiny_pdf).read_bytes()
+    r = client.post("/api/report", files={"file": (tiny_pdf, raw, "application/pdf")})
+    assert r.status_code == 202
+    final = _wait_ready(client, r.json()["job_id"])
+
+    # ① 状态如实：MinerU failed、索引 skipped（未白跑）、报告仍 ready
+    assert final["status"] == jobs.STATUS_READY, final
+    assert final["stages"]["mineru"]["status"] == "failed"
+    assert seen["index"] == 0
+    assert final["stages"]["index"]["status"] == "skipped"
+    assert "failed" in final["stages"]["index"]["note"]
+
+    # ② 报告可读，且带**用户可见**的警告（不静默）
+    got = client.get(f"/api/report/{tiny_pdf}")
+    assert got.status_code == 200
+    assert "mineru_warning" in got.json()
+
+    # ③ 问答被明确拒绝并说明原因（不是静默降级到 pymupdf 检索）
+    ask = client.post("/api/ask", json={"question": "这篇论文提出了什么？", "pdf": tiny_pdf})
+    assert ask.status_code == 200
+    body = ask.json()
+    assert body["route"] == ["ingest_blocked"]
+    assert "MinerU" in body["answer"]
+    assert body["validator"]["action"] == "blocked"
