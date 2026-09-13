@@ -1,11 +1,13 @@
 [project]
 name = "paperpilot"
 version = "0.1.0"
-description = "Add your description here"
+description = "论文帮读器：把 PDF 变成结构化精读报告 + 带引用溯源的问答（每句结论都能点回原文）"
 readme = "README.md"
 authors = [
     { name = "lx", email = "834659376@qq.com" }
 ]
+keywords = ["rag", "llm", "paper-reading", "question-answering", "citation",
+            "fastapi", "langgraph", "chinese"]
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.141.1",
@@ -19,6 +21,10 @@ dependencies = [
 
 [project.scripts]
 paperpilot = "paperpilot:main"
+
+[project.urls]
+Repository = "https://github.com/lx8828/paperpilot"
+Issues = "https://github.com/lx8828/paperpilot/issues"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

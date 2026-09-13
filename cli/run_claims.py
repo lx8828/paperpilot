@@ -9,7 +9,7 @@
     uv run python run_claims.py --all                                   # 全部论文（每篇一行小结）
     uv run python run_claims.py 2608.28433v2.pdf 2608.30023v1.pdf       # 指定多篇
     uv run python run_claims.py --all --skip-existing                   # 跳过 assets/artifacts/out_claims 已存在的篇目（续跑）
-    uv run python run_claims.py --json assets/artifacts/out_claims/xxx.claims.json       # 复核已有结果（不调 LLM）
+    uv run python run_claims.py --json assets/artifacts/out_claims/<stem>.claims.json       # 复核已有结果（不调 LLM）
 """
 from __future__ import annotations
 

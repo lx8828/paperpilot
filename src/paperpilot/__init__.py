@@ -28,4 +28,14 @@ _force_utf8_streams()
 
 
 def main() -> None:
-    print("Hello from paperpilot!")
+    """`uv run paperpilot`：给出最短上手路径（面向第一次打开项目的人）。"""
+    print(
+        "PaperPilot —— 论文帮读器（结构化精读报告 + 带引用溯源的问答）\n"
+        "\n"
+        "最短上手（详见 README.md）：\n"
+        "  1) 装依赖：        uv sync\n"
+        "  2) 免 Key 看效果： uv run python web/app.py --mock\n"
+        "                     → 打开 http://127.0.0.1:8000 ，拖入 demo/demo_paper.pdf\n"
+        "  3) 真跑（填 key）：cp .env.example .env && uv run python web/app.py\n"
+        "  4) 跑离线测试：    uv run pytest -q\n"
+    )
