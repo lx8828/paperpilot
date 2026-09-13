@@ -437,6 +437,10 @@ async function upload(f){
     $('rpv').innerHTML=''; $('pdfv').innerHTML='';
     buildNav(data); showView('report'); renderReport(data);
     addMsg('ai','✅ 报告已生成。左边看结构、中间读原文/报告、右侧可以开始提问了。');
+    // 后端提示必须让用户看到：① 同名不同内容 → 已另存为新论文（upload_note）；
+    // ② MinerU 失败 → 问答不可用但报告可用（mineru_warning）。都不静默。
+    if(data.upload_note) addMsg('ai',`<span style="color:#a86200">📌 ${esc(data.upload_note)}</span>`);
+    if(data.mineru_warning) addMsg('ai',`<span style="color:var(--bad)">⚠ ${esc(data.mineru_warning)}</span>`);
     $qin.focus();
   }catch(e){ b.remove(); addMsg('ai',`<span style="color:var(--bad)">生成失败：${esc(e.message)}</span>`); }
 }
