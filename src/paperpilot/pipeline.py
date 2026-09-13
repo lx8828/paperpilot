@@ -485,6 +485,43 @@ def required_files(pdf_name: str) -> list[Path]:
             VIEW_DIR / f"{stem}.guide.json"]
 
 
+def _pdf_identity_stale(pdf_name: str) -> tuple[bool, str]:
+    """产物是否**不属于当前这份 PDF**（内容指纹；2026-09-13 审查项 2）。
+
+    动机：全部产物以文件名 stem 为键，同名不同内容会静默复用旧 claims/报告
+    （已复现：`qa/review/_dupname_repro_20260913.py`）。
+
+    判定（`paper_identity.check`）：
+      · 有指纹记录且 sha 不一致 → **stale**（重建）
+      · 无记录（存量产物）→ 产物比 PDF 新则**收编**并**补写指纹**（之后严格比对）；
+        PDF 比产物新则 **stale**（很可能文件被换过）；
+      · `PAPERPILOT_PDF_ID_STRICT=1` → 连"收编"也当 stale（急着排雷时用）。
+    """
+    from paperpilot import paper_identity
+    if paper_identity.is_virtual(pdf_name):
+        return False, ""
+    stem = _stem(pdf_name)
+    recorded = None
+    try:
+        from paperpilot.ingest import read_meta
+        recorded = (read_meta(stem) or {}).get("pdf_fingerprint")
+    except Exception:  # noqa: BLE001
+        recorded = None
+    arts = list(required_files(pdf_name)) + [VIEW_DIR / f"{stem}.report.json"]
+    verdict, why = paper_identity.check(pdf_name, recorded, arts)
+    if verdict == "stale":
+        return True, why
+    if verdict == "adopt":
+        if paper_identity.strict():
+            return True, why + "（PAPERPILOT_PDF_ID_STRICT=1）"
+        try:                                    # 收编：补写指纹，之后即严格比对
+            from paperpilot.ingest import stamp_pdf_fingerprint
+            stamp_pdf_fingerprint(pdf_name)
+        except Exception:  # noqa: BLE001      写不进去不影响主流程
+            pass
+    return False, ""
+
+
 # ───────────────────────── 主入口：一步完成 ─────────────────────────
 
 
@@ -523,7 +560,20 @@ def process_pdf(pdf_name: str, *, force: bool = False,
     if stale and verbose:
         print(f"  [source] 解析源 {old_src} → {src}，整链重建产物")
 
+    # **身份一致性**（2026-09-13 审查项 2）：产物必须属于**当前这份** PDF（内容指纹）。
+    # 同名不同内容（换文件 / 覆盖同名 PDF）→ 旧产物一律不采用，整链重建。
+    id_stale, id_why = _pdf_identity_stale(pdf_name)
+    if id_stale:
+        stale = True
+        eff_force = True
+        if verbose:
+            print(f"  [identity] {id_why} → 整链重建产物")
+
     if skip_llm:
+        if id_stale:
+            raise FileNotFoundError(
+                f"{id_why}：产物不属于当前这份 PDF，不能用 --skip-llm 装配。"
+                f"请先重建（process_pdf(force=True) 或 cli/main.py --force）")
         if stale:
             raise FileNotFoundError(
                 f"产物解析源不一致（claims={old_src}，当前={src}）："

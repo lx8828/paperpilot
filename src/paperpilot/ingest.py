@@ -30,6 +30,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from paperpilot import paper_identity
+
 ROOT = Path(__file__).resolve().parents[2]           # src/paperpilot/ingest.py → 根
 ASSETS = ROOT / "assets"
 PAPERS_DIR = ASSETS / "papers"                        # 论文库（上传的原始 PDF）
@@ -108,6 +110,24 @@ def _write_meta(stem: str, meta: dict[str, Any]) -> None:
     p.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def stamp_pdf_fingerprint(pdf_name: str) -> bool:
+    """把当前 PDF 的内容指纹写进 `ingest.json`（**历史产物收编**用；成功返回 True）。
+
+    场景：存量产物没有指纹记录（升级前生成）。首次运行按 mtime 关系收编后调用本函数补写，
+    之后同一篇即走**严格 sha 比对**；下次文件被换掉就会被立刻发现。
+    没有 `ingest.json`（从未摄取过的老产物 / 评测语料）→ 返回 False，不做无谓写盘。
+    """
+    stem = Path(pdf_name).stem
+    meta = read_meta(stem)
+    fp = paper_identity.fingerprint(pdf_name)
+    if meta is None or fp is None:
+        return False
+    meta["pdf_fingerprint"] = fp
+    meta["updated_at"] = datetime.now().isoformat(timespec="seconds")
+    _write_meta(stem, meta)
+    return True
+
+
 # ── 问答闸门 ──────────────────────────────────────────────────────────────────
 
 
@@ -156,7 +176,12 @@ def run_mineru(pdf_name: str, *, timeout: int | None = None,
     cur_ver = mineru_version()
     # 复用规则：产物可解析，且（无版本记录=历史产物直接收编）或（版本一致）
     reusable_ver = (not old_ver) or (old_ver == cur_ver)
-    if not force and outdir.is_dir() and reusable_ver:
+    # **身份校验**（2026-09-13 审查项 2）：MinerU 产物是按 `<stem>` 存的，
+    # 同名不同内容时必须重跑，否则检索视图会一直来自旧的 PDF。
+    fp = paper_identity.fingerprint(pdf_name)
+    rec = old.get("pdf_fingerprint")
+    same_pdf = (not fp) or (not rec) or (rec.get("sha256") == fp.get("sha256"))
+    if not force and same_pdf and outdir.is_dir() and reusable_ver:
         if chunks_from_mineru_dir(outdir) is not None:
             return {"status": "ok", "reason": "复用已有产物", "seconds": 0.0,
                     "reused": True, "version": cur_ver}
@@ -212,6 +237,31 @@ def ingest(pdf_name: str, *, force: bool = False, skip_llm: bool = False,
     meta["pdf"] = pdf_name
     meta["updated_at"] = datetime.now().isoformat(timespec="seconds")
 
+    # 0) **身份校验**（2026-09-13 审查项 2）：产物是否属于**当前这份** PDF。
+    #    同名不同内容（用户换了文件 / 覆盖了同名 PDF）→ 旧产物一律不认，强制重建。
+    #    历史产物（无指纹记录）按 mtime 关系收编（详见 paper_identity 模块注释）。
+    fp = paper_identity.fingerprint(pdf_name)
+    if fp is not None:
+        arts: list[Path] = []
+        try:
+            from paperpilot.pipeline import required_files
+            req = required_files(pdf_name)
+            arts = list(req) + [req[0].with_name(f"{stem}.report.json")]
+        except Exception:  # noqa: BLE001  拿不到产物清单不影响主流程
+            arts = []
+        verdict, why = paper_identity.check(pdf_name, meta.get("pdf_fingerprint"), arts)
+        if verdict == "stale" and not force:
+            print(f"[ingest] ⚠ {why} → **强制重建**（不采用旧产物）")
+            meta.setdefault("history", []).append(
+                {"at": meta["updated_at"], "event": "pdf_changed", "detail": why})
+            force = True
+        elif verdict == "adopt":
+            if paper_identity.strict():
+                print(f"[ingest] ⚠ {why}（PAPERPILOT_PDF_ID_STRICT=1）→ 重建")
+                force = True
+            else:
+                print(f"[ingest] 注意：{why}；本次收编并写回指纹，之后即严格比对")
+
     # 1) MinerU（检索用）
     if mineru:
         if verbose:
@@ -244,6 +294,9 @@ def ingest(pdf_name: str, *, force: bool = False, skip_llm: bool = False,
     except Exception as e:  # noqa: BLE001
         diag = {"error": f"{type(e).__name__}: {e}"}
     meta["retrieval_view"] = diag
+    # 写回本次的 PDF 内容指纹（下次即走严格比对）
+    if fp is not None:
+        meta["pdf_fingerprint"] = fp
 
     _write_meta(stem, meta)
     if verbose:

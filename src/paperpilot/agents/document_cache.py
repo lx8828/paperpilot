@@ -168,20 +168,44 @@ def _mineru_chunks(pdf: str) -> list[Chunk] | None:
     return analyzer.extractable(mc)
 
 
+def _pdf_stamp(pdf: str) -> str:
+    """进程内缓存键的"文件版本"分量：`size:mtime_ns`（虚拟名/文件不存在 → ""）。
+
+    为什么需要（2026-09-13 审查项 2 的另一半）：`lru_cache` 原本只按**文件名**缓存，
+    同一进程里同名文件被替换后仍返回旧解析结果——与"产物按名寻址"是同一个病根。
+    """
+    from paperpilot import paper_identity
+    fp = paper_identity.fingerprint(pdf)
+    return f"{fp['size']}:{fp['mtime_ns']}" if fp else ""
+
+
 @lru_cache(maxsize=16)
-def ordered_chunks(pdf: str) -> list[Chunk]:
-    """返回该 pdf 的 extractable chunks（按正文顺序，已去 PREAMBLE/References/空）。"""
+def _ordered_chunks_cached(pdf: str, stamp: str) -> tuple[Chunk, ...]:
+    """返回该 pdf 的 extractable chunks（按正文顺序，已去 PREAMBLE/References/空）。
+
+    `stamp` 只参与缓存键（文件版本），不参与逻辑；见 `_pdf_stamp`。
+    """
     if is_qasper(pdf):
         # QASPER：full_text → chunks，无 PDF 版面概念（page=0）
         raw = qasper_chunks(pdf.removeprefix("qasper_").removesuffix(".qpdf"))
-        return [c for c in raw if c.title_path != ["(PREAMBLE)"]]
+        return tuple(c for c in raw if c.title_path != ["(PREAMBLE)"])
     if os.environ.get("PAPERPILOT_USE_MINERU") == "1":
         mc = _mineru_chunks(pdf)
         if mc is not None:
-            return mc
+            return tuple(mc)
     result = parse_pdf(str(PAPERS_DIR / pdf))
     chunks = chunk_document(result["blocks"], max_len=MAX_CHUNK_LEN)
-    return analyzer.extractable(chunks)
+    return tuple(analyzer.extractable(chunks))
+
+
+def ordered_chunks(pdf: str) -> list[Chunk]:
+    """该 pdf 的正文块（按 (文件名, 文件版本) 缓存；实现见 `_ordered_chunks_cached`）。"""
+    return list(_ordered_chunks_cached(pdf, _pdf_stamp(pdf)))
+
+
+# 兼容老调用方（如 `qa/recall/_ab_chunk_sources.py` 里的 `ordered_chunks.cache_clear()`）
+ordered_chunks.cache_clear = _ordered_chunks_cached.cache_clear      # type: ignore[attr-defined]
+ordered_chunks.cache_info = _ordered_chunks_cached.cache_info        # type: ignore[attr-defined]
 
 
 @lru_cache(maxsize=64)
@@ -214,7 +238,7 @@ def _mineru_extra_by_page(stem: str) -> dict[int, list[str]]:
 
 
 @lru_cache(maxsize=32)
-def retrieval_chunks(pdf: str) -> list[Chunk]:
+def _retrieval_chunks_cached(pdf: str, stamp: str) -> tuple[Chunk, ...]:
     """**检索视图**：chunk_id/页码与 ordered_chunks 完全一致，仅文本更厚。
 
     背景（2026-09-10，方案 B3）：报告链无论如何需要 pymupdf（页码/版面/claims），
@@ -254,6 +278,15 @@ def retrieval_chunks(pdf: str) -> list[Chunk]:
             c = c.model_copy(update={"text": c.text + "\n\n" + "\n".join(add)})
         out.append(c)
     return out
+
+
+def retrieval_chunks(pdf: str) -> list[Chunk]:
+    """检索视图（按 (文件名, 文件版本) 缓存；实现见 `_retrieval_chunks_cached`）。"""
+    return list(_retrieval_chunks_cached(pdf, _pdf_stamp(pdf)))
+
+
+retrieval_chunks.cache_clear = _retrieval_chunks_cached.cache_clear  # type: ignore[attr-defined]
+retrieval_chunks.cache_info = _retrieval_chunks_cached.cache_info    # type: ignore[attr-defined]
 
 
 @lru_cache(maxsize=32)
@@ -338,16 +371,26 @@ def _with_external_tables(pdf: str, base: list[Chunk]) -> list[Chunk]:
 
 
 @lru_cache(maxsize=32)
-def current_source(pdf: str) -> str:
+def _current_source_cached(pdf: str, stamp: str) -> str:
     """该 pdf 当前解析源：'qasper' | 'mineru' | 'pymupdf'。
 
     QA/报告链据此决定标题源、figures 源与产物缓存源打标，保证整链同源。
+    `stamp` 只参与缓存键（文件版本）。
     """
     if is_qasper(pdf):
         return "qasper"
     if os.environ.get("PAPERPILOT_USE_MINERU") == "1" and _mineru_chunks(pdf) is not None:
         return "mineru"
     return "pymupdf"
+
+
+def current_source(pdf: str) -> str:
+    """见 `_current_source_cached`（按 (文件名, 文件版本) 缓存）。"""
+    return _current_source_cached(pdf, _pdf_stamp(pdf))
+
+
+current_source.cache_clear = _current_source_cached.cache_clear      # type: ignore[attr-defined]
+current_source.cache_info = _current_source_cached.cache_info        # type: ignore[attr-defined]
 
 
 def top_section(chunk: Chunk | None) -> str:
