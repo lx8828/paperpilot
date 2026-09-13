@@ -1,0 +1,37 @@
+name: CI
+
+# 每次 push / PR 自动跑一次**离线**测试：不需要任何 secret、不需要 GPU、
+# 不需要下载模型（LLM / embedding / MinerU 三样都被替身换掉了）。
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 离线测试（无 key / 无 GPU / 无模型）
+    runs-on: ubuntu-latest
+    timeout-minutes: 10          # 实测 1 分钟内；留足余量给首次缓存
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: 安装依赖
+        # 故意跳过 sentence-transformers（会把 torch 等几个 GB 一起拉下来）：
+        # 测试套件**不导入**它（`embedder` 里是懒加载，运行时才 import），
+        # 装上只会让 CI 慢几分钟，对测试结果毫无影响。
+        # 生产 / 评测仍照常 `uv sync`（含它）。
+        run: uv sync --dev --no-install-package sentence-transformers
+
+      - name: 语法门禁（compileall）
+        run: uv run python -m compileall -q src cli web tests
+
+      - name: 跑测试
+        # 一条命令；`pyproject.toml` 里已配 `-m 'not local'`，
+        # 需要真实模型/LLM 的用例默认跳过 → 无 key 也能全绿。
+        run: uv run pytest -q

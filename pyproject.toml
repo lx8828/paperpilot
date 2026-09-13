@@ -24,6 +24,18 @@ paperpilot = "paperpilot:main"
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
 
+[tool.pytest.ini_options]
+# 一条命令跑全部离线测试（CI 与"别人 clone 后自证"都用这条）：
+#     uv run pytest -q
+# · testpaths：只收集 tests/（qa/ 下是带叙述的评测脚本，不是单测）
+# · -m 'not local'：默认**跳过**需要真实模型/LLM 的用例 → 无 key 也能全绿
+# · 本地跑真模型用例：uv run pytest -m local
+testpaths = ["tests"]
+addopts = "-q -m 'not local'"
+markers = [
+    "local: 需要真实模型 / LLM / GPU（本地跑；CI 与默认命令会跳过）",
+]
+
 [tool.basedpyright]
 # 类型收敛策略（2026-09-05）：
 #   Error 级已逐处修好（裸 dict 补泛型、TypedDict 访问、urllib.error 导入等）。
@@ -41,3 +53,8 @@ reportUnknownArgumentType = "none"
 reportUnknownLambdaType = "none"
 reportImplicitRelativeImport = "none"
 reportPrivateUsage = "none"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

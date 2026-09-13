@@ -1,16 +1,21 @@
-"""极简开发服务器：一个对话框 → 上传 PDF → 生成 report → 返回 JSON。
+"""极简开发服务器：一个对话框 → 上传 PDF → **后台**生成 report → 轮询进度 → 返回 JSON。
 
 用法：
     uv run python web/app.py          # 启动 http://127.0.0.1:8000
 
 接口：
-    GET  /            前端页面（index.html）
-    POST /api/report  上传 PDF → ingest()（MinerU 检索解析 + MinerU/pymupdf 报告）
-                      → 返回 PaperReport JSON
-                      （已有产物+同版本 MinerU 时秒回；新论文走全链路，耗时可到分钟级）
+    GET  /                         前端页面（index.html）
+    POST /api/report               上传 PDF → **提交后台 job**（MinerU ∥ 报告链 → 索引）
+                                   → `202 {job_id, pdf, status}`（已有产物的同内容重传：秒回报告）
+    GET  /api/job/{job_id}         任务状态（status/stage/stages 耗时/error）
+    GET  /api/jobs/latest?pdf=     该论文最近一次 job（刷新页面后恢复进度）
+    POST /api/job/{job_id}/cancel  请求取消（阶段边界生效；MinerU 真终止子进程）
+    POST /api/job/{job_id}/retry   重试（已完成的阶段自动复用，很便宜）
+    GET  /api/report/{name}        job ready 后取报告 JSON（含 upload_note / mineru_warning）
+    POST /api/ask                  提问接口（摄取未完成时由闸门明确拒答）
 
-预留（下一步问答 RAG 用）：
-    POST /api/ask     提问接口
+为什么要异步（2026-09-13）：摄取是**分钟级**任务，原先挂在 HTTP 请求里 → 用户干等，
+且阻塞调用占住事件循环（其他请求一起排队）。现在提交即返回，进度可查、可取消、可重试。
 """
 from __future__ import annotations
 
@@ -27,8 +32,9 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from paperpilot import jobs, worker
 from paperpilot.graph import ask as graph_ask
-from paperpilot.ingest import ingest
+from paperpilot.ingest import read_meta
 from paperpilot.tools import llm
 
 WEB_DIR = Path(__file__).resolve().parent
@@ -136,14 +142,20 @@ async def ask_question(body: AskBody) -> JSONResponse:
 
 @app.post("/api/report")
 async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
-    """上传 PDF → ingest（MinerU 检索解析 + pymupdf 报告）→ report JSON。
+    """上传 PDF → **提交后台 job**（`202` 立即返回 job_id）。
+
+    产物就绪后用 `GET /api/report/{name}` 取报告；进度/取消/重试见 `/api/job/*`。
 
     **按内容判定落点**（2026-09-13 审查项 2，见 `plan_upload`）：
-      · 同名同内容 → 幂等复用已有产物（不写盘）；
+      · 同名同内容 → 幂等复用已有产物（不写盘、不排 job，直接回报告 JSON）；
       · 同名**不同内容** → 另存为 `<stem>__<sha8>.pdf` 当新论文处理（原文件不动）。
     旧实现只按文件名判断（"名字存在 + 有缓存"就直接回缓存），会把**别篇论文**的报告
     返回给用户；现在绝不发生。
     不覆盖已有文件这一点保留：避免 Windows 下文件被 WPS/阅读器占用导致 Permission denied。
+
+    **为什么不再同步跑**（2026-09-13）：摄取是**分钟级**任务（MinerU + 报告链），
+    挂在 HTTP 请求里会让用户全程干等，且阻塞调用会占住事件循环（其他请求一起排队）。
+    现在提交即返回，worker 后台并行跑，前端轮询进度。
     """
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="仅支持 .pdf 文件")
@@ -157,14 +169,13 @@ async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
     plan = plan_upload(_safe_pdf_name(file.filename), raw)
     name = str(plan["name"])
     dest: Path = plan["path"]
-    stem = dest.stem
-    report_cache = ROOT / "assets/artifacts/out_views" / f"{stem}.report.json"
 
-    if plan["reuse"] and report_cache.exists():
-        try:                                   # 同内容：直接回已有产物（幂等，不写盘）
-            payload = json.loads(report_cache.read_text(encoding="utf-8"))
-            payload["upload_note"] = "同名同内容：复用已有产物（幂等）"
-            return JSONResponse(payload)
+    if plan["reuse"]:
+        try:                     # 同内容：产物已在 → 秒回（不写盘、不排 job）
+            payload = _report_payload(name)
+            if payload is not None:
+                payload["upload_note"] = "同名同内容：复用已有产物（幂等）"
+                return JSONResponse(payload)
         except Exception:  # noqa: BLE001  缓存损坏则走正常流程
             pass
 
@@ -186,30 +197,114 @@ async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
             status_code=500,
             detail="LLM 未配置：请先复制 .env.example 为 .env 并填写。",
         )
+
+    # **立即返回**：同一篇已有未结束 job 时 worker 会复用它（不重复排队）。
+    job = worker.submit(name, note=plan["note"])
+    return JSONResponse(_job_view(job), status_code=202)
+
+
+# ───────────── 任务状态 / 取消 / 重试 / 取报告 ─────────────
+
+
+def _job_view(j: dict[str, Any]) -> dict[str, Any]:
+    """job → 前端用的精简视图（含阶段文案与各阶段耗时）。"""
+    status = str(j.get("status") or "")
+    return {
+        "job_id": j.get("job_id", ""),
+        "pdf": j.get("pdf", ""),
+        "status": status,
+        "ready": status == jobs.STATUS_READY,
+        "failed": status == jobs.STATUS_FAILED,
+        "cancelled": status == jobs.STATUS_CANCELLED,
+        "stage": j.get("stage", ""),
+        "stage_label": jobs.stage_label(str(j.get("stage") or "")),
+        "stages": j.get("stages") or {},
+        "created_at": j.get("created_at", ""),
+        "started_at": j.get("started_at", ""),
+        "finished_at": j.get("finished_at", ""),
+        "elapsed": j.get("elapsed") or 0.0,
+        "attempt": j.get("attempt") or 1,
+        "error": j.get("error") or "",
+        "note": j.get("note") or "",
+    }
+
+
+def _report_payload(name: str) -> dict[str, Any] | None:
+    """读 `<stem>.report.json` 并补上**必须让用户看到**的提示（不静默）。
+
+    - `upload_note`：同名不同内容 → 已另存为新论文（来自最近 job）；
+    - `mineru_warning`：版面解析失败 → 问答不可用但报告可用。
+    """
+    stem = Path(_safe_pdf_name(name)).stem
+    p = ROOT / "assets/artifacts/out_views" / f"{stem}.report.json"
+    if not p.exists():
+        return None
     try:
-        # 摄取全链：MinerU（检索用）→ 报告（pymupdf）。MinerU 失败不影响报告，
-        # 但会落 ingest.json，问答侧据此明确拒绝并说明原因。
-        res = ingest(name, verbose=False)
-        report = res["report"]
-        payload = json.loads(report.model_dump_json())
-        m = (res["meta"].get("mineru") or {})
-        if m.get("status") == "failed":
-            payload["mineru_warning"] = (
-                "版面解析（MinerU）失败，问答将不可用；报告已正常生成。"
-                f"原因：{str(m.get('reason') or '')[:200]}")
-        if plan["note"]:
-            # 同名不同内容 → 已另存为新论文；把这件事明确告诉用户（不静默）
-            payload["upload_note"] = plan["note"]
-    except HTTPException:
-        raise
-    except Exception as e:  # noqa: BLE001
-        import traceback
-        print("=" * 60)
-        print(f"[upload_report] {name} 生成失败，traceback：")
-        traceback.print_exc()
-        print("=" * 60)
-        raise HTTPException(status_code=500, detail=f"生成失败: {e}") from e
+        payload = json.loads(p.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001  损坏当没有（前端会提示重试）
+        return None
+    m = (read_meta(stem) or {}).get("mineru") or {}
+    if str(m.get("status")) == "failed":
+        payload["mineru_warning"] = (
+            "版面解析（MinerU）失败，问答将不可用；报告已正常生成。"
+            f"原因：{str(m.get('reason') or '')[:200]}")
+    j = jobs.latest(name)
+    if j and j.get("note"):
+        payload["upload_note"] = j["note"]
+    if j:
+        payload["job"] = {"job_id": j.get("job_id"), "elapsed": j.get("elapsed") or 0.0,
+                          "stages": j.get("stages") or {}}
+    return payload
+
+
+@app.get("/api/report/{name}")
+async def get_report(name: str) -> JSONResponse:
+    """job ready 后取报告 JSON（含 upload_note / mineru_warning / 各阶段耗时）。"""
+    payload = _report_payload(name)
+    if payload is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"报告尚未生成：{_safe_pdf_name(name)}（若正在解析，请轮询 /api/job）")
     return JSONResponse(payload)
+
+
+@app.get("/api/job/{job_id}")
+async def job_status(job_id: str) -> JSONResponse:
+    """任务状态（前端轮询用）：status / stage / stages（每阶段耗时）/ error。"""
+    j = jobs.load(job_id)
+    if j is None:
+        raise HTTPException(status_code=404, detail=f"任务不存在: {job_id}")
+    return JSONResponse(_job_view(j))
+
+
+@app.get("/api/jobs/latest")
+async def job_latest(pdf: str) -> JSONResponse:
+    """该论文最近一次任务（刷新页面后用它恢复进度显示）。"""
+    j = jobs.latest(pdf)
+    if j is None:
+        raise HTTPException(status_code=404, detail=f"该论文暂无摄取任务: {pdf}")
+    return JSONResponse(_job_view(j))
+
+
+@app.post("/api/job/{job_id}/cancel")
+async def job_cancel(job_id: str) -> JSONResponse:
+    """请求取消：立即置信号，worker 在**阶段边界**响应（MinerU 会真终止子进程）。"""
+    if jobs.load(job_id) is None:
+        raise HTTPException(status_code=404, detail=f"任务不存在: {job_id}")
+    j = jobs.request_cancel(job_id)
+    return JSONResponse(_job_view(j or {}))
+
+
+@app.post("/api/job/{job_id}/retry")
+async def job_retry(job_id: str) -> JSONResponse:
+    """重试：重新排一个 job（摄取幂等 + 分阶段缓存 → 已完成的阶段秒过）。"""
+    old = jobs.load(job_id)
+    if old is None:
+        raise HTTPException(status_code=404, detail=f"任务不存在: {job_id}")
+    j = worker.retry(job_id)
+    if j is None:
+        raise HTTPException(status_code=409, detail="无法重试（任务仍在运行或论文已删除）")
+    return JSONResponse(_job_view(j), status_code=202)
 
 
 if __name__ == "__main__":

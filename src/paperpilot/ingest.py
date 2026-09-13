@@ -139,6 +139,17 @@ def qa_blocked_reason(pdf_name: str) -> str:
     """
     if pdf_name.startswith("qasper_") and pdf_name.endswith(".qpdf"):
         return ""          # QASPER 无 PDF，本就不走 MinerU
+    # 后台摄取**进行中**（2026-09-13 异步化）：明确告知稍候，前端会自动刷新进度。
+    # 与"失败"区分开：这不是错误，产物马上就好。
+    try:
+        from paperpilot import jobs
+        act = jobs.find_active(pdf_name)
+        if act is not None:
+            return ("问答暂不可用：本篇正在后台解析（"
+                    f"{jobs.stage_label(str(act.get('stage') or ''))}）。"
+                    "报告与问答就绪后页面会自动更新，请稍候片刻再问。")
+    except Exception:  # noqa: BLE001  状态查不到不影响放行判定
+        pass
     meta = read_meta(Path(pdf_name).stem)
     if not meta:
         return ""
@@ -155,10 +166,14 @@ def qa_blocked_reason(pdf_name: str) -> str:
 
 
 def run_mineru(pdf_name: str, *, timeout: int | None = None,
-               force: bool = False) -> dict[str, Any]:
+               force: bool = False, cancel: Any = None) -> dict[str, Any]:
     """对 assets/papers/<pdf_name> 跑 MinerU，产物落 out_mineru/<stem>/。
 
-    Returns: {"status": "ok"|"failed"|"skipped", "reason": str, "seconds": float}
+    Args:
+        cancel: 可选 `threading.Event`——置位后**终止子进程**并返回 status="cancelled"。
+            用 `Popen` + 分段等待实现（`subprocess.run` 无法中途取消）。
+
+    Returns: {"status": "ok"|"failed"|"skipped"|"cancelled", "reason": str, "seconds": float}
     """
     stem = Path(pdf_name).stem
     pdf = PAPERS_DIR / pdf_name
@@ -187,24 +202,57 @@ def run_mineru(pdf_name: str, *, timeout: int | None = None,
                     "reused": True, "version": cur_ver}
 
     t0 = time.time()
+    limit = float(timeout or MINERU_TIMEOUT)
     try:
-        proc = subprocess.run(
+        proc = subprocess.Popen(
             [mineru_cmd() or "", "-p", str(pdf), "-o", str(outdir),
              "-b", MINERU_BACKEND],
-            capture_output=True, text=True,
-            timeout=timeout or MINERU_TIMEOUT)
-    except subprocess.TimeoutExpired:
-        return {"status": "failed",
-                "reason": f"MinerU 超时（>{timeout or MINERU_TIMEOUT}s；"
-                          f"可调 PAPERPILOT_MINERU_TIMEOUT）",
-                "seconds": round(time.time() - t0, 1)}
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     except Exception as e:  # noqa: BLE001
         return {"status": "failed", "reason": f"MinerU 启动失败：{type(e).__name__}: {e}",
                 "seconds": round(time.time() - t0, 1)}
+
+    # **可取消**：分段等待（`communicate` 超时后可再次调用继续读），每轮检查取消信号
+    # 与总超时 → 真 terminate/kill 子进程。`subprocess.run` 做不到中途取消
+    # （后台 job 的"取消"按钮 + 别让分钟级任务无法中断，2026-09-13）。
+    out_s = err_s = ""
+    timed_out = cancelled = False
+    try:
+        while True:
+            if cancel is not None and cancel.is_set():
+                cancelled = True
+                break
+            left = limit - (time.time() - t0)
+            if left <= 0:
+                timed_out = True
+                break
+            try:
+                out_s, err_s = proc.communicate(timeout=min(5.0, left))
+                break
+            except subprocess.TimeoutExpired:
+                continue
+    finally:
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                try:
+                    proc.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    pass
     secs = round(time.time() - t0, 1)
 
+    if cancelled:
+        return {"status": "cancelled", "reason": "已取消（MinerU 子进程已终止）",
+                "seconds": secs}
+    if timed_out:
+        return {"status": "failed",
+                "reason": f"MinerU 超时（>{int(limit)}s；可调 PAPERPILOT_MINERU_TIMEOUT）",
+                "seconds": secs}
     if proc.returncode != 0:
-        tail = (proc.stderr or proc.stdout or "").strip()[-400:]
+        tail = (err_s or out_s or "").strip()[-400:]
         return {"status": "failed",
                 "reason": f"MinerU 退出码 {proc.returncode}（多见于无 GPU/显存不足）。"
                           f"尾部输出：{tail}",

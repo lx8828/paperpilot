@@ -115,6 +115,9 @@
   .busy::before { content:""; display:inline-block; width:11px; height:11px; margin-right:8px;
     border:2px solid #d6d9de; border-top-color:var(--accent); border-radius:50%;
     animation:sp .9s linear infinite; vertical-align:-1px; }
+  .mini { margin-left:6px; padding:1px 8px; font-size:12px; cursor:pointer;
+    border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--fg); }
+  .mini:hover { background:#f2eee6; }
   @keyframes sp { to { transform:rotate(360deg); } }
   .scr { scroll-margin-top:8px; }
   ::-webkit-scrollbar{width:9px;height:9px} ::-webkit-scrollbar-thumb{background:#c6cad1;border-radius:5px}
@@ -420,29 +423,125 @@ async function highlightOn(w,p,evidence){
 }
 function norm(s){return String(s||'').replace(/\s+/g,' ').replace(/[’‘“”]/g,' ').trim();}
 
-// ───────── 上传 ─────────
+// ───────── 上传（**异步 job**：提交 → 轮询进度 → 取报告）─────────
+// 后端不再把分钟级摄取挂在 HTTP 请求里：POST 立即返回 job_id，
+// 这里轮询 /api/job/{id} 展示阶段与耗时，ready 后再取 /api/report/{pdf}。
+const JOB_KEY='pp_job';
+const REPORT_STAGES=6;   // claims / view / skeleton / figures / report_text / assemble
+function jobRemember(pdf,jobId){try{localStorage.setItem(JOB_KEY,JSON.stringify({pdf:pdf,jobId:jobId}));}catch(e){}}
+function jobForget(){try{localStorage.removeItem(JOB_KEY);}catch(e){}}
+function fmtSecs(s){s=Math.max(0,Math.round(s||0));return s<60?s+'s':Math.floor(s/60)+'m'+(s%60)+'s';}
+function stageTxt(j){
+  const st=j.stages||{};
+  const done=Object.keys(st).filter(k=>k.indexOf('report:')===0&&st[k].status==='ok').length;
+  let s=j.stage_label||'处理中…';
+  if(String(j.stage||'').indexOf('report:')===0&&done) s+='（'+done+'/'+REPORT_STAGES+'）';
+  return s;
+}
+// 各阶段耗时（失败/取消后也展示，便于判断卡在哪一步）
+function stagesHtml(j){
+  const st=j.stages||{}, ks=Object.keys(st);
+  if(!ks.length) return '';
+  return '<div class="flow">'+ks.map(k=>esc(k.replace('report:',''))+' '+esc(fmtSecs(st[k].seconds))).join(' · ')+'</div>';
+}
+function showReport(data,quiet){
+  S.pdf=data.pdf; S.report=data; S.pdfDoc=null; S.pdfReady=false;
+  pdfPromise=null; lastAsk=null; chat.length=0;
+  $('docname').textContent=(data.title||data.pdf)+' · '+data.pdf;
+  $('rpv').innerHTML=''; $('pdfv').innerHTML='';
+  buildNav(data); showView('report'); renderReport(data);
+  // 后端提示必须让用户看到：① 同名不同内容 → 已另存为新论文（upload_note）；
+  // ② MinerU 失败 → 问答不可用但报告可用（mineru_warning）。都不静默。
+  if(data.upload_note) addMsg('ai',`<span style="color:#a86200">📌 ${esc(data.upload_note)}</span>`);
+  if(data.mineru_warning) addMsg('ai',`<span style="color:var(--bad)">⚠ ${esc(data.mineru_warning)}</span>`);
+  if(!quiet){
+    addMsg('ai','✅ 报告已生成（问答可用）。左边看结构、中间读原文/报告、右侧可以开始提问了。');
+    $qin.focus();
+  }
+}
+async function fetchReport(pdf){
+  const r=await fetch('/api/report/'+encodeURIComponent(pdf));
+  const data=await r.json();
+  if(!r.ok) throw new Error(data.detail||r.statusText);
+  return data;
+}
+async function pollJob(jobId){
+  const box=busy('ai','已提交后台任务…');
+  for(;;){
+    let j;
+    try{
+      const r=await fetch('/api/job/'+encodeURIComponent(jobId));
+      j=await r.json();
+      if(!r.ok) throw new Error(j.detail||r.statusText);
+    }catch(e){ box.remove(); addMsg('ai',`<span style="color:var(--bad)">进度查询失败：${esc(e.message)}</span>`); return; }
+    jobRemember(j.pdf,jobId);
+    if(j.ready){
+      box.remove(); jobForget();
+      try{ showReport(await fetchReport(j.pdf)); }
+      catch(e){ addMsg('ai',`<span style="color:var(--bad)">报告读取失败：${esc(e.message)}</span>`); }
+      return;
+    }
+    if(j.failed||j.cancelled){          // 终态：显示原因 + 阶段耗时 + 重试
+      box.remove(); jobForget();
+      addMsg('ai',`<span style="color:var(--bad)">${j.cancelled?'已取消':'生成失败'}：${esc(j.error||'未知原因')}</span>`
+        +stagesHtml(j)+` <button class="mini" data-retry="${esc(jobId)}">重试</button>`);
+      return;
+    }
+    box.innerHTML='<span class="busy"></span>'+esc(stageTxt(j))
+      +` <span class="muted">已用 ${esc(fmtSecs(j.elapsed))}</span>`
+      +`<button class="mini" data-cancel="${esc(jobId)}">取消</button>`;
+  }
+}
+async function cancelJob(id){
+  try{
+    const r=await fetch('/api/job/'+encodeURIComponent(id)+'/cancel',{method:'POST'});
+    const j=await r.json();
+    addMsg('ai',r.ok?'已请求取消：当前阶段结束后停止（已完成阶段的产物会保留）。'
+                    :`取消失败：${esc(j.detail||r.statusText)}`);
+  }catch(e){ addMsg('ai',`取消失败：${esc(e.message)}`); }
+  // 不另起轮询：正在跑的那个循环会看到 cancelled 并展示终态
+}
+async function retryJob(id){
+  try{
+    const r=await fetch('/api/job/'+encodeURIComponent(id)+'/retry',{method:'POST'});
+    const j=await r.json();
+    if(!r.ok) throw new Error(j.detail||r.statusText);
+    addMsg('ai','已重试（已完成的阶段会直接复用，通常快很多）…');
+    pollJob(j.job_id);
+  }catch(e){ addMsg('ai',`重试失败：${esc(e.message)}`); }
+}
 async function upload(f){
   if(!f||!/\.pdf$/i.test(f.name)){alert('仅支持 .pdf');return;}
   addMsg('user','📎 '+f.name);
-  const b=busy('ai','正在生成报告（新论文首次需 1~3 分钟；已有产物秒回）…');
+  const b=busy('ai','上传中…');
   const fd=new FormData(); fd.append('file',f);
   try{
     const res=await fetch('/api/report',{method:'POST',body:fd});
     const data=await res.json();
-    b.remove();
     if(!res.ok) throw new Error(data.detail||res.statusText);
-    S.pdf=data.pdf; S.report=data; S.pdfDoc=null; S.pdfReady=false;
-    pdfPromise=null; lastAsk=null; chat.length=0;
-    $('docname').textContent=(data.title||data.pdf)+' · '+data.pdf;
-    $('rpv').innerHTML=''; $('pdfv').innerHTML='';
-    buildNav(data); showView('report'); renderReport(data);
-    addMsg('ai','✅ 报告已生成。左边看结构、中间读原文/报告、右侧可以开始提问了。');
-    // 后端提示必须让用户看到：① 同名不同内容 → 已另存为新论文（upload_note）；
-    // ② MinerU 失败 → 问答不可用但报告可用（mineru_warning）。都不静默。
-    if(data.upload_note) addMsg('ai',`<span style="color:#a86200">📌 ${esc(data.upload_note)}</span>`);
-    if(data.mineru_warning) addMsg('ai',`<span style="color:var(--bad)">⚠ ${esc(data.mineru_warning)}</span>`);
-    $qin.focus();
-  }catch(e){ b.remove(); addMsg('ai',`<span style="color:var(--bad)">生成失败：${esc(e.message)}</span>`); }
+    b.remove();
+    if(data.job_id){                    // 202：后台任务已受理
+      jobRemember(data.pdf||f.name,data.job_id);
+      addMsg('ai','已提交后台任务：版面解析（MinerU）与报告生成**并行**进行，'
+        +'进度实时更新（可随时取消）。');
+      pollJob(data.job_id);
+    }else{                              // 幂等秒回：同名同内容，产物已在
+      showReport(data);
+    }
+  }catch(e){ b.remove(); addMsg('ai',`<span style="color:var(--bad)">上传失败：${esc(e.message)}</span>`); }
+}
+// 刷新页面后恢复：产物在就直接渲染；否则看 job 是否还在跑
+async function resumeJob(){
+  let saved=null;
+  try{ saved=JSON.parse(localStorage.getItem(JOB_KEY)||'null'); }catch(e){}
+  if(!saved||!saved.pdf) return;
+  try{ showReport(await fetchReport(saved.pdf),true); return; }catch(e){}
+  try{
+    const r=await fetch('/api/job/'+encodeURIComponent(saved.jobId||''));
+    const j=await r.json();
+    if(r.ok&&(j.status==='queued'||j.status==='running')){ pollJob(saved.jobId); }
+    else{ jobForget(); }
+  }catch(e){ jobForget(); }
 }
 
 // ───────── 问答（多轮 history）────────
@@ -526,8 +625,10 @@ $nav.addEventListener('click',e=>{
   const s=e.target.closest('[data-scroll]'); if(s){showView('report');
     requestAnimationFrame(()=>scrollTo(s.dataset.scroll));return;}});
 $msgs.addEventListener('click',e=>{
-  const c=e.target.closest('[data-cite]'); if(c) jumpCite(+c.dataset.cite);});
-window.addEventListener('load',()=>{ $qin.focus(); });
+  const c=e.target.closest('[data-cite]'); if(c) jumpCite(+c.dataset.cite);
+  const x=e.target.closest('[data-cancel]'); if(x) cancelJob(x.dataset.cancel);
+  const rt=e.target.closest('[data-retry]'); if(rt) retryJob(rt.dataset.retry);});
+window.addEventListener('load',()=>{ $qin.focus(); resumeJob(); });
 </script>
 </body>
 </html>

@@ -660,3 +660,104 @@ uv run python web/app.py                   # 开发服务器（上传 → 报告
 流水线侧 `[identity] … → 整链重建产物` 且 `--skip-llm` 被拒；web 侧"未返回旧报告 / 已另存新名 /
 原文件未改动"。回归：QASPER 虚拟名问答正常、三个自测全绿、`compileall` 0 错。
 **未做（B 档）**：产物内容寻址目录（`by_hash/<sha12>/`），成本/收益比不划算。
+
+---
+
+## 2026-09-13 · 摄取异步化：分钟级任务不再挂在 HTTP 请求里（job + worker）
+
+**问题**：`POST /api/report` 原先**同步**跑完整条摄取链（MinerU + 报告链，分钟级）：
+用户全程干等、**前端只有一个 await 没有任何进度**、无法取消/重试；而且阻塞调用跑在
+`async def` 处理函数里 → **占住事件循环**，同一时间别的请求（别的标签页）全部排队。
+
+**先想清楚"该不该上 Kafka"→ 不该**：Kafka 解决"多生产者/多消费者/高吞吐/可重放/跨服务解耦"，
+我们这里是**单机、单消费者、受 GPU+LLM 限速、每分钟最多几篇**，四条一条不沾；
+且**Kafka 不会让分钟级变快**（它只搬运事件，瓶颈在 MinerU 推理与 LLM 往返）。
+→ 选 `ThreadPoolExecutor` + job 状态落盘；真要跨机时再换 RQ/Celery（接口不变），Kafka 排最后。
+
+**并行的依据（不凭感觉，先核实依赖）**：
+`current_source()` 实测 = `pymupdf`（`PAPERPILOT_USE_MINERU` 未设）→ **报告链读 pymupdf**、
+MinerU 产物只经 `retrieval_chunks` 注入**检索视图** → 两条路**互不依赖，可真并行**；
+一旦 `PAPERPILOT_USE_MINERU=1`（整链同源 MinerU），worker 自动退回串行。
+**索引（cvec）必须在 MinerU 之后**（表块要先注入检索视图才能 encode）→ 两条 lane 完成后收口。
+并发模型刻意保守：**job 之间串行**（`max_workers=1`，只有一块 GPU，两篇同跑抢显存）、
+**job 内部并行**（`max_workers=2`：MinerU 吃 GPU、报告链吃 API 往返，互补）。
+
+**实现**（约 350 行，不动检索/报告算法）：
+- 新增 `src/paperpilot/jobs.py`：job 状态**落盘**（`assets/artifacts/out_jobs/<job_id>.json`）、
+  取消信号（`threading.Event`）、`recover_interrupted()`（重启后把 `queued/running` 标成中断并可重试）；
+- 新增 `src/paperpilot/worker.py`：`_lane_mineru ∥ _lane_report → _lane_index`，
+  per-stage 耗时（`on_stage` 回调在阶段边界打点）、协作式取消（阶段边界检查 + MinerU 真 terminate）；
+- `pipeline.process_pdf(on_stage=…)`：新增阶段回调（用于计时 + 取消）；
+- `ingest.run_mineru(cancel=…)`：`subprocess.run` → **`Popen` + 分段等待**（`run` 无法中途取消）；
+  `qa_blocked_reason` 增加 **`running`** 分支（"正在后台解析，请稍候"，与"失败"区分）；
+- `web/app.py`：`POST /api/report` → **202 + job_id**；`GET /api/job/{id}`、`GET /api/jobs/latest?pdf=`、
+  `POST /api/job/{id}/cancel|retry`、`GET /api/report/{name}`；
+- 前端：**轮询**（2s 级）显示阶段与已用时长 + 取消/重试按钮 + `localStorage` 刷新恢复。
+
+**踩到的两个坑（都会让用户"永远转圈"，比报错更糟）**：
+1. **Windows `os.replace` 会因"目标正被读"失败（WinError 5）**——CPython 打开文件不带
+   `FILE_SHARE_DELETE`，而我们自己的轮询正在读同一个 job 文件 → 一次写失败就足以让状态**永远停在 queued**
+   （首轮自测就是这样卡住的）。修：`save()` 重试 12 次（指数退避）+ 非原子直写兜底。
+2. **`ThreadPoolExecutor` 会静默吞掉 job 函数抛出的异常** → 加了 `fut.add_done_callback(_guard)`：
+   只要 job 还在 `queued/running` 而 future 有异常，就落成 `failed`（带异常名与信息），
+   并确保 `_run_job` 的**整段**都在 try 里（连最初的落盘也不例外）。
+
+**验收**（临时冒烟，测完已清理）：
+① 模块级：提交 → 轮询 → `ready`；预置取消信号 → `cancelled`；`retry` → 新 job → `ready`；
+② **HTTP 端到端**（同进程起 uvicorn，独立端口）：`/` 200、同内容上传**秒回报告**（不排 job）、
+`/api/report/{name}` 200、`retry` **202** → 轮询到 `ready`（各阶段耗时齐全）、`cancel` → `cancelled`、
+不存在的 job/报告 404。缓存命中的论文 **1.5s 走完**（真实首次仍是分钟级，但现在有进度可看、可取消）。
+
+**代价与约束**：worker 是**单进程内**的（多进程部署会各跑一份，需换 RQ/Celery）；跨进程取消不支持；
+索引首次构建仍要 encode（表文本改动会触发 cvec 重建）。
+**未做**：SSE 推送（现为轮询，够用）、多 worker、任务优先级/限流。
+
+---
+
+## 2026-09-13 · 工程测试补齐：一条命令 / 离线 / 可上 CI（124 用例，2.8s）
+
+**审查意见**：QA 文件与研究性评测很丰富，但**工程测试不足**。要求：30~50 单元 + 5~10 API 集成 +
+1 个 mock LLM 端到端 + 缓存命中/失效 + 越界/零引用/坏 JSON/超长输入 + 一个 GitHub Actions；
+**别人一条命令、5 分钟内得到确定结果、不依赖真实 API Key**。
+
+**先纠正一个概念**（否则会白忙）：CI **不需要准备机器**——GitHub 给的是**全新 Ubuntu runner**，
+与你本机无关。真正的工作量在**把外部依赖做成替身**，否则别人 clone 下来跑不动。
+
+**做法**：`tests/`（7 个文件）+ `conftest.py` 的 6 个 fixture：
+
+| fixture | 替掉了什么 | 关键点 |
+|---|---|---|
+| `fake_llm` | LLM 与裁判模型 | 打在最底层 **`llm._chat`** → `chat_json/chat_text/judge_json` 与闸门体检全部自动跟随；按 system prompt 路由到固定响应 |
+| `fake_embed` | bge-m3 向量 | **词袋哈希**（MD5 分桶 + 归一化）：词重叠→余弦高，跨平台稳定（不用 `hash()`，避免随机化） |
+| `fake_mineru` + `fake_mineru_env` | MinerU（GPU） | 假 `*_content_list.json` + 假装"可用" → 走**真实**复用分支（版本比对/产物校验/meta 落盘） |
+| `tiny_pdf` | 真实论文语料 | pymupdf **现场生成**小 PDF（真解析，但无模型） |
+| `tmp_assets` | `assets/**` 全部路径 | 14 个模块常量全部 monkeypatch 到 `tmp_path`（**不碰真实论文/产物**） |
+| `isolate`（autouse） | 环境与网络 | 清 20 个 env 键 + `urlopen` 换成"一用就炸"（漏替身会**明确失败**，而不是偶发联网成功） |
+
+**覆盖**：124 个用例 = 单元/边界 ~75（表块函数/口径/LLM 解析/闸门）+ 状态机与取消重试 15 +
+缓存命中失效 12（含 cvec 指纹、`ordered_chunks` 按文件版本失效）+ API 集成 13 + **mock LLM 端到端 3**
+（上传→后台 job→报告→提问→带 `[n]` 引用的答案，其余全走真实代码）。
+一条命令：`uv run pytest -q` → **124 passed, 2.8s**（本地；CI 含装依赖约 1~2 分钟）。
+需要真模型的用例打 `@pytest.mark.local`，默认 `-m 'not local'` 跳过 → **无 key 也是全绿**。
+
+**迁移而非备份**：把 3 个旧自测（`_selftest_tables` / `_selftest_validator` / `_selftest_identity`）
+搬进 pytest 后**删掉旧脚本**——两份断言并存必然漂移（本项目的"27% 被自己匹配器夸大"就是同类教训）。
+
+**踩到的三个坑（都会让 CI 变成"看运气"或"永远红"）**：
+1. **`web/app.py` 导入时 `llm._load_dotenv()` 会灌入本机 `.env`（含真 key）** → `is_configured()`
+   在**我机器上**是 True、在 CI 上是 False → 同一个测试两处结果不同。修：测试里禁掉该调用 +
+   每个用例清 LLM/JUDGE env 键。
+2. **用 `spec_from_file_location` 加载 `app.py` 却没注册 `sys.modules`** → pydantic 解析注解失败
+   （`PydanticUserError: AskBody is not fully defined`）→ 注册 `sys.modules[name]` + `model_rebuild()`。
+3. `pymupdf` **不允许原地覆盖保存**（`save to original must be incremental`）→ 涉及"同名换 PDF"的
+   测试改成"写临时文件 + `replace`"（这也更贴近真实的"用户覆盖了文件"）。
+
+**CI**：`.github/workflows/ci.yml` —— `uv sync --dev --no-install-package sentence-transformers`
+（`embedder` 里是**懒加载**，测试不导入它 → 连 torch 一起不装，省几分钟）+ `compileall` 语法门禁 +
+`uv run pytest -q`。**不设任何 secret**。该 flag 已在本机 uv 0.12.5 用 `--dry-run` 验证。
+
+**分工（不要混）**：CI 判**对错**（离线、确定、免费）；`qa/` 下那批评测判**高低**（真模型、有噪声、
+要钱）。"不依赖真实 API Key"这条要求的本质，就是把这两类切开。
+
+**遗留**：`-m local` 目前只有 1 个真实模型用例（闸门体检）——以后可把 QASPER 定向冒烟接进来；
+`qa/**/_*.py` 里还有一批复算脚本（口径/分母/覆盖率），它们是**评测工具**、不是单测，继续保持原样。

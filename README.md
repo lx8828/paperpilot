@@ -83,7 +83,7 @@ git clone <repo-url> && cd paperpilot
 uv sync                       # 安装依赖（pyproject.toml + uv.lock）
 ```
 
-论文 PDF 放 **`assets/papers/`**；产物落在 **`assets/artifacts/`**（`out_claims` / `out_views` / `out_mineru`，均不入库）。
+论文 PDF 放 **`assets/papers/`**；产物落在 **`assets/artifacts/`**（`out_claims` / `out_views` / `out_mineru` / `out_jobs`，均不入库）。
 
 ### 2) 配置 LLM
 
@@ -104,8 +104,21 @@ PAPERPILOT_LLM_TIMEOUT=120
 uv run python web/app.py      # 或 .venv\Scripts\python.exe web\app.py（Windows）
 ```
 
-打开 **http://127.0.0.1:8000** → 拖入一篇 PDF → 等报告生成（**新论文首次 1~3 分钟**，需 LLM + MinerU；
+打开 **http://127.0.0.1:8000** → 拖入一篇 PDF → 报告生成（**新论文首次数分钟**，需 LLM + MinerU；
 已有产物的论文秒回）→ 中间读报告/原文，右侧提问。
+
+**摄取是后台任务（2026-09-13 起）**：上传**立即返回**（`202 + job_id`），页面实时显示阶段与耗时，
+可**取消 / 重试**；问答在产物就绪前会被闸门明确告知"正在解析，请稍候"（不是失败）。
+
+| 接口 | 作用 |
+|---|---|
+| `POST /api/report` | 上传 → 提交后台 job（同内容重传：**幂等秒回报告**，不排任务） |
+| `GET /api/job/{id}` | 任务状态：`queued/running/ready/failed/cancelled` + 各阶段耗时 |
+| `GET /api/jobs/latest?pdf=` | 该论文最近一次任务（刷新页面后恢复进度） |
+| `POST /api/job/{id}/cancel` | 请求取消（阶段边界生效；MinerU 会真终止子进程） |
+| `POST /api/job/{id}/retry` | 重试（已完成的阶段**自动复用**，通常快很多） |
+| `GET /api/report/{name}` | 取报告 JSON（含 `upload_note` / `mineru_warning`） |
+| `POST /api/ask` | 提问（摄取未完成时明确拒答并说明原因） |
 
 ---
 
@@ -177,6 +190,22 @@ PDF ──┬─ pymupdf  ──→ 页码 / 版面 / chunk 空间 / claims 锚�
 MinerU 失败或无 GPU 时：**报告照常生成**（pymupdf 渲染 + 图表回退 pymupdf 抽取），
 **问答直接失败并说明原因**（`qa_blocked_reason()`，不静默降级）。摄取状态落 `ingest.json`（版本/时间戳，幂等）。
 
+### 摄取 job（异步，2026-09-13）
+
+```
+POST /api/report ──→ job_id（202，立即返回）
+                      │
+       worker（后台，job 之间串行 / job 内部并行）
+         ├─ MinerU（GPU）──────────┐         两路**互不依赖**（默认模式：
+         └─ 报告链（pymupdf+LLM）──┤         报告读 pymupdf，MinerU 只补检索视图）
+                                   ├─→ 向量索引（cvec，**必须在 MinerU 之后**）
+                                   └─→ ready（可问答）
+前端轮询 /api/job/{id}：显示阶段 + 各阶段耗时；可取消（阶段边界生效）/ 重试（已完成阶段复用）
+```
+
+> `PAPERPILOT_USE_MINERU=1`（整链同源 MinerU）时报告链也读 MinerU 产物 → worker 自动退回**串行**。
+> 索引放进 worker 后，"首次提问还要现建向量"这件事也提前做完了。
+
 > **论文身份 = 内容指纹（sha256），不是文件名**（2026-09-13）。
 > 产物按内容复用：换掉同名 PDF 会被识别（整链重建；`--skip-llm` 下直接报错），
 > 上传"同名但内容不同"的 PDF 会自动另存为 `<原名>__<sha8>.pdf` 当新论文处理并明确告知——
@@ -202,6 +231,8 @@ MinerU 失败或无 GPU 时：**报告照常生成**（pymupdf 渲染 + 图表�
 
 ```
 src/paperpilot/
+├── jobs.py            # 摄取任务状态：落盘/可查/可取消/可重试（out_jobs/<job_id>.json）
+├── worker.py          # 后台 worker：MinerU ∥ 报告链 → 索引收口（job 间串行、job 内并行）
 ├── ingest.py          # 摄取流水线：论文库 → MinerU(检索) → pipeline(报告) → 产物库
 ├── pipeline.py        # 报告编排层：一个 PDF → 各环节产物 → report.json（process_pdf）
 ├── tools/             # 引擎：pdf_parser/heading/chunker/analyzer/evidence/viewer/
@@ -216,7 +247,8 @@ src/paperpilot/
 └── graph/             # LangGraph 接线：qa_graph_v3.py（v3 两级是**唯一**检索链）
 web/                   # FastAPI + 前端三栏工作台（index.html）
 cli/                   # 命令行入口 + 评测工具
-qa/                    # 手写问题集 + 各轮评测报告与复算脚本
+tests/                 # pytest 测试套件（离线：假 LLM/假向量/假 MinerU；CI 跑这个）
+qa/                    # 手写问题集 + 各轮评测报告与复算脚本（质量评测，需真模型）
 bench/                 # 回归基线（baseline.json）
 assets/papers/         # 论文 PDF（不入库）
 assets/artifacts/      # 产物（不入库）
@@ -225,7 +257,56 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 
 ---
 
-## 🔬 评测与回归护栏
+## 🧪 测试与 CI
+
+**一条命令，5 分钟内出确定结果，不需要任何 API Key / GPU / 本地模型：**
+
+```bash
+uv run pytest -q        # 124 passed in ~3s（本地；CI 上含装依赖约 1~2 分钟）
+```
+
+规矩很简单，两条命令分两类事：
+
+| 命令 | 跑什么 | 需要什么 |
+|---|---|---|
+| **`uv run pytest -q`** | **离线**：纯逻辑 / 契约边界 / 状态机 / 缓存命中失效 / API / **mock LLM 端到端** | 无（CI 与"别人 clone 后自证"都用这条） |
+| `uv run pytest -q -m local` | 需要**真实模型/LLM** 的用例（真实裁判体检等） | 本地 key + 模型 |
+
+外部依赖的处理方式（这是"不需要 key"的实现）：
+
+| 依赖 | 测试里怎么处理 |
+|---|---|
+| **LLM** | `fake_llm`：替换最底层 `llm._chat`，按 prompt 返回固定结果（`chat_json/chat_text/裁判` 全自动跟随） |
+| **embedding** | `fake_embed`：确定性"词袋哈希"向量（跨平台稳定，不依赖 `hash()` 随机化） |
+| **MinerU** | 假 `content_list.json` + 假环境：走**真实**摄取代码路径（版本比对/产物校验/meta 落盘），只是不跑 GPU 子进程 |
+| **论文语料** | 现场用 pymupdf 生成小 PDF；所有 `assets/**` 路径被重定向到 `tmp_path`（**不碰真实论文与产物**） |
+| **网络** | `urllib.request.urlopen` 被换成"一用就炸"：漏了替身会**明确失败**，而不是偶发联网成功 |
+
+覆盖清单（`uv run pytest --collect-only -q` 实测，对照外部审查意见）：
+
+| 文件 | 用例 | 覆盖 |
+|---|---|---|
+| `test_tables.py` | 31 | 表块纯函数：caption 清噪（含罗马数字）、表头指纹、摘要、并集配额、按块权重、RRF |
+| `test_identity_cache.py` | 17 | 内容指纹判定（ok/stale/adopt）、**缓存命中与失效**（进程内 + 磁盘 cvec）、表格只进检索视图 |
+| `test_jobs_worker.py` | 16 | 任务状态机：阶段耗时、取消、重试、重启恢复、**异常兜底不卡死** |
+| `test_llm_client.py` | 16 | JSON 解析容错、**坏 JSON**、**超长输入**、未配置时明确报错 |
+| `test_tgt.py` | 15 | 目标表定位口径（编号 ∪ 内容）—— 所有表格类指标的尺子 |
+| `test_api.py` | 14 | API 集成：202 早返回、幂等 200、任务查询、取消/重试、404/400、拒答话术 |
+| `test_validator_offline.py` | 12 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归 |
+| `test_e2e_mock.py` | **3** | **mock LLM 端到端**：上传 → 后台 job → 报告 → 提问 → 带 `[n]` 引用的答案 |
+
+CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任何 secret**）。
+
+<!-- 推上 GitHub 后把 <用户名> 换成你的账号，并取消下面这行注释即可显示徽章 -->
+<!-- [![CI](https://github.com/<用户名>/paperpilot/actions/workflows/ci.yml/badge.svg)](https://github.com/<用户名>/paperpilot/actions/workflows/ci.yml) -->
+
+**回归纪律**：改核心逻辑后 → `uv run pytest -q`（秒级，离线）→ 再 `run_bench.py` 看产物无退化 → 最后跑定向评测。
+
+---
+
+## 🔬 评测与回归护栏（**质量**类 · 需要真实模型 / LLM）
+
+> 与上面的测试是**分工关系**：CI 判"对错"（确定、免费），这里判"高低"（有噪声、要钱）。
 
 | 命令 | 作用 |
 |---|---|
@@ -234,10 +315,7 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 | `uv run python cli/run_bench.py` | report 层回归护栏：本地重算产物与 `bench/baseline.json` 勾叉 diff（不调 LLM） |
 | `uv run python cli/run_compare.py sample/run` | 三列公平对比 harness（B0/B1/B2，见 `qa/COMPARE_DESIGN.md`） |
 | `uv run python cli/run_chunk_eval.py` / `run_retrieval_eval.py` | 分块 / 检索层专项评估 |
-| `uv run python qa/recall/_selftest_tables_20260912.py` | 表块关键函数**边界自测**（caption 清噪含罗马数字、表头/摘要、口径解析、权重） |
-| `uv run python qa/recall/_selftest_validator_20260913.py` | 闸门自测（零引用分级、格式体检、gate 动作不变回归）；`PP_LLM=1` 加测真实体检 |
 
-**回归纪律**：改核心逻辑后 → 先 `run_bench.py` 看产物无退化 → 再跑对应自测 / 定向 QA。
 本 README 的评测数字**必须带口径与日期**；单次端到端运行的 churn 在 8%~25%，
 **<3 题的效应不可判**（见 `qa/recall/UNION_AND_CONTEXT_20260911.md` §2）。
 

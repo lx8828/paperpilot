@@ -269,6 +269,7 @@ evidence 型（number/citation/unsupported）→ CRAG（缺口定向检索重答
    等于"mid → 前端标注"这条设计从未落地）。
 
 **验收**：`qa/recall/_selftest_validator_20260913.py`（机器侧 12/12；`PP_LLM=1` 加测真实格式体检）。
+（2026-09-13 迁移进 pytest 统一套件：`tests/test_validator_offline.py`；`-m local` 跑真实体检。）
 **台账**：`qa/review/RESPONSES_20260913.md`。**未做（B 档）**：按 `route` 分流
 （`global_retrieve` + 零引用 + 实质断言 → 一次 repair 强制补引用）。
 
@@ -296,6 +297,7 @@ evidence 型（number/citation/unsupported）→ CRAG（缺口定向检索重答
    并在响应里带 `upload_note` 明确告知。
 
 **验收**：`qa/review/_selftest_identity_20260913.py`（19 项全绿）+ 复现脚本转为验收脚本
+（2026-09-13 迁移进 pytest：`tests/test_identity_cache.py`，并补了缓存命中/失效与向量指纹用例）
 （两条路径均"被拒/另存"，不再静默复用）。**未做（B 档）**：产物**内容寻址**目录
 （`by_hash/<sha12>/…`）——需迁移 6900+ 产物并改所有路径构造，留待确需多版本共存时再做。
 

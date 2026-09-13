@@ -527,7 +527,7 @@ def _pdf_identity_stale(pdf_name: str) -> tuple[bool, str]:
 
 def process_pdf(pdf_name: str, *, force: bool = False,
                 skip_llm: bool = False, workers: int = 4,
-                verbose: bool = True) -> PaperReport:
+                verbose: bool = True, on_stage: Any = None) -> PaperReport:
     """一个论文源 → 报告产物 → PaperReport（并落盘 report.json）。
 
     支持两种源：
@@ -541,6 +541,9 @@ def process_pdf(pdf_name: str, *, force: bool = False,
         skip_llm: True 时只装配已有产物，缺失任一环节直接报错（不调 LLM）
         workers: claims 提取并发数
         verbose: 打印各环节进度
+        on_stage: 可选回调 `fn(阶段名:str)`，在**每个阶段开始前**调用
+            （worker 用它记录 per-stage 耗时，并在阶段边界检查取消信号）。
+            回调抛异常 → 直接中止报告链（用于协作式取消）。默认 None＝不回调。
     """
     if not is_qasper(pdf_name):
         pdf_path = PAPERS_DIR / pdf_name
@@ -585,19 +588,26 @@ def process_pdf(pdf_name: str, *, force: bool = False,
         print(f"[{pdf_name}] 装配已有产物（skip-llm）…")
         report = _assemble(pdf_name, verbose=verbose)
     else:
+        _tick = on_stage if callable(on_stage) else (lambda _n: None)
         # 1. claims 提取
+        _tick("claims")
         claims_payload = stage_claims(pdf_name, force=eff_force, workers=workers,
                                       verbose=verbose)
         # 2. 去重 / 打标 / 算分
+        _tick("view")
         groups = stage_view(pdf_name, force=eff_force, verbose=verbose)
         # 3. 论证骨架
+        _tick("skeleton")
         hubs = stage_skeleton(pdf_name, force=eff_force, verbose=verbose)
         # 4. 图表
+        _tick("figures")
         figures = stage_figures(pdf_name, force=eff_force, verbose=verbose)
         # 5. 概述 / 导读 / 报告 md
+        _tick("report_text")
         stage_report_text(pdf_name, force=eff_force, groups=groups, hubs=hubs,
                           figures=figures, verbose=verbose)
         # 6. 装配最终 report.json
+        _tick("assemble")
         report = _assemble(pdf_name, verbose=verbose)
 
     out = VIEW_DIR / f"{stem}.report.json"
