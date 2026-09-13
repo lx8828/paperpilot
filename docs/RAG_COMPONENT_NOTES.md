@@ -272,3 +272,30 @@ evidence 型（number/citation/unsupported）→ CRAG（缺口定向检索重答
 **台账**：`qa/review/RESPONSES_20260913.md`。**未做（B 档）**：按 `route` 分流
 （`global_retrieve` + 零引用 + 实质断言 → 一次 repair 强制补引用）。
 
+### 6.6 论文身份 = **内容指纹**，不是文件名（2026-09-13，外部审查修复 A+C 档）
+
+**问题**：全链路产物（claims/summary/skeleton/figures/overview/guide/report、gvec/cvec、
+`out_mineru/<stem>/`、`ingest.json`）都以 `Path(pdf).stem` 为键，**没有任何一层记内容指纹**。
+复现（`qa/review/_dupname_repro_20260913.py`）：
+- 把 `A.pdf` 换成 B 的字节（文件名不变）→ **解析层读 B、产物层给 A** → 状态混合、无告警；
+- web `/api/report` 上传"文件名=A、内容=B" → **返回 A 的旧报告且不写盘**（用户拿到别篇论文）。
+- **评测测不到**：QASPER 走虚拟名 `qasper_<pid>.qpdf`，身份由数据集给定，不存在"同名不同内容"。
+
+**改法（A + C）**：
+1. 新增 `paperpilot/paper_identity.py`：`fingerprint()`（sha256+size+mtime_ns，带缓存）、
+   `check()` → `ok / stale / adopt / unknown`、`strict()`（`PAPERPILOT_PDF_ID_STRICT=1`）。
+2. `pipeline.process_pdf` 与 `ingest` 各加**身份门**：stale → 整链重建；`--skip-llm` 下**直接报错**
+   （不允许用不属于这份 PDF 的产物装配）；`run_mineru` 同样校验，同名换内容时 MinerU 也会重跑。
+3. **历史产物迁移**（关键，避免一次性废库）：无指纹记录时按 **mtime 关系**判定——
+   产物比 PDF 新 → **收编**并**补写指纹**（之后严格 sha 比对）；PDF 比产物新 → 判 stale。
+   全库实测（66 篇）：32 篇收编 / 34 篇无产物 / **0 篇被迫重建** → 零爆炸半径。
+4. `document_cache` 的进程内 `lru_cache` 键加入**文件版本**（`size:mtime_ns`）：
+   同进程内换文件不再返回旧解析；同时保留 `ordered_chunks.cache_clear()` 等兼容属性。
+5. **web 上传按内容判定落点**（`web.plan_upload`）：同名同内容 → 幂等复用；
+   同名**不同内容** → 另存为 `<stem>__<sha8>.pdf` 当**新论文**（原文件一个字节不动），
+   并在响应里带 `upload_note` 明确告知。
+
+**验收**：`qa/review/_selftest_identity_20260913.py`（19 项全绿）+ 复现脚本转为验收脚本
+（两条路径均"被拒/另存"，不再静默复用）。**未做（B 档）**：产物**内容寻址**目录
+（`by_hash/<sha12>/…`）——需迁移 6900+ 产物并改所有路径构造，留待确需多版本共存时再做。
+

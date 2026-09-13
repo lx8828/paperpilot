@@ -154,6 +154,7 @@ uv run python cli/run_view.py <pdf名>        # 装配视图 / 产物检查
 | `PAPERPILOT_RETRIEVE_SECTION_CAP` | `0` | 保序节级配额去重（>0 开启） |
 | `PAPERPILOT_VALIDATOR_REPAIR_MID` | 关 | mid 级问题是否也触发修复（默认只标注不修） |
 | `PAPERPILOT_VALIDATOR_MISSING` | 关 | 是否提示"原文可能还有未答要点"（好答案上误报多，默认关） |
+| `PAPERPILOT_PDF_ID_STRICT` | 关 | 论文身份按**内容指纹**校验；默认对**历史产物**（无指纹记录）按 mtime 收编并补写指纹，`=1` 时连收编也强制重建（存量库排雷用） |
 | `PAPERPILOT_USE_MINERU` | 关 | `=1` 走遗留"全链 MinerU"模式（chunks 直接用 MinerU） |
 | `PAPERPILOT_CHUNK_VIEW_DIR` | 空 | 向量缓存目录覆盖（A/B 两臂各用一份，避免来回覆盖重建） |
 
@@ -175,6 +176,11 @@ PDF ──┬─ pymupdf  ──→ 页码 / 版面 / chunk 空间 / claims 锚�
 
 MinerU 失败或无 GPU 时：**报告照常生成**（pymupdf 渲染 + 图表回退 pymupdf 抽取），
 **问答直接失败并说明原因**（`qa_blocked_reason()`，不静默降级）。摄取状态落 `ingest.json`（版本/时间戳，幂等）。
+
+> **论文身份 = 内容指纹（sha256），不是文件名**（2026-09-13）。
+> 产物按内容复用：换掉同名 PDF 会被识别（整链重建；`--skip-llm` 下直接报错），
+> 上传"同名但内容不同"的 PDF 会自动另存为 `<原名>__<sha8>.pdf` 当新论文处理并明确告知——
+> **不会**再出现"拿到另一篇论文的报告"。
 
 ### 问答链路（v3 两级 + 输出闸门）
 

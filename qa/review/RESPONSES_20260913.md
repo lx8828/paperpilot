@@ -54,3 +54,50 @@ HIGH 强制修复或拒答；且 `entries` 为空时（`:445`）LLM 语义检查
 
 **未做（B 档，留待定）**：按 `route` 分流——`global_retrieve` + 零引用 + 含实质断言 →
 一次 repair **强制补引用**（把准则 14 从"prompt 期望"变成"代码强制"）；`l0_answer` 仍允许零引用。
+
+---
+
+## 条目 2：文件名被当作论文身份 → 同名不同内容会**系统性**错误
+
+**审查意见**：论文文件名被当成论文身份，缓存会产生错误结果，同名 pdf 会系统性错误。
+
+### 复现（`qa/review/_dupname_repro_20260913.py`，两条路径都跑通）
+
+身份来源：`Path(pdf).stem` **贯穿全部产物**——claims / summary / skeleton / figures / overview /
+guide / report、`gvec`/`cvec`（+ `gidx`/`cidx`）、`out_mineru/<stem>/`、`ingest.json`。
+**没有任何一层记录 PDF 的内容指纹**（grep `sha256|md5|st_size|st_mtime` 只匹配到 `lru_cache(maxsize=…)`）。
+
+| 路径 | 操作 | 结果 |
+|---|---|---|
+| **流水线** | 把 `A.pdf` 换上 **B 的字节**（文件名不变） | **解析层读 B**（`chunk[0]` 变成 B 的文本）而 **claims/报告仍是 A**（`n_claims=116`、`n_groups=97` 未变）→ **状态混合**，全程无告警 |
+| **用户可见** | `/api/report` 上传"文件名=A、内容=B" | **HTTP 200 返回 A 的报告**，且**磁盘上一个字节都没写**（sha 未变）→ 用户拿到**另一篇论文**的报告 |
+
+**为什么评测没抓到**：QASPER 走虚拟名 `qasper_<pid>.qpdf`（身份由数据集给定，不存在"同名不同内容"）
+→ **只有真实上传路径受影响**，而用户文件名恰恰多是 `paper.pdf` 这类通用名。
+
+### 影响面（迁移成本估算）
+
+`out_views` **6414** 文件、`out_claims` **479** 文件、`out_mineru` **46** 目录，全部按名寻址。
+
+### 修法（三档）
+
+| 档 | 做法 | 成本 / 风险 |
+|---|---|---|
+| **A（已做）** | **内容指纹 + 读取校验**：`paper_identity` 记 `sha256/size/mtime_ns`；`pipeline` / `ingest` 加身份门 → 不一致即**失效重建**（`--skip-llm` 下直接报错，不许装配别篇产物）；`run_mineru` 同样校验。历史产物按 **mtime 关系**迁移（产物比 PDF 新 → 收编并补写指纹；PDF 更新 → 判 stale），避免一次性废库。`document_cache` 的 `lru_cache` 键加入**文件版本**（`size:mtime_ns`），防同进程内改文件读旧解析 | 已落地；全库 66 篇：32 收编 / 34 无产物 / **0 被迫重建**（零爆炸半径） |
+| **B（未做）** | 产物**内容寻址**（`by_hash/<sha12>/…`），文件名只用于展示；维护 name→hash 映射 | 大：迁移 6900+ 产物并改所有路径构造 |
+| **C（已做）** | 上传按内容判定落点：**同内容 → 幂等复用**；**不同内容 → 另存 `<stem>__<sha8>.pdf` 当新论文**（原文件不动）+ `upload_note` 明确告知 | 小 |
+
+### 处置：**A + C 已实现并验收**
+
+- 新增 `src/paperpilot/paper_identity.py`（`fingerprint` / `check` / `strict`）；
+- `pipeline._pdf_identity_stale` + `process_pdf` 身份门、`ingest` 入口校验与指纹写回、
+  `run_mineru` 校验、`document_cache` 三处缓存按文件版本失效（保留 `cache_clear` 兼容）；
+- `web.plan_upload` + `/api/report` 新落点逻辑；
+- 自测 `qa/review/_selftest_identity_20260913.py`（**19 项全绿**）；
+- 原复现脚本已转为**验收**脚本 `qa/review/_dupname_repro_20260913.py`：
+  · 流水线：`[identity] … → 整链重建产物` 且 `--skip-llm` **被拒**（不再状态混合）；
+  · web：**未返回旧报告**、另存 `2608.27843v1__89adb392.pdf`、**原文件未改动**、带提示文案。
+- 回归：QASPER 虚拟名路径不受影响（真实问答冒烟通过）；三个自测全绿；`compileall` 0 错。
+- 开关：`PAPERPILOT_PDF_ID_STRICT=1`（默认关）→ 把历史产物（`adopt`）也强制重建，用于存量库排雷。
+
+**B 档（内容寻址目录）不做**，理由如上（成本/收益比）。

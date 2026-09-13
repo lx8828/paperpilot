@@ -14,6 +14,7 @@
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -50,6 +51,33 @@ def _safe_pdf_name(name: str) -> str:
     if not base.lower().endswith(".pdf"):
         base += ".pdf"
     return base
+
+
+def plan_upload(name: str, raw: bytes) -> dict[str, Any]:
+    """这次上传**该落到哪个文件**（C 档：按内容判定，同名不同内容不再冒充同一篇）。
+
+    · 目标名不存在          → 落原名（新论文）
+    · 目标名存在 + 内容相同  → `reuse=True`：命中 `report.json` 可直接回（幂等，不写盘）
+    · 目标名存在 + 内容不同  → **另存为 `<stem>__<sha8>.pdf`**（新论文）并给出提示；
+      原文件**一个字节都不动**（既防覆盖别篇，也避开 Windows 文件占用）
+
+    背景（2026-09-13 审查项 2）：旧实现"文件名存在 + 有缓存"就直接回缓存且不写盘
+    → 上传另一篇论文但文件名相同时，用户拿到的是**旧论文的报告**。
+    """
+    dest = PAPERS_DIR / name
+    sha = hashlib.sha256(raw).hexdigest()
+    if not dest.exists():
+        return {"path": dest, "name": name, "sha": sha, "reuse": False, "note": ""}
+    try:
+        exist_sha = hashlib.sha256(dest.read_bytes()).hexdigest()
+    except OSError:
+        exist_sha = ""
+    if exist_sha == sha:
+        return {"path": dest, "name": name, "sha": sha, "reuse": True, "note": ""}
+    new_name = f"{dest.stem}__{sha[:8]}.pdf"
+    return {"path": PAPERS_DIR / new_name, "name": new_name, "sha": sha, "reuse": False,
+            "note": (f"文件名「{name}」已属于另一篇论文（内容指纹不同）；"
+                     f"本次上传已另存为「{new_name}」作为**新论文**处理。")}
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -110,41 +138,46 @@ async def ask_question(body: AskBody) -> JSONResponse:
 async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
     """上传 PDF → ingest（MinerU 检索解析 + pymupdf 报告）→ report JSON。
 
-    关键：同名论文已存在时【不覆盖写盘】——21 篇论文均已有产物缓存，
-    直接复用即可，避免 Windows 下文件被 WPS/阅读器占用导致 Permission denied。
-    只有磁盘上没有的同名（新论文）才需要写文件。
+    **按内容判定落点**（2026-09-13 审查项 2，见 `plan_upload`）：
+      · 同名同内容 → 幂等复用已有产物（不写盘）；
+      · 同名**不同内容** → 另存为 `<stem>__<sha8>.pdf` 当新论文处理（原文件不动）。
+    旧实现只按文件名判断（"名字存在 + 有缓存"就直接回缓存），会把**别篇论文**的报告
+    返回给用户；现在绝不发生。
+    不覆盖已有文件这一点保留：避免 Windows 下文件被 WPS/阅读器占用导致 Permission denied。
     """
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="仅支持 .pdf 文件")
 
-    name = _safe_pdf_name(file.filename)
-    dest = PAPERS_DIR / name
+    raw = await file.read()
+    if not raw:
+        raise HTTPException(status_code=400, detail="文件为空")
 
-    # 论文已在 assets/papers 且 report.json 已生成 → 直接走缓存装配，不写盘
-    if dest.exists():
-        stem = dest.stem
-        report_cache = ROOT / "assets/artifacts/out_views" / f"{stem}.report.json"
-        if report_cache.exists():
-            try:
-                return JSONResponse(
-                    json.loads(report_cache.read_text(encoding="utf-8")))
-            except Exception:  # noqa: BLE001  缓存损坏则走正常流程
-                pass
-        # 缓存缺失/损坏：尝试写盘重生成；文件被占用时给出中文提示
+    # **按内容判定落点**（2026-09-13 审查项 2）：同名 + 同内容 → 幂等复用；
+    # 同名 + 不同内容 → 另存为 `<stem>__<sha8>.pdf` 当**新论文**处理（不覆盖、不冒充别篇）。
+    plan = plan_upload(_safe_pdf_name(file.filename), raw)
+    name = str(plan["name"])
+    dest: Path = plan["path"]
+    stem = dest.stem
+    report_cache = ROOT / "assets/artifacts/out_views" / f"{stem}.report.json"
+
+    if plan["reuse"] and report_cache.exists():
+        try:                                   # 同内容：直接回已有产物（幂等，不写盘）
+            payload = json.loads(report_cache.read_text(encoding="utf-8"))
+            payload["upload_note"] = "同名同内容：复用已有产物（幂等）"
+            return JSONResponse(payload)
+        except Exception:  # noqa: BLE001  缓存损坏则走正常流程
+            pass
+
+    if not dest.exists():     # 内容不同时 dest 是 `__<sha8>` 新名，不会覆盖别篇
         try:
-            dest.write_bytes(await file.read())
+            dest.write_bytes(raw)
         except PermissionError:
             raise HTTPException(
                 status_code=409,
                 detail=f"「{name}」已被其他程序（如 WPS/PDF 阅读器）占用，"
-                       f"无法更新。请关闭占用它的窗口后重试；"
+                       f"无法写入。请关闭占用它的窗口后重试；"
                        f"或换一个新文件名再上传。",
             ) from None
-        except Exception as e:  # noqa: BLE001
-            raise HTTPException(status_code=500, detail=f"保存 PDF 失败: {e}") from e
-    else:
-        try:
-            dest.write_bytes(await file.read())
         except Exception as e:  # noqa: BLE001
             raise HTTPException(status_code=500, detail=f"保存 PDF 失败: {e}") from e
 
@@ -164,6 +197,9 @@ async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
             payload["mineru_warning"] = (
                 "版面解析（MinerU）失败，问答将不可用；报告已正常生成。"
                 f"原因：{str(m.get('reason') or '')[:200]}")
+        if plan["note"]:
+            # 同名不同内容 → 已另存为新论文；把这件事明确告诉用户（不静默）
+            payload["upload_note"] = plan["note"]
     except HTTPException:
         raise
     except Exception as e:  # noqa: BLE001

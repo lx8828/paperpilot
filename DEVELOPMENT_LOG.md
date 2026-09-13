@@ -631,3 +631,32 @@ uv run python web/app.py                   # 开发服务器（上传 → 报告
 **验收**：`qa/recall/_selftest_validator_20260913.py`（机器 12/12；`PP_LLM=1` 加测真实体检）；
 `node --check` 前端内联 JS 通过。**未做（B 档）**：按 route 分流强制补引用。
 台账：`qa/review/RESPONSES_20260913.md`；设计文档：`docs/RAG_COMPONENT_NOTES.md` §6.5。
+
+---
+
+## 2026-09-13 · 外部代码审查 · 第 2 条：文件名被当作论文身份（同名 pdf 系统性错误）
+
+**审查项**：论文文件名被当成论文身份，缓存会产生错误结果，同名 pdf 会系统性错误。
+
+**核验（`qa/review/_dupname_repro_20260913.py`，已复现）**：全链路产物以 `Path(pdf).stem` 为键，
+**没有任何一层记 PDF 内容指纹**。① 流水线：把 A 的 PDF 换成 B 的字节（名字不变）→ **解析层读 B、
+产物层给 A 的 claims/报告**（状态混合、零告警）；② 用户可见：`/api/report` 上传"名字=A、内容=B"
+→ **返回 A 的旧报告且不写盘**。③ 评测测不到：QASPER 用虚拟名 `qasper_<pid>.qpdf`（身份由数据集给定），
+问题只在真实上传路径。
+
+**处置（A + C）**：
+- 新增 `src/paperpilot/paper_identity.py`（sha256+size+mtime_ns 指纹；`ok/stale/adopt/unknown` 判定；
+  `PAPERPILOT_PDF_ID_STRICT` 开关）；
+- `pipeline._pdf_identity_stale` + `process_pdf` 身份门（stale → 重建；`--skip-llm` → **报错拒装配**）、
+  `ingest` 入口校验 + 指纹写回、`run_mineru` 校验（同名换内容时 MinerU 也重跑）；
+- `document_cache`：`ordered_chunks` / `retrieval_chunks` / `current_source` 的进程内缓存键加入
+  **文件版本**（`size:mtime_ns`），保留 `cache_clear` 兼容；
+- **历史产物迁移**：无指纹记录时按 mtime 关系收编并补写指纹；全库 66 篇实测 → 32 收编 / 34 无产物
+  / **0 被迫重建**（零爆炸半径）；
+- **web C 档**：`plan_upload` 按内容判定落点——同名同内容幂等复用；同名不同内容另存
+  `<stem>__<sha8>.pdf` 当新论文（原文件不动）+ `upload_note` 告知。
+
+**验收**：`qa/review/_selftest_identity_20260913.py`（19 项全绿）；原复现脚本转为验收脚本：
+流水线侧 `[identity] … → 整链重建产物` 且 `--skip-llm` 被拒；web 侧"未返回旧报告 / 已另存新名 /
+原文件未改动"。回归：QASPER 虚拟名问答正常、三个自测全绿、`compileall` 0 错。
+**未做（B 档）**：产物内容寻址目录（`by_hash/<sha12>/`），成本/收益比不划算。
