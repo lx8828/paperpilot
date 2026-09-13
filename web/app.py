@@ -21,7 +21,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -57,6 +59,35 @@ def _safe_pdf_name(name: str) -> str:
     if not base.lower().endswith(".pdf"):
         base += ".pdf"
     return base
+
+
+def _max_pdf_bytes() -> int:
+    """上传大小上限（字节）；`PAPERPILOT_MAX_PDF_MB=0` → 不限制。
+
+    **每次请求读 env**（不是模块常量）：这样开关能被测试/运维即时改动，
+    也不用重启进程。解析失败按默认 200MB（错误配置不该把上传功能整个关掉）。
+    """
+    raw = os.environ.get("PAPERPILOT_MAX_PDF_MB", "200")
+    try:
+        mb = int(raw)
+    except ValueError:
+        mb = 200
+    return max(0, mb) * 1024 * 1024
+
+
+def _check_pdf_magic(raw: bytes) -> None:
+    """`%PDF-` 文件头校验（2026-09-14 审查）。
+
+    **为什么允许前导垃圾**：PDF 规范与真实文件都允许 `%PDF-` 前有最多 1KB 的杂字节
+    （邮箱导出、扫描件、加壳工具都常见）——用 `raw[:5] == b"%PDF-"` 会**误杀合法 PDF**，
+    所以在前 1KB 内找。
+    """
+    if b"%PDF-" not in raw[:1024]:
+        raise HTTPException(
+            status_code=400,
+            detail="这不是 PDF 文件（缺少 `%PDF-` 文件头）：请确认上传的是论文正文 PDF，"
+                   "而不是把 .docx / .txt 改名成 .pdf。")
+
 
 
 def plan_upload(name: str, raw: bytes) -> dict[str, Any]:
@@ -110,16 +141,30 @@ class AskBody(BaseModel):
     history: list[dict[str, Any]] = []   # 之前轮次对话 [{role, content}, ...]，支持追问指代
 
 
+# 并发闸门：每个问答都会打 LLM + 向量检索；FastAPI 线程池默认 40 路，
+# 不收口会打爆 LLM 限流、并让共享的向量模型吃满内存。
+# 用 threading.Semaphore 而不是 anyio 的 CapacityLimiter：后者与事件循环绑定，
+# 而 TestClient 每次会新建 loop → 会出问题。
+_ASK_GATE = threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY", "4")))
+
+
 @app.post("/api/ask")
-async def ask_question(body: AskBody) -> JSONResponse:
+def ask_question(body: AskBody) -> JSONResponse:
     """论文问答：v3 两级（L0 总览直答 → L3 全局检索）+ 输出闸门。history 支持多轮追问。
+
+    ⚠️ **这里是同步 `def`（不是 `async def`），是刻意的**：FastAPI 会把同步端点丢到
+    **线程池**执行，于是十几秒的问答**不会占住事件循环**（原先 `async def` 里直接调同步
+    `graph_ask()` → 事件循环被占满，期间其他请求全部排队）。
+    并发由 `_ASK_GATE` 收口（默认 4 路，`PAPERPILOT_ASK_CONCURRENCY` 可调）——
+    排队的是**线程**，不是事件循环。
 
     若该论文摄取时 MinerU 明确失败，graph.ask 会直接返回拒绝话术与原因（不静默降级）。
     """
     if not llm.is_configured():
         raise HTTPException(status_code=500, detail="LLM 未配置：请先填写 .env")
     try:
-        r = graph_ask(body.question, body.pdf, history=body.history)
+        with _ASK_GATE:
+            r = graph_ask(body.question, body.pdf, history=body.history)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=f"缺论文上下文: {e}") from e
     except Exception as e:  # noqa: BLE001
@@ -160,9 +205,29 @@ async def upload_report(file: UploadFile = File(...)) -> JSONResponse:
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="仅支持 .pdf 文件")
 
+    # ① **大小**：在读进内存**之前**拒掉（`file.size` 由 starlette 落盘时填好）。
+    #    修前的代价：整个文件 `read()` 进内存 + sha256 + `write_bytes`（峰值 ≈ 2×），
+    #    而 FastAPI/uvicorn 没有任何 body 上限；提交后 MinerU 还会白跑到 900s 超时。
+    limit = _max_pdf_bytes()
+    size = getattr(file, "size", None)
+    if limit and isinstance(size, int) and size > limit:
+        raise HTTPException(
+            status_code=413,
+            detail=f"PDF 过大（{size / 1048576:.0f}MB > 上限 {limit // 1048576}MB）："
+                   f"可用 `PAPERPILOT_MAX_PDF_MB` 调整（0 = 不限制）。")
+
     raw = await file.read()
     if not raw:
         raise HTTPException(status_code=400, detail="文件为空")
+    if limit and len(raw) > limit:      # 兜底：`file.size` 缺失的 starlette 版本
+        raise HTTPException(
+            status_code=413,
+            detail=f"PDF 过大（{len(raw) / 1048576:.0f}MB > 上限 {limit // 1048576}MB）："
+                   f"可用 `PAPERPILOT_MAX_PDF_MB` 调整（0 = 不限制）。")
+
+    # ② **文件头**：改名成 .pdf 的 txt/docx 现在**立刻被拒**（400，不排 job），
+    #    而不是"受理 → 白跑一个 job → 回一句英文 FileDataError"。
+    _check_pdf_magic(raw)
 
     # **按内容判定落点**（2026-09-13 审查项 2）：同名 + 同内容 → 幂等复用；
     # 同名 + 不同内容 → 另存为 `<stem>__<sha8>.pdf` 当**新论文**处理（不覆盖、不冒充别篇）。
@@ -339,7 +404,6 @@ def apply_cli_args(argv: list[str] | None = None) -> tuple[str, int]:
     `--mock` 一次性打开三个开关；若你已显式设过 `PAPERPILOT_MINERU`（如 `=1`）则尊重你的设置。
     """
     import argparse
-    import os
 
     ap = argparse.ArgumentParser(description="PaperPilot 开发服务器")
     ap.add_argument("--mock", action="store_true",
@@ -356,8 +420,6 @@ def apply_cli_args(argv: list[str] | None = None) -> tuple[str, int]:
 
 
 if __name__ == "__main__":
-    import os
-
     import uvicorn
 
     _host, _port = apply_cli_args()

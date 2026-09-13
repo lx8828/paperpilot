@@ -97,6 +97,66 @@ def test_upload_rejects_bad_input(client, name, data, code):
     assert _upload(client, name, data).status_code == code
 
 
+# ───────────── 上传门加固：`%PDF-` 魔数 + 大小上限（2026-09-14 审查）─────────────
+#
+# 只做这两条，理由（也是"为什么不做页数/解压炸弹"）：
+# · 这两条是**边界上用 3 行省掉一次注定失败的分钟级摄取**（改名 txt → 现在会白跑一个 job，
+#   报错还是英文 `FileDataError`；超大文件 → 读进内存 + 无 body 上限 + MinerU 白跑到 900s）；
+# · 页数要**先解析一遍**才知道（为了决定"要不要处理贵的东西"先做那个贵的事），且 3000 页的
+#   合集往往是合法需求 → 不做；
+# · 解压炸弹/恶意 PDF 在"本地单用户 127.0.0.1"下没有攻击者模型（真缓解是子进程沙箱）→ 不做。
+#   若哪天变多用户服务，这一套要整体重做，不是这几行能顶的。
+
+
+def test_upload_rejects_non_pdf_bytes(client, monkeypatch):
+    """改名成 .pdf 的 txt/docx → **立刻 400，且不排 job**。
+
+    修前：`202` 受理 → 白跑一个 job → 用户拿到英文
+    `FileDataError: Failed to open file '...' as type pdf.`（实测）。
+    """
+    seen = {"n": 0}
+    real = worker.submit
+
+    def _spy(*a, **k):
+        seen["n"] += 1
+        return real(*a, **k)
+
+    monkeypatch.setattr(worker, "submit", _spy)
+    r = _upload(client, "x.pdf", b"this is definitely not a pdf" + b"x" * 200)
+    assert r.status_code == 400
+    assert "%PDF-" in r.json()["detail"]        # 报错要说清"缺什么"
+    assert seen["n"] == 0                       # 关键：没有排 job
+
+
+def test_upload_accepts_leading_junk_before_header(client):
+    """`%PDF-` 前有前导垃圾 → **必须放行**（规范允许，邮箱导出/扫描件常见）。
+
+    这条比"拒绝坏文件"更重要：`raw[:5] == b"%PDF-"` 那种写法会**误杀合法 PDF**。
+    """
+    r = _upload(client, "junk.pdf", b"\xef\xbb\xbfGARBAGE" + b"\x00" * 40 + PDF_A)
+    assert r.status_code == 202
+
+
+def test_upload_rejects_too_large(client, monkeypatch):
+    """超上限 → **413**（默认 200MB，`PAPERPILOT_MAX_PDF_MB` 可调）。
+
+    修前：整个文件 `await file.read()` 进内存 + sha256 + 落盘（峰值 ≈ 2×），
+    而 FastAPI/uvicorn **没有任何 body 上限** → 误拖大文件还会让 MinerU 白跑到超时。
+    """
+    monkeypatch.setenv("PAPERPILOT_MAX_PDF_MB", "1")
+    big = PDF_A + b"z" * (2 * 1024 * 1024)      # ~2MB > 1MB 上限
+    r = _upload(client, "big.pdf", big)
+    assert r.status_code == 413
+    assert "过大" in r.json()["detail"]
+
+
+def test_upload_size_limit_can_be_disabled(client, monkeypatch):
+    """`PAPERPILOT_MAX_PDF_MB=0` → 不限制（开关真能关，别把大文件用户堵死）。"""
+    monkeypatch.setenv("PAPERPILOT_MAX_PDF_MB", "0")
+    big = PDF_A + b"z" * (2 * 1024 * 1024)
+    assert _upload(client, "big2.pdf", big).status_code == 202
+
+
 # ───────────────────────── 任务查询 / 取消 / 重试 ─────────────────────────
 
 

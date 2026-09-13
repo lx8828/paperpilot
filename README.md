@@ -186,7 +186,15 @@ uv run python web/app.py        # 摄取时自动调用（默认 backend=pipelin
 | `POST /api/job/{id}/retry` | 重试（已完成的阶段**自动复用**，通常快很多） |
 | `GET /api/report/{name}` | 取报告 JSON（含 `upload_note` / `mineru_warning`） |
 | `GET /api/meta` | 运行模式（演示模式横幅用它；也便于排查"为什么答案都是示例"） |
-| `POST /api/ask` | 提问（摄取未完成时明确拒答并说明原因） |
+| `POST /api/ask` | 提问（**不阻塞事件循环**：同步端点走线程池 + 并发闸门；摄取未完成时明确拒答并说明原因） |
+
+**上传门（2026-09-14）**：只做两条"边界上花 3 行、省掉一次注定失败的分钟级摄取"的校验 ——
+① 非 `.pdf` 扩展名 → `400`；② 缺 `%PDF-` 文件头（把 `.docx`/`.txt` 改名成 `.pdf`）→ `400`
+（**允许前 1KB 有前导垃圾**，规范与真实文件都允许，避免误杀）；
+③ 超过大小上限 → `413`（默认 200MB，`PAPERPILOT_MAX_PDF_MB=0` 关闭）。
+**刻意不做**：页数上限（要**先解析一遍**才知道，而 3000 页的合集往往是合法需求）、
+解压炸弹/恶意 PDF 防护（本地单用户没有攻击者模型，真缓解是子进程沙箱）——
+若哪天变成多用户服务，这套要整体重做。
 
 论文 PDF 放 **`assets/papers/`**；产物落在 **`assets/artifacts/`**（`out_claims` / `out_views` /
 `out_mineru` / `out_jobs`，均不入库）。
@@ -241,6 +249,8 @@ uv run python cli/run_view.py <pdf名>        # 装配视图 / 产物检查
 | `PAPERPILOT_PDF_ID_STRICT` | 关 | 论文身份按**内容指纹**校验；默认对**历史产物**（无指纹记录）按 mtime 收编并补写指纹，`=1` 时连收编也强制重建（存量库排雷用） |
 | `PAPERPILOT_USE_MINERU` | 关 | `=1` 走遗留"全链 MinerU"模式（chunks 直接用 MinerU） |
 | `PAPERPILOT_CHUNK_VIEW_DIR` | 空 | 向量缓存目录覆盖（A/B 两臂各用一份，避免来回覆盖重建） |
+| `PAPERPILOT_ASK_CONCURRENCY` | `4` | 问答并发上限：`/api/ask` 在线程池里最多同时跑几个（排队的是**线程**，不是事件循环） |
+| `PAPERPILOT_MAX_PDF_MB` | `200` | 上传 PDF 大小上限（`0` = 不限制）；超限直接 `413`，在**读进内存之前**就拒 |
 | `PAPERPILOT_MOCK_LLM` | 关 | **演示模式·LLM**：固定响应，无需 API Key（`web/app.py --mock` 会打开） |
 | `PAPERPILOT_MOCK_EMBED` | 关 | **演示模式·向量**：词袋哈希，不加载 bge-m3（缓存写 `out_views__mock/`，与真向量**物理隔离**） |
 | `PAPERPILOT_MINERU` | `1` | `=0` 跳过 MinerU（`skipped`，**不**判问答不可用）；与"失败"区分：失败才拦问答 |
@@ -338,7 +348,7 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 **一条命令，5 分钟内出确定结果，不需要任何 API Key / GPU / 本地模型：**
 
 ```bash
-uv run pytest -q        # 135 passed in ~3s（本地；CI 上含装依赖约 1~2 分钟）
+uv run pytest -q        # 138 passed in ~4s（本地；CI 上含装依赖约 1~2 分钟）
 ```
 
 规矩很简单，两条命令分两类事：
@@ -368,6 +378,7 @@ uv run pytest -q        # 135 passed in ~3s（本地；CI 上含装依赖约 1~2
 | `test_llm_client.py` | 16 | JSON 解析容错、**坏 JSON**、**超长输入**、未配置时明确报错 |
 | `test_tgt.py` | 15 | 目标表定位口径（编号 ∪ 内容）—— 所有表格类指标的尺子 |
 | `test_api.py` | 15 | API 集成：202 早返回、幂等 200、任务查询、取消/重试、404/400、拒答话术、状态快照 |
+| `test_api_concurrency.py` | 3 | **`/api/ask` 不阻塞事件循环**（同步端点 + 并发闸门；含"问答进行中其他请求仍秒回"的行为验证） |
 | `test_validator_offline.py` | 12 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归 |
 | `test_e2e_mock.py` | **3** | **mock LLM 端到端**：上传 → 后台 job → 报告 → 提问 → 带 `[n]` 引用的答案 |
 | `test_mock_mode.py` | 10 | **演示模式**（`--mock`）：无 Key / 无模型 / 无 MinerU 也能跑通（上面 README 承诺的技术保障） |
