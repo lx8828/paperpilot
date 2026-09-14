@@ -185,7 +185,7 @@ uv run python web/app.py        # 摄取时自动调用（默认 backend=pipelin
 | `POST /api/job/{id}/cancel` | 请求取消（阶段边界生效；MinerU 会真终止子进程） |
 | `POST /api/job/{id}/retry` | 重试（已完成的阶段**自动复用**，通常快很多） |
 | `GET /api/report/{name}` | 取报告 JSON（含 `upload_note` / `mineru_warning`） |
-| `GET /api/meta` | 运行模式（演示模式横幅用它；也便于排查"为什么答案都是示例"） |
+| `GET /api/meta` | 运行模式（演示模式横幅用它；也便于排查"为什么答案都是示例"）。另含 `ask_wait_s` / `ask_concurrency`：前端据此算问答的**兜底超时**（`AbortController` = `ask_wait_s + 180s`），避免连接挂住时页面一直转圈 |
 | `POST /api/ask` | 提问（**不阻塞事件循环**：同步端点走线程池 + 并发闸门；摄取未完成时明确拒答并说明原因） |
 
 **上传门（2026-09-14）**：只做两条"边界上花 3 行、省掉一次注定失败的分钟级摄取"的校验 ——

@@ -1129,3 +1129,24 @@ _ASK_GATE = threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY",
    `subprocess.wait()` 无 timeout、`fetch()` 无 AbortController —— 凡是有"等待"的地方，
    都必须能回答：**等多久之后会发生什么？** 答不上来的，就是下一个"页面一直转圈"。
 
+### 补遗（同日）：前端也补一层兜底超时（`AbortController`）
+
+**为什么服务端有界还不够**：服务端现在最坏返回 `503`，但**"连接本身"**仍可能挂住
+（服务崩了 / 代理断了 / 请求丢了）——那时 `fetch` **永远不 settle**，页面照样一直转圈。
+这正是上一条清单里最后那一项（`fetch()` 无 AbortController）。
+
+**实现（关键是"超时值不写死魔数"）**：
+- `/api/meta` 增加 `ask_wait_s` / `ask_concurrency` → 前端取
+  **`timeout = ask_wait_s + 180s`**（180s 留给作答本身：单题实测 p99 50s / max 96s）。
+  这样调 `PAPERPILOT_ASK_WAIT_S` 时前端**自动跟上**；写死一个 600 一定会漂移
+  （只要哪天把服务端预算调到 900，前端就会在服务端还在排队时先掐断）。
+- `ask()`：`AbortController` + `setTimeout(()=>ac.abort(), ...)`，`finally` 里 `clearTimeout`
+  （避免定时器泄漏）；`AbortError` **单独识别**并给出可行动的提示（"可能服务无响应或排队过久"+
+  两个可查的开关名），而不是把 `The user aborted a request.` 这种原始信息丢给用户。
+- **契约测试**：`/api/meta` 必须给出这两个字段 —— 删掉字段前端不会报错，只会**静默退回默认 300s**
+  （正是那种"看起来没事、实际上兜底算错"的隐患），所以要用测试钉住。
+
+**验证与诚实边界**：用 `node --check` 抽取内联脚本做**语法门禁**（exit 0）。
+**前端仍然没有自动化行为测试**：真要验"超时会 abort"，得让服务端挂住 + 等一整个预算
+（分钟级），成本不划算；浏览器级冒烟（playwright + `--mock` 演示模式）可以后续单独做。
+

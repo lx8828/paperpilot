@@ -430,7 +430,12 @@ def _report_payload(name: str) -> dict[str, Any] | None:
 
 @app.get("/api/meta")
 async def api_meta() -> JSONResponse:
-    """运行模式（前端据此显示"演示模式"横幅，也方便排查"为什么答案都是示例"）。"""
+    """运行模式（前端据此显示"演示模式"横幅，也方便排查"为什么答案都是示例"）。
+
+    另外把**问答的排队预算/并发**告诉前端（`ask_wait_s` / `ask_concurrency`）：前端用它
+    算 `AbortController` 的兜底超时（预算 = `ask_wait_s + 180s`），这样**超时值跟随服务端配置**，
+    不会写死一个会漂移的魔数；也方便用户直接看到"实际生效的是什么"。
+    """
     from paperpilot.tools.mock_llm import (banner, embed_enabled, llm_enabled,
                                           mineru_enabled)
     mock = llm_enabled()
@@ -439,6 +444,8 @@ async def api_meta() -> JSONResponse:
         "mock_embed": embed_enabled(),
         "mineru": mineru_enabled(),
         "llm_configured": llm.is_configured(),
+        "ask_wait_s": _ask_wait_seconds(),
+        "ask_concurrency": _ask_concurrency(),
         "banner": banner() if mock else "",
         "note": ("演示模式：概述/主张/答案为固定示例；引用锚点仍来自真实检索"
                  if mock else ""),

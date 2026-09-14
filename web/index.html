@@ -535,9 +535,12 @@ async function upload(f){
   }catch(e){ b.remove(); addMsg('ai',`<span style="color:var(--bad)">上传失败：${esc(e.message)}</span>`); }
 }
 // 顶栏模式提示（演示模式必须让看的人一眼知道"内容是固定示例"）
+// 顺带取服务端的**问答排队预算**：前端兜底超时 = askWaitS + 180s（见 ask()）。
+let askWaitS=300;
 async function showMode(){
   try{
     const r=await fetch('/api/meta'); const m=await r.json();
+    if(typeof m.ask_wait_s==='number'&&m.ask_wait_s>=0) askWaitS=m.ask_wait_s;
     if(!m.banner) return;
     const b=$('mockbar'); b.hidden=false;
     b.innerHTML='🧪 '+esc(m.banner)+' —— 概述 / 主张 / 答案是**固定示例**，'
@@ -560,20 +563,35 @@ async function resumeJob(){
 }
 
 // ───────── 问答（多轮 history）────────
+// **前端兜底超时**（AbortController）：服务端在闸门排满时最多等 askWaitS 才回 503，
+// 所以客户端预算必须**大于**它 —— 取 `askWaitS + 180s`（180s 留给作答本身：
+// 实测单题 p99 50s / max 96s）。为什么需要它：服务端现在有界，但"连接本身"仍可能挂住
+// （服务崩了 / 代理断了 / 请求丢了）—— 那种情况下 `fetch` 永远不 settle，页面会一直转圈。
 async function ask(){
   const q=$qin.value.trim(); if(!q) return;
   if(!S.pdf){ addMsg('ai','请先上传一篇 PDF。'); return; }
   addMsg('user',q); chat.push({role:'user',content:q});
   const b=busy('ai','正在检索论文并回答…'); $send.disabled=true;
+  const budgetS=askWaitS+180;
+  const ac=new AbortController(); const timer=setTimeout(()=>ac.abort(),budgetS*1000);
   try{
     const res=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
+      signal:ac.signal,
       body:JSON.stringify({question:q,pdf:S.pdf,history:chat.slice(0,-1)})});
     const data=await res.json(); b.remove();
     if(!res.ok) throw new Error(data.detail||res.statusText);
     chat.push({role:'assistant',content:data.answer});
     lastAsk=data;
     addMsg('ai',renderAnswer(data));
-  }catch(e){ b.remove(); chat.pop(); addMsg('ai',`<span style="color:var(--bad)">问答失败：${esc(e.message)}</span>`); }
+  }catch(e){
+    b.remove(); chat.pop();
+    const msg=(e&&e.name==='AbortError')
+      ? `问答超时（超过 ${budgetS}s 没有响应）：可能服务无响应或排队过久。`
+        +`请稍后重试；若持续如此，请查看服务端日志（并发上限 PAPERPILOT_ASK_CONCURRENCY、`
+        +`排队上限 PAPERPILOT_ASK_WAIT_S）。`
+      : `问答失败：${e.message}`;
+    addMsg('ai',`<span style="color:var(--bad)">${esc(msg)}</span>`);
+  }finally{ clearTimeout(timer); }
   $send.disabled=false; $qin.value='';
 }
 function renderAnswer(d){

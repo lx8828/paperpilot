@@ -305,3 +305,16 @@ def test_ask_requires_llm_config(client, monkeypatch):
     assert llm.is_configured() is False
     r = client.post("/api/ask", json={"question": "q", "pdf": "x.pdf"})
     assert r.status_code == 500 and "LLM 未配置" in r.json()["detail"]
+
+
+def test_meta_exposes_ask_budget(client, monkeypatch):
+    """**前端的兜底超时靠这个契约**：`/api/meta` 必须给出服务端的排队预算与并发。
+
+    前端用它算 `AbortController` 预算（= `ask_wait_s + 180s`）→ 超时值**跟随服务端配置**，
+    不会写死一个会漂移的魔数；字段被删掉前端就失去兜底（且不会报错，只会退回默认 300s）。
+    """
+    monkeypatch.setenv("PAPERPILOT_ASK_WAIT_S", "120")
+    monkeypatch.setenv("PAPERPILOT_ASK_CONCURRENCY", "6")
+    m = client.get("/api/meta").json()
+    assert m["ask_wait_s"] == 120.0
+    assert m["ask_concurrency"] == 6
