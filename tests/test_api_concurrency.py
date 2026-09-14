@@ -13,6 +13,7 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 
+import pytest
 from fastapi.testclient import TestClient
 
 
@@ -22,6 +23,79 @@ def _prepare(webapp_tmp, monkeypatch, fake_ask):
     monkeypatch.setenv("PAPERPILOT_LLM_API_KEY", "test-key")
     monkeypatch.setenv("PAPERPILOT_LLM_MODEL", "fake")
     return TestClient(webapp_tmp.app)
+
+
+# ───────────── 闸门配置必须 fail-safe（2026-09-14 审查）─────────────
+#
+# 旧写法 `threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY", "4")))`
+# 有两个**沉默致命**的配置后果：
+#   · `=0` → 信号量初值 0 → `with gate:` **永久阻塞**：请求永不返回（页面一直转圈）、
+#     线程池线程被永久占住，且**没有任何报错**（比"负数上传上限"危险，因为那个只是放开限流）；
+#   · 负数 / 非数字 → **import 时** ValueError → 整个服务起不来。
+
+
+@pytest.mark.parametrize("raw, want", [
+    ("1", 1), (" 8 ", 8),
+    ("0", 4), ("-1", 4), ("abc", 4), ("", 4), ("2.5", 4),
+], ids=["1", "带空格", "0=挂死", "负数", "非数字", "空串", "小数"])
+def test_ask_concurrency_config_semantics(webapp, monkeypatch, raw, want):
+    """`=0` **不是**"不限制"，而是"永久阻塞" → 必须回退默认（这里没有 0 的语义）。"""
+    monkeypatch.setenv("PAPERPILOT_ASK_CONCURRENCY", raw)
+    assert webapp._ask_concurrency() == want
+
+
+def test_ask_concurrency_default_when_unset(webapp, monkeypatch):
+    monkeypatch.delenv("PAPERPILOT_ASK_CONCURRENCY", raising=False)
+    assert webapp._ask_concurrency() == 4
+
+
+def test_module_gate_is_usable(webapp):
+    """进程启动时的闸门必须**真的能过**（≥1 个名额）。
+
+    这是"=0 → 永不返回"的直接反例：模块级信号量一旦是 0，**每一个** `/api/ask`
+    都会永久挂住，而日志里什么都没有。
+    """
+    assert webapp._ASK_GATE.acquire(timeout=0.5) is True
+    webapp._ASK_GATE.release()
+
+
+@pytest.mark.parametrize("raw, want", [
+    ("60", 60.0), ("0", 0.0),          # 0 = 不排队（更严格，合法）
+    ("-1", 300.0), ("abc", 300.0), ("", 300.0),
+], ids=["60s", "0=不排队", "负数", "非数字", "空串"])
+def test_ask_wait_config_semantics(webapp, monkeypatch, raw, want):
+    monkeypatch.setenv("PAPERPILOT_ASK_WAIT_S", raw)
+    assert webapp._ask_wait_seconds() == want
+
+
+def test_gate_full_fails_bounded_not_hang(webapp_tmp, monkeypatch):
+    """**bug 回归**：闸门没有名额时必须**有界失败**（503），不能无限等待。
+
+    修前：`with _ASK_GATE:` 在信号量为 0 时永久阻塞 → 页面一直转圈、线程池被占死。
+    这里用守护线程 + join 超时来断言"没有任何**无界**等待"：
+    即便被测代码真的挂住，也只是这条断言失败，**不会把测试会话挂死**。
+    """
+    monkeypatch.setattr(webapp_tmp, "_ASK_GATE", threading.Semaphore(0))   # 永远没有名额
+    monkeypatch.setenv("PAPERPILOT_ASK_WAIT_S", "0.2")                     # 只等 0.2s
+    monkeypatch.setenv("PAPERPILOT_LLM_BASE_URL", "https://fake.local/v1")
+    monkeypatch.setenv("PAPERPILOT_LLM_API_KEY", "test-key")
+    monkeypatch.setenv("PAPERPILOT_LLM_MODEL", "fake")
+    client = TestClient(webapp_tmp.app)
+
+    box: dict = {}
+
+    def _call():
+        box["r"] = client.post("/api/ask", json={"question": "q", "pdf": "a.pdf"})
+
+    t = threading.Thread(target=_call, daemon=True)
+    t0 = time.time()
+    t.start()
+    t.join(timeout=5.0)
+
+    assert not t.is_alive(), "闸门无名额时请求一直挂着（应为有界失败 → 503）"
+    assert time.time() - t0 < 4.0, "排队超时没生效（等了太久）"
+    assert box["r"].status_code == 503
+    assert "排队" in box["r"].json()["detail"]
 
 
 def test_ask_endpoint_is_sync(webapp):

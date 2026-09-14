@@ -157,6 +157,48 @@ def test_upload_size_limit_can_be_disabled(client, monkeypatch):
     assert _upload(client, "big2.pdf", big).status_code == 202
 
 
+# ───────────── 上限配置必须 fail-safe（2026-09-14 审查）─────────────
+#
+# 旧实现 `max(0, mb)` 把 `-1` 悄悄变成 0 = **关闭限制** —— 一个手滑的负号就**扩大了权限**。
+# 安全配置的原则是"异常输入回到安全默认值"，而不是 fail-open。
+# 现在：**只有显式 `0`** 才是不限制；负数/非数字/空串 → 回退默认 200MB。
+
+
+@pytest.mark.parametrize("raw, want_mb", [
+    ("1", 1),
+    (" 1 ", 1),          # shell 里带空格的常见写法
+    ("0", 0),            # 唯一的"明确不限制"
+    ("-1", 200),         # ← bug 回归：旧实现这里是 0（= 不限制）
+    ("-100", 200),
+    ("abc", 200),
+    ("", 200),
+    ("2.5", 200),        # 小数不接受（MB 用整数，避免歧义）→ 回退默认
+], ids=["1MB", "带空格", "0=不限制", "负数", "大负数", "非数字", "空串", "小数"])
+def test_max_pdf_bytes_is_fail_safe(webapp, monkeypatch, raw, want_mb):
+    """配置解析语义（单元级，逐值钉住）。"""
+    monkeypatch.setenv("PAPERPILOT_MAX_PDF_MB", raw)
+    assert webapp._max_pdf_bytes() == want_mb * 1024 * 1024
+
+
+def test_max_pdf_bytes_default_when_unset(webapp, monkeypatch):
+    monkeypatch.delenv("PAPERPILOT_MAX_PDF_MB", raising=False)
+    assert webapp._max_pdf_bytes() == 200 * 1024 * 1024
+
+
+def test_negative_limit_still_enforced(client, webapp, monkeypatch):
+    """**bug 回归（端到端）**：`-1` 必须仍然**拦得住**，而不是变成不限制。
+
+    把"默认值"临时降成 1MB，这样一次 2MB 上传就能区分两种行为：
+    旧实现（-1 → 0）→ 202 放行；修复后（-1 → 回退默认）→ 413。
+    """
+    monkeypatch.setattr(webapp, "_DEFAULT_MAX_PDF_MB", 1)
+    monkeypatch.setenv("PAPERPILOT_MAX_PDF_MB", "-1")
+    big = PDF_A + b"z" * (2 * 1024 * 1024)
+    r = _upload(client, "neg.pdf", big)
+    assert r.status_code == 413
+    assert "1MB" in r.json()["detail"]          # 用的是**回退后的默认值**，不是"不限制"
+
+
 # ───────────────────────── 任务查询 / 取消 / 重试 ─────────────────────────
 
 

@@ -249,8 +249,9 @@ uv run python cli/run_view.py <pdf名>        # 装配视图 / 产物检查
 | `PAPERPILOT_PDF_ID_STRICT` | 关 | 论文身份按**内容指纹**校验；默认对**历史产物**（无指纹记录）按 mtime 收编并补写指纹，`=1` 时连收编也强制重建（存量库排雷用） |
 | `PAPERPILOT_USE_MINERU` | 关 | `=1` 走遗留"全链 MinerU"模式（chunks 直接用 MinerU） |
 | `PAPERPILOT_CHUNK_VIEW_DIR` | 空 | 向量缓存目录覆盖（A/B 两臂各用一份，避免来回覆盖重建） |
-| `PAPERPILOT_ASK_CONCURRENCY` | `4` | 问答并发上限：`/api/ask` 在线程池里最多同时跑几个（排队的是**线程**，不是事件循环） |
-| `PAPERPILOT_MAX_PDF_MB` | `200` | 上传 PDF 大小上限（`0` = 不限制）；超限直接 `413`，在**读进内存之前**就拒 |
+| `PAPERPILOT_ASK_CONCURRENCY` | `4` | 问答并发上限：`/api/ask` 在线程池里最多同时跑几个（排队的是**线程**，不是事件循环）。**必须 ≥ 1**：`0`/负数/非法值一律回退默认 —— 0 会让每个问答**永久阻塞**，所以它**没有**"关闭闸门"的语义 |
+| `PAPERPILOT_ASK_WAIT_S` | `300` | 闸门满时的**排队上限**（秒）；超时返回 `503`（可重试），而不是让页面无限转圈。`0` = 不排队（满了立刻 503，属于**更严格**的方向）。**与摄取（MinerU）耗时无关**：解析期间问答是**直接拒答**（不排队），这里的等待只发生在"前面的问答还没跑完"。单题实测 p50 5s / p90 25s / max 96s（`qa/qasper_run_20260911_072510.json`）→ 单人场景并发 4 > 1，**永远不排队** |
+| `PAPERPILOT_MAX_PDF_MB` | `200` | 上传 PDF 大小上限；超限直接 `413`，在**读进内存之前**就拒。**只有显式 `0`** 才是不限制；负数/非数字/空串 → **回退默认 200MB** 并提示一次（配置异常不放开权限） |
 | `PAPERPILOT_MOCK_LLM` | 关 | **演示模式·LLM**：固定响应，无需 API Key（`web/app.py --mock` 会打开） |
 | `PAPERPILOT_MOCK_EMBED` | 关 | **演示模式·向量**：词袋哈希，不加载 bge-m3（缓存写 `out_views__mock/`，与真向量**物理隔离**） |
 | `PAPERPILOT_MINERU` | `1` | `=0` 跳过 MinerU（`skipped`，**不**判问答不可用）；与"失败"区分：失败才拦问答 |

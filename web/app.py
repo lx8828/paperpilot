@@ -61,18 +61,51 @@ def _safe_pdf_name(name: str) -> str:
     return base
 
 
-def _max_pdf_bytes() -> int:
-    """上传大小上限（字节）；`PAPERPILOT_MAX_PDF_MB=0` → 不限制。
+# ── 配置解析助手：**异常输入一律回退安全默认值**（2026-09-14 审查）──
+# 原则：配置被写错时只能**收紧**、不能**放开**，而且必须吭声（不静默降级）。
+_warned_bad_config: set[tuple[str, str]] = set()
 
-    **每次请求读 env**（不是模块常量）：这样开关能被测试/运维即时改动，
-    也不用重启进程。解析失败按默认 200MB（错误配置不该把上传功能整个关掉）。
+
+def _warn_bad_config(name: str, raw: str, hint: str) -> None:
+    """非法配置 → **提示一次**（同一 名字+取值 只提醒一次，避免每请求刷屏）。
+
+    为什么不静默：这些开关直接决定"请求会不会被放开、服务会不会挂"，
+    用户写错时必须知道**实际生效的是什么**。
     """
-    raw = os.environ.get("PAPERPILOT_MAX_PDF_MB", "200")
+    key = (name, raw)
+    if key in _warned_bad_config:
+        return
+    _warned_bad_config.add(key)
+    print(f"[warn] {name}={raw!r} 非法：{hint}", file=sys.stderr)
+
+
+# 上传大小上限的**安全默认值**（MB）。单独成常量：它同时是"回退值"与文档里的默认值，
+# 必须是一个明确、可被审阅的数字（不允许散落在代码里）。
+_DEFAULT_MAX_PDF_MB = 200
+
+
+def _max_pdf_bytes() -> int:
+    """上传大小上限（字节）。**只有显式 `0`** 表示"不限制"。
+
+    **每次请求读 env**（不是模块常量）：开关可即时改动，也便于测试。
+
+    ⚠️ **配置解析必须 fail-safe**（2026-09-14 审查）：旧实现 `max(0, mb)` 会把
+    `-1` 悄悄折成 `0` = **关闭限制** —— 手滑一个负号就**扩大**了权限（fail-open）。
+    现在：负数 / 非数字 / 空串 / 小数 → **回退安全默认值** `_DEFAULT_MAX_PDF_MB`，
+    并提示一次（不静默）；只有显式写 `0` 才真的不限制。
+    原则：**异常输入回到安全默认值，而不是放开权限。**
+    """
+    raw = os.environ.get("PAPERPILOT_MAX_PDF_MB", str(_DEFAULT_MAX_PDF_MB))
     try:
-        mb = int(raw)
+        mb = int(raw.strip())
     except ValueError:
-        mb = 200
-    return max(0, mb) * 1024 * 1024
+        mb = -1                    # 非法（非整数/空串/小数）→ 与负数同路：回退默认
+    if mb < 0:
+        _warn_bad_config("PAPERPILOT_MAX_PDF_MB", raw,
+                         f"需为 ≥ 0 的整数 → 回退默认 {_DEFAULT_MAX_PDF_MB}MB；"
+                         f"如确实要**不限制**，请显式设为 0")
+        mb = _DEFAULT_MAX_PDF_MB
+    return mb * 1024 * 1024
 
 
 def _check_pdf_magic(raw: bytes) -> None:
@@ -145,7 +178,58 @@ class AskBody(BaseModel):
 # 不收口会打爆 LLM 限流、并让共享的向量模型吃满内存。
 # 用 threading.Semaphore 而不是 anyio 的 CapacityLimiter：后者与事件循环绑定，
 # 而 TestClient 每次会新建 loop → 会出问题。
-_ASK_GATE = threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY", "4")))
+_DEFAULT_ASK_CONCURRENCY = 4
+_DEFAULT_ASK_WAIT_S = 300.0
+
+
+def _ask_concurrency() -> int:
+    """问答并发上限。**没有"0 / 关闭闸门"这个取值**（2026-09-14 审查）。
+
+    ⚠️ 旧写法 `threading.Semaphore(int(os.environ.get(..., "4")))` 有两个
+    **沉默致命**的配置后果：
+      · `=0` → 信号量初值 0 → `with gate:` **永久阻塞**：请求永不返回（页面一直转圈）、
+        线程池线程被永久占住，而且**一个字都不报**；
+      · 负数 / 非数字 → 在 **import 时**抛 `ValueError` → 整个服务起不来。
+    规则：**必须 ≥ 1**，其余（0 / 负数 / 非数字 / 空串 / 小数）→ 回退默认并提示一次。
+    ⚠️ 与上传上限的 `0 = 不限制` 不同：那里的 0 是**放宽用户自己的约束**，
+    而这里的 0 是"**把服务挂死**" —— 所以它没有语义，只有回退。
+    """
+    raw = os.environ.get("PAPERPILOT_ASK_CONCURRENCY", str(_DEFAULT_ASK_CONCURRENCY))
+    try:
+        n = int(raw.strip())
+    except ValueError:
+        n = -1
+    if n < 1:
+        _warn_bad_config("PAPERPILOT_ASK_CONCURRENCY", raw,
+                         f"需为 ≥ 1 的整数（**没有 0 / 关闭 的取值**：0 会让每个问答"
+                         f"永久阻塞）→ 回退默认 {_DEFAULT_ASK_CONCURRENCY}")
+        n = _DEFAULT_ASK_CONCURRENCY
+    return n
+
+
+def _ask_wait_seconds() -> float:
+    """闸门满时的**排队等待上限**（秒）。超过 → `503`，而不是无限期挂住。
+
+    `0` 在这里是**合法且更严格**的取值（不排队：闸门满就立刻 503）；
+    负数 / 非数字 / 空串 → 回退默认。
+    为什么必须有这道界限：闸门即便配置正确，也可能因积压让人等到天荒地老 ——
+    **有界失败优于无界等待**（用户能拿到可重试的错误，而不是页面一直转圈）。
+    """
+    raw = os.environ.get("PAPERPILOT_ASK_WAIT_S", str(int(_DEFAULT_ASK_WAIT_S)))
+    try:
+        sec = float(raw.strip())
+    except ValueError:
+        sec = -1.0
+    if sec < 0:
+        _warn_bad_config("PAPERPILOT_ASK_WAIT_S", raw,
+                         f"需为 ≥ 0 的数字（0 = 不排队，闸门满时立刻 503）→ "
+                         f"回退默认 {_DEFAULT_ASK_WAIT_S:.0f}s")
+        sec = _DEFAULT_ASK_WAIT_S
+    return sec
+
+
+# 模块级只建一次（有状态）；取值**先过校验** → 既不会崩在 import，也不会是 0。
+_ASK_GATE = threading.Semaphore(_ask_concurrency())
 
 
 @app.post("/api/ask")
@@ -156,19 +240,33 @@ def ask_question(body: AskBody) -> JSONResponse:
     **线程池**执行，于是十几秒的问答**不会占住事件循环**（原先 `async def` 里直接调同步
     `graph_ask()` → 事件循环被占满，期间其他请求全部排队）。
     并发由 `_ASK_GATE` 收口（默认 4 路，`PAPERPILOT_ASK_CONCURRENCY` 可调）——
-    排队的是**线程**，不是事件循环。
+    排队的是**线程**，不是事件循环。排队**有上限**（`PAPERPILOT_ASK_WAIT_S`，默认 300s），
+    超时返回 `503`：宁可给一个能重试的错误，也不让页面无限转圈。
 
     若该论文摄取时 MinerU 明确失败，graph.ask 会直接返回拒绝话术与原因（不静默降级）。
     """
     if not llm.is_configured():
         raise HTTPException(status_code=500, detail="LLM 未配置：请先填写 .env")
+
+    # **有界排队**（不是 `with _ASK_GATE:` 那种无限等待，2026-09-14 审查）：
+    # 闸门满 → 最多等 `PAPERPILOT_ASK_WAIT_S`（默认 300s）→ 明确 `503`。
+    # 为什么：无界等待一旦发生，用户看到的是"页面永远转圈"、线程池被占死，
+    # 而日志里一个字都没有 —— **有界失败**（能重试、能看见原因）严格优于它。
+    wait_s = _ask_wait_seconds()
+    if not _ASK_GATE.acquire(timeout=wait_s):
+        raise HTTPException(
+            status_code=503,
+            detail=f"问答排队超时（等待超过 {wait_s:.0f}s）：当前并发已满"
+                   f"（上限 {_ask_concurrency()}），请稍后重试；"
+                   f"或调大 `PAPERPILOT_ASK_CONCURRENCY`。")
     try:
-        with _ASK_GATE:
-            r = graph_ask(body.question, body.pdf, history=body.history)
+        r = graph_ask(body.question, body.pdf, history=body.history)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=f"缺论文上下文: {e}") from e
     except Exception as e:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=f"问答失败: {e}") from e
+    finally:
+        _ASK_GATE.release()          # 无论成功/异常/HTTPException 都归还名额
     # validator：**答案自检结果**（issues 的 sev/type/detail/sentence）——前端据此显示"AI 复核"标注。
     # 只回 action/issues 两键：supplements 里带 chunk 原文（可达数千字），前端用不到。
     # ⚠️ 不要回 `high`：`gate()` 的返回值里**没有**这个键（它在 check() 里），回了会恒为 false。
