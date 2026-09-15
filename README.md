@@ -349,15 +349,16 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 **一条命令，5 分钟内出确定结果，不需要任何 API Key / GPU / 本地模型：**
 
 ```bash
-uv run pytest -q        # 138 passed in ~4s（本地；CI 上含装依赖约 1~2 分钟）
+uv run pytest -q        # 178 passed in ~8s（本地；CI 上含装依赖约 1~2 分钟）
 ```
 
-规矩很简单，两条命令分两类事：
+规矩很简单，**三层命令分三类事**（后两档默认跳过，缺环境也只会 skip、不会红）：
 
 | 命令 | 跑什么 | 需要什么 |
 |---|---|---|
 | **`uv run pytest -q`** | **离线**：纯逻辑 / 契约边界 / 状态机 / 缓存命中失效 / API / **mock LLM 端到端** | 无（CI 与"别人 clone 后自证"都用这条） |
-| `uv run pytest -q -m local` | 需要**真实模型/LLM** 的用例（真实裁判体检等） | 本地 key + 模型 |
+| `uv run pytest -m local` | **真模型冒烟**：真向量检索位次（中文问英文论文）/ 真 LLM 作答带引用 / 真 MinerU 解析 / 真实裁判体检 | 本机 key + 模型 + `.venv-mineru`（实测 13s / 22s / 68s） |
+| `uv run pytest -m ui` | **浏览器级冒烟**：真前端 JS + 真 HTTP（上传 → 报告 → 提问 → 点引用跳原文），并捕获未捕获的 JS 异常 | 本机 Edge/Chrome（或 `playwright install chromium`；**不必**下 130MB） |
 
 外部依赖的处理方式（这是"不需要 key"的实现）：
 
@@ -369,20 +370,22 @@ uv run pytest -q        # 138 passed in ~4s（本地；CI 上含装依赖约 1~2
 | **论文语料** | 现场用 pymupdf 生成小 PDF；所有 `assets/**` 路径被重定向到 `tmp_path`（**不碰真实论文与产物**） |
 | **网络** | `urllib.request.urlopen` 被换成"一用就炸"：漏了替身会**明确失败**，而不是偶发联网成功 |
 
-覆盖清单（`uv run pytest --collect-only -q` 实测，对照外部审查意见）：
+覆盖清单（`uv run pytest --collect-only -q` 实测：**默认档 178 + local/ui 档 5 = 183**）：
 
 | 文件 | 用例 | 覆盖 |
 |---|---|---|
 | `test_tables.py` | 31 | 表块纯函数：caption 清噪（含罗马数字）、表头指纹、摘要、并集配额、按块权重、RRF |
+| `test_api.py` | 30 | API 集成：202 早返回、幂等 200、任务查询、取消/重试、404/400、拒答话术、状态快照；**上传门**（`%PDF-` 魔数 / 大小上限，含**配置 fail-safe**：非法值不放宽权限） |
+| `test_jobs_worker.py` | 25 | 任务状态机：阶段耗时、取消（含"编码中取消"）、重试、重启恢复、**异常兜底不卡死**、**并发读写不丢状态**、MinerU 真状态被采纳 |
+| `test_api_concurrency.py` | 18 | **`/api/ask` 不阻塞事件循环**（同步端点 + 并发闸门）；闸门配置 **fail-safe**、排队**有界**（无名额 → 503 而不是无限等待） |
 | `test_identity_cache.py` | 17 | 内容指纹判定（ok/stale/adopt）、**缓存命中与失效**（进程内 + 磁盘 cvec）、表格只进检索视图 |
-| `test_jobs_worker.py` | 16 | 任务状态机：阶段耗时、取消、重试、重启恢复、**异常兜底不卡死** |
 | `test_llm_client.py` | 16 | JSON 解析容错、**坏 JSON**、**超长输入**、未配置时明确报错 |
 | `test_tgt.py` | 15 | 目标表定位口径（编号 ∪ 内容）—— 所有表格类指标的尺子 |
-| `test_api.py` | 15 | API 集成：202 早返回、幂等 200、任务查询、取消/重试、404/400、拒答话术、状态快照 |
-| `test_api_concurrency.py` | 3 | **`/api/ask` 不阻塞事件循环**（同步端点 + 并发闸门；含"问答进行中其他请求仍秒回"的行为验证） |
-| `test_validator_offline.py` | 12 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归 |
-| `test_e2e_mock.py` | **3** | **mock LLM 端到端**：上传 → 后台 job → 报告 → 提问 → 带 `[n]` 引用的答案 |
+| `test_validator_offline.py` | 13 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归（+1 条 `local`：真裁判模型） |
 | `test_mock_mode.py` | 10 | **演示模式**（`--mock`）：无 Key / 无模型 / 无 MinerU 也能跑通（上面 README 承诺的技术保障） |
+| `test_e2e_mock.py` | **4** | **mock LLM 端到端**：上传 → 后台 job → 报告 → 提问 → 带 `[n]` 引用的答案；含"MinerU 失败 → 不建索引 + 问答被闸门拦" |
+| `test_local_smoke.py` | 3 | `local` 档**真模型冒烟**：真向量检索位次 / 真 LLM 作答带引用 / 真 MinerU 解析（各带 skip 条件） |
+| `test_ui_smoke.py` | 1 | `ui` 档**浏览器冒烟**：playwright 驱动真页面走完上传 → 报告 → 提问 → 点引用跳原文，并捕获未捕获 JS 异常 |
 
 CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任何 secret**）。
 

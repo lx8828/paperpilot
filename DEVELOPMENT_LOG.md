@@ -1150,3 +1150,57 @@ _ASK_GATE = threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY",
 **前端仍然没有自动化行为测试**：真要验"超时会 abort"，得让服务端挂住 + 等一整个预算
 （分钟级），成本不划算；浏览器级冒烟（playwright + `--mock` 演示模式）可以后续单独做。
 
+---
+
+## 2026-09-14 · 补齐三层测试的另两层：浏览器冒烟 / one-off 归档 / 真模型冒烟
+
+**背景（自查缺口）**：离线那一档做完了，但还有两处漏风 ——
+① 前端 `index.html` **一行都没被执行过**（加 `AbortController` 时只有 `node --check` 语法门禁）；
+② `pytest -m local` **只有 1 条**，"真模型那档"没有"跑得动、判得死"的冒烟；
+③ `qa/recall/` 595 个文件混在一起，**"哪些是真测试、哪些是当时的一次性脚本"看不出来**。
+
+### ① 浏览器级冒烟：`tests/test_ui_smoke.py`（1 用例，`-m ui`）
+
+- **同进程起 uvicorn**（后台线程）+ 演示模式 → 真页面走真 HTTP；覆盖
+  **上传 → 报告渲染 → 提问 → 答案带可点引用 → 点引用跳原文（pdf.js 真画出 canvas）**，
+  并用 `pageerror` **捕获未捕获的 JS 异常**（前端脚本一抛错就红）。
+- **不强制下载 chromium**（130MB+）：按 `channel=msedge → chrome → 自带 chromium` 顺序尝试，
+  都没有就 `skip`。本机命中 Edge 153 → 零下载。
+- 默认**跳过**（`addopts: -m 'not local and not ui'`）→ **CI 一行不变、仍是 178 用例**。
+- ⚠️ **验证过它会红**（不进这一步就等于没测）：把"引用号 → 可点链接"那行临时改成纯文本
+  → 测试在 30s 内 `TimeoutError: #msgs .jump` 失败；随后 `git diff web/index.html` 为空
+  （完全还原）。**新测试必须做一次"能红"的验证**，否则很可能只是"跟着页面一起绿"。
+
+### ② one-off 脚本归档（136 个）
+
+- **先做引用分析**（被 `tests/` 导入 / 被其它脚本 `import` / README·日志·qa 报告提到）
+  → 只有 **23 个必须留**（如 `_tgt.py` 是测试的口径模块）；再验证"保留脚本没引用被归档的名字、
+  归档集合内部无互引"→ 才动手。
+- 移到 `qa/_archive/recall/`：该目录被 `.gitignore` 忽略 → **退出仓库、留在本机**（git 历史仍在）。
+- **关键补充：入库索引 `qa/recall/ARCHIVED.md`** —— 136 个脚本 + 每个的 docstring 首行 +
+  保留的 23 个及其理由。"把文件移走"和"把知识丢掉"是两件事。
+- 效果：`qa/recall/*.py` **159 → 23**，仓库 **-13099 行**。
+
+### ③ 真模型冒烟：`tests/test_local_smoke.py`（3 用例，`-m local`，实测 13.6s / 8.4~22.6s / 68.0s）
+
+| 用例 | 判什么 | 为什么假替身测不出 |
+|---|---|---|
+| `test_local_embedding_ranking` | **中文提问**命中英文论文里的 `dual-tower` 块；**另一条独立查询**命中含 `87.3` 的块；命中都带 chunk_id/页码 | 假向量只测"管道通不通"；**跨语言检索**是我们的真实使用场景 |
+| `test_local_llm_answer_has_citation` | 真 LLM 作答：答案非空、`cites` 非空且页码 ≥1、validator 动作合法 | 假 LLM 返回固定串，测不出"真模型这一环通不通" |
+| `test_local_mineru_single_page` | 真 `run_mineru` 出产物、bridge 能解析成块 | MinerU 要 GPU/模型，CI 永远跑不了 |
+
+三条都**自带 skip**（缺模型 / 缺 key / 缺 `.venv-mineru` → skip 不红）。三个刻意的设计：
+
+1. 报告用**演示模式**生成（快、不烧 token），**只有提问那一步换成真 LLM** ——
+   这条测的是"真模型链路"，不是"报告质量"（后者是 `qa/` 评测的活）；
+2. 断言 `mock_llm._TAG not in answer` —— **防止它悄悄退化成 mock 测试**（最可能发生的腐化）；
+3. `real_env` fixture 显式 `_load_dotenv`：conftest 的 `isolate` 会清 LLM key（有意为之，
+   保证 CI 无 key），local 用例必须自己按 `web/app.py` 的方式加载 `.env`。
+
+### 教训（三条可复用）
+
+1. **新测试要验一次"能红"** —— 尤其 UI/端到端这种"环境一坏就全绿"的测试；
+2. **归档先做引用分析、再留入库索引** —— 移动文件不难，难的是不丢知识、不打断引用；
+3. 分层原则再确认：**CI 判对错（178，8s，免费）/ `local` 判真模型能不能跑（5，要 key+模型）/
+   `ui` 判前端真的能用（1，要浏览器）** —— 每档都有自己的 skip 条件，于是"一条命令"永远绿。
+
