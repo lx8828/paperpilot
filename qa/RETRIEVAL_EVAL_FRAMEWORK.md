@@ -52,7 +52,7 @@
 | `qa/negqa/_run_neg.py` | T 拒答 | 篡改/不存在 20 | 20/20 | ✅ |
 | `qa/robust/_run_robust.py` | T 稳定 | 30×3 | 一致 70% | ✅ |
 | `cli/run_qa_v2.py` + bench | 回归 | 中文176 + 21 篇 | 176/176 + 17✅4已知 | ✅ |
-| `qa/compare/run_compare.py` | T+A | B0/B1/B2 64 | 51/49/46 | ✅ 可复用（v3 定版后换图重跑） |
+| `cli/run_compare.py` | T+A | B0/B1/B2 64 | 51/49/46 | ✅ 可复用（v3 定版后换图重跑） |
 | `qa/recall/_diag_center.py` | ~~C~~ | 圆心诊断 | 池70/节70/圆心10 | 🗄️ 退役：给 L2 用，v3 无圆心 |
 | `qa/recall/_diag_l2win/_l3win.py` | ~~C~~ | 窗口∩gold | L2 0.04 vs L3 0.98 | 🗄️ 退役（方法留档） |
 

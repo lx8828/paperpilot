@@ -628,7 +628,8 @@ uv run python web/app.py                   # 开发服务器（上传 → 报告
 （无原文故不判真伪，自带守卫）；`cli/run_qasper_eval.py`、`qa/recall/_qasper_tbl_exp.py`
 记录 `validator_action` / `issues` / `no_citation(_substantive)`；`web/app.py` 回传 validator 摘要、
 `web/index.html` 渲染"答案自检（AI 复核）"提示条。
-**验收**：`qa/recall/_selftest_validator_20260913.py`（机器 12/12；`PP_LLM=1` 加测真实体检）；
+**验收**：`qa/recall/_selftest_validator_20260913.py`（机器 12/12；`PP_LLM=1` 加测真实体检）
+——该脚本已于 2026-09-13 迁入 `tests/test_validator_offline.py` 并从 `qa/` 移除（旧路径仅存于本条历史记录）；
 `node --check` 前端内联 JS 通过。**未做（B 档）**：按 route 分流强制补引用。
 台账：`qa/review/RESPONSES_20260913.md`；设计文档：`docs/RAG_COMPONENT_NOTES.md` §6.5。
 
@@ -656,7 +657,8 @@ uv run python web/app.py                   # 开发服务器（上传 → 报告
 - **web C 档**：`plan_upload` 按内容判定落点——同名同内容幂等复用；同名不同内容另存
   `<stem>__<sha8>.pdf` 当新论文（原文件不动）+ `upload_note` 告知。
 
-**验收**：`qa/review/_selftest_identity_20260913.py`（19 项全绿）；原复现脚本转为验收脚本：
+**验收**：`qa/review/_selftest_identity_20260913.py`（19 项全绿）
+——该脚本已于 2026-09-13 迁入 `tests/test_identity_cache.py` 并从 `qa/` 移除（旧路径仅存于本条历史记录）；原复现脚本转为验收脚本：
 流水线侧 `[identity] … → 整链重建产物` 且 `--skip-llm` 被拒；web 侧"未返回旧报告 / 已另存新名 /
 原文件未改动"。回归：QASPER 虚拟名问答正常、三个自测全绿、`compileall` 0 错。
 **未做（B 档）**：产物内容寻址目录（`by_hash/<sha12>/`），成本/收益比不划算。

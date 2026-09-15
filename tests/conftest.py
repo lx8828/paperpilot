@@ -104,6 +104,20 @@ def isolate(monkeypatch):
 
 
 @pytest.fixture
+def real_env():
+    """把本机 `.env` 灌进 `os.environ` —— **只给 `-m local` 的真模型用例用**。
+
+    为什么必须显式做：autouse 的 `isolate` 会**清掉** LLM / 裁判的 key（有意设计：
+    CI 与"别人 clone"不该有 key），所以 local 用例要真跑，就得自己按 `web/app.py`
+    的方式加载 `.env`。这些 key 会在**下一个测试**的 `isolate` 里被清掉，不污染别的用例。
+    """
+    from paperpilot.tools import llm
+
+    llm._load_dotenv(str(ROOT))
+    return True
+
+
+@pytest.fixture
 def tmp_assets(tmp_path, monkeypatch):
     """把生产写死的 assets 路径**全部**重定向到 tmp_path。
 
@@ -347,14 +361,19 @@ def webapp():
     from paperpilot.tools import llm
 
     # `web/app.py` 导入时会 `llm._load_dotenv(ROOT)` → 把**本机 .env**（可能含真 key）
-    # 灌进 `os.environ`，测试结果就会取决于开发者机器。这里禁掉它，保证结果只由测试决定。
+    # 灌进 `os.environ`，测试结果就会取决于开发者机器。这里**只在 import 期间**禁掉它，
+    # 保证结果只由测试决定；import 完立刻还原 —— fixture 不该把全局状态永久改坏
+    # （否则 `-m local` 里 `real_env` 想加载 .env 会加载不了）。
+    orig_load_dotenv = llm._load_dotenv
     llm._load_dotenv = lambda *_a, **_k: None      # type: ignore[assignment]
-
-    spec = importlib.util.spec_from_file_location("pp_webapp", ROOT / "web" / "app.py")
-    assert spec and spec.loader
-    mod = importlib.util.module_from_spec(spec)
-    _sys.modules[spec.name] = mod
-    spec.loader.exec_module(mod)
+    try:
+        spec = importlib.util.spec_from_file_location("pp_webapp", ROOT / "web" / "app.py")
+        assert spec and spec.loader
+        mod = importlib.util.module_from_spec(spec)
+        _sys.modules[spec.name] = mod
+        spec.loader.exec_module(mod)
+    finally:
+        llm._load_dotenv = orig_load_dotenv
     rebuild = getattr(getattr(mod, "AskBody", None), "model_rebuild", None)
     if callable(rebuild):
         rebuild()

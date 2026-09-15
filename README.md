@@ -243,6 +243,7 @@ uv run python cli/run_view.py <pdf名>        # 装配视图 / 产物检查
 | `PAPERPILOT_TABLE_EMBED_SUMMARY` | 关 | **P2 双写**（表块向量侧改喂语义摘要）——两次实测均**不及现状**，已收口：`qa/recall/P2_DUALWRITE_20260912.md` |
 | `PAPERPILOT_TABLE_V1` | 关 | `=1` 复现改造前的表表示 + prompt 布局（同日配对 A/B 用） |
 | `PAPERPILOT_QUERY_REWRITE` | `0` | 查询改写（实测负收益，默认关） |
+| `PAPERPILOT_V3_NOL3J` | 开 | 问答图**默认走"跳过 L3 裁判"的变体**（消融实测 64%→73%，见 `qa/REPORT_2.0_20260911.md`）；`=0` 回到带 `judge_l3` 的图（对比用） |
 | `PAPERPILOT_RETRIEVE_SECTION_CAP` | `0` | 保序节级配额去重（>0 开启） |
 | `PAPERPILOT_VALIDATOR_REPAIR_MID` | 关 | mid 级问题是否也触发修复（默认只标注不修） |
 | `PAPERPILOT_VALIDATOR_MISSING` | 关 | 是否提示"原文可能还有未答要点"（好答案上误报多，默认关） |

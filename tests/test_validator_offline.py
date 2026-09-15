@@ -83,8 +83,12 @@ def test_gate_llm_guard_when_unconfigured(monkeypatch):
 
 
 @pytest.mark.local
-def test_llm_uncited_with_real_model():
-    """`uv run pytest -m local` 时才跑：需要真实 key（CI 不跑）。"""
+def test_llm_uncited_with_real_model(real_env):
+    """`uv run pytest -m local` 时才跑：需要真实 key（CI 不跑）。
+
+    `real_env`（conftest）负责把本机 `.env` 灌进来 —— 否则 autouse 的 `isolate`
+    已经把 key 清空，这条会**永远 skip**（等于没有）。
+    """
     from paperpilot.tools import llm
 
     if not llm.judge_configured():

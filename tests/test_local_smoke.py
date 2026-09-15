@@ -52,20 +52,6 @@ def demo_in_tmp(tmp_assets) -> str:
     return "demo_paper.pdf"
 
 
-@pytest.fixture
-def real_env():
-    """把本机 `.env` 灌进 `os.environ`。
-
-    为什么必须显式做：conftest 的 autouse `isolate` 会**清掉** LLM/裁判的 key
-    （那是有意设计：CI 与"别人 clone"不该有 key）——于是 local 用例得自己按
-    `web/app.py` 的方式加载 `.env`。这些 key 会在**下一个测试**的 `isolate` 里被清掉，
-    不会污染别的用例。
-    """
-    from paperpilot.tools import llm
-
-    llm._load_dotenv(str(ROOT))
-    return True
-
 
 # ───────────────────────── ① 真向量检索位次 ─────────────────────────
 
