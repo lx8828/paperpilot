@@ -76,6 +76,17 @@ GROUPS: dict[str, dict] = {
             "2609.01456v1",   # AutoConcept：元数据可用的 CIR 重排
         ],
     },
+    "group2": {
+        "title": "第二组 · Agent Skill 持续学习五篇（技能生成基准 / 技能共演化 / "
+                 "元技能演化 / 离线持续协作 / 持续技能优化）",
+        "papers": [
+            "2604.20087",     # SkillLearnBench：技能生成的持续学习基准
+            "2605.09341",     # SkillMAS：多智能体系统的技能共演化
+            "2606.18837",     # Skill-MAS：自动多智能体系统的元技能演化
+            "2606.25389",     # Offline Multi-agent Continual Cooperation：技能划分与复用
+            "2609.02094v1",   # MASkills：多智能体 LLM 系统的持续技能优化
+        ],
+    },
 }
 
 
