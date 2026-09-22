@@ -205,6 +205,7 @@ class PaperReport(BaseModel):
     stats: dict[str, int] = {}      # n_claims / n_groups / n_hubs / n_edges / n_must / n_lim
     guide: str = ""                 # 一分钟导读（小白向）
     overview: str = ""              # 概述（研究者向）
+    degraded: str = ""              # 降级原因（概述/导读材料为空等）；"" = 正常
     core_points: list[GroupBrief] = []   # 必读主张（importance>=5，按分排序）
     limitations: list[GroupBrief] = []   # 局限（按重要性）
     skeleton: list[HubView] = []         # 论证骨架

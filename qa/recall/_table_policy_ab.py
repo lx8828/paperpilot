@@ -1,4 +1,4 @@
-"""表格通道策略 A/B（离线、零 LLM）：用**真指标**决定 #2「表格只走向量路」与 #3「cap 上限」要不要上。
+﻿"""表格通道策略 A/B（离线、零 LLM）：用**真指标**决定 #2「表格只走向量路」与 #3「cap 上限」要不要上。
 
 两个面板：
   面板 1（**表格收益**）：A 桶 36 题（gold 出自表格）→ 目标表块**是否进 top-12**、平均位次
@@ -36,7 +36,8 @@ sys.path.insert(0, str(ROOT / "cli"))
 from paperpilot.agents.document_cache import ordered_chunks  # noqa: E402
 from paperpilot.agents.embedder import BM25Index, encode_query, encode_texts  # noqa: E402
 from paperpilot.models.schema import Chunk  # noqa: E402
-from paperpilot.qasper_source import gold_answer_full, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer_full, load_papers  # noqa: E402
 from paperpilot.tools.mineru_bridge import (  # noqa: E402
     _find_content_list, element_text, latex_to_text)
 from run_retrieval_eval import locate_gold, norm  # noqa: E402

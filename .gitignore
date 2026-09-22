@@ -78,6 +78,20 @@ qa/qasper_*.json
 qa/qasper_*.jsonl
 qa/qasper_*.md
 
+# ── 篇级检索（retrieval/）────────────────────────────────
+# 2026-09-18 新增：LitSearch 等公开评测集与向量缓存体积大、可重下 → 不入库。
+# 仍然入库的是：retrieval/scripts/*.py（下载/解析/评测脚本）、
+# retrieval/results/*.md（报告）、retrieval/*.md（设计说明）。
+retrieval/data/
+retrieval/results/*.json
+retrieval/results/*.jsonl
+retrieval/results/*.npy
+retrieval/results/*.csv
+retrieval/_scratch/
+# 出题工作区：论文原文抽取（.txt）+ 表格页渲染图（.png，单篇可达 10MB+）
+# —— 全是**从 PDF 可重生成**的临时产物，不入库。
+retrieval/tmp/
+
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db
 .DS_Store

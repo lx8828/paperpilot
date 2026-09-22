@@ -97,11 +97,15 @@ def _refine_answer(question: str, answer: str, issues: list[dict[str, Any]],
 _GAP_SENT_RE = re.compile(r"\[\d+\]")
 
 
-def _crag_regenerate(question: str, pdf: str, answer: str,
+def _crag_regenerate(question: str, pdfs: list[str], answer: str,
                      issues: list[dict[str, Any]], top_k: int = 16
                      ) -> tuple[str, list[dict[str, Any]]] | None:
-    """对 evidence 型失败：用问题/无据句做多查询混合检索，新证据上 L3 重答。"""
-    from paperpilot.agents.embedder import ChunkIndex
+    """对 evidence 型失败：用问题/无据句做多查询混合检索，新证据上 L3 重答。
+
+    ⚠️ 参数是**语料（多篇）**：检索走 `MultiChunkIndex`；`pdfs[0]` 只作 cites 的兜底标签
+    （每条证据自带 `pdf`，cites 不会串篇）。本系统没有单篇路径（2026-09-23）。
+    """
+    from paperpilot.agents.embedder import MultiChunkIndex
     from paperpilot.agents.nodes.pull_chunk import _section_tail
     from paperpilot.components.context_builder import compose
 
@@ -115,7 +119,7 @@ def _crag_regenerate(question: str, pdf: str, answer: str,
                 gaps.append(q)
     queries = ([question] + gaps)[:3]
     try:
-        idx = ChunkIndex(pdf)
+        idx = MultiChunkIndex([str(p) for p in pdfs if p])
         hits = (idx.search_multi_hybrid(queries, top_k=top_k) if len(queries) > 1
                 else idx.search_hybrid(question, top_k=top_k))
     except Exception:  # noqa: BLE001
@@ -134,7 +138,8 @@ def _crag_regenerate(question: str, pdf: str, answer: str,
     entries = [{**c, "kind": "chunk"} for c in l3]
     header = f"=== 全文检索正文（修复回路·缺口重检索，{len(l3)} 块）==="
     try:
-        new, cites, _facts = compose(question, pdf, header, entries, "L3", {})
+        new, cites, _facts = compose(question, pdfs[0] if pdfs else "",
+                                     header, entries, "L3", {})
     except Exception:  # noqa: BLE001
         return None
     new = str(new or "").strip()
@@ -161,7 +166,7 @@ def _recheck_entries(question: str, answer: str, entries: list[dict[str, Any]]) 
     return not bool(res.get("high"))
 
 
-def _try_refine(question: str, pdf: str, answer: str,
+def _try_refine(question: str, pdfs: list[str], answer: str,
                 issues: list[dict[str, Any]], cites: list[dict[str, Any]]
                 ) -> tuple[str, list[dict[str, Any]]] | None:
     from paperpilot.agents.nodes.answer import _cites_from
@@ -169,16 +174,16 @@ def _try_refine(question: str, pdf: str, answer: str,
     if not new:
         return None
     entries = _entries_from_cites(cites)   # refine 模型按 cites 子集编号作答 → 用同集复检
-    new_cites = list(_cites_from(new, entries, pdf) or [])
+    new_cites = list(_cites_from(new, entries, pdfs[0] if pdfs else "") or [])
     if not new_cites or not _recheck_entries(question, new, entries):
         return None
     return new, new_cites
 
 
-def _try_crag(question: str, pdf: str, answer: str,
+def _try_crag(question: str, pdfs: list[str], answer: str,
               issues: list[dict[str, Any]], cites: list[dict[str, Any]]
               ) -> tuple[str, list[dict[str, Any]]] | None:
-    got = _crag_regenerate(question, pdf, answer, issues)
+    got = _crag_regenerate(question, pdfs, answer, issues)
     if not got:
         return None
     new, new_cites, full_entries = got
@@ -273,7 +278,7 @@ def _supplement_entries(cites: list[dict[str, Any]],
     return out
 
 
-def supplement(question: str, pdf: str, answer: str,
+def supplement(question: str, pdfs: list[str], answer: str,
                supplements: list[dict[str, Any]],
                cites: list[dict[str, Any]]) -> tuple[str, list[dict[str, Any]]] | None:
     """补充复核：数字在被引证据缺失、但已在全篇定位到命中 chunk 时调用。
@@ -321,7 +326,7 @@ def supplement(question: str, pdf: str, answer: str,
     from paperpilot.agents.nodes.answer import _cites_from
     from paperpilot.components import validator
     try:
-        new_cites = list(_cites_from(new, entries, pdf) or [])
+        new_cites = list(_cites_from(new, entries, pdfs[0] if pdfs else "") or [])
         res = validator.check(question, new, entries, n_entries=len(entries), use_llm=False)
     except Exception:  # noqa: BLE001
         return None
@@ -395,7 +400,7 @@ def adjudicate_numbers(question: str, answer: str, nums: list[float],
 # ── 主入口 ───────────────────────────────────────────────────────────────────
 
 
-def repair(question: str, pdf: str, answer: str,
+def repair(question: str, pdfs: list[str], answer: str,
            issues: list[dict[str, Any]], cites: list[dict[str, Any]]
            ) -> tuple[str, list[dict[str, Any]]] | None:
     """输出闸门检出问题后的一次性对症修复。
@@ -409,11 +414,11 @@ def repair(question: str, pdf: str, answer: str,
     has_ge = any(i["type"] in _GENERATION_TYPES for i in tgt)
     # 生成问题（证据在没用对）先 Self-Refine（便宜）；仍有 evidence 型失败再做 CRAG。
     if has_ge:
-        got = _try_refine(question, pdf, answer, tgt, cites)
+        got = _try_refine(question, pdfs, answer, tgt, cites)
         if got:
             return got
     if has_ev:
-        got = _try_crag(question, pdf, answer, tgt, cites)
+        got = _try_crag(question, pdfs, answer, tgt, cites)
         if got:
             return got
     return None

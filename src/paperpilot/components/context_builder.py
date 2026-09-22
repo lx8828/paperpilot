@@ -29,12 +29,19 @@ def extract_facts(question: str, context: str) -> list[dict[str, Any]]:
 
 def compose(question: str, pdf: str, header: str, entries: list[dict[str, Any]],
             level: str, state: dict[str, Any] | None = None):
-    """两步法第二步：带上下文+facts 生成 answer + cites。委派 answer._compose。"""
+    """两步法第二步：带上下文+facts 生成 answer + cites。委派 answer._compose。
+
+    `pdf` 只是 cites 前缀的**兜底标签** —— 多篇语料下每条证据自带 `pdf`
+    （`_cites_from` 优先用它），所以这里传什么都不会串篇（2026-09-23）。
+    """
     from paperpilot.agents.nodes.answer import _compose
     return _compose(question, pdf, header, entries, level, state or {})
 
 
-def audit_absence(question: str, pdf: str) -> dict[str, Any]:
-    """缺失断言复核：浅层断言"论文没写"时全文复核能否作答。返回 {found, entries, reason}。"""
+def audit_absence(question: str, pdfs: list[str]) -> dict[str, Any]:
+    """缺失断言复核：浅层断言"论文没写"时全文复核能否作答。返回 {found, entries, reason}。
+
+    ⚠️ 参数是**语料（多篇）**：本系统没有单篇路径（2026-09-23）。
+    """
     from paperpilot.agents.nodes.answer import _audit_absence
-    return _audit_absence(question, pdf)
+    return _audit_absence(question, pdfs)

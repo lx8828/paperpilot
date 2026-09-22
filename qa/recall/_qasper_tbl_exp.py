@@ -1,4 +1,4 @@
-"""QASPER 外部表格通道实验：补上 arXiv 原始 PDF 的表格后，A 桶能回收多少？
+﻿"""QASPER 外部表格通道实验：补上 arXiv 原始 PDF 的表格后，A 桶能回收多少？
 
 背景：QASPER 的 `figures_and_tables` 只给 PNG + caption span，**表格数值无文本形式**，
 导致 gold 出自表格的题在纯 QASPER 文本通道下**结构上不可达**（500 题里 36 道 = 8.0pt）。
@@ -39,7 +39,8 @@ if os.environ.get("PP_QUOTA"):
 
 import run_qasper_eval as R  # noqa: E402  评测判据的唯一来源
 from paperpilot.graph import ask as graph_ask  # noqa: E402
-from paperpilot.qasper_source import load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 OUT = Path(os.environ.get("PP_OUT") or "qa/recall/qasper_tbl_exp_20260911.json")

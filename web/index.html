@@ -577,7 +577,7 @@ async function ask(){
   try{
     const res=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
       signal:ac.signal,
-      body:JSON.stringify({question:q,pdf:S.pdf,history:chat.slice(0,-1)})});
+      body:JSON.stringify({question:q,pdfs:[S.pdf],history:chat.slice(0,-1)})});
     const data=await res.json(); b.remove();
     if(!res.ok) throw new Error(data.detail||res.statusText);
     chat.push({role:'assistant',content:data.answer});

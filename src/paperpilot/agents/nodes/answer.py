@@ -18,7 +18,7 @@ import os
 import re
 from typing import Any
 
-from paperpilot.agents.embedder import ChunkIndex
+from paperpilot.agents.embedder import MultiChunkIndex
 from paperpilot.agents.nodes.judge import judge_l3
 from paperpilot.agents.state import QAState
 from paperpilot.tools import llm
@@ -188,13 +188,20 @@ def _has_table(entries: list[dict[str, Any]]) -> bool:
 
 
 def _cites_from(text: str, entries: list[dict[str, Any]], pdf: str) -> list[dict[str, Any]]:
-    stem = pdf.rsplit(".", 1)[0]
+    """[n] 引用 → 合法 cites。
+
+    ⚠️ 多篇语料（2026-09-23）：引用前缀**优先取该条自己的 `pdf`**（多篇检索视图/合并
+    core_points 的每条都带 `pdf`）→ cites 才能定位到具体是哪一篇；该条没有 `pdf` 时
+    才回退到传入的 `pdf`（调用方给的兜底标签）。
+    """
+    fallback = str(pdf or "").rsplit(".", 1)[0]
     cites: list[dict[str, Any]] = []
     seen: set[tuple[Any, ...]] = set()
     for n in sorted({int(m) for m in CITE_RE.findall(text)}):
         if not (1 <= n <= len(entries)):
             continue
         e = entries[n - 1]
+        stem = str(e.get("pdf") or "").rsplit(".", 1)[0] or fallback
         if e["kind"] == "claim":
             key = ("g", e.get("gid", ""))
             if key in seen:
@@ -479,10 +486,11 @@ def _compose(question: str, pdf: str, header: str,
     return answer, cites, facts
 
 
-def _l3_audit_entries(pdf: str, question: str) -> list[dict[str, Any]]:
-    """缺失断言复核：独立全文检索（向量+BM25 融合，提升表格/数值段召回）。"""
+def _l3_audit_entries(pdfs: list[str], question: str) -> list[dict[str, Any]]:
+    """缺失断言复核：独立全文检索（向量+BM25 融合，提升表格/数值段召回）。**多篇语料**。"""
     try:
-        hits = ChunkIndex(pdf).search_hybrid(question, top_k=AUDIT_TOP_K)
+        hits = MultiChunkIndex([str(p) for p in pdfs if p]).search_hybrid(
+            question, top_k=AUDIT_TOP_K)
     except Exception:  # noqa: BLE001（复核失败不阻断，按"未找到"处理）
         return []
     out: list[dict[str, Any]] = []
@@ -493,13 +501,14 @@ def _l3_audit_entries(pdf: str, question: str) -> list[dict[str, Any]]:
             "page": h.get("page", 0),
             "section": _sec_tail(list(h.get("title_path") or [])),
             "text": h.get("text", ""),
+            "pdf": h.get("pdf", ""),          # 多篇：每条带它属于哪一篇
         })
     return out
 
 
-def _audit_absence(question: str, pdf: str) -> dict[str, Any]:
+def _audit_absence(question: str, pdfs: list[str]) -> dict[str, Any]:
     """复核一条浅层"缺失断言"：L3 全文若能作答 → found=True，由调用方重答。"""
-    entries = _l3_audit_entries(pdf, question)
+    entries = _l3_audit_entries(pdfs, question)
     if not entries:
         return {"found": False, "entries": [], "reason": "无全文检索命中"}
     try:
@@ -513,7 +522,9 @@ def _audit_absence(question: str, pdf: str) -> dict[str, Any]:
 
 def generate_answer(state: QAState) -> dict[str, Any]:
     question = state.get("question", "")
-    pdf = state.get("pdf", "")
+    pdfs = [str(p) for p in (state.get("pdfs") or []) if p]
+    # cites 前缀的**兜底标签**（正常每条证据自带 `pdf`）；**语料只有多篇**（2026-09-23）。
+    pdf = pdfs[0] if pdfs else ""
     header, entries, level = _build_context(state)
     answer, cites, facts = _compose(question, pdf, header, entries, level, state)
 
@@ -521,7 +532,7 @@ def generate_answer(state: QAState) -> dict[str, Any]:
     # 强制 L3 全文复核（修正"证据没送到就断言全文没有"的误判）。
     audit: dict[str, Any] | None = None
     if level in ("L0", "L1", "L2") and _ABSENCE_RE.search(answer or ""):
-        audit = _audit_absence(question, pdf)
+        audit = _audit_absence(question, pdfs)
         if audit["found"]:
             l3_entries = audit["entries"]
             header3 = (f"标题：{state.get('title','') or ''}\n\n"
@@ -573,7 +584,8 @@ def answer_unknown(state: QAState) -> dict[str, Any]:
     """诚实收尾（L3 仍不足）。2026-09-07：不再只说"找不到"——
     能明确就给结论；确实无法确定时，把检索到的相关原文提炼给用户自行判断。"""
     question = state.get("question", "")
-    pdf = state.get("pdf", "")
+    pdfs = [str(p) for p in (state.get("pdfs") or []) if p]
+    pdf = pdfs[0] if pdfs else ""          # 兜底标签（正常每条证据自带 `pdf`）
     gap = (state.get("verdict") or {}).get("gap", "")
     entries: list[dict[str, Any]] = []
     for c in (state.get("l3_chunks") or [])[:6]:

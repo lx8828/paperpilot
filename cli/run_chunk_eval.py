@@ -1,4 +1,4 @@
-"""chunk 质量评估：向量空间判据（尺子，零 LLM）。
+﻿"""chunk 质量评估：向量空间判据（尺子，零 LLM）。
 
 目的：为"我们的切分是否合理"提供**分量化的数字**——补齐此前只有"检索结果层"
 （gold rank / MRR / NDCG，见 CHUNK_AUDIT）而缺"embedding 空间层"的空白。
@@ -50,7 +50,8 @@ import run_retrieval_eval as ree  # noqa: E402
 from paperpilot.agents.document_cache import ordered_chunks  # noqa: E402
 from paperpilot.agents.embedder import (BM25Index, ChunkIndex,  # noqa: E402
                                         encode_query, encode_texts)
-from paperpilot.qasper_source import gold_answer_full, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer_full, load_papers  # noqa: E402
 
 TERMINAL = set('.!?。！？”"\')]}…')
 _BIN_EDGES = [0.0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.01]

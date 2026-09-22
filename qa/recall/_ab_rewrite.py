@@ -1,4 +1,4 @@
-"""A/B：新默认（nol3j+gate）下，查询改写 关(0) vs 开(1) 的端到端效果。
+﻿"""A/B：新默认（nol3j+gate）下，查询改写 关(0) vs 开(1) 的端到端效果。
 
 样本 = ab_v3base 同 100 题（50 hard + 50 normal，与历史 nol3j 同题可比）。
 同题同进程、同外部裁判 glm-4-flash，两臂各跑一次完整 graph.ask。
@@ -18,7 +18,8 @@ ROOT = Path(".")
 sys.path.insert(0, str(ROOT / "src"))
 
 from paperpilot.graph import ask as graph_ask  # noqa: E402
-from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 OUT = Path("qa/recall/ab_rewrite_result.json")

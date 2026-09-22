@@ -1,4 +1,4 @@
-"""诊断净亏题：judge_l2 判够时 L2 窗口是否含 gold evidence。
+﻿"""诊断净亏题：judge_l2 判够时 L2 窗口是否含 gold evidence。
 
 手动模拟漏斗（等同 qa_graph 路由），逐步记录：
 - judge_l1 判定与 target_sections
@@ -18,7 +18,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from paperpilot.agents.nodes import (expand_l2, generate_answer, judge_l0,  # noqa: E402
                                      judge_l1, judge_l2, report_l0, retrieve_claims)
-from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 CASES = ["8051927f914d", "37c7c62c9216", "2df910c9806f"]  # 1 hard + 2 normal 净亏题

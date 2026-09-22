@@ -128,7 +128,10 @@ def _appear(state: QAState, lvl: str) -> list[str]:
 def _fmt_core(points: list[Any]) -> str:
     lines = []
     for i, c in enumerate(points, 1):
-        lines.append(f"[{i}] [{c.get('label','')}]({c.get('importance',0)}分) {c.get('text','')}")
+        # `src` 只在**多篇语料**时非空（`report_l0` 注入）→ 单篇输出逐字不变
+        src = f"〈{c.get('src')}〉" if c.get("src") else ""
+        lines.append(f"[{i}] {src}[{c.get('label','')}]({c.get('importance',0)}分) "
+                     f"{c.get('text','')}")
     return "\n".join(lines) if lines else "（无核心要点）"
 
 

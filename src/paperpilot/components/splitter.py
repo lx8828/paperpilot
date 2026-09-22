@@ -1,7 +1,8 @@
 """DocumentSplitter 门面：论文预处理 / 结构切分 / 主张抽取。
 
 现状实现（工具层）：pdf_parser.parse_pdf（版面块）→ chunker.chunk_document（标题树切块，
-段落原子 ~4000）→ analyzer.extractable（去前言/参考文献/空块）；QASPER 走 qasper_source.build_chunks。
+段落原子 ~4000）→ analyzer.extractable（去前言/参考文献/空块）；非 PDF 的评测源走
+`paperpilot.sources` 注册表（见 `paperpilot/sources.py`）。
 独特资产：主张抽取层 analyzer.extract_claims（LLM 逐块抽 claim + evidence）——帮读/溯源差异来源，
 不要退回纯分块。表格/扫描/复杂版面 → MinerU（解析层对照实验，见 RAG_COMPONENT_NOTES §2-①）。
 """
@@ -30,15 +31,12 @@ def extractable(chunks: list[Any]) -> list[Any]:
 
 
 def ordered(pdf: str) -> list[Any]:
-    """统一入口：给定论文文件名（pdf / qasper_<id>.qpdf）返回 extractable Chunk[]。"""
+    """统一入口：给定论文文件名返回 extractable Chunk[]。
+
+    非 PDF 的数据源由 `paperpilot.sources` 注册表解析（生产默认只有 PDF 路径）。
+    """
     from paperpilot.agents.document_cache import ordered_chunks
     return ordered_chunks(pdf)
-
-
-def chunks_from_qasper(paper: dict[str, Any]) -> list[Any]:
-    """QASPER 虚拟论文 → Chunk[]（full_text 按标题切，page=0）。"""
-    from paperpilot.qasper_source import build_chunks
-    return build_chunks(paper)
 
 
 def extract_claims(chunks: list[Any], *, workers: int = 4):

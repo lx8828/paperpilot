@@ -195,20 +195,22 @@ def test_cancel_arriving_after_last_stage_still_cancels(tmp_assets, monkeypatch)
 
 
 def test_mineru_failed_then_late_cancel_is_cancelled(tmp_assets, monkeypatch):
-    """MinerU 失败 → 跳过索引 → 此时才收到取消 → 终态也必须 `cancelled`。
+    """MinerU 失败（现在**照建索引**）→ 索引 lane 里收到取消 → 终态必须 `cancelled`。
 
-    这条路径上**没有索引 lane 可当检查点**（`_lane_index` 根本不会被调用），
-    只有"写终态前那道门"能拦住它。
+    2026-09-22 契约变更后，这条路径上**有**索引 lane 可以当检查点（以前 failed 会跳过
+    索引，于是只剩"写终态前那道门"能拦）。本用例确保取消在索引 lane 内就被拦住、
+    不会因为"MinerU 失败了"而把取消吞掉变成 ready。
     """
     seen = {"index": 0}
 
     def _fail_then_cancel(job, ev):
         worker._mark(job, "mineru", status="failed")
-        jobs.request_cancel(job["job_id"])          # 跳过索引的瞬间用户点了取消
+        jobs.request_cancel(job["job_id"])          # MinerU 刚失败，用户就点了取消
         return "failed"
 
-    def _index(job, ev):                            # 不该被调用
+    def _index(job, ev):                            # 现在**会**被调用
         seen["index"] += 1
+        worker._check_cancel(ev)                    # 索引 lane 内的取消检查点
 
     monkeypatch.setattr(worker, "_lane_mineru", _fail_then_cancel)
     monkeypatch.setattr(worker, "_lane_report", lambda job, ev: None)
@@ -218,7 +220,7 @@ def test_mineru_failed_then_late_cancel_is_cancelled(tmp_assets, monkeypatch):
     jobs.save(job)
     worker._run_job(job)
     got = jobs.load(job["job_id"])
-    assert seen["index"] == 0                       # MinerU 失败 → 索引确实没跑
+    assert seen["index"] == 1                       # MinerU 失败也要建索引（降级后要用）
     assert got["status"] == jobs.STATUS_CANCELLED   # 取消没被吞掉
 
 
@@ -256,7 +258,9 @@ def stubbed_lanes(monkeypatch):
 # 并行 lane 里最容易写错的一处：**凭"future 没抛异常"推断 MinerU 成功**。
 # `_lane_mineru()` 的失败路径是**正常返回** `failed`（不抛异常），所以
 # `"ok" if not f_m.cancelled() else "cancelled"` 这种写法会把失败读成 ok：
-# 既白跑一次索引，又把任务状态说错（问答那边倒是被 meta 闸门拦住了，所以不易发现）。
+# 既白跑一次索引，又把任务状态说错。
+# （2026-09-22 起索引**一律要建** —— MinerU 失败会降级到 pymupdf 容灾、问答仍可用 ——
+#  所以"任务状态说错"成了唯一后果，但它是用户可见的，仍必须留住这条回归。）
 
 
 @pytest.fixture
@@ -286,20 +290,24 @@ def lane_recorder(monkeypatch):
     return _make
 
 
-def test_mineru_failed_skips_index(tmp_assets, lane_recorder):
-    """**bug 回归**：MinerU 失败（lane 正常返回 `failed`）→ 不建索引 + 状态如实记录。
+def test_mineru_failed_still_builds_index(tmp_assets, lane_recorder):
+    """**契约变更（2026-09-22）**：MinerU 失败 → **照建索引**（问答降级到 pymupdf 容灾）。
 
-    报告仍然可用（`ready`），问答由 `qa_blocked_reason()` 明确拦住 —— 这是设计，
-    但"索引白跑"和"index 标成 ok"是错的。
+    旧契约是"failed → 跳过索引"，理由是"问答会被 `qa_blocked_reason` 拦住、建了没人用"。
+    那道拦已撤（MinerU 失败改为**降级**而非拒绝）→ 不建索引就等于
+    "降级了却没有向量可用"，降级形同虚设。
+
+    本用例同时保留原 bug 的回归点：lane 返回 `failed`（**正常返回、不抛异常**）时，
+    状态必须**如实**记为 failed，不能被"future 没抛异常"读成 ok。
     """
     calls = lane_recorder("failed")
     job = jobs.new_job("a.pdf")
     jobs.save(job)
     worker._run_job(job)
     got = jobs.load(job["job_id"])
-    assert calls["index"] == 0                                   # 不再白跑索引
-    assert got["stages"]["index"]["status"] == "skipped"
-    assert "failed" in got["stages"]["index"]["note"]             # 跳过原因可查
+    assert got["stages"]["mineru"]["status"] == "failed"          # 状态如实（回归点）
+    assert calls["index"] == 1                                    # 照建（降级后要能用）
+    assert got["stages"]["index"]["status"] == "ok"
     assert got["status"] == jobs.STATUS_READY                     # 报告仍可用
 
 
@@ -344,15 +352,15 @@ def test_mineru_cancelled_ends_cancelled(tmp_assets, lane_recorder):
 
 
 def test_serial_mode_uses_lane_status(tmp_assets, lane_recorder, monkeypatch):
-    """`PAPERPILOT_USE_MINERU=1`（同源模式）走串行：状态同样必须如实采纳。"""
+    """串行模式（`PAPERPILOT_USE_MINERU` 默认开）走串行：状态同样必须如实采纳。"""
     monkeypatch.setenv("PAPERPILOT_USE_MINERU", "1")
     calls = lane_recorder("failed")
     job = jobs.new_job("a.pdf")
     jobs.save(job)
     worker._run_job(job)
     got = jobs.load(job["job_id"])
-    assert calls["index"] == 0
-    assert got["stages"]["index"]["status"] == "skipped"
+    assert got["stages"]["mineru"]["status"] == "failed"     # 如实采纳（不读成 ok）
+    assert calls["index"] == 1                               # 失败也建索引（降级容灾）
 
 
 def test_run_job_ready_with_stage_timings(tmp_assets, stubbed_lanes):

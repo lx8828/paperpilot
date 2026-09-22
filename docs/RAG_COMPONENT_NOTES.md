@@ -1,5 +1,10 @@
 # RAG 组件化设计笔记（2026-09-09）
 
+> ✅ **现状核对（2026-09-22，以代码为准）**：本文档的**组件默认配置**已逐条对过源码，结论仍成立。
+> 两处数字已更新：题集规模 **31 篇 / 304 题**（下文 §⑤ 里"276 题"是 09-21 口径）；
+> 切分骨架默认已翻转为 **MinerU**（§① 与 §6 已注明）。**权威现状入口仍是根 `README.md`**，
+> 本文档是"为什么这么配"的证据账，冲突时以 README + 代码为准。
+
 > 背景：PaperPilot 检索层从"按漏斗层组织"（v2 L0-L3 / v3 两级）向**大厂模块化 RAG 管线**
 > 过渡。本文档把此前全部探索结论固化为**每个组件的默认配置与证据**，目标是：
 > ① 新架构每个组件的取舍都有据可查，不重蹈"反复调试无提升"；
@@ -14,7 +19,7 @@
 ## 1. 目标管线（业界 Modular RAG 参考顺序）
 
 ```
-论文 PDF ─► [DocumentSplitter] ─► [Router] ─► [QueryRewriter] ─► [Retriever(混合)]
+论文 PDF ─► [DocumentSplitter] ─► [Router] ─► [QueryOptimizer] ─► [Retriever(混合)]
      ─► [Reranker] ─► [ContextBuilder] ─► [Generator] ─► [Validator] ─► 答案
                                     ▲___________________________│
                               不够/不合格则回灌（Router/检索升级）
@@ -32,8 +37,63 @@
 - 现状：`pdf_parser → heading → chunker`（标题树切块，段落原子 ~4000 字符）+ QASPER `build_chunks`。
 - 独特资产：切块之上还有**主张抽取层**（LLM 逐块抽 claim + 原文 evidence，锚 chunk/title_path）→
   这是"帮读/溯源"产品差异的来源，不要退回纯分块。
-- MinerU（2026-09-09 接入，细节见 §6）：扫描件/复杂版面/表格解析能力就绪；开启
-  `PAPERPILOT_USE_MINERU=1` + `out_mineru/<stem>/` 产物存在即生效，默认关（pymupdf 不变）。
+- **MinerU 默认（2026-09-22 翻转）**：MinerU 作 **chunk 骨架**，pymupdf 退为**容灾**。
+  关键收益：**表格文本直接进骨架** → claims / 报告 / L0 都能看到表值
+  （旧默认表格只进检索视图 → L0 对表格类问题系统性无能）。细节与开关见 §6。
+  **同篇双源实测**（`1701.00185v1`）：pymupdf **漏判 `4. Experiments`** → 4.1~4.6
+  六个子节**错挂到 `3. Methodology` 下**；还把 2 条**参考文献条目误判成 APPENDIX**
+  （`heading.py` 的"逗号≥2"防护没兜住）；claims 154 vs 140、骨架边 86 vs 77、
+  图表 16 vs 12、**溯源回核 ✓154 ✗0 vs ✓135 ✗5**；MinerU 还保住了 `STC²` 上标
+  （pymupdf 退化成 `STC2`）。
+
+#### ①补充 切分粒度实测档案（2026-09-10 两份资产；2026-09-21 重新发现并复核）
+
+**为什么单独立档**：这两份实验当时都做完并写在 `qa/recall/`，但**结论没有被复用**——
+`MERGE_AB_t900.md` 测出正收益却**既没落地、也没记原因**；`CHUNK_METRICS` 的等预算表
+**已经量化了"固定 k 偏向大块"**。2026-09-21 做多篇检索时**把同一个坑重踩了一遍**
+（绕了 quote/rrf/znorm/zmean/BM25 五种方案才发现根因是粒度）→ 故上提到本文档。
+
+**A. `qa/recall/MERGE_AB_t900.md` —— 只并 <900 超小块（贪心）**
+- 算法原文（归档 `qa/_archive/recall/_merge_plan.py`）：块序贪心；`len < TH` 并入下一块；
+  接收块超 `HARD_CAP = 4500` 则**放弃并入**；TH 扫 700/900/1100 → 取 **900**。
+- 结果（QASPER 208 篇 / 250 题）：块 **3247→2377**；R@8 0.864→0.916、R@12 0.960→**0.976**、
+  R@16 0.972→**0.996**、NDCG@12 0.576→0.585、MRR@16 0.458→0.464；gold@1 0.264→0.256；
+  逐题 变好 85 / 变差 49 / 持平 116。
+- ⚠️ **口径警告（未复核）**：该实验用**固定 k** 口径，而 `CHUNK_METRICS` 明确指出固定 k 下
+  **大块虚高**；merge 的作用正是"把块并大" → **+2.4pt 里有多少真实、多少虚高，至今没有复核**。
+
+**B. `qa/recall/CHUNK_METRICS_20260910.md` §C —— 切分策略对照（含口径修正）**
+- **固定 k=12（文档自标"偏向大块"）**：现状 R@12 **0.912** ＞ 窗口512 0.706；窗口2048 0.971 ＞ 现状。
+- **等预算表（按 rank 序累计字符达 B 前命中 gold；消除"大块更占便宜"）**：
+
+  | 策略 | R@8k | R@16k | R@24k |
+  |---|---|---|---|
+  | 现状（标题+段落打包≤4000） | 0.765 | 0.853 | **1.000** |
+  | 固定窗口 512 | **0.853** | 0.941 | 1.000 |
+  | 固定窗口 1024 | 0.765 | 0.912 | 0.971 |
+  | 固定窗口 2048 | **0.853** | **0.971** | 0.971 |
+  | 段落打包≤1024（无标题） | 0.735 | 0.853 | 0.941 |
+
+  > 文档原话：**"固定 k 下大块因「每 slot 装更多字/覆盖更大比例正文」而虚高，判断切分优劣看等预算表。"**
+
+**C. 2026-09-21 多篇检索复核（5 篇同主题 / 146 chunk）**
+- **现象**：5 篇**总字符数相近**（57k~72k），但 chunk 数 22~52、**中位块长 676~3956（差 5.8×）**
+  → 全局 cosine 实际在比"**谁切得细**"：泛化查询 top12 被单篇 **100% 霸占**、top48 仍占 71%。
+- **根因**：`chunker` **只有上界、没有下界**（`if len(text) <= max_len: 整块输出`），
+  切分单位是**标题段** → **块长 ≡ 论文作者划的小节粒度**。实测 ConVerSum 的 `title_path`
+  深度 `{1:6, 2:26, 3:20}`（小节分到三层 `4.11.1`）→ 中位 659；另 4 篇最多两层 → 中位 2181~3956。
+  **不是 heading 误判**（最短块标签复核均为真标题）、**不是 MinerU 解析源差异**（5 篇全走 pymupdf）。
+- **已证否的手段（别再走）**：全局 vstack ❌；加大 top_k（12→48 无效）❌；
+  **BM25 并不免疫**（其长度归一化是"惩罚长文档"，在 5.8× 的块长差下**反而过度补偿短块**：
+  块长相关 r —— 向量路 −0.496 / BM25 **−0.563**）❌；
+  rrf / znorm / zmean 融合均治标（**znorm 最差且引入新偏好**：偏爱"篇内方差大"的篇
+  = 块长跨度大的那篇，于是查询里写着专名时首名反而给错）。
+- **有效方向**：把检索单元切成**均匀窗口** → 5 篇窗口数 125/117/112/108/97（差 1.29× vs chunk 2.36×）；
+  平均篇数 **2.2 → 4.0**，指向性目标命中 7.2 → 6.6（仅降 0.6），长度相关 r −0.496 → −0.288。
+- **落点选择**：走**检索侧**（在 `document_cache` 再加一套"检索窗口"视图，与既有
+  `ordered_chunks`(报告视图) / `retrieval_chunks`(检索视图) 同构），**不动 `chunk_id` 空间**
+  → 报告链 / claims / cites / 526 个已有 `.cvec.npy` **全部不动**。
+  数据层重切（合并 + 重切）需**全库重建**（claims/report/cites 全失效），暂不做。
 
 ### ② Router（路由/难度分类）—— 🟡 有隐式逻辑，需显式化
 - 职责：判断问题类型 → 决定路径（全貌直答 / 局部检索 / 多维分解 / 拒答）。
@@ -44,12 +104,23 @@
 - 默认配置：Router 输出带**降级链**（每条路判不够可升下级检索），绝不做"分类定生死"的硬路由。
 - 多篇时代：主题识别/多论文归并需要更强的 Router。
 
-### ③ QueryRewriter（查询改写）—— ✅ 代码有，**默认关闭（实测负收益）**
-- 现状：`_rewrite_queries`（生成 2-3 变体；向量+BM25 多查询 RRF 融合），`PAPERPILOT_QUERY_REWRITE=1` 开启。
-- **证据**：2026-09-07 A/B（40 题同裁判）：改写 ON pass 9 vs OFF pass 12 —— 单篇负收益
-  （救回 2 条但弄坏 5 条），故默认关闭。
-- 默认配置：**OFF**。多篇/语料库召回面大、单查询带偏风险高时再开，届时重新 A/B。
-- 若开启：重写须保留关键实体为锚（现规则已有）。
+### ③ QueryOptimizer（查询侧优化）—— 🟡 五级骨架已建，**仅 L3 实现，默认全关**
+- 现状：`components/query_optimizer.py`。**L1 是路由器，L2~L5 是并列变换器 —— 不是串行五步**
+  （串行跑满 = 5 次 LLM 调用 + 互相矛盾的重写，成本翻倍且互相稀释）：
+  L1 意图识别与问题分类、L2 问题重述、**L3 改写与扩展（唯一已实现）**、L4 HyDE、L5 查询分解。
+  **未实现的级别显式抛 `NotImplementedError`**（刻意：宁可响亮失败，也不要"开了却没发生"），
+  设计约束与风险写在各自函数 docstring 里。
+- **开关**：`PAPERPILOT_QUERY_LEVELS=l3`（等价旧的 `PAPERPILOT_QUERY_REWRITE=1`）；未设置 = 全关。
+  （旧的 `components/query_rewriter.py` 与 `tools/query_expand.py` 是**死代码**，已删除。）
+- **证据**：2026-09-07（40 题同裁判）ON pass 9 vs OFF 12；2026-09-10（100 题配对）
+  ON 68% vs OFF 71%（救 3 / 坏 6），calls/题 +30%。
+- **机制诊断（最关键的一条）**：`search_multi_hybrid` 把变体与原问题做**等权 RRF 融合**，
+  偏题变体会稀释原问题的正确排序。**不是"改写无用"，是"RRF 平权融合有害"** ——
+  已把三种融合原语写进组件：`equal_rrf`（旧，仅作对照）/ **`quota_union`（已实现：
+  原问题取 k1 + 各变体各取 k2 的并集，变体只做召回补充）** / `rerank_orig`（待实现）。
+- 默认配置：**全关**。多篇/语料库场景重开，**届时必须重新 A/B，且建议先测 `quota_union`**。
+- 参照：混合检索在单篇上"无增益"、在 63k 语料上变成 **+6.7pt 显著**（`retrieval/README.md`）——
+  **规模会改变结论，但不能预设改写一定会翻盘。**
 
 ### ④ Retriever（混合检索）—— ✅ 已有（真正的混合检索在这）
 - 现状：
@@ -58,12 +129,40 @@
   - top12 覆盖证据 ~85%（调过 top8→top12）。
 - **证据**：朴素 RAG(B1)≈我们(B2)（`compare_20260907_191606.md`：49 vs 51）→ 检索件不需要花哨；
   真正的检索短板在**数值/表格块**（L3 捞不到表值），靠 MinerU/输入质量解，不是加检索复杂度。
-- 默认配置：hybrid + top12；改检索先跑 C 层 Recall@k（多篇再建真值集）。
+- **默认配置**：hybrid + top12；改检索先跑 C 层 Recall@k（多篇再建真值集）。
+- 🐛 **2026-09-21 修复：BM25 无信号时会产生「索引序伪位次」污染 RRF**（重要，别再踩）
+  - **现象**：多篇语料下"第一篇霸占"——泛化查询 top12 100% 来自拼接序第一篇。
+  - **机制**：`BM25Index` 分词是「英文词 + **单个汉字**」，而语料是**英文论文**
+    → **纯中文查询的 token 全部无匹配 → `score()` 全 0**（实测 5 篇：中文查询 max 0.000、
+    非零 0/146；掺英文的查询 max 0.911~3.212、非零 19%~30%）。
+    此时 `np.argsort(-bm_scores)` 对全 0 数组返回**索引序** → 每块按"它在拼接语料里的
+    先后"拿到 `1/(60+i)` 的**伪分** → **拼接序第一位的那篇被系统性加分**。
+  - **影响面**：**产品是中文提问 → 必现**；QASPER 评测全英文查询 → **从未测到**
+    （又一个"评测口径覆盖不到真实用法"的例子）。
+  - **修复**：新增 `_bm_or_none()` —— 分数全 0（或空）时返回 `None`，
+    `rrf_order` / `search_multi_hybrid` 随即**跳过 BM25 路**（`rrf_order` 本就支持
+    `bm_scores=None`）；`hits["bm_rank"]` 在无信号时记 **0**（不再假装"第 1 名"）。
+  - **实测收益（多篇）**（5 篇 / 10 题）：平均篇数 2.0→**3.7**、top1 覆盖 1.8→**3.5**/5、
+    等预算覆盖 R@24k 21.3→**30.8**（上限 60）；泛化查询从"篇数 1"变为"篇数 4~5"。
+  - **中文回归验收（单篇）**：`cli/run_qa_v2.py`，**31 篇 / 304 题**（改写于 2026-09-22：第一组 5 篇已重建为 gold 引文口径 70 题；当时口径为 276 题），与 09-09 基线**同题集逐题对比** →
+    **✅ 268→270、⚠️ 8→6、❌ 0→0（净 +2，零倒退）**。4 题 ⚠️→✅，其中
+    **2 题从 `answer_unknown` 变 `answer_L3`**（`03335-07` / `03035-07`）—— 正是
+    "伪位次 → 该答的漏检/误拒答"这一症状被修掉；2 题 ✅→⚠️（路线未变，LLM 波动量级）。
+    台账：`qa/qa_summary_20260921_221659.md`（基线 `qa/qa_summary_20260909_003404.md`）。
+  - **注**：修复只影响"BM25 无有效信号"的查询 → **纯中文提问必现**，QASPER（全英文）
+    **永远不会测到** → 再次印证"评测口径必须覆盖真实用法"。
 
-### ⑤ Reranker —— ❌ 未做（单篇无收益预期，空壳预留）
-- **证据/判断**：RRF 融合已是弱重排；交叉编码/LLM 重排在"候选面小（top12 内几乎全相关）"的
-  单篇场景理论上限低（朴素 RAG≈我们）。QASPER 净亏题的根因是"答案块没进 top12"而非"排序不精"。
-- 默认配置：接口预留（`components/reranker.py`），**多篇/大召回面时再实现与 A/B**。
+### ⑤ Reranker —— ✅ **大召回面下已验证显著有效**（单篇仍不做）
+- **2026-09-18 实测**（`retrieval/`，LitSearch 63,269 篇篇级检索，597 题）：
+  用 `BAAI/bge-reranker-v2-m3` 对 hybrid α=0.5 的 **top-100** 重排 →
+  **R@1 0.3498 → 0.4154（+6.56pt）**、R@10 0.6059 → 0.6712、MRR@10 0.4459 → 0.5072，
+  **全部统计显著**（McNemar hit@10 净 +39，p=9.8e-06；bootstrap recall@1 p=0.0002）。
+  详见 `retrieval/results/LITSEARCH_RERANK.md`。
+- **本文档当时的预判成立**：单篇候选面小（top12 内几乎全相关）→ 理论上限低，不做；
+  **大召回面（top-100）时才值得上**。
+- **约束**：精排上限 = 基线的 R@100（重排无法召回新文档）→ **先保召回、再修排序**
+  （有精排时 RRF 的 α 应选保 R@100 的那个）。
+- 单篇默认配置不变：接口预留（`components/reranker.py`），不启用。
 
 ### ⑥ ContextBuilder（上下文组装）—— 🟡 有雏形，重点加压缩
 - 现状：`generate_answer._build_context/_compose` 按证据形态组上下文（claims/窗口/L3 全文块）
@@ -89,7 +188,7 @@
 
 | 时机 | 启用/新增 | 依据 |
 |---|---|---|
-| 多篇/主题级 | QueryRewriter ON（重新 A/B） | 单篇负收益是"检索面小"所致 |
+| 多篇/主题级 | QueryOptimizer 开级别（**重新 A/B，建议先测 `quota_union`**） | 单篇负收益是"检索面小 + 等权 RRF 稀释"所致 |
 | 多篇/主题级 | Reranker（候选大后排序才有意义） | 单篇 top12 内无需精排 |
 | 多篇/主题级 | C 层 Recall@k 真值集 + 检索评测 | RETRIEVAL_EVAL_FRAMEWORK 缺口① |
 | 多篇/主题级 | Router 主题归并/跨论文指代 | 现 Router 只服务单篇 |
@@ -104,9 +203,9 @@
 src/paperpilot/components/      # 目标：薄门面命名归位（import 现有实现，先不搬逻辑）
     splitter.py                 #   pdf_parser+chunker+claims 抽取 门面
     router.py                   #   judge_l0 门面（够/不够→路径）+ 降级链约定
-    query_rewriter.py           #   _rewrite_queries（默认关）
+    query_optimizer.py          #   查询侧优化（五级骨架；仅 L3 实现，默认全关）
     retriever.py                #   ChunkIndex/ClaimIndex 统一检索入口
-    reranker.py                 #   空壳（接口预留，多篇实现）
+    reranker.py                 #   空壳（单篇不做；大召回面已实测有效，见 §⑤）
     context_builder.py          #   _build_context/_extract_facts/缺失复核 收敛
     generator.py                #   generate_answer 门面
     validator.py                #   cites 校验/缺失复核/将来数值校验 收敛
@@ -123,6 +222,11 @@ qa/RETRIEVAL_EVAL_FRAMEWORK.md  # 组件评测沿用 C/T/E/A
 3. **溯源 cite 与诚实拒答是差异点**——Generator/Validator 重构永远保留，评测带负向/拒答专项。
 4. **每个组件默认关/开都有 A/B 背书**，且评测带成本 diff（llm.usage 计量已就绪）。
 5. 多篇再启用的组件（Rewriter/Reranker）现在只留接口，避免在无效场景上反复调试（教训：L2）。
+6. **判断切分/召回优劣必须用「等预算」口径，不能用固定 k** —— 固定 k 下"大块因每 slot 装更多字"
+   系统性虚高（§①补充 B 已定量；`CHUNK_METRICS` 原文）。凡改切分或改召回面，先问一句
+   **"这个口径会不会奖励大块"**。（2026-09-21 重踩：多篇下块更细的篇被系统性偏袒。）
+7. **实验做完必须写「结论 + 去留」，哪怕结论是"不做"** —— `MERGE_AB_t900` 测出正收益却
+   既没落地也没记原因，变成"记忆 vs 代码"的悬案，同一个坑被重踩一遍。**没有记录的结论等于没做。**
 
 ---
 
@@ -220,10 +324,60 @@ evidence 型（number/citation/unsupported）→ CRAG（缺口定向检索重答
 - 产物：`mineru -p <pdf> -o out_mineru/<stem> -b pipeline` → `auto/<stem>_content_list.json`
   （3.x schema：`type/text/text_level/bbox/page_idx`；table 带 `table_body(html)`/caption；
   chart/image 带 caption；list `sub_type=ref_text`=参考文献）。
-- **开启条件**：`PAPERPILOT_USE_MINERU=1` **且** `out_mineru/<stem>/` 有 content_list；
-  否则自动回退 pymupdf（`agents/document_cache.current_source` 统一判定）。
+- **判定**（`agents/document_cache.mineru_status`）—— 四态**必须分清**，
+  **别把"没跑过"叫成"降级"**（2026-09-22 修过一次口径错误）：
 
-### 6.2 代码落点（全部加法适配，默认 pymupdf 行为零改动）
+  | 状态 | 含义 | 处置 |
+  |---|---|---|
+  | `ok` | 产物可用 → MinerU 作骨架 | 正常态 |
+  | **`pending`** | **尚未摄取**（没跑过 ingest）| **待办**：跑 `cli/run_ingest.py <pdf>` 即可。正常流程（`worker._lane_mineru`）本来就会**先跑 MinerU** → 不该出现。**不是故障、不是降级** |
+  | **`degraded`** | MinerU **试过但失败**（执行报错/超时、产物损坏、产不出 chunk）| **降级 pymupdf 容灾** + **必须告警** + 写进 `PaperReport.degraded` |
+  | `disabled` | `PAPERPILOT_USE_MINERU=0`（骨架）或 `PAPERPILOT_MINERU=0`（执行）| 配置选择 |
+
+  **"降级与容灾"的定义**：MinerU **试过、但失败了** → 为不让全链垮掉，用 pymupdf 顶上。
+  `process_pdf` 对两者给**不同措辞**（`ⓘ` 提示该摄取 / `⚠️` 告警真降级）。
+  `PAPERPILOT_USE_MINERU=0` → 骨架固定 pymupdf（容灾 / A-B 对照）。
+  与 `PAPERPILOT_MINERU`（**跑不跑** MinerU，默认也开）是**两件事**，别混。
+- **两条独立的路**（2026-09-22；切块组件重建为 MinerU 之后接上的容灾）：
+
+      pdf ──► 路由 ──┬── **默认路** `_chunks_via_mineru`  ──► Chunk[]   （只读 out_mineru/）
+                     └── **备用路** `_chunks_via_pymupdf` ──► Chunk[]   （只读 assets/papers/）
+                                     ↑ 默认路任何环节失败 → 自动走它
+
+  **"不相交"是硬要求**：默认路只读 `out_mineru/`、备用路只读 PDF 且**不做表格注入** →
+  不会出现"半条 MinerU、半条 pymupdf"的混合产物。实测 5 种情形：
+
+  | 情形 | 走哪条 | 状态 | chunk 数 |
+  |---|---|---|---|
+  | 真产物 | 默认路 MinerU | `ok` | 27 |
+  | 产物损坏（非法 JSON）| 备用路 pymupdf | `degraded` | 24 |
+  | **产不出有效 chunk**（空 content_list）| 备用路 pymupdf | `degraded` | 24 |
+  | 无产物目录（没跑过）| 备用路 pymupdf | `pending` | 24 |
+  | 恢复真产物 | 默认路 MinerU | `ok` | 27（**可自愈**）|
+
+  ⚠️ "产不出有效 chunk"这一档**别漏**：旧实现返回空 list，而调用方用 `is not None` 判断
+  → **返回空 chunk 而不降级**，与 `mineru_status` 判 `degraded` 自相矛盾
+  （那篇会"有 chunk 但一条都搜不到"）。已修。
+- **`degraded` 的两种来源都要认**（2026-09-22 补）：① **执行失败**
+  （`ingest.json` 的 `mineru.status=="failed"`，**此时根本没有产物目录** —— 只看目录会把
+  "跑了但失败"误报成 `pending`"还没跑"，降级提示永远不出现）；② 产物层问题（损坏/不可读/产不出块）。
+- **问答闸门撤了**（2026-09-22 契约变更）：`ingest.qa_blocked_reason` 以前
+  `mineru.status=="failed"` → **整篇问答不可用**。问题：报告链**早就在降级**（走 pymupdf），
+  只有问答被拦 → **"默认路失败 → 降级到备用路"这条设计永远走不到**。现在失败 → **降级放行**
+  （表值会缺，由 `mineru_status` / `PaperReport.degraded` / `QAState.parse_degraded` 标记）。
+  仍拦的只剩**摄取进行中**（产物马上就好，不是错误）。
+- **worker 索引 lane**：`failed` **也照建索引**（旧写法 failed 就跳过，理由是"问答会被闸门
+  拦住、建了没人用" —— 闸撤了，那条理由不再成立；不建就等于"降级了却没有向量可用"）。
+- **代价**：worker 由"MinerU ∥ 报告链"变成**串行**（报告链必须等 MinerU 跑完）
+  → 单篇墙钟 ≈100s → **≈157s**。
+- **已知未修**：MinerU 会**误标**标题 —— `_is_heading()` 只看 `type==text and text_level`，
+  实测 1 例正文句被标 `lv=2` → 多一个假章节。建议加**轻校验**：`lv=2` 但
+  **无编号 + 不在特殊词表（Abstract/References/…）+ 以逗号结尾** → 判为可疑。
+- **不做的事**：不再要求 MinerU 的 `title_path` label 格式"仿 pymupdf"
+  （同构约束是历史包袱；但**层级推断本身必须保留** —— MinerU `text_level` 只有 1/2 两档，
+  不靠标题编号推 depth 的话树会塌成一层平表）。
+
+### 6.2 代码落点（**MinerU 为默认骨架**；`PAPERPILOT_USE_MINERU=0` 退回 pymupdf）
 | 模块 | 职责 |
 |---|---|
 | `tools/mineru_bridge.py` | content_list → 同构 `Chunk[]`（表格 HTML→markdown 表、公式 LaTeX、标题按编号重建层级、label 与 chunker `"L{d} {no} · text"` 格式对齐）；`title_from_mineru_dir`；`extract_figures_from_mineru`（report 图表一览） |

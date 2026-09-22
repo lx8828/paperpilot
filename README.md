@@ -15,7 +15,7 @@
 |---|---|
 | 📄 **帮读型报告** | 一分钟导读 / 大白话概述 / 核心要点 / 论证骨架 / 章节精读（低分默认折叠可展开）/ 图表一览 |
 | 🔍 **证据溯源闭环** | 每条主张绑定原文 `evidence_quote` + 页码，报告里可一键跳回原文并**整行高亮** |
-| 💬 **两级问答（v3）** | `Router(L0 报告层)` 够 → 直答；不够 → `全局检索(L3)` → 判够 → 答 / 诚实收尾（不编造）。答案带 `[n]` 引用，可点跳原文 |
+| 💬 **两级问答（v3）** | `Router(L0 报告层)` 够 → 直答；不够 → `全局检索(L3)` → **一律试答**（默认无 L3 裁判）→ **输出闸门**兜底（修复 / 拒答话术）。答案带 `[n]` 引用，可点跳原文 |
 | 🛡 **输出前事实闸门** | 机器件（引用越界、编数/漏数）**硬拦** → 对症修复或兜底拒答；LLM 体检（无支撑断言/偏题/矛盾/含糊/零引用）**软标注** → 前端显示"答案自检（AI 复核）" |
 | 📊 **表格内容可检索** | MinerU 表格/公式注入**检索视图**（表格数值可被召回、可被作答读到）；表池**并集候选**（正文 top-12 原样保留 + 追加表池前 2 名） |
 | 🖥 **三栏工作台** | 左：结构导航 ｜ 中：报告 / 原文 PDF ｜ 右：多轮追问（含答案自检提示条） |
@@ -60,7 +60,7 @@
 | QASPER 503 题（1000 随机样本的无偏子集，**2026-09-11 口径**） | **424/503 = 84.3%**｜有答案题 **388/451 = 86.0%** | 异源裁判（GLM）1~5 分，≥4 pass。原始记录 `qa/qasper_run_20260911_072510.json`（**本地运行记录，未入库**） |
 | └ 剔除不可归因项后〔能力上限口径〕 | 有答案题 **388/413 = 93.9%** | 剔除 36 题"表格=PNG 无解" + 2 题判分存疑；**须与上一行并列，不得单独宣称**｜`qa/recall/FAIL_ATTRIB_20260911.md` |
 | └ ＋ arXiv 原始 PDF **表格通道**（MinerU） | **438/503 = 87.1%**｜有答案题 402/451 = 89.1% | 那 36 题在 QASPER 里 gold 出自表格、而 QASPER 只给 PNG；补原始 PDF 后**回收 14/36（39%）**｜`qa/recall/QASPER_TBL_EXP_20260911.md` |
-| 中文 QA 回归（21 篇手写题集） | **176/176** ✅ | 关键词自动判定（v2.0） |
+| 中文 QA 回归（手写题集：现 **31 篇 / 304 题**） | 历史成绩 **176/176**（21 篇口径 · 09-09 基线） | 关键词自动判定；⚠️ **2026-09-22 第一组 5 篇的题集已按 gold 引文口径重建（70 题 / 5 篇）**，旧数字与现题集不再一一对应 |
 | **表格能力线（2026-09-12 起）** | 检索层 **目标表进候选 +4、零回退**；端到端单轮 **15/36 → 19/36** | P1 表表示 / P3 读表 prompt / caption 修复 / 表池并集候选（**已设为默认**）；P2 双写为负结果已收口。汇总：`qa/recall/TABLE_LINE_STATUS_20260912.md` |
 
 > ⚠️ 表格线的改动（并集默认开、caption 修复、P1/P3）**尚未在 503 全量上复跑**——上表 503 数字是 09-11 口径，
@@ -150,15 +150,16 @@ uv run python -c "from sentence_transformers import SentenceTransformer as S; S(
 - 已缓存后想彻底离线：设 `HF_HUB_OFFLINE=1`
 - **不想下**：用演示模式（`PAPERPILOT_MOCK_EMBED=1`，确定性词袋哈希向量）
 
-### 5) MinerU（可选，只影响表格/公式）
+### 5) MinerU（**默认 chunk 骨架**；不装则自动降级）
 
-**不装会怎样（明确降级，不静默）**：
+**2026-09-22 起 MinerU 是默认骨架**（报告链与检索**同源**读它）→ **属于"强烈建议装"**：不装不报错，但表格数值会缺。
 
 | 场景 | 行为 |
 |---|---|
-| 没装 MinerU | 报告**照常生成**；问答可用，但**表格数值**类问题会弱（PDF 里表格常是图片或碎行，检索不到数值） |
-| MinerU **明确失败**（如无 GPU/显存不足） | 报告照常生成 + 前端提示"问答不可用及原因"；提问被闸门**明确拒答并说明原因**（不假装能答） |
-| **主动跳过**（`PAPERPILOT_MINERU=0`） | 同"没装"，但**不会**把问答判不可用（`skipped` ≠ `failed`） |
+| 装好且成功 | 报告与检索/问答读**同一份** MinerU chunks：表格数值**可召回、可作答** |
+| 没装 / **失败**（无 GPU、显存不足、产物损坏） | **自动走 pymupdf 备用路**：报告与问答**都照常可用**，只是**表格数值类问题会弱**；降级原因记在 `parse_degraded` 与前端提示里（**不再拒答**） |
+| **主动跳过**（`PAPERPILOT_MINERU=0`） | 同"没装"，但状态是 `skipped` 而非 `failed`（区分"我不用"与"跑挂了"） |
+| 摄取**进行中**时提问 | 唯一会被拦的情形：明确告知"正在解析，请稍候"（不是失败） |
 
 **安装**（独立 venv，与主环境隔离；实测 MinerU 3.4.5 / Python 3.12 / torch cu128）：
 
@@ -186,7 +187,8 @@ uv run python web/app.py        # 摄取时自动调用（默认 backend=pipelin
 | `POST /api/job/{id}/retry` | 重试（已完成的阶段**自动复用**，通常快很多） |
 | `GET /api/report/{name}` | 取报告 JSON（含 `upload_note` / `mineru_warning`） |
 | `GET /api/meta` | 运行模式（演示模式横幅用它；也便于排查"为什么答案都是示例"）。另含 `ask_wait_s` / `ask_concurrency`：前端据此算问答的**兜底超时**（`AbortController` = `ask_wait_s + 180s`），避免连接挂住时页面一直转圈 |
-| `POST /api/ask` | 提问（**不阻塞事件循环**：同步端点走线程池 + 并发闸门；摄取未完成时明确拒答并说明原因） |
+| `GET /pdf/{name}` | 取原始 PDF（前端 pdf.js 渲染与"点引用跳原文高亮"用）。另有 `GET /`（工作台页面）与 `/vendor`（静态资源挂载） |
+| `POST /api/ask` | 提问（**不阻塞事件循环**：同步端点走线程池 + 并发闸门；摄取**进行中**时明确告知"正在解析，请稍候"——那不是失败） |
 
 **上传门（2026-09-14）**：只做两条"边界上花 3 行、省掉一次注定失败的分钟级摄取"的校验 ——
 ① 非 `.pdf` 扩展名 → `400`；② 缺 `%PDF-` 文件头（把 `.docx`/`.txt` 改名成 `.pdf`）→ `400`
@@ -208,15 +210,20 @@ uv run python web/app.py        # 摄取时自动调用（默认 backend=pipelin
 uv run python cli/main.py <pdf名>            # 一步处理单篇（PDF → report.json）
 uv run python cli/main.py <pdf名> --skip-llm # 只装配已有产物（不调 LLM，缺环节报错）
 uv run python cli/main.py <pdf名> --force    # 全链路强制重跑（调 LLM，较贵）
-uv run python cli/run_ingest.py <pdf名>      # 摄取流水线：论文库 → MinerU(检索) → 报告 → 产物库（幂等）
+uv run python cli/run_ingest.py <pdf名>      # 摄取流水线：论文库 → MinerU(默认 chunk 骨架) → 报告 → 产物库（幂等）
 
 # ── 分环节（调试用）────────────────────────────────────────────
 uv run python cli/run_claims.py <pdf名>      # claims 提取 + 证据回核
-uv run python cli/run_summary.py <pdf名>     # 语义去重 / 角色打标 / 打分
+uv run python cli/run_summary.py <pdf名>     # claims 全量汇总 + 证据命中(ev✗)审计（不调 LLM）
+uv run python cli/run_view.py <pdf名>        # 语义去重 / 角色打标 / 打分 / 渲染摘要视图
 uv run python cli/run_skeleton.py <pdf名>    # 论证骨架
 uv run python cli/run_figures.py <pdf名>     # 图表识别 + 读图指南
 uv run python cli/run_report.py <pdf名>      # 结构化精读报告
-uv run python cli/run_view.py <pdf名>        # 装配视图 / 产物检查
+
+# ── 工具①②③ 端到端（问题 → 论文 → 报告）─────────────────────
+uv run python cli/run_search.py "问题"                  # ① 语料检索：问题 → top-k 论文（支持时间窗）
+uv run python cli/run_fetch.py 1706.03762 --ingest     # ② arXiv id → 论文库 PDF（--ingest 顺手摄取）
+uv run python cli/run_pipeline.py "问题"                # ①②③ 端到端：检索 → 抓取 → 精读 → 报告
 ```
 
 ---
@@ -235,20 +242,21 @@ uv run python cli/run_view.py <pdf名>        # 装配视图 / 产物检查
 | `PAPERPILOT_EXT_RRF_ALPHA` | `0.5` | 外部块（表格/公式）两路权重 `(2α, 2(1-α))`；0.5 = 生产原样（文本块恒 1:1 不动） |
 | `PAPERPILOT_MINERU_INJECT` | `1`（开） | 把 MinerU 表格/公式文本按页注入**检索视图**（`=0` 可关，评测用） |
 
-### 默认**关**的实验（需显式开启）
+### 其它开关（**默认值以「默认」列为准** —— 不少默认是"开"，别当成实验开关）
 
 | 开关 | 默认 | 作用 / 为什么默认关 |
 |---|---|---|
 | `PAPERPILOT_QASPER_TABLES` | 关 | QASPER 外部表格通道（评测用；线上走 MinerU 注入） |
 | `PAPERPILOT_TABLE_EMBED_SUMMARY` | 关 | **P2 双写**（表块向量侧改喂语义摘要）——两次实测均**不及现状**，已收口：`qa/recall/P2_DUALWRITE_20260912.md` |
 | `PAPERPILOT_TABLE_V1` | 关 | `=1` 复现改造前的表表示 + prompt 布局（同日配对 A/B 用） |
-| `PAPERPILOT_QUERY_REWRITE` | `0` | 查询改写（实测负收益，默认关） |
+| `PAPERPILOT_QUERY_LEVELS` | （空） | 查询侧优化启用的级别（`l3`...，五级见 `components/query_optimizer.py`）；**空 = 全关**。旧开关 `PAPERPILOT_QUERY_REWRITE=1` 等价于 `l3`。单篇实测负收益，默认关 |
+| `PAPERPILOT_QUERY_FUSION` | `equal_rrf` | 多查询融合策略：`equal_rrf`（等权，已证伪，仅对照）/ `quota_union`（变体只做召回补充）/ `rerank_orig`（待实现） |
 | `PAPERPILOT_V3_NOL3J` | 开 | 问答图**默认走"跳过 L3 裁判"的变体**（消融实测 64%→73%，见 `qa/REPORT_2.0_20260911.md`）；`=0` 回到带 `judge_l3` 的图（对比用） |
 | `PAPERPILOT_RETRIEVE_SECTION_CAP` | `0` | 保序节级配额去重（>0 开启） |
 | `PAPERPILOT_VALIDATOR_REPAIR_MID` | 关 | mid 级问题是否也触发修复（默认只标注不修） |
 | `PAPERPILOT_VALIDATOR_MISSING` | 关 | 是否提示"原文可能还有未答要点"（好答案上误报多，默认关） |
 | `PAPERPILOT_PDF_ID_STRICT` | 关 | 论文身份按**内容指纹**校验；默认对**历史产物**（无指纹记录）按 mtime 收编并补写指纹，`=1` 时连收编也强制重建（存量库排雷用） |
-| `PAPERPILOT_USE_MINERU` | 关 | `=1` 走遗留"全链 MinerU"模式（chunks 直接用 MinerU） |
+| ⚠️ `PAPERPILOT_USE_MINERU` | **开（`1`）** | MinerU 作 **chunk 骨架**（报告链与检索**同源**）；`=0` 退回 pymupdf 骨架（容灾 / A-B 对照）。**默认即开 → worker 默认串行** |
 | `PAPERPILOT_CHUNK_VIEW_DIR` | 空 | 向量缓存目录覆盖（A/B 两臂各用一份，避免来回覆盖重建） |
 | `PAPERPILOT_ASK_CONCURRENCY` | `4` | 问答并发上限：`/api/ask` 在线程池里最多同时跑几个（排队的是**线程**，不是事件循环）。**必须 ≥ 1**：`0`/负数/非法值一律回退默认 —— 0 会让每个问答**永久阻塞**，所以它**没有**"关闭闸门"的语义 |
 | `PAPERPILOT_ASK_WAIT_S` | `300` | 闸门满时的**排队上限**（秒）；超时返回 `503`（可重试），而不是让页面无限转圈。`0` = 不排队（满了立刻 503，属于**更严格**的方向）。**与摄取（MinerU）耗时无关**：解析期间问答是**直接拒答**（不排队），这里的等待只发生在"前面的问答还没跑完"。单题实测 p50 5s / p90 25s / max 96s（`qa/qasper_run_20260911_072510.json`）→ 单人场景并发 4 > 1，**永远不排队** |
@@ -264,32 +272,40 @@ MinerU 相关：`PAPERPILOT_MINERU_VENV`（默认 `.venv-mineru`）、`PAPERPILO
 
 ## 🏗 架构与数据流
 
-### 两条解析通道（2026-09-10 定，方案 B3）
+### 两条解析通道（**2026-09-22 翻转：MinerU 作默认骨架**）
 
 ```
-PDF ──┬─ pymupdf  ──→ 页码 / 版面 / chunk 空间 / claims 锚点 ──→ 报告（report.json）
-      │                （cites、前端高亮、claims 锚点都以此为唯一 id 空间）
-      └─ MinerU   ──→ 表格 / 公式文本 ──按页注入「检索视图」──→ 问答检索与作答
-                       （claims 仍读 pymupdf 原文：表格只进检索、不进 claims）
+PDF ──┬─ MinerU（默认）──→ content_list → chunk 骨架（报告 + claims + 检索**同源**）
+      │                    （表格/公式文本天然进骨架 → L0 也能看到表值）
+      └─ pymupdf（容灾）──→ 版面块 → 标题树切块 → 同一份骨架的下游
+                           （只在 MinerU 产物缺失/损坏/未装时走；**表值拿不到**）
 ```
 
-MinerU 失败或无 GPU 时：**报告照常生成**（pymupdf 渲染 + 图表回退 pymupdf 抽取），
-**问答直接失败并说明原因**（`qa_blocked_reason()`，不静默降级）。摄取状态落 `ingest.json`（版本/时间戳，幂等）。
+**默认骨架 = MinerU**（`PAPERPILOT_USE_MINERU` 未设即**开**）：报告链与检索读**同一份** chunks，
+所以旧版"表格只进检索视图、claims 只读 pymupdf"的分工**已取消**。
+设 `=0` 才退回 pymupdf 骨架（容灾 / A-B 对照）。`PAPERPILOT_MINERU_INJECT` 的"按页注入检索视图"
+只在**备用路**下才有意义（默认路本来就是 MinerU，注入是 no-op）。
+
+**降级与容灾（2026-09-22 改）**：MinerU 失败 / 未装 / 无 GPU → **自动走 pymupdf 备用路，
+报告与问答都照常可用**（代价：表格数值拿不到），降级原因记在 `mineru_status()` 与返回值的
+`parse_degraded` 里。仍会被拦的只剩一种：**摄取进行中**（产物马上就好，不是错误）。
+摄取状态落 `ingest.json`（版本/时间戳，幂等）。
 
 ### 摄取 job（异步，2026-09-13）
 
 ```
 POST /api/report ──→ job_id（202，立即返回）
                       │
-       worker（后台，job 之间串行 / job 内部并行）
-         ├─ MinerU（GPU）──────────┐         两路**互不依赖**（默认模式：
-         └─ 报告链（pymupdf+LLM）──┤         报告读 pymupdf，MinerU 只补检索视图）
-                                   ├─→ 向量索引（cvec，**必须在 MinerU 之后**）
-                                   └─→ ready（可问答）
+       worker（后台，**job 之间串行**：max_workers=1，只有一块 GPU）
+         MinerU（GPU，默认 chunk 骨架）──→ 报告链（读同一份 MinerU chunks + LLM）
+                                            └─→ 向量索引（cvec，**必须在 MinerU 之后**）
+                                            └─→ ready（可问答）
+         （仅 `PAPERPILOT_USE_MINERU=0` 时：MinerU ∥ 报告链 两路互不依赖，可真并行）
 前端轮询 /api/job/{id}：显示阶段 + 各阶段耗时；可取消（阶段边界生效）/ 重试（已完成阶段复用）
 ```
 
-> `PAPERPILOT_USE_MINERU=1`（整链同源 MinerU）时报告链也读 MinerU 产物 → worker 自动退回**串行**。
+> **默认即串行**（`PAPERPILOT_USE_MINERU` 未设 = 开）：报告链也读 MinerU 产物 →
+> 必须先 MinerU 后报告，`worker.py` 据此把 lane 并行降级为顺序执行。
 > 索引放进 worker 后，"首次提问还要现建向量"这件事也提前做完了。
 
 > **论文身份 = 内容指纹（sha256），不是文件名**（2026-09-13）。
@@ -303,15 +319,17 @@ POST /api/report ──→ job_id（202，立即返回）
 用户问题
   Router   L0 报告层（overview + core_points）够不够？── 够 ──→ 直答（快，不唤醒 embedding）
                                             └─ 不够 ──→ 全局检索 L3（向量 + BM25 混合，RRF 融合）
-                                                        └─ 判够 ──→ 答（带 [n] 引用）
-                                                        └─ 不够 ──→ 诚实收尾 / 提炼原文
+                                                        └─→ **一律试答**（默认无 judge_l3）
   输出前闸门 validator.gate()：
-     HIGH（引用越界 / 编数漏数）→ repairer 对症修复（Self-Refine / CRAG）→ 修不动则兜底话术
-     MID / LOW（无支撑断言 / 偏题 / 矛盾 / 含糊 / 零引用）→ 原样输出 + 前端"答案自检"标注
+    HIGH（引用越界 / 编数漏数）→ repairer 对症修复（Self-Refine / CRAG）→ 修不动则兜底话术
+    MID / LOW（无支撑断言 / 偏题 / 矛盾 / 含糊 / 零引用）→ 原样输出 + 前端"答案自检"标注
 ```
 
 > v2 四层漏斗（L0→L1 claims→L2 扩窗→L3）**已下线归档**到 `archive/qa_funnel_v2/`（含设计稿与旧节点快照）；
 > 定稿依据见上表「v3 两级定稿 A/B」。
+> ⚠️ **默认配置下没有 L3 裁判**（`PAPERPILOT_V3_NOL3J` 未设即开：删 `judge_l3`、一律试答，消融 64%→73%），
+> 因此 `answer_unknown` 节点在默认图里**不可达** —— "诚实拒答"由**输出闸门兜底话术**承担。
+> `=0` 才回到带 `judge_l3` 的图（够→答 / 不够→answer_unknown）。
 
 ### 代码分层
 
@@ -330,7 +348,7 @@ src/paperpilot/
 │   ├── nodes/         #   report/judge/search_l3/generate_answer/answer_unknown…
 │   └── document_cache.py # 两套视图：ordered_chunks（报告/溯源） / retrieval_chunks（检索，含表公式）
 ├── components/        # 组件门面（显式化）：router / retriever / generator / validator /
-│                      #   repairer / context_builder / query_rewriter / splitter / numbers / reranker
+│                      #   repairer / context_builder / query_optimizer / splitter / numbers / reranker
 └── graph/             # LangGraph 接线：qa_graph_v3.py（v3 两级是**唯一**检索链）
 web/                   # FastAPI + 前端三栏工作台（index.html）
 cli/                   # 命令行入口 + 评测工具
@@ -350,14 +368,14 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 **一条命令，5 分钟内出确定结果，不需要任何 API Key / GPU / 本地模型：**
 
 ```bash
-uv run pytest -q        # 178 passed in ~8s（本地；CI 上含装依赖约 1~2 分钟）
+uv run pytest -q        # 203 passed in ~10s（本地；CI 上含装依赖约 1~2 分钟）
 ```
 
 规矩很简单，**三层命令分三类事**（后两档默认跳过，缺环境也只会 skip、不会红）：
 
 | 命令 | 跑什么 | 需要什么 |
 |---|---|---|
-| **`uv run pytest -q`** | **离线**：纯逻辑 / 契约边界 / 状态机 / 缓存命中失效 / API / **mock LLM 端到端** | 无（CI 与"别人 clone 后自证"都用这条） |
+| **`uv run pytest -q`** | **离线**：纯逻辑 / 契约边界 / 状态机 / 缓存命中失效 / API / **mock LLM 端到端**（203 用例） | 无（CI 与"别人 clone 后自证"都用这条） |
 | `uv run pytest -m local` | **真模型冒烟**：真向量检索位次（中文问英文论文）/ 真 LLM 作答带引用 / 真 MinerU 解析 / 真实裁判体检 | 本机 key + 模型 + `.venv-mineru`（实测 13s / 22s / 68s） |
 | `uv run pytest -m ui` | **浏览器级冒烟**：真前端 JS + 真 HTTP（上传 → 报告 → 提问 → 点引用跳原文），并捕获未捕获的 JS 异常 | 本机 Edge/Chrome（或 `playwright install chromium`；**不必**下 130MB） |
 
@@ -371,7 +389,7 @@ uv run pytest -q        # 178 passed in ~8s（本地；CI 上含装依赖约 1~2
 | **论文语料** | 现场用 pymupdf 生成小 PDF；所有 `assets/**` 路径被重定向到 `tmp_path`（**不碰真实论文与产物**） |
 | **网络** | `urllib.request.urlopen` 被换成"一用就炸"：漏了替身会**明确失败**，而不是偶发联网成功 |
 
-覆盖清单（`uv run pytest --collect-only -q` 实测：**默认档 178 + local/ui 档 5 = 183**）：
+覆盖清单（`uv run pytest --collect-only -q` 实测：**默认档 203 + local/ui 档 5 = 208**）：
 
 | 文件 | 用例 | 覆盖 |
 |---|---|---|
@@ -418,6 +436,7 @@ CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任�
 
 | 文档 | 内容 |
 |---|---|
+| 🗂 **`docs/DOC_INDEX.md`** | **文档总地图**：哪些是现状、哪些是历史、冲突时信谁（2026-09-22 以代码为准逐条核对；本文档与代码冲突时**信代码**） |
 | `qa/CAMPAIGN_20260906-07.md` | **决策总账**：优化史 + 定版 + 定位收尾 |
 | `DEVELOPMENT_LOG.md` | 开发踩坑记录、决策背景、遗留项、命令速查 |
 | `docs/RAG_COMPONENT_NOTES.md` | 组件层设计依据（Router/Retriever/Generator/Validator 的取舍与实测） |

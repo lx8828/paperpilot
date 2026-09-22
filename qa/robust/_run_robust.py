@@ -1,4 +1,4 @@
-"""稳定性/同义改写 runner：每题 3 个问法跑 B2 + glm-4-flash 判分，看一致性。
+﻿"""稳定性/同义改写 runner：每题 3 个问法跑 B2 + glm-4-flash 判分，看一致性。
 
 用法：uv run python qa/robust/_run_robust.py [--q-limit N]
 产物：qa/robust/robust_run_<ts>.json（逐变体 + 每题一致性汇总）
@@ -12,7 +12,8 @@ from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
-from paperpilot.qasper_source import gold_answer, load_papers
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers
 from paperpilot.tools import llm
 
 ROOT = Path(__file__).resolve().parents[2]

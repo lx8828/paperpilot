@@ -21,14 +21,18 @@ GLOBAL_RETRIEVE = "global_retrieve"  # 需全局检索（L3）
 ACTION_NAMES = (L0_ANSWER, GLOBAL_RETRIEVE)
 
 
-def load_l0(pdf: str) -> dict[str, Any]:
-    """读取论文报告层 L0 材料：title/overview/core_points（带 claim 锚）。"""
+def load_l0(pdfs: list[str]) -> dict[str, Any]:
+    """读取**语料**的报告层 L0 材料：title/overview/core_points（带 claim 锚）。
+
+    ⚠️ 语料是多篇（≥2 篇）：本系统没有单篇路径（2026-09-23 删）。
+    """
     from paperpilot.agents.nodes.report import report_l0
-    st: dict[str, Any] = {"pdf": pdf}
+    st: dict[str, Any] = {"pdfs": [str(p) for p in pdfs if p]}
     return report_l0(st)
 
 
-def decide(question: str, pdf: str, history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+def decide(question: str, pdfs: list[str],
+           history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     """Router 决策：跑 L0 材料 + judge_l0，返回
     {action, enough, gap, overview, core_points, n_core_points}。
 
@@ -37,7 +41,7 @@ def decide(question: str, pdf: str, history: list[dict[str, Any]] | None = None)
       global_retrieve  → 交给 Retriever（向量+BM25 混合全文检索）。
     任何 action 之后都保留降级链：Retriever 若判不足 → 诚实收尾（不硬答/不编）。
     """
-    st: dict[str, Any] = {"question": question, "pdf": pdf}
+    st: dict[str, Any] = {"question": question, "pdfs": [str(p) for p in pdfs if p]}
     if history:
         st["history"] = history
     out = route_state(st)
@@ -57,7 +61,7 @@ def decide(question: str, pdf: str, history: list[dict[str, Any]] | None = None)
 
 
 def route_state(state: dict[str, Any]) -> dict[str, Any]:
-    """Router 节点（LangGraph 用）：读 question/pdf → 产出
+    """Router 节点（LangGraph 用）：读 question/pdfs → 产出
     {title, overview, core_points, verdict, route, debug}，等价原 report_l0+judge_l0 两节点。
     v3 图以此为第一级（2026-09-09 Router 显式化接入装配）。
     """

@@ -1,4 +1,4 @@
-"""对比测试 harness：B0 直接 LLM / B1 朴素 RAG / B2 PaperPilot 三列同裁判评测。
+﻿"""对比测试 harness：B0 直接 LLM / B1 朴素 RAG / B2 PaperPilot 三列同裁判评测。
 
 设计：qa/COMPARE_DESIGN.md（公平性约束在文档 §1，务必先读）。
 
@@ -31,7 +31,8 @@ from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
-from paperpilot.qasper_source import _clean_para, gold_answer, load_papers
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import _clean_para, gold_answer, load_papers
 from paperpilot.tools import llm
 
 ROOT = Path(__file__).resolve().parents[1]

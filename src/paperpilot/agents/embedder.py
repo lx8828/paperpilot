@@ -86,6 +86,28 @@ class BM25Index:
         return out
 
 
+def _bm_or_none(bm_scores: np.ndarray | None) -> np.ndarray | None:
+    """BM25 分数**无有效信号**时返回 None（即：只用向量路）。
+
+    ⚠️ 2026-09-21 实测（`retrieval/scripts/_bm_check.py`，5 篇 / 146 chunk）：
+        `BM25Index` 的分词是「英文词 + **单个汉字**」，而语料是英文论文
+        → **纯中文查询的 token 全部无匹配 → `score()` 全 0**。
+        此时若照常融合，`np.argsort(-bm_scores)` 对全 0 数组返回**索引序**
+        → 每个块按"它在拼接语料里的先后"拿到 `1/(60+i)` 的**伪分**，
+        **拼接序第一位的那篇被系统性加分**（多篇下直接表现为"第一篇霸占"）。
+
+    实测数据（阈值 = 是否有非零分）：
+        "实验结果如何" / "训练数据是怎么构造的" / … → max **0.000**、非零 0/146 ❌
+        "CrossSum 1500 多种语言对…" → max 0.911、非零 44/146 ✅
+        "content plan 内容规划…"   → max 3.212、非零 28/146 ✅
+
+    **产品是中文提问 → 必现**，所以必须在无信号时跳过 BM25 路。
+    """
+    if bm_scores is None or bm_scores.size == 0:
+        return None
+    return bm_scores if float(np.max(bm_scores)) > 0 else None
+
+
 def rrf_order(vec_scores: np.ndarray, bm_scores: np.ndarray | None,
               k: int = 60, w_vec: np.ndarray | None = None,
               w_bm: np.ndarray | None = None) -> np.ndarray:
@@ -102,6 +124,7 @@ def rrf_order(vec_scores: np.ndarray, bm_scores: np.ndarray | None,
     """
     n = len(vec_scores)
     rrf = np.zeros(n, dtype="float64")
+    bm_scores = _bm_or_none(bm_scores)      # 无 BM25 信号 → 只用向量（防"索引序伪位次"）
     order_v = np.argsort(-vec_scores)
     for r, i in enumerate(order_v):
         rrf[i] += (1.0 if w_vec is None else float(w_vec[i])) / (k + r + 1)
@@ -178,6 +201,24 @@ CHUNK_VIEW_DIR = Path(os.environ.get("PAPERPILOT_CHUNK_VIEW_DIR") or VIEW_DIR)
 MAX_DOCS_PER_PDF = 400      # 单篇主张数上限（防御异常大文件）
 EMBED_DIM = 1024
 
+# 批量 encode 的 batch_size（**不要调回 32**，2026-09-20 实测）。
+#
+# `model.encode()` 默认 32：chunk 最长可达 **2806 token**（单段超 4000 字符的兜底块，
+# 见 chunker._split_by_paragraph），32 × 长序列的激活值会把 6 GB 显存**吃穿**
+# （实测峰值 6276 / 6141 MiB）→ Windows 驱动回退到共享内存（PCIe 换页）
+# → **单篇首次建索引 6.7s 变 237.9s（35 倍）**。
+#
+# 降到 8 后：峰值显存 6276 → 3200 MiB，耗时 237.9 → 6.7s。
+#
+# ⚠️ 这**不改变向量**：与 32 的最大绝对差 3.2e-07（fp32 舍入噪声级），
+#    平均余弦 1.00000000 → 900+ 个已建 `.cvec.npy` 缓存**继续有效**。
+# ⚠️ 也**不要改 `max_seq_length` 来省显存**（现为默认 8192）：那是**截断**，
+#    实测会把 19% 的块砍掉（最长那块 2806 → 512 token，砍 82%），
+#    正是 `nodes/judge.py` 与 `nodes/pull_chunk.py` 记录的
+#    **"Run1 真漏检根因"**（900/3000 截断均已移除，2026-09 结论）。
+#    8192 是**必需的**：QASPER 极端块 15981 字符 ≈ 4200 token，低于此值就会截断。
+ENCODE_BATCH = 8
+
 _model = None
 
 
@@ -214,7 +255,8 @@ def encode_texts(texts: list[str]) -> np.ndarray:
     if mock_llm.embed_enabled():
         return mock_llm.encode_texts(list(texts), EMBED_DIM)
     model = _get_model()
-    vecs = model.encode(list(texts), normalize_embeddings=True)
+    # ⚠️ 必须显式给 batch_size：默认 32 会让单篇首次建索引慢 35 倍（见 ENCODE_BATCH 注释）
+    vecs = model.encode(list(texts), normalize_embeddings=True, batch_size=ENCODE_BATCH)
     return np.asarray(vecs, dtype="float32")
 
 
@@ -312,6 +354,7 @@ class ChunkIndex:
 
     # document_cache 延迟 import：Chunk 模型只在 L3 需要，避免 L0 热路径背负解析模块
     def _doc_chunks(self) -> list[Any]:
+        """**检索单元**：`retrieval_chunks`（语义切块，chunk_id 同 pymupdf 空间）。"""
         if self._chunks is None:
             from paperpilot.agents.document_cache import retrieval_chunks
             # 检索视图：chunk_id 同 pymupdf 空间，文本额外含 MinerU 表格/公式
@@ -382,8 +425,23 @@ class ChunkIndex:
                 "page": c.page_span[0],
                 "text": c.text,
                 "score": round(float(scores[int(i)]), 4),
+                **self._hit_extra(int(i)),
             })
         return hits
+
+    def _hit_extra(self, i: int) -> dict[str, Any]:
+        """命中结果的**附加字段钩子**。
+
+        · chunk 视图（默认）：返回空 dict → 命中结构与引入前**逐字节一致**（评测口径不变）。
+        · 窗口视图：额外带 `chunk_ids`（本窗口覆盖的原 chunk）→ cites / 页码可映射回原文。
+          多篇语料库再由 `MultiChunkIndex` 覆写补上来源篇。
+        """
+        chunks = self._doc_chunks()
+        if 0 <= int(i) < len(chunks):
+            cids = getattr(chunks[int(i)], "chunk_ids", None)
+            if cids:
+                return {"chunk_ids": list(cids)}
+        return {}
 
     @staticmethod
     def _section_of(c: Any) -> str:
@@ -466,12 +524,13 @@ class ChunkIndex:
             used += 1
             qv = encode_query(q)
             v = (vecs @ qv).astype("float64")
-            b = np.asarray(bm_idx.score(q), dtype="float64")
+            b = _bm_or_none(np.asarray(bm_idx.score(q), dtype="float64"))
             for r, i in enumerate(np.argsort(-v)):
                 rrf[int(i)] += (1.0 if wv is None else float(wv[int(i)])) / (60 + r + 1)
                 avg[int(i)] += float(v[int(i)])
-            for r, i in enumerate(np.argsort(-b)):
-                rrf[int(i)] += (1.0 if wb is None else float(wb[int(i)])) / (60 + r + 1)
+            if b is not None:                # 无 BM25 信号 → 只用向量路（见 `_bm_or_none`）
+                for r, i in enumerate(np.argsort(-b)):
+                    rrf[int(i)] += (1.0 if wb is None else float(wb[int(i)])) / (60 + r + 1)
         order = self._select(chunks, list(np.argsort(-rrf)), top_k)
         hits = []
         for i in order:
@@ -482,6 +541,7 @@ class ChunkIndex:
                 "page": c.page_span[0],
                 "text": c.text,
                 "score": round(float(avg[int(i)]) / max(used, 1), 4),
+                **self._hit_extra(int(i)),
             })
         return hits
 
@@ -500,8 +560,9 @@ class ChunkIndex:
         vec_scores = (q @ vecs.T).astype("float64")
         bm = BM25Index([c.text for c in chunks])
         bm_scores = bm.score(query)
+        bm_sig = _bm_or_none(bm_scores)      # 纯中文查询 → 全 0，跳过 BM25 路（见 `_bm_or_none`）
         wv, wb = _ext_weights(chunks, float(os.environ.get("PAPERPILOT_EXT_RRF_ALPHA", "0.5") or 0.5))
-        order = self._select(chunks, list(rrf_order(vec_scores, bm_scores,
+        order = self._select(chunks, list(rrf_order(vec_scores, bm_sig,
                                                     w_vec=wv, w_bm=wb)), top_k)
         hits = []
         for i in order:
@@ -512,7 +573,9 @@ class ChunkIndex:
                 "page": c.page_span[0],
                 "text": c.text,
                 "score": round(float(vec_scores[int(i)]), 4),
-                "bm_rank": int(np.sum(bm_scores > bm_scores[int(i)])) + 1,
+                "bm_rank": (0 if bm_sig is None         # 0 = 本次**无** BM25 信号（别当"第 1 名"读）
+                            else int(np.sum(bm_scores > bm_scores[int(i)])) + 1),
+                **self._hit_extra(int(i)),
             })
         return hits
 
@@ -548,5 +611,176 @@ class ChunkIndex:
                 "page": c.page_span[0],
                 "text": c.text,
                 "score": round(float(all_vec[int(i)]) / max(len(queries), 1), 4),
+                **self._hit_extra(int(i)),
             })
         return hits
+
+
+class MultiChunkIndex(ChunkIndex):
+    """多篇论文合并成的**检索语料库**（N 篇 → 一个扁平 chunk 空间）。
+
+    ## 设计要点（2026-09-21）
+
+    · **不新增缓存产物**：每篇仍由 `ChunkIndex` 建自己的 `<stem>.cvec.npy`，
+      本类**只在读取时拼接** —— 所以 900+ 个已有 `.cvec.npy` 全部继续有效，
+      而且"单篇"与"多篇"共用同一批索引文件（单篇路径零影响、零迁移）。
+    · **只重写 `_doc_chunks()` 与 `vectors()` 两处**，其余（`search_hybrid` /
+      `search_multi_hybrid` / BM25 / RRF / `_select` / `_ext_weights`）全部继承
+      —— 它们只看见一个扁平 chunk 列表，与篇数无关。
+    · 命中额外带 `pdf` 字段（跨篇引用 / 前端跳转用），由 `_hit_extra` 注入。
+
+    ## 已知待观察项（跑数据后再决定，别预先优化）
+
+    · `_section_of` 返回顶层节名（"Introduction"/"Experiments"…），**跨篇会撞名**
+      → 节级配额 `PAPERPILOT_RETRIEVE_SECTION_CAP`（默认 0=关）在多篇下语义会变。
+    · 可能出现**单篇霸占 top_k**（某篇特别长/特别贴题），此时需要"篇级配额"。
+    · 语料变大后 `top_k` 需重调（单篇 top12 覆盖 ~85% 的结论不自动迁移）。
+    """
+
+    def __init__(self, pdfs: list[str]):
+        self.pdfs = [str(p) for p in pdfs if p]
+        # 兼容父类属性（日志/调试用，**不参与检索、不作为缓存键**）
+        self.pdf = "+".join(Path(p).stem for p in self.pdfs)
+        self.stem = self.pdf
+        self._chunks: list[Any] | None = None
+        self._vecs: np.ndarray | None = None
+        self._owner: list[str] = []      # 扁平下标 → 来源 pdf（与 _chunks 同序）
+
+    def _doc_chunks(self) -> list[Any]:
+        """各篇 `retrieval_chunks` 按 pdfs 顺序拼成一个扁平 chunk 空间。"""
+        if self._chunks is None:
+            from paperpilot.agents.document_cache import retrieval_chunks
+            chunks: list[Any] = []
+            owner: list[str] = []
+            for p in self.pdfs:
+                cs = retrieval_chunks(p)
+                chunks.extend(cs)
+                owner.extend([p] * len(cs))
+            self._chunks, self._owner = chunks, owner
+        return self._chunks
+
+    def vectors(self) -> np.ndarray:
+        """各篇**已缓存**向量按同一顺序 `vstack` —— 不落新缓存、不重新 encode。"""
+        if self._vecs is None:
+            parts = [ChunkIndex(p).vectors() for p in self.pdfs]
+            parts = [v for v in parts if len(v)]
+            self._vecs = (np.vstack(parts).astype("float32") if parts
+                          else np.zeros((0, EMBED_DIM), dtype="float32"))
+        return self._vecs
+
+    def _fingerprint(self) -> dict[str, Any]:
+        """多篇**不落缓存**（向量来自各篇自己的缓存），故不需要指纹。"""
+        return {}
+
+    def _hit_extra(self, i: int) -> dict[str, Any]:
+        return {**super()._hit_extra(int(i)),
+                "pdf": self._owner[int(i)] if 0 <= int(i) < len(self._owner) else ""}
+
+    # ── 分层检索：篇内先检索 → 跨篇融合 ────────────────────────────────
+
+    def search_layered(self, query: str, *, per_paper_k: int = 4, top_k: int = 12,
+                       mode: str = "quota", floor: int = 1) -> list[dict[str, Any]]:
+        """多篇检索主路径：**每篇内先检索（同粒度可比）→ 跨篇融合**。
+
+        为什么不能直接用全局索引（2026-09-21 实测，5 篇 / 146 chunk）：
+            5 篇**总字符数相近**（57k~72k），但 chunk 数 22~52、中位块长 676~3956
+            （差 5.8×）→ 全局 cosine 实际在比"**谁切得细**"而不是"谁相关"：
+            泛化查询 top12 被单篇 100% 霸占、top48 仍占 71%；
+            把 top_k 从 12 加到 48，其他篇覆盖只从 0 涨到 1~7 → **加大 k 无效**。
+            连查询里直接写论文名（"CrossSum"）都没能把目标篇顶到第 1。
+
+        mode:
+            "quota"  —— **保底 + 全局补足**：各篇 top-`floor` 保底进候选，
+                        其余名额按**全局分数**排。**默认（实测最优，见下）。**
+            "rrf"    —— 只比**篇内名次**（1/(60+rank)）。篇内第 1 名各篇等权
+                        → 粒度造成的"整篇分数偏移"天然抵消，但**过度均衡**
+                        （实测目标命中从 7.2 掉到 2.8，一篇只剩 3 块）。
+            "znorm"  —— 篇内全量分数 z 标准化。（⚠️ 实测**最差**且引入新偏差：
+                        它偏好"篇内方差大"的篇 —— 恰好是块长跨度大的那篇，
+                        于是查询里写着专名时首名反而给错。）
+            "zmean"  —— 篇内分数减去该篇均值（去篇级偏移、保留 cosine 单位）。
+            "global" —— 全局索引（对照基线，等价 `self.search_hybrid`）。
+
+        5 篇实测（指向性 5 题 + 泛化 5 题，per_paper_k=4 / top_k=12）:
+            mode     目标命中均   首名正确   top1覆盖   平均篇数
+            global      7.2       3/5      2.2/5     2.2   ← 排序好，泛化查询 100% 单篇
+            rrf         2.8       2/5      5.0/5     5.0   ← 跨篇了，排序被稀释
+            znorm       3.4       1/5      2.8/5     4.4   ← 两头不讨好
+            zmean       5.0       2/5      2.7/5     3.9
+            → 所以才要 "quota"：**保底**保证跨篇可见，**全局补足**保住排序。
+
+        Returns: 命中列表，每条额外带 `pdf` / `rank_in_paper` / `fuse` / `fuse_score`。
+        """
+        if mode == "global":
+            return self.search_hybrid(query, top_k=top_k)
+        if mode == "quota":
+            return self._search_quota(query, floor=floor, top_k=top_k)
+        if mode not in ("rrf", "znorm", "zmean"):
+            raise ValueError(f"未知 mode: {mode}")
+
+        per: list[tuple[str, list[dict[str, Any]]]] = []
+        for p in self.pdfs:
+            idx = ChunkIndex(p)
+            n = len(idx._doc_chunks())
+            if n == 0:
+                continue
+            # znorm/zmean 需要该篇**全量**分数分布才能做篇级校准；rrf 只要前 k'
+            k = n if mode in ("znorm", "zmean") else min(per_paper_k, n)
+            per.append((p, idx.search_hybrid(query, top_k=k)))
+
+        return self._fuse(per, mode)[:top_k]
+
+    @staticmethod
+    def _fuse(per: list[tuple[str, list[dict[str, Any]]]],
+              mode: str) -> list[dict[str, Any]]:
+        """篇内命中 → 跨篇融合排序。"""
+        from statistics import mean, pstdev
+
+        rows: list[tuple[float, float, str, int, dict[str, Any]]] = []
+        for p, hits in per:
+            ss = [float(h.get("score") or 0.0) for h in hits]
+            mu = mean(ss) if ss else 0.0
+            sd = (pstdev(ss) if len(ss) > 1 else 0.0)
+            for rank, h in enumerate(hits, 1):
+                s = float(h.get("score") or 0.0)
+                if mode == "rrf":
+                    fs = 1.0 / (60 + rank)
+                elif mode == "znorm":
+                    fs = ((s - mu) / sd) if sd > 1e-9 else 0.0
+                else:                                   # zmean
+                    fs = s - mu
+                rows.append((fs, s, p, rank, h))
+
+        # 主键融合分降序；次键**原始 cosine**（跨篇虽不可比，但同分时是合理的次级依据）
+        rows.sort(key=lambda t: (-t[0], -t[1]))
+        return [{**h, "pdf": p, "rank_in_paper": rank, "fuse": mode,
+                 "fuse_score": round(fs, 6)} for fs, _s, p, rank, h in rows]
+
+    def _search_quota(self, query: str, *, floor: int, top_k: int
+                      ) -> list[dict[str, Any]]:
+        """**保底 + 全局补足**：各篇 top-`floor` 保底进候选，其余名额按全局排序。
+
+        为什么不是等权融合（rrf）：那会让每篇都塞满，目标篇 12 条里只剩 2.8 条。
+        这里保留全局序的**头部**（排序质量），只把**尾部**若干槽位换成保底项
+        （保证每篇至少可见一次）→ 目标篇仍占多数，但跨篇不会盲。
+        """
+        glob = self.search_hybrid(query, top_k=len(self._doc_chunks()))
+        out = [dict(h) for h in glob[:top_k]]
+        have = {(str(h.get("pdf") or ""), str(h["chunk_id"])) for h in out}
+
+        slot = len(out) - 1                    # 从**尾部**往前替换，保护头部排序
+        for p in self.pdfs:
+            if slot < 0:
+                break
+            for h in ChunkIndex(p).search_hybrid(query, top_k=floor):
+                key = (p, str(h["chunk_id"]))
+                if key in have:
+                    continue
+                if slot < 0:
+                    break
+                out[slot] = {**h, "pdf": p, "rank_in_paper": 1,
+                             "fuse": "quota",
+                             "fuse_score": round(float(h.get("score") or 0.0), 6)}
+                have.add(key)
+                slot -= 1
+        return out

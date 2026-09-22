@@ -1,16 +1,35 @@
-"""QASPER 数据源适配：从 QASPER full_text 确定性构造 Chunk / 论文上下文。
+"""QASPER 评测数据源（**测试侧**，不属于生产包 `paperpilot`）。
 
-QASPER（allenai）给出论文的章节化全文（full_text = [{section_name, paragraphs}]），
-section_name 用 " ::: " 表示层级（如 "Proposed Method ::: Polarity Function"）。
-本模块把每篇论文转成与 PDF 产物同构的数据：
-    Chunk[]          → claims 提取 / L2 / L3 检索共用（chunk_id 可复现）
-    qas 题目         → 评测时按 paper 拉取
-    gold evidence    → 引用核对参考
+## 为什么住在这儿（2026-09-22 重构）
 
-设计约束（与 pipeline 一致性）：
-    - title_path 顶层 = section 根名（如 "Introduction"），与分析器 _skip_chunk 兼容
+它原本是 `src/paperpilot/qasper_source.py` —— **评测集适配器却住在生产包里**，
+于是"虚拟文件名 `qasper_<pid>.qpdf`"穿透了 7 个生产文件（`pipeline` / `document_cache`
+/ `worker` / `ingest` / `paper_identity` / `splitter` / 本模块），每处都得写
+`if is_qasper(pdf)`；新增第二个评测源还要再改这 7 处。而**产品目标是 arXiv PDF 解析**，
+生产不该知道评测集存在。
+
+现在生产只依赖 `paperpilot.sources` 的接口 + 注册表；**本模块在 import 时把自己注册进去**：
+
+    sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+    from qa.sources.qasper import load_papers     # 顺带完成注册
+    ...
+    ordered_chunks("qasper_2206.12345.qpdf")      # 自动走本源的 chunks()
+
+⚠️ 依赖注入的前提：调用方得让 `qa/` 可 import（脚本里
+`sys.path.insert(0, str(ROOT))`，ROOT = 仓库根）。
+
+## 提供
+
+    QasperSource        `PaperSource` 实现（chunks / title / extra_chunks）
+    load_papers()       数据集全量（paper_id → paper dict）
+    build_chunks()      full_text → Chunk[]（chunk_id 规则与生产 chunk 空间同构）
+    gold_answer_full()  该题**全部**人工 evidence 段（检索评测的 gold）
+    gold_answer()       兼容旧签名（首段口径）
+
+设计约束（与原 pipeline 一致）：
+    - `title_path` 顶层 = section 根名，与分析器 `_skip_chunk` 兼容
     - 超大 section（>MAX_CHUNK_LEN）按段落二级切分（part 编号），与 chunker 同策略
-    - chunk_id 形如 "c001"（全局自增），同一 paper 恒定 → 缓存/向量索引可复用
+    - `chunk_id` 形如 `c0001`（全局自增），同一 paper 恒定 → 向量索引缓存可复用
 """
 from __future__ import annotations
 
@@ -19,13 +38,19 @@ import re
 from pathlib import Path
 from typing import Any
 
+from paperpilot import sources
 from paperpilot.models.schema import Chunk, ChunkSpan
 
+# qa/sources/qasper.py → qa/sources → qa → 仓库根
 ROOT = Path(__file__).resolve().parents[2]
 QASPER_JSON = ROOT / "qasper_data" / "json" / "qasper-train-v0.3.json"
+MINERU_OUT = ROOT / "assets/artifacts/out_mineru"
 
 MAX_CHUNK_LEN = 4000          # 与 chunker.DEFAULT_MAX_LEN / pipeline.MAX_LEN 一致
 REF_MARKERS = ("References", "REFERENCES", "Bibliography", "BIBLIOGRAPHY")
+
+PREFIX = "qasper_"
+SUFFIX = ".qpdf"
 
 # S2ORC 引用占位符（"BIBREF0" / "FIGREF1"）→ 归一，避免进 LLM 上下文
 _REF_RE = re.compile(r"\b[A-Z]+REF\d+\b")
@@ -43,6 +68,11 @@ def _clean_para(p: str) -> str:
 def _split_title(name: str) -> list[str]:
     """'Proposed Method ::: Polarity Function' → ['Proposed Method', 'Polarity Function']。"""
     return [x.strip() for x in name.split(":::") if x.strip()]
+
+
+def pid_of(pdf_name: str) -> str:
+    """`qasper_<pid>.qpdf` → `<pid>`。"""
+    return pdf_name[len(PREFIX):-len(SUFFIX)]
 
 
 def load_papers() -> dict[str, dict[str, Any]]:
@@ -161,3 +191,64 @@ def gold_answer(q: dict[str, Any]) -> tuple[str | None, str | None]:
     """
     ans, evs = gold_answer_full(q)
     return ans, (evs[0] if evs else None)
+
+
+# ── PaperSource 实现 ─────────────────────────────────────────────────────────
+
+
+class QasperSource:
+    """无磁盘文件、无版面页码的**文本源**（评测用）。
+
+    能力声明：
+      · `name = "qasper"` → 写进产物 `source` 字段（整链同源校验）
+      · `has_file = False` → 不做内容指纹、不跑 MinerU、摄取闸门放行
+        （这三件事的前提都是"磁盘上有份 PDF"）
+    """
+
+    name = "qasper"
+    has_file = False
+
+    def __init__(self, pdf_name: str) -> None:
+        self.pdf_name = pdf_name
+        self.pid = pid_of(pdf_name)
+
+    def _paper(self) -> dict[str, Any]:
+        paper = load_papers().get(self.pid)
+        if not paper:
+            raise FileNotFoundError(f"QASPER 缺论文: {self.pid}")
+        return paper
+
+    def title(self) -> str:
+        return str(self._paper().get("title", "") or "").strip()
+
+    def chunks(self) -> list[Chunk]:
+        """报告视图：full_text → chunks，去 PREAMBLE（与生产的过滤规则一致）。"""
+        raw = build_chunks(self._paper())
+        return [c for c in raw if c.title_path != ["(PREAMBLE)"]]
+
+    def extra_chunks(self) -> list[Chunk]:
+        """**外部表格通道**（实验，默认关）：从 arXiv 原始 PDF 的 MinerU 产物补表/公式。
+
+        为什么需要：QASPER 的 `figures_and_tables` 只给 PNG + caption 的字符 span，
+        **表格数值没有任何文本形式** → 凡 gold 出自表格的题，在纯文本通道下
+        **结构上不可达**（实测 500 题里 36 道，占 8.0pt）。
+
+        开启条件：`PAPERPILOT_QASPER_TABLES=1` **且** `out_mineru/<pid>v1/` 有 content_list。
+        只进检索视图，不动 `ordered_chunks`（报告/claims 锚点不受影响）。
+
+        ⚠️ 这段策略**刻意留在测试侧** —— 生产包不该含评测集的表格实验开关。
+        """
+        import os
+
+        if os.environ.get("PAPERPILOT_QASPER_TABLES") != "1":
+            return []
+        from paperpilot.agents.document_cache import external_table_chunks
+        return list(external_table_chunks(str(MINERU_OUT / f"{self.pid}v1")))
+
+
+def _match(name: str) -> bool:
+    return name.startswith(PREFIX) and name.endswith(SUFFIX)
+
+
+# **import 即注册** —— 测试脚本 `from qa.sources.qasper import ...` 时自动生效
+sources.register(_match, QasperSource)

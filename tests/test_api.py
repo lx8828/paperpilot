@@ -286,7 +286,7 @@ def test_ask_blocked_while_job_running(client, fake_llm):
     job["status"] = jobs.STATUS_RUNNING
     job["stage"] = "mineru"
     jobs.save(job)
-    r = client.post("/api/ask", json={"question": "方法是什么？", "pdf": "x.pdf"})
+    r = client.post("/api/ask", json={"question": "方法是什么？", "pdfs": ["x.pdf"]})
     assert r.status_code == 200
     body = r.json()
     assert "后台解析" in body["answer"]
@@ -294,7 +294,7 @@ def test_ask_blocked_while_job_running(client, fake_llm):
 
 
 def test_ask_missing_paper_404(client, fake_llm):
-    assert client.post("/api/ask", json={"question": "q", "pdf": "nope.pdf"}).status_code == 404
+    assert client.post("/api/ask", json={"question": "q", "pdfs": ["nope.pdf"]}).status_code == 404
 
 
 def test_ask_requires_llm_config(client, monkeypatch):
@@ -303,7 +303,7 @@ def test_ask_requires_llm_config(client, monkeypatch):
 
     monkeypatch.delenv("PAPERPILOT_LLM_API_KEY", raising=False)
     assert llm.is_configured() is False
-    r = client.post("/api/ask", json={"question": "q", "pdf": "x.pdf"})
+    r = client.post("/api/ask", json={"question": "q", "pdfs": ["x.pdf"]})
     assert r.status_code == 500 and "LLM 未配置" in r.json()["detail"]
 
 

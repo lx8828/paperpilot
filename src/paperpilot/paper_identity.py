@@ -9,8 +9,8 @@ PDF 的内容指纹**。后果（已复现，见 `qa/review/_dupname_repro_20260
 - **流水线**：把 `A.pdf` 换成 B 的字节（文件名不变）→ **解析层读 B 的文本**、**产物层给 A 的
   claims/报告** → 状态混合，且全程无告警；
 - **用户可见**：web `/api/report` 上传"文件名=A、内容=B" → 直接返回 A 的旧报告，**且不写盘**；
-- **评测测不到**：QASPER 走虚拟名 `qasper_<pid>.qpdf`（身份由数据集给定，不存在同名不同内容），
-  所以问题只存在于**真实上传路径**。
+- **评测测不到**：评测集走 `paperpilot.sources` 注册的**无文件数据源**
+  （身份由数据集给定，不存在同名不同内容），所以问题只存在于**真实上传路径**。
 
 ## 本模块提供
 
@@ -38,11 +38,6 @@ ROOT = Path(__file__).resolve().parents[2]
 PAPERS_DIR = ROOT / "assets" / "papers"
 
 
-def is_virtual(pdf_name: str) -> bool:
-    """虚拟论文名（QASPER：`qasper_<pid>.qpdf`，无 PDF 文件）→ 不做内容指纹。"""
-    return pdf_name.startswith("qasper_") and pdf_name.endswith(".qpdf")
-
-
 def pdf_path(pdf_name: str) -> Path:
     return PAPERS_DIR / pdf_name
 
@@ -57,11 +52,13 @@ def _fingerprint_cached(path: str, mtime_ns: int, size: int) -> dict[str, Any]:
 
 
 def fingerprint(pdf_name: str, *, path: Path | None = None) -> dict[str, Any] | None:
-    """PDF 的内容指纹；虚拟名 / 文件不存在 → None。
+    """PDF 的内容指纹；**无磁盘文件的数据源** / 文件不存在 → None。
 
     缓存键含 `mtime_ns + size`：文件被替换或修改后自动重算（同名同尺寸同 mtime 的极端情况除外）。
+    "有没有文件"由 `paperpilot.sources` 判定 —— **生产不再用文件名前缀猜**（2026-09-22 重构）。
     """
-    if is_virtual(pdf_name):
+    from paperpilot import sources
+    if not sources.has_file(pdf_name):
         return None
     p = path or pdf_path(pdf_name)
     try:

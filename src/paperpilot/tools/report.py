@@ -11,6 +11,7 @@
 """
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from paperpilot.prompts.report import (GUIDE_SYSTEM, OVERVIEW_SYSTEM,
@@ -20,6 +21,41 @@ from paperpilot.tools import llm
 _EV = {"hit": "✓", "loose": "~", "miss": "⚠"}
 _REL_CN = {"implements": "实现机制", "supports": "证据支撑",
            "limits": "边界限制", "contrasts": "对照区分"}
+
+
+class MaterialEmpty(RuntimeError):
+    """生成材料为空（无 importance≥4 的核心主张）。
+
+    多为**打标失败**导致全篇退化成 detail（见 `viewer.label_groups`）——
+    此时 LLM 无据可依。必须让失败**显性**，因为两条路都是静默失败：
+      · 概述：LLM 会直接拒答，而**拒答话术会被当成概述存盘**；
+      · 导读：prompt 允许"背景可以来自常识"，LLM 会**凭标题编一段**
+        看似正常、实则无出处的文字 —— 比拒答更隐蔽。
+    """
+
+    def __init__(self, kind: str, detail: str) -> None:
+        super().__init__(f"{kind}材料为空：{detail}")
+        self.kind = kind
+        self.detail = detail
+
+
+# LLM 在"没有材料"时的拒答话术特征（防线：旧产物/其他路径漏进来时也能识别）
+_REFUSAL_PAT = re.compile(
+    r"未提供|无法撰写|无法生成|无法完成|请补充|材料不足|缺少.{0,6}材料|"
+    r"没有.{0,6}材料|无法据以|不足以撰写")
+_MIN_OVERVIEW_LEN = 40      # 概述硬性要求 90~140 字；低于此值必是异常
+
+
+def degraded_reason(text: str) -> str:
+    """概述文本是否为**无效产物**（空 / 拒答话术 / 过短）。返回原因，正常返回 ""。"""
+    t = (text or "").strip()
+    if not t:
+        return "概述为空"
+    if _REFUSAL_PAT.search(t[:80]):
+        return f"概述是拒答话术（非论文内容）：{t[:48]}…"
+    if len(t) < _MIN_OVERVIEW_LEN:
+        return f"概述过短（{len(t)} 字 < {_MIN_OVERVIEW_LEN}）"
+    return ""
 
 
 # ── 概述 ───────────────────────────────────────────
@@ -37,11 +73,10 @@ def _narrative(g: dict[str, Any]) -> bool:
     return False
 
 
-def collect_materials(groups: list[dict[str, Any]], max_n: int = 12) -> list[dict[str, Any]]:
-    """概述材料：摘要/引言/结论里的高分核心主张（优先叙述层）。"""
+def _pick(groups: list[dict[str, Any]], labels: tuple[str, ...], floor: float,
+          max_n: int) -> list[dict[str, Any]]:
     cand = [g for g in groups
-            if g.get("label") in ("core_claim", "result_primary")
-            and g.get("importance", 0) >= 4]
+            if g.get("label") in labels and g.get("importance", 0) >= floor]
     cand.sort(key=lambda g: (not _narrative(g),
                              -(g.get("importance", 0)),
                              -g.get("score", {}).get("total", 0)))
@@ -49,9 +84,54 @@ def collect_materials(groups: list[dict[str, Any]], max_n: int = 12) -> list[dic
             for g in cand[:max_n]]
 
 
+# 材料分级放宽（2026-09-22）：严格档为空时逐级放宽，避免"确实没有 headline
+# 结论"的论文被误判为打标失败；走到最后一档仍为空，才判定是真失败
+# （全篇 claims 都退化成 detail、importance≤3 —— 见 `viewer.label_groups`）。
+_CORE = ("core_claim", "result_primary")
+_CORE_METHOD = ("core_claim", "result_primary", "method_core", "result_supporting")
+_STRICT6 = _CORE_METHOD + ("ablation", "limitation")
+
+OVERVIEW_LADDER: list[tuple[str, tuple[str, ...], float]] = [
+    ("严格", _CORE, 4),
+    ("放宽·核心不限分", _CORE, 0),
+    ("放宽·含方法/次级结果", _CORE_METHOD + ("ablation",), 3),
+]
+GUIDE_LADDER: list[tuple[str, tuple[str, ...], float]] = [
+    ("严格", _CORE_METHOD, 4),
+    ("放宽·含消融/局限", _STRICT6, 4),
+    ("放宽·六类不限分", _STRICT6, 3),
+]
+# ⚠️ 两把梯子的**最后一档都不允许 detail / related**：它们按 prompt 定义是
+# "说明性、非主张"，拿来写概述/导读会把背景句包装成论文结论。
+
+
+def _walk(groups: list[dict[str, Any]], ladder: list[tuple[str, tuple[str, ...], float]],
+          max_n: int) -> tuple[list[dict[str, Any]], str]:
+    for name, labels, floor in ladder:
+        mats = _pick(groups, labels, floor, max_n)
+        if mats:
+            return mats, name
+    return [], ladder[-1][0]
+
+
+def collect_materials(groups: list[dict[str, Any]], max_n: int = 12
+                      ) -> tuple[list[dict[str, Any]], str]:
+    """概述材料：摘要/引言/结论里的高分核心主张（优先叙述层）。
+
+    Returns: (材料, 命中的档位名)。**材料为空 = 所有档位都取不到 → 打标失败。**
+    """
+    return _walk(groups, OVERVIEW_LADDER, max_n)
+
+
 def build_overview(groups: list[dict[str, Any]], title: str) -> str:
-    """LLM 生成全文概述（研究者向，忠于论文）。"""
-    mats = collect_materials(groups)
+    """LLM 生成全文概述（研究者向，忠于论文）。无可用材料 → 抛 `MaterialEmpty`。"""
+    mats, level = collect_materials(groups)
+    if not mats:
+        raise MaterialEmpty(
+            "概述", f"{len(groups)} 组在所有档位都取不到材料（全篇 label=detail、"
+                    "importance≤3：既可能是打标失败，也可能是该篇确实无核心主张）")
+    if level != "严格":
+        print(f"  [概述] 材料按「{level}」档放宽取得 {len(mats)} 条")
     rows = llm.chat_json(OVERVIEW_SYSTEM, build_overview_user(title, mats),
                          temperature=0.0)
     if isinstance(rows, dict):
@@ -59,22 +139,26 @@ def build_overview(groups: list[dict[str, Any]], title: str) -> str:
     return str(rows).strip()
 
 
-def collect_guide_materials(groups: list[dict[str, Any]], max_n: int = 18) -> list[dict[str, Any]]:
-    """导读材料：核心主张+关键方法/支撑结果，叙述层优先。"""
-    cand = [g for g in groups
-            if g.get("label") in ("core_claim", "result_primary",
-                                  "result_supporting", "method_core")
-            and g.get("importance", 0) >= 4]
-    cand.sort(key=lambda g: (not _narrative(g),
-                             -(g.get("importance", 0)),
-                             -g.get("score", {}).get("total", 0)))
-    return [{"gid": g["group_id"], "label": g["label"], "text": g["rep_text"]}
-            for g in cand[:max_n]]
+def collect_guide_materials(groups: list[dict[str, Any]], max_n: int = 18
+                            ) -> tuple[list[dict[str, Any]], str]:
+    """导读材料：核心主张+关键方法/支撑结果，叙述层优先。返回 (材料, 档位名)。"""
+    return _walk(groups, GUIDE_LADDER, max_n)
 
 
 def build_guide(groups: list[dict[str, Any]], title: str) -> str:
-    """LLM 生成面向小白的通俗导读。"""
-    mats = collect_guide_materials(groups)
+    """LLM 生成面向小白的通俗导读。
+
+    ⚠️ 无材料时**抛错**而不是继续（2026-09-22）：`GUIDE_SYSTEM` 允许"背景知识
+    来自常识"，所以空材料时 LLM 会**凭标题编一段看似正常的导读**（实测
+    `2606.18837` 空材料仍产出 569 字）—— 比概述拒答更隐蔽，必须显性化。
+    """
+    mats, level = collect_guide_materials(groups)
+    if not mats:
+        raise MaterialEmpty(
+            "导读", f"{len(groups)} 组在所有档位都取不到材料（全篇 label=detail、"
+                    "importance≤3：既可能是打标失败，也可能是该篇确实无核心主张）")
+    if level != "严格":
+        print(f"  [导读] 材料按「{level}」档放宽取得 {len(mats)} 条")
     rows = llm.chat_json(GUIDE_SYSTEM, build_guide_user(title, mats),
                          temperature=0.0)
     if isinstance(rows, dict):

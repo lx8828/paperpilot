@@ -1,14 +1,233 @@
 [
   {
     "pdf": "2608.29179v1.pdf",
-    "qid": "29179-01",
+    "qid": "29179-L0-1",
     "role": "dev",
     "intent": "overview",
-    "question": "这篇论文解决什么问题？提出的方法叫什么？",
-    "expect": ["L0", "L1"],
+    "question": "这篇论文研究什么问题？提出的方法叫什么、核心思路是什么？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
     "route_min": "L0",
-    "hint": "生成式推荐中早期 beam 剪枝导致目标物品被过早移除；提出时间自回归对齐方法 TAAL。",
-    "must_have": ["早期", "剪枝", "TAAL"],
+    "hint": "研究生成式推荐里的**早期 beam 剪枝**问题：标准 next-token prediction（NTP）不显式覆盖交互序列中的多模态转移，导致 ground-truth SID 在 beam search 早期分支被**不可逆**剪掉（91.9%–96.6% 的检索失败发生在前两个解码步）。提出 TAAL（Temporal Autoregressive Alignment），两件事：① 训练时用指数衰减的历史聚合构造 (c1,c2) 联合软目标，用 forward KL 对齐早期前缀分布；② 推理时用 PMI（pointwise mutual information）校准候选分数，压低全局高频前缀的影响。tokenizer / T5 backbone / beam search 过程都不改。",
+    "must_have": [
+      "beam",
+      "前缀"
+    ],
+    "must_all": [
+      "TAAL",
+      "PMI"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-L0-2",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话讲，这篇论文在解决什么麻烦？他们是怎么下手的？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "生成式推荐先把商品编码成一串「语义 ID」，再像写字一样一个字一个字往外吐。麻烦在于：beam search 一开始只留少数几条候选，**第一步走错分支，正确答案所在的那整棵子树就被永久删掉了**——而他们测出来 91.9%~96.6% 的失败都发生在前两步。他们的做法分两头：训练时不许模型「只盯一个标准答案」，而是按历史上真实出现过的前缀组合，把概率分给多条合理路径（用 forward KL 对齐）；推理时再用 PMI 把「这个前缀相对全局有多罕见」算出来重排候选，免得热门前缀霸榜。",
+    "must_have": [
+      "beam",
+      "前缀",
+      "剪枝"
+    ],
+    "must_all": [
+      "TAAL"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-L0-3",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说，为什么生成式推荐会「早剪枝」剪掉正确答案？TAAL 是怎么解决的？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "生成式推荐把商品编成语义 ID 后逐 token 解码；beam search 一开始只留少数分支，**前缀一旦离开 beam，该前缀下的所有物品就被永久删除 → 早期错误在结构上不可逆**。论文实测 **91.9%–96.6% 的检索失败发生在前两个解码步骤内**。TAAL 两头下手：训练时用历史条件化的 (c1,c2) 联合软目标 + forward KL 对齐早期前缀分布；推理时用 PMI 校准候选分数、压低全局高频前缀的影响。",
+    "must_have": [
+      "前缀",
+      "剪枝"
+    ],
+    "must_all": [
+      "TAAL",
+      "SID"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-S1",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "TAAL 训练时的联合前缀 forward KL 是怎么算的？为什么不需要枚举所有 c2 候选，靠什么保证估计无偏？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "用概率链式法则把联合 forward KL **精确分解**成两项：① 第一 token 的边缘 KL（在完整 C1 词表上精确计算）；② 条件下的期望 KL。第二项用蒙特卡洛采样 Kmc=2 个分支（b1 ~ q1）后解码对应 c2 概率来估计。该估计量满足 E[L̂12]=L12，因此是条件 KL 的**无偏**随机梯度估计。第一 token 的软目标来自指数衰减的历史聚合 q12(b|H)（最近 Khist=5 项、γ=0.7）。",
+    "must_have": [
+      "链式法则",
+      "无偏",
+      "Monte Carlo"
+    ],
+    "must_all": [
+      "chain rule",
+      "unbiased"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-S2",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "推理时为什么要用 PMI 而不是直接加上经验时序先验 log q12？PMI 里的低支持上下文是怎么处理的？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "因为自回归模型**本身带流行度偏置**（倾向全局高频物品），在稠密域里直接加经验时序先验 log q12 会**过度强调全局高频前缀**。PMI12 = log( P̃(c12|H) / Pglobal(c12) )，用**全局边缘频率做分母**衡量「局部时序关联相对其整体流行度的协同提升（collaborative lift）」。其中 P̃ 用 **empirical-Bayes 收缩**处理低支持上下文：P̃ = [NH/(NH+τ)]·q12 + [τ/(NH+τ)]·Pglobal，NH 是该用户近期上下文在转移表中的观测数，收缩强度 **τ=30**。最终 Score(v) = mv + β·PMI12，β=0.02，只对已完成的 Top-B beam 重排，O(B) 时间。",
+    "must_have": [
+      "流行度",
+      "收缩",
+      "PMI"
+    ],
+    "must_all": [
+      "popularity",
+      "shrinkage"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-S3",
+    "role": "dev",
+    "intent": "key_number",
+    "question": "TAAL 的关键超参是怎么设的：训练对齐权重 α 在三个数据集上分别取多少？推理校准权重 β、收缩强度 τ、历史窗口 Khist、衰减 γ、蒙特卡洛采样数 Kmc 各是多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "α 在验证集上从 {0.1,0.2,0.3,0.4,0.5} 里分别选，得到 **0.2 / 0.2 / 0.3**（Beauty / Instruments / Yelp）；推理用 **β=0.02**、收缩强度 **τ=30**、PMI 校准取最近 **5** 条历史；训练用 **Khist=5、γ=0.7、平滑常数 ε=10⁻⁴、Kmc=2**。所有结果使用固定随机种子 **42**。",
+    "must_have": [
+      "0.7",
+      "Khist"
+    ],
+    "must_all": [
+      "0.2",
+      "0.3",
+      "0.02",
+      "30"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-S4",
+    "role": "dev",
+    "intent": "ablation",
+    "question": "消融实验显示「联合训练」和「PMI 校准」各自的贡献有多大？PMI 相对直接条件先验好多少？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "**① 联合训练提供了主要增益**：对比 no-reranking 下 α>0 与 α=0，NDCG@10 在 Beauty / Instruments / Yelp 上分别提升 **37.5% / 5.9% / 25.7%**，说明联合前缀对齐独立于推理校准改善了候选生成。**② PMI 带来小而一致的提升**：相对直接条件先验，PMI 在 Beauty .0484 vs .0482、Instruments .0881 vs .0875、Yelp .0293 vs .0292（Yelp 差异最小）。**③ 增益幅度依赖数据集**：PMI 把 no-reranking 的 TAAL 模型在 NDCG@10 上提升 **1.5% / 0.8% / 2.3%**，量级不大，与 PMI 只是「生成后的轻量排序校正、不改变候选集」的定位一致。",
+    "must_have": [
+      "PMI",
+      "条件先验"
+    ],
+    "must_all": [
+      "37.5",
+      "5.9",
+      "25.7"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-S5",
+    "role": "dev",
+    "intent": "baseline_compare",
+    "question": "与 DIGER、APAO 这两个方法相比，TAAL 的结果如何？作者认为两者最本质的差别在哪？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "同一划分与全目录排序协议下，**TAAL+PMI 相对 DIGER 在 NDCG@10 上提升 30.2% / 4.4% / 28.9%**（Beauty/Instruments/Yelp）；**APAO 的 NDCG@10 为 0.0337 / 0.0811 / 0.0216**。差别在于**监督来源与被覆盖的路径**：APAO 依据模型自身的前缀状态识别并优化「脆弱的正样本路径」；而 TAAL 用**语料级、历史条件**的 (c1,c2) 转移分布做覆盖监督（训练）+ PMI 去掉全局边缘频率（推理）。",
+    "must_have": [
+      "DIGER",
+      "APAO"
+    ],
+    "must_all": [
+      "30.2",
+      "28.9",
+      "0.0337"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-S6",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "作者自己承认的局限性有哪些？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "三条：**① 转移模型只用一阶上下文转移**，更高阶与多跳的时序行为仍未解决；**② 实验只覆盖三个中等规模公开数据集**，向超大规模工业级商品目录的泛化需要进一步研究；**③ 主要结果使用固定随机种子 42**。",
+    "must_have": [
+      "一阶",
+      "工业",
+      "seed"
+    ],
+    "must_all": [
+      "first-order",
+      "industrial"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-S7",
+    "role": "dev",
+    "intent": "definition",
+    "question": "论文里的 S_c1、S_c2、S_full 和 post-survival rank 分别是怎么定义的？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**S_cl**：扩展第 l 个 code token 之后，「ground-truth 前缀仍留在 beam 中」的样本占比；**S_full**：完整 ground-truth SID 仍留在**最终候选集**中的样本占比；**post-survival rank**：在 **full-SID 存活**这一条件下，ground-truth 候选的平均排名。",
+    "must_have": [
+      "候选集",
+      "平均排名",
+      "post-survival"
+    ],
+    "must_all": [
+      "beam",
+      "final candidate set"
+    ],
     "must_not": [],
     "chunk_kw": null
   },
@@ -16,90 +235,101 @@
     "pdf": "2608.29179v1.pdf",
     "qid": "29179-02",
     "role": "dev",
-    "intent": "detail",
-    "question": "TAAL 在三个数据集上 NDCG@10 分别提升多少？",
-    "expect": ["L1"],
-    "route_min": "L1",
-    "hint": "在 Amazon Beauty、Instruments 和 Yelp 上，TAAL 使 NDCG@10 分别提升 39.5%、6.7% 和 28.6%。",
-    "must_have": ["39.5", "6.7", "28.6"],
-    "must_not": [],
-    "chunk_kw": null
-  },
-  {
-    "pdf": "2608.29179v1.pdf",
-    "qid": "29179-03",
-    "role": "dev",
-    "intent": "method_detail",
-    "question": "TAAL 的两个核心机制分别是什么？",
-    "expect": ["L1", "L2"],
-    "route_min": "L1",
-    "hint": "训练时用历史转换构建联合(c1,c2)软目标以前向 KL 对齐早期前缀分布；推理时用点互信息（PMI）校准候选分数。",
-    "must_have": ["软目标", "PMI", "KL"],
-    "must_not": [],
-    "chunk_kw": null
-  },
-  {
-    "pdf": "2608.29179v1.pdf",
-    "qid": "29179-04",
-    "role": "dev",
-    "intent": "detail",
-    "question": "相同协议下 TAAL+PMI 相比 DIGER 在 NDCG@10 上提升多少？",
-    "expect": ["L1", "L2"],
-    "route_min": "L1",
-    "hint": "TAAL+PMI 较 DIGER 在三个数据集上 NDCG@10 分别提升 30.2%、4.4%、28.9%。",
-    "must_have": ["30.2", "4.4", "28.9"],
-    "must_not": [],
-    "chunk_kw": null
-  },
-  {
-    "pdf": "2608.29179v1.pdf",
-    "qid": "29179-05",
-    "role": "dev",
-    "intent": "detail",
-    "question": "消融实验显示联合训练贡献有多大？",
-    "expect": ["L2"],
-    "route_min": "L1",
-    "hint": "联合训练带来大部分增益：与 α=0 相比，α>0 在三个数据集上 NDCG@10 分别提升 37.5%、5.9% 和 25.7%。",
-    "must_have": ["37.5", "25.7", "α"],
-    "must_not": [],
-    "chunk_kw": "α"
-  },
-  {
-    "pdf": "2608.29179v1.pdf",
-    "qid": "29179-06",
-    "role": "user",
-    "intent": "overview",
-    "question": "用大白话说，为什么生成式推荐会'早剪枝'剪掉正确答案？TAAL 是怎么解决的？",
-    "expect": ["L0", "L1"],
+    "intent": "key_number",
+    "question": "TAAL 在三个数据集上 NDCG@10 分别提升多少？相对 DIGER 又提升多少？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
     "route_min": "L0",
-    "hint": "前两个解码步骤内就丢掉目标物品（91.9%-96.6% 检索失败发生在前两步）；TAAL 通过联合训练让模型对齐历史序列并校准候选分数。",
-    "must_have": ["前", "两步", "剪枝"],
+    "hint": "相对标准基线，**TAAL 的 NDCG@10 在 Amazon Beauty / Instruments / Yelp 上分别提升 39.5% / 6.7% / 28.6%**，同时 full-SID 存活率提升 **3.9%–16.6%**；同一划分与全目录排序协议下，**TAAL+PMI 相对 DIGER 提升 30.2% / 4.4% / 28.9%**。",
+    "must_have": [
+      "30.2",
+      "28.9",
+      "DIGER"
+    ],
+    "must_all": [
+      "39.5",
+      "6.7",
+      "28.6"
+    ],
+    "must_not": [
+      "37.5",
+      "25.7"
+    ],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2608.29179v1.pdf",
+    "qid": "29179-T1",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 1（主结果）最后一行，TAAL + PMI calibration 在 Beauty / Instruments / Yelp 上的 N@10 分别是多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "Table 1 最后一行 **TAAL + PMI calibration：Beauty N@10 = .0484、Instruments N@10 = .0881、Yelp N@10 = .0293**（同三列 H@10 为 .0856 / .1176 / .0525）。对照：TAAL（no reranking）N@10 为 .0477 / .0874 / .0286；最强基线 APAO 为 .0337 / .0811 / .0216。",
+    "must_have": [
+      "N@10",
+      "NDCG"
+    ],
+    "must_all": [
+      "0.0484",
+      "0.0881",
+      "0.0293"
+    ],
     "must_not": [],
     "chunk_kw": null
   },
   {
     "pdf": "2608.29179v1.pdf",
-    "qid": "29179-07",
+    "qid": "29179-T2",
     "role": "dev",
-    "intent": "detail",
-    "question": "论文报告的早期剪枝有多严重（检索失败发生在前几个解码步骤）？",
-    "expect": ["L1", "L2"],
-    "route_min": "L1",
-    "hint": "三个基准上 91.9%-96.6% 的检索失败发生在前两个解码步骤内。",
-    "must_have": ["91.9", "96.6", "两"],
+    "intent": "table_number",
+    "question": "Table 4 的 beam width 扫描里，B = 5 时 NTP 基线与 TAAL 的 S_full 分别是多少、相对增益多少？B = 50 时又是多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**B=5：NTP S_full = 3.86%，TAAL = 5.38%，相对增益 +39.4%**；B=10：6.44% / 8.23%（+27.7%）；B=20：10.07% / 11.75%（+16.6%）；**B=50：16.54% / 18.07%（+9.3%）**。即相对增益随 beam 变窄而增大（B=20 行与附录 Table 6 一致）。",
+    "must_have": [
+      "18.07",
+      "16.54",
+      "Sfull"
+    ],
+    "must_all": [
+      "3.86",
+      "5.38",
+      "39.4",
+      "9.3"
+    ],
     "must_not": [],
-    "chunk_kw": "91.9"
+    "chunk_kw": null
   },
   {
     "pdf": "2608.29179v1.pdf",
-    "qid": "29179-08",
-    "role": "user",
-    "intent": "detail",
-    "question": "这套方法在 Yelp 这种小数据集上效果也明显吗？",
-    "expect": ["L1", "L2"],
-    "route_min": "L1",
-    "hint": "Yelp 上 NDCG@10 提升 28.6%（相对显著），完整 SID 存活率提升也覆盖三数据集。",
-    "must_have": ["28.6"],
+    "qid": "29179-N1",
+    "role": "dev",
+    "intent": "negative",
+    "question": "论文报告了 TAAL 相比基线的推理延迟、吞吐或额外计算开销的具体数字吗？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "**没有**。论文只报告效果类指标（H@10 / N@10、S_full 存活率、post-survival rank）与超参，**未给出任何延迟 / 吞吐 / 显存 / FLOPs 的实测数值**；效率只有定性说明（PMI 是对已完成 beam 的 O(B) 轻量重排、不引入额外语言模型、不改 tokenizer/backbone/beam search）。所以「开销降低了多少」这类问题，正确回答是**论文未报告**，而不是给一个数。",
+    "must_have": [
+      "未报告",
+      "未给出",
+      "未提供",
+      "没有报告",
+      "没有给出",
+      "没有提供",
+      "未提及",
+      "未涉及"
+    ],
+    "must_all": [],
     "must_not": [],
     "chunk_kw": null
   }

@@ -185,7 +185,7 @@ def test_demo_mode_end_to_end(webapp_tmp, tmp_assets, demo_env):
 
     # ⑤ 问答：答案是固定文案，但**引用锚点必须真实**（页码 + 原文片段）
     ans = client.post("/api/ask", json={"question": "这篇论文提出了什么方法？",
-                                        "pdf": "demo_paper.pdf"}).json()
+                                        "pdfs": ["demo_paper.pdf"]}).json()
     assert "演示内容" in ans["answer"]
     assert ans["cites"], "答案里的 [1] 必须解析成真实 cites"
     assert ans["cites"][0]["page"] >= 1

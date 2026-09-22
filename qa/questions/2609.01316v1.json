@@ -1,14 +1,237 @@
 [
   {
     "pdf": "2609.01316v1.pdf",
+    "qid": "01316-L0-1",
+    "role": "dev",
+    "intent": "overview",
+    "question": "这篇论文的核心主张是什么？它与 ColPali 系视觉检索方法的根本分歧在哪？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "核心主张：**多模态文档检索不必把多模态推理放在查询时** —— MIDR 把多模态理解**移到索引时**：摄取阶段用多模态 LLM 把渲染页面转成**经过校验的文本字段**，用 **BM25F**（可融合 dense）索引，查询时只走**文本检索**。与 ColPali 系（ColPali / ColQwen2.5）的**根本分歧**：后者用 patch 级**多向量图像索引** + late interaction 打分，把视觉检索留在**查询时服务路径**上；MIDR 只把**渲染页面用于摄取**，服务时**不处理页面图像、不维护视觉多向量索引、不做 late interaction**。结果：ViDoRe V3 五个英文域 **0.6219** avg nDCG@10，**比 BM25 相对提升 23.0%**，与 ColQwen2.5 有竞争力；7 个域中 **4 个领先**，索引**约小 9×**、查询延迟**约低 2×**。",
+    "must_have": [
+      "索引时",
+      "23.0"
+    ],
+    "must_all": [
+      "0.6219",
+      "ColQwen2.5"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-L0-2",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说，这篇论文要解决什么问题？它的思路和现在的做法有什么不一样？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "企业文档里的关键信息常藏在**表格、图表、版面关系**里，纯 OCR 会把它拉平、弄坏或漏掉。现在的解法是**直接拿页面截图去检索**（ColPali 系），效果强，但**每个查询都要重算一遍图像** —— 索引巨大、延迟高。MIDR 换了位置：**在「入库」那一步就把多模态理解做完** —— 用多模态大模型把每页读成一组**校验过的文字字段**（表格摘要、图表摘要、关键短语、粗/细粒度问答对等），之后检索只是**普通文本检索**（BM25F + 可选向量）。好处：贵的那步只做一次、可**摊销**；索引小得多（约小 **9×**）、查询快约 **2×**。而且字段是**英文**生成的，顺带成了**跨语言桥**：英文问题搜法文文档时 BM25 崩到 0.1532，MIDR 能到 0.5448。",
+    "must_have": [
+      "索引时",
+      "索引阶段",
+      "入库",
+      "摄取"
+    ],
+    "must_all": [
+      "MIDR",
+      "ColQwen2.5"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
     "qid": "01316-U1",
     "role": "user",
     "intent": "overview",
-    "question": "用大白话讲，MIDR 是怎么做到多模态文档检索又快又好的？",
-    "expect": ["L0", "L1"],
+    "question": "用大白话讲，MIDR 是怎么做到既快又好的？它把「贵的那一步」放在哪？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
     "route_min": "L0",
-    "hint": "MIDR 不训练新检索器，而是在索引时就调用多模态 LLM 把每页文档'翻译'成结构化文本字段（布局、表格、图表描述），再用 BM25F 索引；比视觉检索器内存小约 9 倍、延迟低约 2 倍。",
-    "must_have": ["索引", "BM25F", "9"],
+    "hint": "MIDR 不训练新检索器，而是**把多模态理解挪到索引时**：入库时用**多模态 LLM 把渲染页读成检索就绪的文本字段**（表格摘要、图表摘要、关键短语、粗/细粒度问答对，并做校验），之后检索只是**普通文本检索**（BM25F，可融合 dense，hybrid 用 RRF）。好处：贵的 MLLM 调用**只做一次、可被未来查询摊销**；服务时**不再处理页面图像、不维护视觉多向量索引、不做 late interaction**。收益：五个英文域平均 **0.6219 nDCG@10（相对 BM25 +23.0%）**，索引**约小 9×**、查询延迟**约低 2×**。",
+    "must_have": [
+      "索引时",
+      "BM25F",
+      "摊销",
+      "amortized"
+    ],
+    "must_all": [
+      "0.6219"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-S1",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "MIDR 的 enrichment 分几级？文档级用哪些页、产出哪些字段？页面级 enrichment 用哪些输入、产出哪些「索引字段」与「路由/控制字段」？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "分**文档级**与**页面级**。**文档级**：只用**前五页**，产出 `document_type`（genre/来源类型，属**路由/控制**）、`document_focus`（全局主题或目的，**索引字段**）、`main_entities`（显著的组织/产品/数据集/法规/药物/系统，**索引字段**）。**页面级**有**四个输入**：渲染页图、抽取文本、文档级 enrichments、页面元数据。页面级 **索引字段** = `topic_tags`、`keyphrases`、`table_summary`、`chart_summary`、`coarse_qa`、`fine_qa`；页面级 **路由/控制字段** = `layout`、`signal_quality`、`verification_issues`、`refinement_edits`。",
+    "must_have": [
+      "first five pages",
+      "indexed field"
+    ],
+    "must_all": [
+      "document_focus",
+      "fine_qa",
+      "table_summary",
+      "signal_quality"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-S2",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "extract–verify–refine 循环具体怎么运作？verifier 审计哪几个方面？refiner 改哪些字段？这个循环的实测触发率是多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "三步循环：**extractor** 从「渲染页图 + 抽取文本 + 文档级 enrichments + 页面元数据」生成结构化页面 enrichment；**确定性后处理器**归一化 tags/keyphrases、去除重复 QA pair、强制 layout flags 与 summary 字段一致。**verifier** 对草稿做**五个方面**审计：**grounding、layout consistency、internal consistency、answer quality、completeness**。若发现问题，**refiner 只修改被标记（flagged）的字段**，然后**再次**应用后处理。作者强调这个保守循环重要，因为**索引时的错误会影响未来很多查询**。实测触发率：**全库 9.6% 的页面**，在最难的域达 **52%**。",
+    "must_have": [
+      "refiner",
+      "flagged"
+    ],
+    "must_all": [
+      "verifier",
+      "grounding",
+      "9.6%",
+      "52%"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-S3",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "索引与检索的具体配置是什么？文档级字段怎么处理？BM25F 字段权重怎么设、为什么？dense 用什么模型、字段怎么合并？hybrid 用什么融合？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "校验后的页面 enrichments 与**原始页面文本**被索引为**相互独立的 BM25F 字段**；**文档级索引字段会在该文档的每一页上复制**，使每页同时暴露局部证据与全局上下文。**所有 BM25F 字段权重统一（均为 1.0）、不做调参** —— 因为 ViDoRe V3 **没有 dev split**，无法在不拟合评测查询的前提下调权重。Dense：用 **EmbeddingGemma** 分别嵌入原始页面文本与每个 enrichment 字段，再用 **mean pooling** 合并字段嵌入。Hybrid：用 **Reciprocal Rank Fusion (RRF)** 融合 BM25F 与 dense 排名。",
+    "must_have": [
+      "mean pooling",
+      "uniform"
+    ],
+    "must_all": [
+      "BM25F",
+      "EmbeddingGemma",
+      "Reciprocal Rank Fusion"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-S4",
+    "role": "dev",
+    "intent": "ablation",
+    "question": "group ablation 的关键结论是什么？QA-only 变体表现如何、移除 QA 会怎样？table summary 的贡献有什么特点？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**QA 对是主导性的低成本 enrichment 面**：`qa_only` 达 **0.6200**（hybrid），**恢复了 markdown-only hybrid 基线之上总增益的 94%**；反过来，**移除 QA 让 hybrid 掉到 0.5788**，接近 markdown-only 设置。这说明**生成的 QA 对构造了主要的 query–page 桥**，而完整 schema 通过 table summaries、document focus 等字段提供**定向增益**。字段层面：QA 对提供**最强的词法桥**，keyphrases 与 QA 字段**支持 dense 匹配**；**table summaries 的总效果很小，但价值集中在表格页** —— 在表格页上移除它们损失 **0.028** nDCG@10。（对照：Full MIDR role-based 在 hybrid 上 0.6231。）",
+    "must_have": [
+      "QA",
+      "table summar"
+    ],
+    "must_all": [
+      "0.6200",
+      "0.5788",
+      "0.028"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-S5",
+    "role": "dev",
+    "intent": "baseline_compare",
+    "question": "按页型与查询型分层，增益最大和最小的分别是什么？这个模式支持什么机制解释？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**增益最大处正是 OCR 丢失结构最多的地方**：按**页面视觉内容** —— **Mixed visual +38.6%**、**Table +31.8%**、Infographic +30.4%、Chart +21.1%、**Text only 仅 +14.3%**（相对 nDCG@10）；按**查询类型** —— **Numerical +41.7%**、Open-ended +38.2%、Compare +23.8%、Extractive +21.0%、Multi-hop +14.3%、**Boolean 仅 +11.7%**。**增益最小**的是 Text-only 页与 Boolean 查询，因为那里**原始词法证据已经给 BM25 一个较好的起点**。这支持核心机制：**MIDR 在「检索依赖被 OCR 拉平的结构」时帮助最大**。",
+    "must_have": [
+      "OCR",
+      "Mixed-visual"
+    ],
+    "must_all": [
+      "38.6",
+      "41.7",
+      "14.3",
+      "11.7"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-S6",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "作者承认的局限有哪些？尤其摄取成本、对 enrichment MLLM 的依赖、以及字段层面的已知问题。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "五方面（§7）：**① 对比范围**——只覆盖 ViDoRe V3，榜上还有未评测系统；且 **MIDR 不是这个方向最准的检索器**：**ColEmbed-3B-v2 在英文域达 0.6730**（MIDR 0.6219），但每页存**约 11 MB**（MIDR 仅 **0.038 MB**）→ 主张的是**精度–部署权衡**。**② 服务成本**——延迟对比是对**未优化**的 late-interaction 打分做的；优化后**不会减少存储 patch 级表示的显存**，所以结构性差异在**索引内存**而非延迟。**③ 摄取成本**——MIDR 是**搬移计算而非消除计算**：平均每页 **2.1 次 MLLM 调用、约 8k tokens**；一次性成本但**随语料规模增长**，文档变更或 schema 修订必须**重做**。**④ 对 enrichment MLLM 的依赖**——前沿后端在英文上聚在 **0.011** 内，开源后端落后 **0.046**、法文上**崩塌（0.298 vs 0.534）**。**⑤ 字段与语言覆盖**——**chart summaries 聚合上中性偏负、某些域明显有害**；**main-entity 字符串保留源语言形式，在法文上成为混淆项**。",
+    "must_have": [
+      "ColEmbed",
+      "0.038",
+      "chart"
+    ],
+    "must_all": [
+      "2.1",
+      "8k"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-S7",
+    "role": "dev",
+    "intent": "definition",
+    "question": "「enrichment-augmented indexing」的定义是什么？per-query oracle 是什么、结果多少？它说明两套系统是什么关系？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**enrichment-augmented indexing（论文自己的命名）**：**在索引时**用渲染页面做多模态推理，但**检索服务走词法、dense、hybrid 的文本检索基础设施** —— 也就是「需要多模态理解」**不等于**「必须在服务时检索渲染页面的图像表示」。**per-query oracle**：一个**上界分析** —— 对每个查询**选 MIDR 与（本地重现的）ColQwen2.5 中更好的那个**，达 **0.7042** nDCG@10，比 MIDR 高 **13.0%**、比重现的 ColQwen2.5 高 **11.8%**。这说明两者**编码的是互补而非冗余的证据**：在 1,489 个英文查询中约一半有决定性胜负，**MIDR 赢 351 个、ColQwen2.5 赢 362 个**；MIDR 赢在把财务/制药/法规的确切数量写进 QA 对与关键短语，ColQwen2.5 赢在**代码块、公式、图表、多个视觉相似表格**这类文本化会模糊的区分上。",
+    "must_have": [
+      "oracle",
+      "13.0"
+    ],
+    "must_all": [
+      "0.7042",
+      "351",
+      "362"
+    ],
     "must_not": [],
     "chunk_kw": null
   },
@@ -17,24 +240,95 @@
     "qid": "01316-U2",
     "role": "user",
     "intent": "detail",
-    "question": "MIDR 在法语检索上表现如何？为什么特别？",
-    "expect": ["L1", "L2"],
-    "route_min": "L1",
-    "hint": "法语页面用英文生成富集来测跨语言桥接；两个法文域富集把 BM25 nDCG@10 从 0.1532 提到 0.5448，超过 ColQwen2.5。",
-    "must_have": ["0.1532", "0.5448", "跨语言"],
+    "question": "MIDR 在「英文问题搜法文文档」上表现如何？为什么这个结果特别？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "两个**法文文档**域上页面是法文、查询是英文，**原始 BM25 崩到 0.1532 nDCG@10**。MIDR 因为**在索引时用英文生成富集字段**，查询时变成「英文问题 vs 英文富集字段」的**单语匹配**：**MIDR Hybrid 达 0.5448**，**在聚合与两个域上都超过复现的 ColQwen2.5**（energy 0.6192 vs 0.5967；physics 0.4704 vs 0.4663）。特别之处：**富化本身成了跨语言桥**（视觉检索器只能靠渲染页隐式承担）；但作者提醒该结论**只针对「法文文档 + 英文查询」这一对**，更广语言对未覆盖。",
+    "must_have": [
+      "cross-lingual",
+      "French",
+      "跨语言"
+    ],
+    "must_all": [
+      "0.1532",
+      "0.5448"
+    ],
     "must_not": [],
     "chunk_kw": null
   },
   {
     "pdf": "2609.01316v1.pdf",
-    "qid": "01316-U3",
-    "role": "user",
-    "intent": "method_detail",
-    "question": "MIDR 的'富化'会不会编造页面里没有的内容？它怎么防？",
-    "expect": ["L1", "L2"],
-    "route_min": "L1",
-    "hint": "富化用抽取-验证-精炼循环：先生成页面级字段，再审计其与页面图像和文本的接地性，仅修订不支持或不一致的内容（精炼触发率约 9.6%）。",
-    "must_have": ["验证", "精炼", "接地性"],
+    "qid": "01316-T1",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 4，BM25、Enriched BM25F、MIDR Hybrid、ColQwen2.5 的相对延迟与索引内存各是多少倍（以 BM25 为 1）？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "归一化到 BM25：**BM25 = 1.0× 延迟 / 1.0× 内存**；**Enriched BM25F = 3.4× / 2.5×**；**MIDR Hybrid = 14.0× / 7.5×**；**ColQwen2.5 = 27.9× / 65.0×**。即相对 ColQwen2.5，MIDR Hybrid 查询**约快 2×、约小 9×**。",
+    "must_have": [
+      "Latency",
+      "Memory"
+    ],
+    "must_all": [
+      "14.0",
+      "7.5",
+      "27.9",
+      "65.0"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-T2",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 2（英文域 nDCG@10），五个系统的平均（Avg.）分别是多少？MIDR Hybrid 与 ColQwen2.5 的差距有多大？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "Table 2 的 Avg. 列：**BM25 over markdown 0.5057、Enriched BM25F 0.5592、Dense mean-pool 0.5898、ColQwen2.5 0.6300、MIDR Hybrid (ours) 0.6219**。即 **MIDR 比原始 BM25 高 23.0%（0.6219 vs 0.5057）、比 ColQwen2.5 低 0.0081**；per-domain 上 MIDR 在 HR（0.6043 vs 0.6018）与 pharmaceuticals（0.6424 vs 0.6382）领先，在 computer science（0.7170 vs 0.7623）落后最多。",
+    "must_have": [
+      "Avg",
+      "平均"
+    ],
+    "must_all": [
+      "0.5057",
+      "0.6300",
+      "0.6219"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.01316v1.pdf",
+    "qid": "01316-N1",
+    "role": "dev",
+    "intent": "negative",
+    "question": "论文报告了下游问答或生成任务的准确率吗（例如用检索到的证据做 QA 的分数）？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "**没有**。MIDR 的评测**只到检索层**：报告的是 ViDoRe V3 上的 nDCG@10（英文五域 + 法文两域）、延迟/内存、以及消融与 oracle 上界分析，**没有任何下游问答/生成任务的准确率或端到端指标**（全文只在参考文献里出现 question answering）。所以正确回答是**论文未报告下游 QA/生成指标**。",
+    "must_have": [
+      "未报告",
+      "未给出",
+      "未提供",
+      "没有报告",
+      "没有给出",
+      "没有提供",
+      "未涉及",
+      "只到检索"
+    ],
+    "must_all": [],
     "must_not": [],
     "chunk_kw": null
   }

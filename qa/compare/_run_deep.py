@@ -1,4 +1,4 @@
-"""深水对比 runner：对 deep_set 逐题跑 B0/B1/B2 + glm 裁判，记录 schema 与 run_compare 对齐。
+﻿"""深水对比 runner：对 deep_set 逐题跑 B0/B1/B2 + glm 裁判，记录 schema 与 run_compare 对齐。
 
 用法：uv run python qa/compare/_run_deep.py --column B0|B1|B2 --out qa/compare/deep_<ts>_B0.json
 """
@@ -12,7 +12,8 @@ from pathlib import Path
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 ROOT = Path(".")
 sys.path.insert(0, str(ROOT / "src"))
-from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 PASS = 4

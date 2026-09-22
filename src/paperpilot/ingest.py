@@ -80,7 +80,9 @@ def mineru_version() -> str:
         out = subprocess.run(
             [str(py), "-c",
              "import importlib.metadata as m;print(m.version('mineru'))"],
-            capture_output=True, text=True, timeout=60)
+            capture_output=True, text=True,
+            # ⚠️ 显式 utf-8：`text=True` 不给 encoding → 用系统区域编码（中文 Windows = GBK）
+            encoding="utf-8", errors="replace", timeout=60)
         return out.stdout.strip() if out.returncode == 0 else ""
     except Exception:  # noqa: BLE001
         return ""
@@ -132,15 +134,25 @@ def stamp_pdf_fingerprint(pdf_name: str) -> bool:
 
 
 def qa_blocked_reason(pdf_name: str) -> str:
-    """问答是否应被拒绝：MinerU **明确失败** → 返回给用户的原因；否则空串（放行）。
+    """问答是否应被拒绝：返回给用户的原因；否则空串（放行）。
 
-    只拦 status=='failed'：未摄取（老产物 / QASPER / 评测语料）与 MinerU 不适用
-    的情形一律放行，避免把历史评测集打挂。
+    ⚠️ **MinerU 失败不再拦死问答**（2026-09-22，接入降级与容灾）：
+
+        旧行为：`mineru.status == "failed"` → 整篇问答不可用。
+        问题：报告链**早就在降级**（走 pymupdf，见 `pipeline._source_chunks`），
+              只有问答被这一道闸拦住 —— 于是"默认路出问题 → 降级到备用路"
+              这条设计**永远走不到**（MinerU 一失败，用户看到的是"不可用"）。
+        新行为：失败 → 走**备用路** `document_cache._chunks_via_pymupdf`
+              （pymupdf，**表格数值会缺**），并在 `mineru_status()` /
+              `PaperReport.degraded` 里**标记为降级** —— 是"降级但仍可用"。
+
+    现在只剩一种拦截：**摄取进行中**（产物马上就好，与"失败"性质不同 ——
+    它不是错误，不该让用户以为坏了）。
     """
-    if pdf_name.startswith("qasper_") and pdf_name.endswith(".qpdf"):
-        return ""          # QASPER 无 PDF，本就不走 MinerU
+    from paperpilot import sources
+    if not sources.has_file(pdf_name):
+        return ""          # 无磁盘文件的源（评测文本集）本来就不走 MinerU 摄取
     # 后台摄取**进行中**（2026-09-13 异步化）：明确告知稍候，前端会自动刷新进度。
-    # 与"失败"区分开：这不是错误，产物马上就好。
     try:
         from paperpilot import jobs
         act = jobs.find_active(pdf_name)
@@ -150,16 +162,7 @@ def qa_blocked_reason(pdf_name: str) -> str:
                     "报告与问答就绪后页面会自动更新，请稍候片刻再问。")
     except Exception:  # noqa: BLE001  状态查不到不影响放行判定
         pass
-    meta = read_meta(Path(pdf_name).stem)
-    if not meta:
-        return ""
-    m = meta.get("mineru") or {}
-    if m.get("status") != "failed":
-        return ""
-    reason = str(m.get("reason") or "未知原因")
-    return ("问答暂不可用：本篇的版面解析（MinerU）未成功 —— "
-            f"{reason}。\n报告不受影响（基于 PDF 文本层生成，可直接阅读）；"
-            "如需问答，请修复 MinerU 环境后重跑摄取。")
+    return ""
 
 
 # ── MinerU 子进程 ─────────────────────────────────────────────────────────────
@@ -215,7 +218,12 @@ def run_mineru(pdf_name: str, *, timeout: int | None = None,
         proc = subprocess.Popen(
             [mineru_cmd() or "", "-p", str(pdf), "-o", str(outdir),
              "-b", MINERU_BACKEND],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+            # ⚠️ **必须显式 utf-8**（2026-09-20 实测踩到）：`text=True` 不给 encoding 时
+            # Python 用系统区域编码（中文 Windows = GBK），而 MinerU 的进度条/日志是
+            # UTF-8（含 `█ ▁ ✓ ✗`）→ Popen 的读取线程抛 UnicodeDecodeError **直接死掉**，
+            # 父进程还会卡在等这个已死的线程上（表现为：MinerU 明明返回 ok，整体不退出）。
+            encoding="utf-8", errors="replace")
     except Exception as e:  # noqa: BLE001
         return {"status": "failed", "reason": f"MinerU 启动失败：{type(e).__name__}: {e}",
                 "seconds": round(time.time() - t0, 1)}

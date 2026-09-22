@@ -372,9 +372,18 @@ def find_headings(blocks: list[BlockDict]) -> list[DetailDict]:
         detail = c["detail"]
         kind = detail.get("kind")
         if kind is None:
-            kind = "SPECIAL" if detail.get("special") else "UNKNOWN"
+            # ⚠️ 无编号、且不在 `SPECIAL_SET` 里的候选**同样是合法标题**（如无编号的
+            #    "Related Work"）。文档契约里 kind ∈ {L1,L2,L3,APPENDIX,SPECIAL}，
+            #    故统一归 `SPECIAL`（语义 =「无编号标题」，与 `chunker._assemble`
+            #    的 `level is None` 分支一致）。
+            #    2026-09-21 修：原写法是 `"UNKNOWN"`，而下一行 `int(kind[1:])` 不认它
+            #    → **必崩** `invalid literal for int(): 'NKNOWN'`（实测 2604.20087 触发）。
+            #    单篇路径从未碰到 → 是**多篇流程抓新论文才暴露**的。
+            kind = "SPECIAL"
         no = detail.get("no_str") or (detail.get("text") or "").strip() or ""
-        level = None if kind in ("SPECIAL", "APPENDIX") else int(kind[1:])
+        # 层级：只对有数字编号的 kind 取（L1→1）；其余一律 None。
+        # 用 `isdigit()` 而非 `in (...)` 白名单 —— 将来多出任何 kind 都不会崩。
+        level = int(kind[1:]) if kind[1:].isdigit() else None
         result.append({
             "block_id": c["block_id"],
             "page": c["page"],

@@ -1,4 +1,4 @@
-"""对照：净亏题 L3 全文检索窗口 vs gold evidence 重叠率（确认答案在 L2 圆心够不到的地方）。
+﻿"""对照：净亏题 L3 全文检索窗口 vs gold evidence 重叠率（确认答案在 L2 圆心够不到的地方）。
 
 search_l3 用默认多查询混合（同 B 臂），只检索不判分。输出：
 - l3_chunks 总量与文本总长
@@ -17,7 +17,8 @@ ROOT = Path(".")
 sys.path.insert(0, str(ROOT / "src"))
 
 from paperpilot.agents.nodes import search_l3  # noqa: E402
-from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 CASES = ["8051927f914d", "37c7c62c9216", "2df910c9806f"]

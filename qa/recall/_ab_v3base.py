@@ -1,4 +1,4 @@
-"""Step1 A/B：现状 v2 全漏斗 vs v3 纯两级（L0 → L3）。
+﻿"""Step1 A/B：现状 v2 全漏斗 vs v3 纯两级（L0 → L3）。
 
 样本 = QASPER 全池重抽 100 题（report+gold 可定位，hard 源 40 + normal 源 60，
 normal 含大量 L0/L1 直答 easy 题 → 测"砍 L1/L2 把 easy 推 L3"的损益）。
@@ -20,7 +20,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from paperpilot.graph import ask as graph_ask  # noqa: E402
 from paperpilot.graph.qa_graph_v3 import build_qa_graph_v3  # noqa: E402
-from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 PASS = 4

@@ -162,25 +162,73 @@ def dedupe_groups(claims: list[Claim]) -> list[ClaimGroup]:
 # ── ② LLM 角色打标 ──────────────────────────────────────
 
 
-def label_groups(groups: list[ClaimGroup]) -> None:
-    """LLM 给每个组判 1 个角色 label（就地写入）。失败则该组保持 detail。"""
-    payload = [{"group_id": g.group_id, "type": g.type,
-                "sections": g.sections, "text": g.rep_text} for g in groups]
+LABEL_BATCH = 50     # 单批组数；见 label_groups 文档里的失败实测
+LABEL_MAX_CONSEC_FAIL = 3   # 连续失败批数上限（LLM 整体不可用时快速退出）
+
+
+def _label_call(payload: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """一批打标。**返回非数组即抛错**（对齐 `_dedupe_call`，不再静默跳过）。"""
+    rows = llm.chat_json(LABEL_SYSTEM, build_label_user(payload), temperature=0.0)
+    if not isinstance(rows, list):
+        raise ValueError(f"打标返回非数组（{type(rows).__name__}）")
+    return [r for r in rows if isinstance(r, dict)]
+
+
+def label_groups(groups: list[ClaimGroup], *, batch_size: int = LABEL_BATCH) -> None:
+    """LLM 给每个组判 1 个角色 label（就地写入）。
+
+    ## 为什么必须分批（2026-09-22 修，根因）
+
+    旧版**一次性**把全部组发给 LLM，且兜底是**全有或全无**：
+
+        355 组（`2606.18837`）→ user 3.9 万字符、需输出 355 个 JSON 对象
+        → **输出被截断**（末位缺 `]`）→ `_parse_json` 兜底失败抛 LLMError
+        → `except` → **全部 355 组保持默认 label = "detail"**
+        → `LABEL_CAP["detail"]=3` 把全篇 importance 封顶 3
+        → `core_points=0`（要 ≥5）、`collect_materials=0`（要 core_claim/result_primary 且 ≥4）
+        → 概述 prompt 材料区空白 → LLM 拒答 → **拒答话术被当成概述存盘**
+
+    实测（同一批 355 组）：全量请求**抛异常**；**分批 50 组 50/50 命中**。
+
+    现在：分批请求；**单批失败只影响那一批**（其余批照常写入）；打印命中率
+    —— 让"部分失败"可见，而不是静默全篇退化成 detail。
+    """
+    if not groups:
+        return
     result: dict[str, dict[str, Any]] = {}
-    try:
-        rows = llm.chat_json(LABEL_SYSTEM, build_label_user(payload),
-                             temperature=0.0)
-        if isinstance(rows, list):
-            for r in rows:
-                if isinstance(r, dict):
-                    result[str(r.get("group_id", ""))] = r
-    except (llm.LLMError, ValueError) as e:
-        print(f"  [打标] LLM 失败({e})，全部保持 detail")
+    n_batch = n_fail = consec = 0
+    for i in range(0, len(groups), max(1, batch_size)):
+        chunk = groups[i : i + batch_size]
+        payload = [{"group_id": g.group_id, "type": g.type,
+                    "sections": g.sections, "text": g.rep_text} for g in chunk]
+        n_batch += 1
+        try:
+            rows = _label_call(payload)
+        except (llm.LLMError, ValueError) as e:
+            n_fail += 1
+            consec += 1
+            print(f"  [打标] 第 {n_batch} 批（{len(chunk)} 组）失败({e})，该批保持 detail")
+            if consec >= LABEL_MAX_CONSEC_FAIL:
+                n_skip = len(groups) - i - len(chunk)
+                print(f"  [打标] 连续 {consec} 批失败 → 判定 LLM 不可用，"
+                      f"剩余 {n_skip} 组跳过（保持 detail）")
+                break
+            continue
+        consec = 0
+        for r in rows:
+            result[str(r.get("group_id", ""))] = r
+
+    hit = 0
     for g in groups:
         r = result.get(g.group_id)
         if r and str(r.get("label", "")) in _LABELS:
             g.label = cast(ClaimLabel, str(r["label"]))
             g.label_why = str(r.get("why", "")).strip()
+            hit += 1
+    rate = hit / len(groups)
+    note = f"，{n_fail} 批失败" if n_fail else ""
+    warn = "  ⚠️ 命中率过低：该篇 core_points/概述/核心要点会为空" if rate < 0.5 else ""
+    print(f"  [打标] {len(groups)} 组 / {n_batch} 批{note} → 命中 {hit}（{rate:.0%}）{warn}")
 
 
 # ── ③ 本地规则算分 ──────────────────────────────────────

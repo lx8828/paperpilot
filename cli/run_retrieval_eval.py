@@ -1,4 +1,4 @@
-"""离线 Recall@k 检索评估（尺子，零 LLM）。
+﻿"""离线 Recall@k 检索评估（尺子，零 LLM）。
 
 对 recall_set 逐题计算 vec / hybrid(向量+BM25 RRF) / bm25 三种检索在
 gold evidence chunk 上的 Recall@k 与 MRR@k，并输出 gold 跨块/块内位置诊断。
@@ -30,7 +30,8 @@ import numpy as np  # noqa: E402
 from paperpilot.agents.document_cache import ordered_chunks  # noqa: E402
 from paperpilot.agents.embedder import (BM25Index, ChunkIndex,  # noqa: E402
                                         encode_query)
-from paperpilot.qasper_source import load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import load_papers  # noqa: E402
 
 _REF_RE = re.compile(r"\b[A-Z]+REF\d+\b")
 _FIG_RE = re.compile(r"\bFIGURE\d+\b|\bTABLE\d+\b", re.I)
@@ -137,7 +138,7 @@ def main() -> int:
                       if str(qq.get("question_id") or "") == it["qid"]), None)
             if not q:
                 continue
-            from paperpilot.qasper_source import gold_answer_full
+            from qa.sources.qasper import gold_answer_full
             _gold, evs = gold_answer_full(q)
             if not evs:
                 map_fail.append(f"{pid}:{it['qid'][:8]}(no-ev)")

@@ -1,4 +1,4 @@
-"""验证表格通道的**溯源闭环**：翻绿题的引用是否真指向 `xtbl-*` 表格块。
+﻿"""验证表格通道的**溯源闭环**：翻绿题的引用是否真指向 `xtbl-*` 表格块。
 
 为什么单独做：`_qasper_tbl_exp.py` 首版没把 `cites` 存进记录，导致"cites 为空"的误判。
 溯源是本系统核心信条（所有结论可回原文），必须逐题核，不能抽样了事。
@@ -24,7 +24,8 @@ sys.path.insert(0, str(ROOT / "src"))
 os.environ["PAPERPILOT_QASPER_TABLES"] = "1"
 
 from paperpilot.graph import ask as graph_ask  # noqa: E402
-from paperpilot.qasper_source import load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 SRC = Path("qa/recall/qasper_tbl_exp_20260911.json")

@@ -1,4 +1,4 @@
-"""失败题归因：到底是"判分问题 / 题集问题"，还是"我们系统真做得不好"？
+﻿"""失败题归因：到底是"判分问题 / 题集问题"，还是"我们系统真做得不好"？
 
 对一次 QASPER run 的**有答案题失败**做自动分桶（零 LLM）：
 
@@ -30,7 +30,8 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="repla
 ROOT = Path(".").resolve()
 sys.path.insert(0, str(ROOT / "src"))
 
-from paperpilot.qasper_source import gold_answer_full, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer_full, load_papers  # noqa: E402
 
 NUM = re.compile(r"\d+(?:[.,]\d+)*")
 STOP = set("the a an of and or to in for on with by is are was were be been that this these those "

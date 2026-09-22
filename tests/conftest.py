@@ -47,7 +47,8 @@ _ENV_KEYS = (
     "PAPERPILOT_EXT_QUOTA", "PAPERPILOT_EXT_RRF_ALPHA", "PAPERPILOT_USE_MINERU",
     "PAPERPILOT_MINERU_INJECT", "PAPERPILOT_QASPER_TABLES", "PAPERPILOT_TABLE_V1",
     "PAPERPILOT_TABLE_EMBED_SUMMARY", "PAPERPILOT_PDF_ID_STRICT",
-    "PAPERPILOT_QUERY_REWRITE", "PAPERPILOT_VALIDATOR_GATE", "PAPERPILOT_VALIDATOR_LLM",
+    "PAPERPILOT_QUERY_REWRITE", "PAPERPILOT_QUERY_LEVELS", "PAPERPILOT_QUERY_FUSION",
+    "PAPERPILOT_VALIDATOR_GATE", "PAPERPILOT_VALIDATOR_LLM",
     "PAPERPILOT_VALIDATOR_MISSING", "PAPERPILOT_VALIDATOR_REPAIR_MID",
     "PAPERPILOT_CHUNK_VIEW_DIR",
     # 演示模式开关：默认必须关（否则测试会误走假实现，漏测真实路径）
@@ -298,8 +299,11 @@ def fake_mineru(tmp_assets):
     """造一份极小的 MinerU `content_list.json`（替掉需要 GPU 的版面解析）。
 
     内容：一块正文 + 一张表（含 caption 与 HTML 表体）。
-    默认模式（`PAPERPILOT_USE_MINERU` 未设）下它只影响**检索视图**与评测，
-    报告链仍读 pymupdf —— 与线上一致。
+
+    ⚠️ 默认档（2026-09-22 起 `PAPERPILOT_USE_MINERU` **未设 = 开**）：MinerU 是
+    **chunk 骨架** → 它直接决定报告链读到的 chunk（表值也进 `ordered_chunks`）。
+    想测"骨架退回 pymupdf、表格只注入检索视图"的**容灾档**，请显式
+    `monkeypatch.setenv("PAPERPILOT_USE_MINERU", "0")`。
     """
     def _write(pdf_name: str = TINY_PDF, *, with_table: bool = True,
                fig_caption_noise: bool = False) -> Path:

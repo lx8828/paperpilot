@@ -3,6 +3,8 @@
 LangGraph 中 State 是整张图的共享字典：所有节点签名 (state) -> PartialState，
 条件边读 state 字段分叉。先定 State = 定每个节点该产出什么、后续节点能消费什么。
 
+**语料只有多篇**（`pdfs`，≥2 篇）：本系统没有"语料=1 篇"的形态（2026-09-23 删）。
+
 分层漏斗（详见 QA_FUNNEL_DESIGN.md）：
     L0 Report     overview + core_points（零检索，不唤醒 embedding）
     L1 Claims     embedding top12（此时才加载模型）
@@ -93,8 +95,15 @@ class QAMessage(TypedDict):
 class QAState(TypedDict, total=False):
     # ── 输入（图调用方提供）──
     question: str              # 用户问题（本轮）
-    pdf: str                   # assets/papers 下的论文文件名
+    pdfs: list[str]            # **语料（多篇，≥2 篇）**：assets/papers 下的论文文件名。
+    #                            ⚠️ 没有单篇路径（2026-09-23 删）：`pdf`（单数）已移除。
+    focus: list[str]           # 问题里明确指到的篇（`components.focus.resolve_focus`）→
+    #                            收窄 L0 上下文；**不是**"单篇语料"。
     history: list[QAMessage]   # 之前轮次的对话（供 judge/answer 理解"这个方法/它"等指代）
+    parse_degraded: str        # 解析降级原因（"" = 默认路 MinerU 正常）。
+    #                            默认路失败 → 走备用路 pymupdf（表格数值会缺）。
+    #                            ⚠️ 只记录、**不改答案文本**（避免污染评测口径）；
+    #                            供调用方/前端提示"本篇表值可能缺失"。
 
     # ── L0 · Report（report_l0 节点产出，零检索）──
     title: str

@@ -25,9 +25,38 @@ from paperpilot.models.schema import Chunk
 # ───────────────────────── 指纹 ─────────────────────────
 
 
-def test_virtual_name_has_no_fingerprint():
-    assert pid.fingerprint("qasper_1234.5678.qpdf") is None
-    assert pid.is_virtual("qasper_1234.5678.qpdf") is True
+def test_fileless_source_has_no_fingerprint(tmp_assets):
+    """**无磁盘文件的数据源**（评测文本集）→ 无内容指纹。
+
+    2026-09-22：以前这里断言 `is_virtual("qasper_*.qpdf")` —— 生产代码不该认识
+    评测集的名字。现在改为**注册一个无文件的数据源**：语义等价，且不绑死具体数据集。
+    指纹的前提是"磁盘上有份文件"，无文件的源天然不适用。
+    """
+    from paperpilot import sources
+
+    class _NoFileSource:
+        name = "nofile"
+        has_file = False
+
+        def title(self) -> str:
+            return "t"
+
+        def chunks(self) -> list:
+            return []
+
+        def extra_chunks(self) -> list:
+            return []
+
+    sources.unregister_all()
+    try:
+        sources.register(lambda p: p.startswith("nofile:"), lambda p: _NoFileSource())
+        assert sources.has_file("nofile:x") is False
+        assert pid.fingerprint("nofile:x") is None      # 不走 stat，直接判无文件
+    finally:
+        sources.unregister_all()                        # 别污染其他用例
+    # 未注册 + 文件不存在 → 同样 None（走 stat 失败分支）
+    assert pid.fingerprint("missing_paper.pdf") is None
+    assert sources.has_file("missing_paper.pdf") is True
 
 
 def test_fingerprint_is_content_hash(tmp_assets):
@@ -105,7 +134,7 @@ def test_strict_env_flag(monkeypatch):
 
 
 def test_pdf_stamp_changes_with_file(tmp_assets):
-    assert dc._pdf_stamp("qasper_1.2.qpdf") == ""
+    assert dc._pdf_stamp("does_not_exist.pdf") == ""   # 文件不存在 → 版本分量空
     p = tmp_assets.papers / "a.pdf"
     p.write_bytes(b"%PDF-1.4 A")
     s1 = dc._pdf_stamp("a.pdf")
@@ -144,16 +173,65 @@ def test_cache_clear_still_available():
         assert callable(getattr(fn, "cache_clear", None))
 
 
-# ───────────────────────── 检索视图：表格只进检索、不进报告 ─────────────────────────
+# ───────────────────────── 解析源：MinerU 主 · pymupdf 容灾 ─────────────────────────
 
 
-def test_current_source_default_is_pymupdf(tmp_assets, tiny_pdf, fake_mineru):
+def test_current_source_default_is_mineru(tmp_assets, tiny_pdf, fake_mineru):
+    """**默认（2026-09-22 起）= MinerU 作骨架**：有产物就用。
+
+    与"跑不跑 MinerU"（`PAPERPILOT_MINERU`）是两件事：后者默认也开，
+    前者（`PAPERPILOT_USE_MINERU`）默认由 OFF 翻转成 ON。
+    """
     fake_mineru(tiny_pdf)
-    assert dc.current_source(tiny_pdf) == "pymupdf"
+    assert dc.mineru_skeleton_enabled() is True
+    assert dc.current_source(tiny_pdf) == "mineru"
 
 
-def test_mineru_table_injected_into_retrieval_view_only(tmp_assets, tiny_pdf, fake_mineru):
-    """MinerU 的表格按页注入**检索视图**；报告视图（ordered_chunks）不受影响。"""
+def test_not_ingested_is_pending_not_degraded(tmp_assets, tiny_pdf):
+    """**"没跑过 MinerU" ≠ "降级"**（口径必须分清）：
+
+        pending  = 尚未摄取 → **待办**，跑一次 ingest 就好
+        degraded = MinerU **试过但失败** → 才用 pymupdf 容灾、才该告警
+
+    两者都导致"当前用 pymupdf"，但性质完全不同；混起来会把待办报成故障。
+    """
+    assert dc.current_source(tiny_pdf) == "pymupdf"          # 当前确实用 pymupdf
+    state, why = dc.mineru_status(tiny_pdf)
+    assert state == "pending", f"应为 pending（未摄取），实际 {state}"
+    assert "尚未摄取" in why
+
+
+def test_broken_mineru_products_are_degraded(tmp_assets, tiny_pdf):
+    """MinerU **产物损坏** → 这才是 `degraded`（容灾），且原因可查。"""
+    d = tmp_assets.mineru / "tiny"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / "tiny_content_list.json").write_text("{ 不是合法 JSON", encoding="utf-8")
+    state, why = dc.mineru_status(tiny_pdf)
+    assert state == "degraded", f"应为 degraded，实际 {state}"
+    assert why
+
+
+def test_table_is_in_ordered_chunks_under_default(tmp_assets, tiny_pdf, fake_mineru):
+    """默认档：MinerU 作骨架 → **表值直接进 `ordered_chunks`**（不再靠"注入检索视图"）。
+
+    这是新旧默认最大的差别：旧默认报告链读 pymupdf（表格只进检索视图 → **claims/报告
+    看不到表值** → L0 对表格类问题系统性无能）；新默认表格就在骨架里，
+    于是 claims / report / L0 都能看到表值。
+    """
+    fake_mineru(tiny_pdf)
+    base = dc.ordered_chunks(tiny_pdf)
+    assert "Ours" in "".join(c.text for c in base)          # "Ours" 只在假表体里
+    # 骨架已是 MinerU → 检索视图无需二次注入，两者同源同 id
+    assert [c.chunk_id for c in base] == [c.chunk_id for c in dc.retrieval_chunks(tiny_pdf)]
+
+
+def test_mineru_table_injected_into_retrieval_view_only(tmp_assets, tiny_pdf, fake_mineru,
+                                                        monkeypatch):
+    """**容灾档**（`PAPERPILOT_USE_MINERU=0`）：骨架退回 pymupdf，表格只**注入检索视图**。
+
+    这条路径仍在（pymupdf 是容灾与 A/B 对照），语义与 2026-09-10 的设计一致。
+    """
+    monkeypatch.setenv("PAPERPILOT_USE_MINERU", "0")
     fake_mineru(tiny_pdf)
     base = dc.ordered_chunks(tiny_pdf)
     view = dc.retrieval_chunks(tiny_pdf)

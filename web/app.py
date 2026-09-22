@@ -170,7 +170,7 @@ async def serve_pdf(name: str) -> FileResponse:
 
 class AskBody(BaseModel):
     question: str
-    pdf: str
+    pdfs: list[str]                      # **语料（多篇，≥2 篇）**：本系统没有单篇路径
     history: list[dict[str, Any]] = []   # 之前轮次对话 [{role, content}, ...]，支持追问指代
 
 
@@ -243,7 +243,8 @@ def ask_question(body: AskBody) -> JSONResponse:
     排队的是**线程**，不是事件循环。排队**有上限**（`PAPERPILOT_ASK_WAIT_S`，默认 300s），
     超时返回 `503`：宁可给一个能重试的错误，也不让页面无限转圈。
 
-    若该论文摄取时 MinerU 明确失败，graph.ask 会直接返回拒绝话术与原因（不静默降级）。
+    语料是**多篇**（`body.pdfs`）。若其中任一篇还没摄取完，graph.ask 会直接返回拒绝
+    话术与原因（不静默降级、不拿半成品语料作答）。
     """
     if not llm.is_configured():
         raise HTTPException(status_code=500, detail="LLM 未配置：请先填写 .env")
@@ -260,7 +261,7 @@ def ask_question(body: AskBody) -> JSONResponse:
                    f"（上限 {_ask_concurrency()}），请稍后重试；"
                    f"或调大 `PAPERPILOT_ASK_CONCURRENCY`。")
     try:
-        r = graph_ask(body.question, body.pdf, history=body.history)
+        r = graph_ask(body.question, body.pdfs, history=body.history)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=f"缺论文上下文: {e}") from e
     except Exception as e:  # noqa: BLE001
@@ -272,7 +273,7 @@ def ask_question(body: AskBody) -> JSONResponse:
     # ⚠️ 不要回 `high`：`gate()` 的返回值里**没有**这个键（它在 check() 里），回了会恒为 false。
     v = r.get("validator") or {}
     return JSONResponse({
-        "pdf": body.pdf,
+        "pdfs": body.pdfs,
         "question": body.question,
         "answer": r.get("answer", ""),
         "cites": r.get("cites", []),

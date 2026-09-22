@@ -1,10 +1,11 @@
 """摄取 worker：**后台跑** MinerU ∥ 报告链 → 索引，job 状态落盘（2026-09-13）。
 
 为什么要并行（真实依赖，已核实）：
-- **默认模式**（`PAPERPILOT_USE_MINERU` 未设）：报告链读 pymupdf，MinerU 产物只经
+- **旧默认**（`PAPERPILOT_USE_MINERU=0`，现为容灾档）：报告链读 pymupdf，MinerU 产物只经
   `retrieval_chunks` 注入**检索视图** → 两条路**互不依赖**，可并行；
-- **`PAPERPILOT_USE_MINERU=1`**：报告链（claims/chunks/figures）也从 MinerU
-  `content_list` 取 → 必须**先 MinerU 后报告**，本模块自动退回串行；
+- **默认（2026-09-22 起）**：报告链（claims/chunks/figures）也从 MinerU
+  `content_list` 取 → 必须**先 MinerU 后报告**，本模块自动退回串行
+  （代价：单篇墙钟 ≈100s → ≈157s，MinerU 的 58s 不再被报告链盖住）；
 - **索引必须在 MinerU 之后**（表块要先注入检索视图才能 encode）→ 两条 lane 都完成后收口。
 
 并发模型（刻意保守）：
@@ -93,13 +94,13 @@ def _check_cancel(ev: threading.Event) -> None:
 
 def _lane_mineru(job: dict[str, Any], ev: threading.Event) -> str:
     """MinerU 版面解析（GPU）。返回 status（ok/failed/skipped/cancelled）。"""
+    from paperpilot import sources
     from paperpilot.ingest import mineru_version, read_meta, run_mineru
-    from paperpilot.agents.document_cache import is_qasper
 
     pdf = job["pdf"]
-    if is_qasper(pdf):
+    if not sources.has_file(pdf):
         _mark(job, "mineru", status="skipped")
-        return "skipped"
+        return "skipped"     # 无磁盘文件的源：MinerU 不适用（它读的是 PDF 版面产物）
 
     _check_cancel(ev)
     _mark(job, "mineru", status="running")
@@ -196,7 +197,8 @@ def _run_job(job: dict[str, Any]) -> None:
             job["_t0"] = time.time()          # 内部字段，_finish 时移除
             jobs.save(job)
 
-        serial = os.environ.get("PAPERPILOT_USE_MINERU") == "1"   # 同源模式：必须先 MinerU
+        from paperpilot.agents.document_cache import mineru_skeleton_enabled
+        serial = mineru_skeleton_enabled()   # MinerU 骨架（默认）：报告链必须等 MinerU 完成
         mineru_status = "skipped"
         if serial:
             mineru_status = _lane_mineru(job, ev)
@@ -226,18 +228,16 @@ def _run_job(job: dict[str, Any]) -> None:
         if mineru_status == "cancelled":
             raise JobCancelled()
 
-        # 索引：只在"检索视图可用"时建。
-        #   · ok      → 正常建；
-        #   · skipped → 也建：QASPER / 演示模式（`PAPERPILOT_MINERU=0`）只是**没有**
-        #     MinerU 增厚，检索视图退化为纯 pymupdf，问答照常可用；
-        #   · failed/cancelled → 不建：问答会被闸门（`qa_blocked_reason`）明确拦住，
-        #     建了也没人用（首次 encode 可能几秒~几分钟，纯浪费）。
-        if mineru_status in ("ok", "skipped"):
-            _lane_index(job, ev)
-        else:
-            _mark(job, "index", status="skipped",
-                  note=f"MinerU {mineru_status}：检索视图不完整、问答会被闸门拦，"
-                       f"跳过索引构建（报告不受影响）")
+        # 索引：**只要问答可用就建**（2026-09-22 接入降级与容灾后，这个条件恒真）。
+        #   · ok      → 正常建（MinerU 骨架）；
+        #   · skipped → 也建：演示模式（`PAPERPILOT_MINERU=0`）只是**没有** MinerU 增厚，
+        #     检索视图退化为纯 pymupdf；
+        #   · failed  → **也建**：问答现在**降级到 pymupdf 容灾**（`qa_blocked_reason`
+        #     不再拦死）→ 不建索引的话"降级了却没有向量可用"，等于白降级。
+        #     （旧写法是 failed 就跳过，理由是"问答会被闸门拦、建了没人用" ——
+        #      那条闸已经撤了，这个理由不再成立。）
+        # cancelled 已在上面 raise，到不了这里。
+        _lane_index(job, ev)
 
         # **写终态前的最后一道门**（2026-09-14 审查）：各 lane 只在各自的阶段边界
         # 检查取消，而这些"边界"到写终态之间仍有工作在跑（索引编码、跳过索引的分支、

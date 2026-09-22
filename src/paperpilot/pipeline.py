@@ -28,9 +28,9 @@ from typing import Any
 
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
+from paperpilot import sources
 from paperpilot.models.schema import (Claim, ClaimGroup, EdgeView, GroupBrief,
                                       HubView, PaperReport, SectionView)
-from paperpilot.qasper_source import build_chunks, load_papers
 from paperpilot.tools import analyzer, llm
 from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.evidence import (claim_to_dict, dict_to_claim,
@@ -39,7 +39,8 @@ from paperpilot.tools.figures import extract_figures, generate_guides
 from paperpilot.tools.mineru_bridge import (figures_from_mineru_dir,
                                             title_from_mineru_dir)
 from paperpilot.tools.pdf_parser import parse_pdf
-from paperpilot.tools.report import (build_guide, build_overview,
+from paperpilot.tools.report import (MaterialEmpty, build_guide,
+                                     build_overview, degraded_reason,
                                      render_report)
 from paperpilot.tools.skeleton import build_skeleton
 from paperpilot.tools.viewer import (dedupe_groups, label_groups,
@@ -58,7 +59,22 @@ MAX_LEN = 4000
 
 
 def _stem(pdf_name: str) -> str:
-    return Path(pdf_name).stem
+    """源文件名 → 产物键（stem）。
+
+    ⚠️ **不能用 `Path.stem`**（2026-09-22 修）：arXiv id 形如 `2606.18837` 时
+    `.18837` 被当成扩展名剥成 `"2606"` → **静默去找不存在的产物**：
+        _stem("2606.18837.pdf") == "2606.18837"   ✓
+        _stem("2606.18837")     == "2606"         ✗（裸 stem 时找错文件）
+    同一篇因此有两个不同结果（`load_claim_models`/`_assemble` 传裸 stem 即报
+    "缺 claims/summary"）。这里只剥**源文件真后缀**（`.pdf` / `.qpdf`），
+    已是裸 stem 时原样返回 —— **幂等**。
+    """
+    name = Path(pdf_name).name
+    low = name.lower()
+    for suf in (".pdf", ".qpdf"):
+        if low.endswith(suf):
+            return name[: -len(suf)]
+    return name
 
 
 def _load(path: Path) -> dict[str, Any] | None:
@@ -69,6 +85,14 @@ def _load(path: Path) -> dict[str, Any] | None:
         return d if isinstance(d, dict) else None
     except Exception:  # noqa: BLE001
         return None
+
+
+def _load_ok(path: Path) -> dict[str, Any] | None:
+    """读产物；**带非空 error 的视为无效**（不参与缓存复用 → 下次自动重试，可自愈）。"""
+    d = _load(path)
+    if d and str(d.get("error") or "").strip():
+        return None
+    return d
 
 
 def _dump(path: Path, obj: dict[str, Any]) -> None:
@@ -84,10 +108,25 @@ def _paper_title(pdf_path: Path) -> str:
         return ""
 
 
+# 切块规则版本（**按源各自记**）：改了某个源的切块规则就 +1 —— 它参与产物打标
+# （`source` 字段），于是"同源但规则变了"也会被判 stale → **整链重建**。
+#
+# 为什么必须有它：`chunk_id` 是 claims / cites 的锚点。改切块规则会改变 chunk_id
+# 形态与切分边界 → 旧 claims 的锚点**静默指向别的段落**（与 `_stem`、概述那两个
+# bug 同族：错得毫无声息）。而 `source` 只记解析源，**检测不到规则变化**。
+#
+#   mineru v2（2026-09-22）：对齐 `chunker.chunk_document` 的规则 —— 纯标题组合并、
+#                            子块命名 `c{n}-p{i}` + `part`
+#   v1 = 历史形态（**不带版本后缀**）→ 未变过的源不会因此误判 stale
+CHUNK_RULE_VERSION: dict[str, int] = {"mineru": 2, "pymupdf": 1}
+
+
 def _payload_source(pdf_name: str) -> str:
-    """产物打标：该 pdf 当前解析源（qasper/mineru/pymupdf）。"""
+    """产物打标：解析源 + **切块规则版本**（任一变化都要求整链重建）。"""
     from paperpilot.agents.document_cache import current_source
-    return current_source(pdf_name)
+    src = current_source(pdf_name)
+    v = CHUNK_RULE_VERSION.get(src, 1)
+    return src if v <= 1 else f"{src}@{v}"
 
 
 def _claims_source(pdf_name: str) -> str | None:
@@ -100,36 +139,13 @@ def _claims_source(pdf_name: str) -> str | None:
     return str(d.get("source")) if d and d.get("source") else None
 
 
-# ───────────────────────── QASPER 文本源（无 PDF 版式） ─────────────────────────
-
-QASPER_PREFIX = "qasper_"
-QASPER_SUFFIX = ".qpdf"
-
-
-def is_qasper(pdf_name: str) -> bool:
-    return pdf_name.startswith(QASPER_PREFIX) and pdf_name.endswith(QASPER_SUFFIX)
-
-
-def _qasper_pid(pdf_name: str) -> str:
-    """qasper_<pid>.qpdf → <pid>。"""
-    return pdf_name[len(QASPER_PREFIX):-len(QASPER_SUFFIX)]
-
-
-def _qasper_paper(pdf_name: str) -> dict[str, Any]:
-    pid = _qasper_pid(pdf_name)
-    paper = load_papers().get(pid)
-    if not paper:
-        raise FileNotFoundError(f"QASPER 缺论文: {pid}")
-    return paper
-
-
-def _qasper_chunks(pdf_name: str) -> list[Any]:
-    """QASPER 论文的 Chunk[]（与 document_cache / QA 共用，chunk_id 恒定）。"""
-    return build_chunks(_qasper_paper(pdf_name))
-
-
-def _qasper_title(pdf_name: str) -> str:
-    return str(_qasper_paper(pdf_name).get("title", "") or "").strip()
+# ── 数据源（非 PDF 的评测源走 `paperpilot.sources` 注册表，见该模块）──────────────
+#
+# 以前这里是 `QASPER_PREFIX` / `is_qasper` / `_qasper_pid` / `_qasper_paper` /
+# `_qasper_chunks` / `_qasper_title` 一整块 —— 评测集的虚拟文件名因此穿透了生产链
+# （2026-09-22 重构）。现在生产只问**接口能力**：
+#     sources.resolve(pdf)   → chunk / 标题从哪来
+#     sources.has_file(pdf)  → 有没有磁盘文件（决定指纹 / MinerU / 摄取闸门）
 
 
 # ───────────────────────── Stage：各环节（产物缓存优先） ─────────────────────────
@@ -147,14 +163,23 @@ def _source_chunks(pdf_name: str, *, max_len: int = MAX_LEN) -> list[Any]:
 
 
 def _display_title(pdf_name: str) -> str:
-    """标题源统一：QASPER 用数据集 title；MinerU 用 content_list 整篇题；否则 PDF 元数据。"""
-    if is_qasper(pdf_name):
-        return _qasper_title(pdf_name)
-    from paperpilot.agents.document_cache import current_source
-    if current_source(pdf_name) == "mineru":
-        t = title_from_mineru_dir(MINERU_OUT / _stem(pdf_name))
-        if t:
-            return t
+    """标题源统一（**按可靠性从高到低**）：
+
+    1. **注册的数据源**（评测文本集等）→ 源自报 title；
+    2. **MinerU `content_list` 的整篇题（只要产物存在就用）**。
+       旧写法把它挂在 `current_source(...) == "mineru"` 下（即只在
+       `PAPERPILOT_USE_MINERU=1` 时才读），而**大量 arXiv PDF 的 metadata 根本没有
+       Title 字段** —— 实测 `2305.14205` / `2403.13240` 双双回退成了 arXiv id，
+       于是跨篇分析里 LLM 只能用 id 指代论文，读者看不出是哪篇（2026-09-21）；
+    3. PDF 元数据 Title；
+    4. 空串（调用方回退成文件名）。
+    """
+    src = sources.resolve(pdf_name)
+    if src is not None:
+        return src.title()
+    t = title_from_mineru_dir(MINERU_OUT / _stem(pdf_name))
+    if t:
+        return t
     return _paper_title(PAPERS_DIR / pdf_name)
 
 
@@ -266,8 +291,8 @@ def stage_figures(pdf_name: str, *, force: bool,
             print(f"  [figures] 缓存复用 {fig_file.name}")
         return (json.loads(fig_file.read_text(encoding="utf-8")).get("figures") or [])
 
-    if is_qasper(pdf_name):
-        # QASPER 文本源无版面图：写空 figures（QA/报告不依赖图表）
+    if not sources.has_file(pdf_name):
+        # 无磁盘文件的源（评测文本集）没有版面图：写空 figures（QA/报告不依赖图表）
         _dump(fig_file, {"pdf": pdf_name, "figures": []})
         return []
     from paperpilot.agents.document_cache import current_source
@@ -303,8 +328,9 @@ def stage_report_text(pdf_name: str, *, force: bool,
     md_file = VIEW_DIR / f"{stem}.report.md"
 
     title = _display_title(pdf_name) or stem
-    overview = _load(ov_file) if not force else None
-    guide = _load(gd_file) if not force else None
+    # 带 error 的产物视为**无效**（不参与缓存复用 → 下次自动重试，可自愈）
+    overview = _load_ok(ov_file) if not force else None
+    guide = _load_ok(gd_file) if not force else None
     if overview is None or guide is None:
         if not llm.is_configured():
             raise RuntimeError("LLM 未配置（生成概述/导读需要），或产物缺失。"
@@ -312,14 +338,27 @@ def stage_report_text(pdf_name: str, *, force: bool,
         if overview is None:
             if verbose:
                 print("  [report] 生成概述（LLM）…")
-            ov = build_overview(groups, title)
-            _dump(ov_file, {"overview": ov})
+            try:
+                ov = build_overview(groups, title)
+                err = ""
+            except MaterialEmpty as e:
+                # ⚠️ 关键修复（2026-09-22）：以前这里会**静默成功** —— LLM 拿空材料
+                # 必然拒答，而那句"由于未提供…无法撰写…"会被当概述存进 report.json，
+                # 一路流到 L0 / 前端。现在改成：不生成、写 error、打警告。
+                ov, err = "", f"概述降级：{e}"
+                print(f"  [report] ⚠️ {err}")
+            _dump(ov_file, {"overview": ov, "error": err})
             overview = {"overview": ov}
         if guide is None:
             if verbose:
                 print("  [report] 生成导读（LLM）…")
-            gd = build_guide(groups, title)
-            _dump(gd_file, {"guide": gd})
+            try:
+                gd = build_guide(groups, title)
+                gerr = ""
+            except MaterialEmpty as e:
+                gd, gerr = "", f"导读降级：{e}"
+                print(f"  [report] ⚠️ {gerr}")
+            _dump(gd_file, {"guide": gd, "error": gerr})
             guide = {"guide": gd}
     overview_text = str((overview or {}).get("overview", ""))
     guide_text = str((guide or {}).get("guide", ""))
@@ -369,6 +408,17 @@ def _assemble(pdf_name: str, *, verbose: bool = False) -> PaperReport:
     fig_data = _load(VIEW_DIR / f"{stem}.figures.json")
     ov = _load(VIEW_DIR / f"{stem}.overview.json")
     gd = _load(VIEW_DIR / f"{stem}.guide.json")
+    ov_text = str((ov or {}).get("overview", "") or "")
+    # 降级判定（多源合并，任一发生即记）：
+    #   ① 概述/导读：产物里记的 error 优先；再兜一层**内容特征**（拒答话术/过短），
+    #      覆盖"旧产物已被写坏"存量数据（如 2606.18837 的 85 字拒答话术）；
+    #   ② 解析源：**只有 MinerU 真失败**（试过但报错/超时/产物损坏）才算降级；
+    #      "尚未摄取"(pending) 是**待办**（跑 ingest 即可），不是产物损坏 → 不入 degraded。
+    from paperpilot.agents.document_cache import mineru_status
+    _mstate, _mwhy = mineru_status(pdf_name)
+    _parse_deg = f"解析降级（MinerU 失败）：{_mwhy}" if _mstate == "degraded" else ""
+    _text_deg = str((ov or {}).get("error") or "").strip() or degraded_reason(ov_text)
+    degraded = "；".join(x for x in (_parse_deg, _text_deg) if x)
     if not claims and not groups:
         raise FileNotFoundError(f"缺 claims/summary，无法装配 report（{pdf_name}）")
 
@@ -450,7 +500,8 @@ def _assemble(pdf_name: str, *, verbose: bool = False) -> PaperReport:
         generated_at=datetime.now().isoformat(timespec="seconds"),
         stats=stats,
         guide=str((gd or {}).get("guide", "") or ""),
-        overview=str((ov or {}).get("overview", "") or ""),
+        overview=ov_text,
+        degraded=degraded,
         core_points=core_points,
         limitations=limitations,
         skeleton=hub_views,
@@ -498,8 +549,8 @@ def _pdf_identity_stale(pdf_name: str) -> tuple[bool, str]:
       · `PAPERPILOT_PDF_ID_STRICT=1` → 连"收编"也当 stale（急着排雷时用）。
     """
     from paperpilot import paper_identity
-    if paper_identity.is_virtual(pdf_name):
-        return False, ""
+    if not sources.has_file(pdf_name):
+        return False, ""       # 无磁盘文件身份 → 不存在"同名不同内容"问题
     stem = _stem(pdf_name)
     recorded = None
     try:
@@ -530,13 +581,13 @@ def process_pdf(pdf_name: str, *, force: bool = False,
                 verbose: bool = True, on_stage: Any = None) -> PaperReport:
     """一个论文源 → 报告产物 → PaperReport（并落盘 report.json）。
 
-    支持两种源：
-      - PDF 文件（assets/papers/<pdf_name>）
-      - QASPER 文本源（qasper_<paper_id>.qpdf，从 qasper_data 数据集构造 chunks，
-        无 PDF 版面/页码——claims 提取、view、报告、QA 全链路一致）
+    数据源由 `paperpilot.sources` 注册表解析：
+      - **未注册任何源 → PDF 文件**（assets/papers/<pdf_name>，产品主路径）；
+      - 已注册（评测文本集等，由使用方在测试脚本里注册）→ 走该源自报的 chunk / 标题，
+        **无 PDF 版面与页码**，但 claims 提取 / view / 报告 / QA 全链路一致。
 
     Args:
-        pdf_name: PDF 文件名 或 QASPER 虚拟名
+        pdf_name: PDF 文件名，或已注册数据源的标识名
         force: True 时全链路重跑（调 LLM）；False 时有缓存则复用
         skip_llm: True 时只装配已有产物，缺失任一环节直接报错（不调 LLM）
         workers: claims 提取并发数
@@ -545,7 +596,7 @@ def process_pdf(pdf_name: str, *, force: bool = False,
             （worker 用它记录 per-stage 耗时，并在阶段边界检查取消信号）。
             回调抛异常 → 直接中止报告链（用于协作式取消）。默认 None＝不回调。
     """
-    if not is_qasper(pdf_name):
+    if sources.has_file(pdf_name):
         pdf_path = PAPERS_DIR / pdf_name
         if not pdf_path.exists():
             raise FileNotFoundError(f"找不到 PDF：{pdf_path}")
@@ -562,6 +613,17 @@ def process_pdf(pdf_name: str, *, force: bool = False,
     eff_force = force or stale
     if stale and verbose:
         print(f"  [source] 解析源 {old_src} → {src}，整链重建产物")
+
+    # MinerU 骨架状态**必须显性**（2026-09-22 起 MinerU 是默认骨架），且**分清两件事**：
+    #   · pending  = 尚未摄取（**待办**）→ 跑一次 ingest 就好，不是故障、不是降级
+    #   · degraded = MinerU 试过但失败（报错/超时/产物损坏）→ **降级 pymupdf 容灾**，必须告警
+    from paperpilot.agents.document_cache import mineru_status
+    _mstate, _mwhy = mineru_status(pdf_name)
+    if _mstate == "pending":
+        print(f"  ⓘ [parse] MinerU 尚未摄取 → 当前用 pymupdf：{_mwhy}"
+              f"（跑 `cli/run_ingest.py {pdf_name}` 即可转 MinerU）")
+    elif _mstate == "degraded":
+        print(f"  ⚠️ [parse] MinerU 失败 → 降级 pymupdf 容灾：{_mwhy}")
 
     # **身份一致性**（2026-09-13 审查项 2）：产物必须属于**当前这份** PDF（内容指纹）。
     # 同名不同内容（换文件 / 覆盖同名 PDF）→ 旧产物一律不采用，整链重建。

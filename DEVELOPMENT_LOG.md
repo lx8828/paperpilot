@@ -2,6 +2,12 @@
 
 > 本文档记录 PaperPilot（LLM 论文深度精读系统）开发过程中**遇到的问题、做的决策、踩的坑**。
 > 目的：① 面试时能讲清楚"我们为什么这么设计"；② 几个月后的自己回来改代码时，能快速想起每条规则背后的原因，避免重蹈覆辙。
+>
+> ⚠️ **性质声明（2026-09-22 加）**：本文是**流水账 + 决策背景**，**不是现状权威**。它按时间累积，
+> 早期阶段的结论（L0→L1→L2→L3 四层漏斗、21 篇 / 176 题、`PAPERPILOT_USE_MINERU` 未设=走 pymupdf 等）
+> **只代表当时**。**冲突时一律以根 `README.md` + 代码为准**。
+> 🗂 文档总地图与"哪些已过期"见 `docs/DOC_INDEX.md`；已就地标注的过期点：§"摄取异步化"里的并行依据
+> （MinerU 默认骨架翻转 → worker 默认串行）。
 
 ---
 
@@ -684,6 +690,12 @@ MinerU 产物只经 `retrieval_chunks` 注入**检索视图** → 两条路**互
 并发模型刻意保守：**job 之间串行**（`max_workers=1`，只有一块 GPU，两篇同跑抢显存）、
 **job 内部并行**（`max_workers=2`：MinerU 吃 GPU、报告链吃 API 往返，互补）。
 
+> ⚠️ **2026-09-22 更正（上面的前提已变）**：`PAPERPILOT_USE_MINERU` **默认翻转为"开"**
+> （`agents/document_cache.py:170`），MinerU 现在是**默认 chunk 骨架**，报告链与检索**同源**读它
+> → **worker 默认走串行分支**（`worker.py:200-204`：`serial = mineru_skeleton_enabled()`）。
+> "MinerU ∥ 报告链、job 内并行"只在 `PAPERPILOT_USE_MINERU=0` 时成立。
+> 现状描述以根 `README.md`「摄取 job（异步）」一节为准。
+
 **实现**（约 350 行，不动检索/报告算法）：
 - 新增 `src/paperpilot/jobs.py`：job 状态**落盘**（`assets/artifacts/out_jobs/<job_id>.json`）、
   取消信号（`threading.Event`）、`recover_interrupted()`（重启后把 `queued/running` 标成中断并可重试）；
@@ -1168,7 +1180,7 @@ _ASK_GATE = threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY",
   并用 `pageerror` **捕获未捕获的 JS 异常**（前端脚本一抛错就红）。
 - **不强制下载 chromium**（130MB+）：按 `channel=msedge → chrome → 自带 chromium` 顺序尝试，
   都没有就 `skip`。本机命中 Edge 153 → 零下载。
-- 默认**跳过**（`addopts: -m 'not local and not ui'`）→ **CI 一行不变、仍是 178 用例**。
+- 默认**跳过**（`addopts: -m 'not local and not ui'`）→ **CI 一行不变、仍是 178 用例**（2026-09-22 实测已增长至 **203**）。
 - ⚠️ **验证过它会红**（不进这一步就等于没测）：把"引用号 → 可点链接"那行临时改成纯文本
   → 测试在 30s 内 `TimeoutError: #msgs .jump` 失败；随后 `git diff web/index.html` 为空
   （完全还原）。**新测试必须做一次"能红"的验证**，否则很可能只是"跟着页面一起绿"。
@@ -1203,6 +1215,6 @@ _ASK_GATE = threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY",
 
 1. **新测试要验一次"能红"** —— 尤其 UI/端到端这种"环境一坏就全绿"的测试；
 2. **归档先做引用分析、再留入库索引** —— 移动文件不难，难的是不丢知识、不打断引用；
-3. 分层原则再确认：**CI 判对错（178，8s，免费）/ `local` 判真模型能不能跑（5，要 key+模型）/
+3. 分层原则再确认：**CI 判对错（当时 178 → 现 203，约 10s，免费）/ `local` 判真模型能不能跑（5，要 key+模型）/
    `ui` 判前端真的能用（1，要浏览器）** —— 每档都有自己的 skip 条件，于是"一条命令"永远绿。
 

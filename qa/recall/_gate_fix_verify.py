@@ -1,4 +1,4 @@
-"""验证闸门数字误杀修复的回收：对那 10 道兜底题按**真实评测口径**重跑问答 + 裁判。
+﻿"""验证闸门数字误杀修复的回收：对那 10 道兜底题按**真实评测口径**重跑问答 + 裁判。
 
 零结构改动，只复用 `cli/run_qasper_eval.py` 的 `run_one`（含新分桶口径）。
 对比"修复前记录的分"与"修复后重跑的分"，量化回收。
@@ -21,7 +21,8 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="repla
 
 import run_qasper_eval as R  # noqa: E402
 from paperpilot.components.validator import FALLBACK_MSG  # noqa: E402
-from paperpilot.qasper_source import load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 RUN = "qa/qasper_run_20260911_005347.json"

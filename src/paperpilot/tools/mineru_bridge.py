@@ -399,6 +399,70 @@ def _is_ref_heading(label: str) -> bool:
     return tail in _REF_MARKERS
 
 
+# ── 文本组装期的两处补全（2026-09-22，切块审计后修）────────────────────────
+#
+# ⚠️ 两者都放在**切分之后**的文本组装阶段 → `chunk_id` 与切分边界**完全不变**
+# （因此不需要再动 `CHUNK_RULE_VERSION`）；只改文本 → 向量缓存按指纹自动重建。
+
+
+def _table_header_cells(el: dict[str, Any]) -> list[str]:
+    """从表体 markdown 取**表头单元格**（用于"同表头的表块互借 caption"）。"""
+    md = table_to_md(el.get("table_body") or "")
+    for line in md.splitlines():
+        s = line.strip()
+        if not s.startswith("|"):
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        cells = [c for c in cells if c]
+        # 跳过 markdown 分隔行（|---|:--:|）
+        if cells and not all(set(c) <= set("-: ") for c in cells):
+            return cells[:12]
+    return []
+
+
+def _fill_table_identity(el: dict[str, Any], donor: dict[str, str]) -> dict[str, Any]:
+    """表块缺 caption → 补**身份串**。
+
+    为什么必须补（审计实测，49 篇）：**64.7% 的表块没有 caption** → 检索时不知道
+    "这是哪张表"；问"表 3 的准确率"时 BM25 完全命中不到（表号根本不在文本里）。
+      · ① 借：同篇内**表头相同**的表块互借 caption —— MinerU 常把一张表切成多块，
+        只有其中一块带 caption（实测 `2002.10361` 的 xtbl-58/59 ← xtbl-60）；
+      · ② 兜底：**列名拼一行身份串**，让 BM25 至少能命中 "method / accuracy" 这类词
+        （不编造表号 —— 编错了比没有更糟）。
+    """
+    if el.get("type") != "table":
+        return el
+    if [str(x).strip() for x in (el.get("table_caption") or []) if str(x).strip()]:
+        return el                                    # 已有 caption，不动
+    cells = _table_header_cells(el)
+    # 只把**短单元格**当列名（长句 = 表体首行被误当表头）→ 否则不拼，免得制造噪声
+    cells = [c for c in cells if len(c) <= 30]
+    borrowed = donor.get("|".join(sorted(cells))) if cells else None
+    # ⚠️ 借来的必须是**像表号**的 caption：实测有 MinerU 把**图的** caption 挂到表上，
+    # 盲借会得到 "Figure 6: ..." —— **编造错误身份比不补更糟**（还会污染 BM25）。
+    # 必须以表号**开头**才算（`search` 太宽：caption 后半段可能恰好含 "Table N"）
+    if borrowed and re.match(r"\s*(table|表)\s*[0-9A-Z]", borrowed, re.I):
+        return {**el, "table_caption": [borrowed]}
+    if cells:
+        return {**el, "table_caption": ["表格（列：" + "、".join(cells) + "）"]}
+    return el
+
+
+def _with_heading(path: list[str], text: str) -> str:
+    """确保 chunk 文本**含所属标题行**（缺则补前缀）。
+
+    为什么必须补（审计实测，49 篇）：`title_path` 只是**元数据**，**检索只看 `text`**。
+    13% 的块文本不含所属标题（二级子块 `-p2`、被并入的父标题组）→ BM25 命中不到
+    标题词，LLM 也看不出这块属于哪一节。
+    """
+    if not path or path == ["(PREAMBLE)"]:
+        return text
+    head = (path[-1].split("·")[-1] if "·" in path[-1] else path[-1]).strip()
+    if not head or head.casefold() in " ".join(text.split()).casefold()[:400]:
+        return text
+    return f"{head}\n{text}"
+
+
 # ── content_list → Chunk[] ───────────────────────────────────────────────
 
 
@@ -450,39 +514,76 @@ def chunks_from_mineru(content_list: list[dict[str, Any]]) -> list[Chunk]:
         assert cur is not None and cur_path is not None
         cur.append(el)
 
-    # ── 第二遍：分块（标题组内按 CHUNK_TARGET 以元素为原子切分） ──
-    chunks: list[Chunk] = []
-    seq = 0
+    # ── 第二遍：分块 ─────────────────────────────────────────────────────
+    # 规则**与 `chunker.chunk_document` 对齐**（2026-09-22，"规则不变"）：
+    #   ① **纯标题组不留块**：只有标题元素、没有任何正文时，把标题元素**并入下一个
+    #      有正文的组**（pymupdf 侧靠 `has_body` 实现同一效果：上一标题无正文 →
+    #      并入子章节路径）。否则会产出"只有一行标题"的近空块污染检索。
+    #   ② **二级切分的子块命名与 part 对齐**：`chunk_id = c{n}-p{i}` + `part="i/N"`；
+    #      原实现是全局自增 `c7`（看不出是子块）且 **`part` 缺失**。
+    #   ③ 切分原子保持**元素**（MinerU 的 text 元素≈段落；**表格/公式独立成块**是
+    #      MinerU 的优势，动它就丢了"表值可检索/可进 claims"）。
+    merged: list[tuple[list[str], list[dict[str, Any]]]] = []
+    carry: list[dict[str, Any]] = []          # 攒着的"纯标题"元素
     for path, elems in groups:
-        elems = [e for e in elems if e]  # 去掉 PREAMBLE 占位空元素
+        elems = [e for e in elems if e]
         if not elems:
             continue
+        if not any(not _is_heading(e) for e in elems):
+            carry.extend(elems)               # 纯标题组 → 交给下一个有正文的组
+            continue
+        merged.append((path, carry + elems))
+        carry = []
+    # 末尾仍攒着的纯标题（论文最后一节只有标题）→ 没有下一个组可并入 → 丢弃
+
+    # 表块身份串的 donor（同表头 → caption）：先扫一遍建表
+    donor: dict[str, str] = {}
+    for el in content_list:
+        if el.get("type") != "table":
+            continue
+        caps = [str(x).strip() for x in (el.get("table_caption") or []) if str(x).strip()]
+        cells = _table_header_cells(el)
+        if caps and cells:
+            donor.setdefault("|".join(sorted(cells)), " ".join(caps))
+
+    chunks: list[Chunk] = []
+    seq = 0
+    for path, elems in merged:
         pieces: list[list[dict[str, Any]]] = [[]]
         lens: list[int] = [0]
         for e in elems:
+            # ⚠️ 这里刻意用**未补全**的 `element_text`：切分边界与补全前逐块一致
+            # （补全只发生在组装期，见下面）→ `chunk_id` 不变、无需重建 claims。
             t = element_text(e) or ""
             if pieces[-1] and lens[-1] + len(t) > CHUNK_TARGET:
                 pieces.append([])
                 lens.append(0)
             pieces[-1].append(e)
             lens[-1] += len(t)
-        for piece in pieces:
-            text = "\n".join(filter(None, (element_text(x) or "" for x in piece))).strip()
+        base = f"c{seq}"
+        seq += 1
+        total = len(pieces)
+        for i, piece in enumerate(pieces, 1):
+            # 组装期补全（**不动切分边界**）：① 表块身份串 ② 所属标题行
+            text = "\n".join(
+                filter(None, (element_text(_fill_table_identity(x, donor)) or ""
+                              for x in piece))).strip()
             if not text:
                 continue
+            text = _with_heading(path, text)
             pages = sorted({int(x.get("page_idx", 0)) + 1 for x in piece})
             chunks.append(Chunk(
-                chunk_id=f"c{seq}",
+                chunk_id=base if total == 1 else f"{base}-p{i}",
                 title_path=list(path),
                 page_span=(pages[0], pages[-1]) if pages else (0, 0),
                 text=text,
                 n_blocks=len(piece),
-                spans=[ChunkSpan(block_id=f"m{seq}_{i}",
+                part="" if total == 1 else f"{i}/{total}",
+                spans=[ChunkSpan(block_id=f"m{base}_{i}",
                                  page=int(x.get("page_idx", 0)) + 1,
                                  text=(x.get("text") or "")[:160])
                        for i, x in enumerate(piece, 1)],
             ))
-            seq += 1
     return chunks
 
 

@@ -100,8 +100,10 @@ def build_qa_graph_v3_nol3j():
     return g.compile()
 
 
-def ask(question: str, pdf: str, history: list[dict[str, Any]] | None = None) -> dict:
-    """v3 一键问答（与 graph.ask 同签名）。
+def ask(question: str, pdfs: list[str],
+        history: list[dict[str, Any]] | None = None) -> dict:
+    """v3 一键问答（与 graph.ask 同签名）。**语料是多篇 `pdfs`（≥2 篇）**：
+    本系统没有单篇路径（2026-09-23 删）。
 
     **2026-09-10 起默认 = nol3j 变体**（删 L3 judge、一律试答，质量交给 graph.ask 的输出闸门）：
     依据 ab_nol3j（100 题同裁判）：hard 19/50→29/50 (+10pt)，normal 45/50→44/50 (−1pt 噪声)，
@@ -113,7 +115,21 @@ def ask(question: str, pdf: str, history: list[dict[str, Any]] | None = None) ->
         fn = build_qa_graph_v3_nol3j
     else:
         fn = build_qa_graph_v3
-    state: QAState = {"question": question, "pdf": pdf}
+    state: QAState = {"question": question,
+                      "pdfs": [str(p) for p in (pdfs or []) if p]}
+    # 解析降级状态：默认路（MinerU）失败 → 该篇走的是备用路（pymupdf，表值会缺）。
+    # **只记录、不改答案文本** —— 改了会污染评测口径（judge 看到提示语）。多篇**逐篇汇总**。
+    try:
+        from paperpilot.agents.document_cache import mineru_status
+        _degr: list[str] = []
+        for _p in state["pdfs"]:
+            _st, _why = mineru_status(_p)
+            if _st == "degraded":
+                _degr.append(f"{_p}: {_why or 'MinerU 不可用'}")
+        if _degr:
+            state["parse_degraded"] = "；".join(_degr)
+    except Exception:  # noqa: BLE001  状态查不到不该影响问答
+        pass
     if history:
         state["history"] = [
             {"role": str(m.get("role")), "content": str(m.get("content"))}

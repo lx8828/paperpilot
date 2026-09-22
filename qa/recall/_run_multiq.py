@@ -1,4 +1,4 @@
-"""多方法全局对比题 × V0(纯两级 L0→L3)：看全局检索能不能处理这类"跨对象对比/列举"。
+﻿"""多方法全局对比题 × V0(纯两级 L0→L3)：看全局检索能不能处理这类"跨对象对比/列举"。
 
 若 pass 明显低于 V0 全链水平(64%)→ 支持做多维分解分支；同时存 answer 供失败模式分析。
 """
@@ -14,7 +14,8 @@ ROOT = Path(".")
 sys.path.insert(0, str(ROOT / "src"))
 
 from paperpilot.graph.qa_graph_v3 import build_qa_graph_v3  # noqa: E402
-from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers  # noqa: E402
 from paperpilot.tools import llm  # noqa: E402
 
 PASS = 4

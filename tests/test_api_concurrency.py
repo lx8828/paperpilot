@@ -85,7 +85,7 @@ def test_gate_full_fails_bounded_not_hang(webapp_tmp, monkeypatch):
     box: dict = {}
 
     def _call():
-        box["r"] = client.post("/api/ask", json={"question": "q", "pdf": "a.pdf"})
+        box["r"] = client.post("/api/ask", json={"question": "q", "pdfs": ["a.pdf"]})
 
     t = threading.Thread(target=_call, daemon=True)
     t0 = time.time()
@@ -122,7 +122,7 @@ def test_ask_does_not_block_event_loop(webapp_tmp, monkeypatch):
     with ThreadPoolExecutor(max_workers=2) as ex:
         t_ask0 = time.time()
         ask_fut = ex.submit(client.post, "/api/ask",
-                            json={"question": "方法是什么？", "pdf": "a.pdf"})
+                            json={"question": "方法是什么？", "pdfs": ["a.pdf"]})
         assert entered.wait(timeout=5), "问答请求没进来"
         t_meta0 = time.time()
         meta = client.get("/api/meta")
@@ -158,7 +158,7 @@ def test_ask_gate_serializes_when_set_to_one(webapp_tmp, monkeypatch):
     t0 = time.time()
     with ThreadPoolExecutor(max_workers=3) as ex:
         futs = [ex.submit(client.post, "/api/ask",
-                          json={"question": f"q{i}", "pdf": "a.pdf"}) for i in range(3)]
+                          json={"question": f"q{i}", "pdfs": ["a.pdf"]}) for i in range(3)]
         for f in futs:
             assert f.result(timeout=10).status_code == 200
     elapsed = time.time() - t0

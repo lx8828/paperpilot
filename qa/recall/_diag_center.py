@@ -1,4 +1,4 @@
-"""圆心质量离线诊断：L2 失败是"检索层没召回答案块"还是"召回了但圆心没选对"？
+﻿"""圆心质量离线诊断：L2 失败是"检索层没召回答案块"还是"召回了但圆心没选对"？
 
 对 67 题 L2 目标群逐题（无 LLM）：
     gold_chunk = 含 gold evidence 句的正文 chunk（句子 60-char key 子串命中，取命中最多）
@@ -25,7 +25,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from paperpilot.agents.document_cache import ordered_chunks, section_from_path  # noqa: E402
 from paperpilot.agents.nodes.retrieve import retrieve_claims  # noqa: E402
-from paperpilot.qasper_source import gold_answer, load_papers  # noqa: E402
+sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / "qa" / "sources" / "qasper.py").exists())))  # 测试侧数据源（qa/）
+from qa.sources.qasper import gold_answer, load_papers  # noqa: E402
 
 VIEW = ROOT / "assets/artifacts/out_views"
 

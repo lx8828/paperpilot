@@ -73,7 +73,7 @@ def test_upload_to_report_to_answer(e2e, tmp_assets, tiny_pdf):
     assert got.json()["job"]["elapsed"] >= 0
 
     # ⑤ 提问 → 答案带 [n] 引用（cites 非空），且经过闸门
-    ask = e2e.post("/api/ask", json={"question": "这篇论文提出了什么方法？", "pdf": tiny_pdf})
+    ask = e2e.post("/api/ask", json={"question": "这篇论文提出了什么方法？", "pdfs": [tiny_pdf]})
     assert ask.status_code == 200, ask.text
     ans = ask.json()
     assert ans["answer"]
@@ -132,13 +132,15 @@ def test_cancel_running_job_is_honoured(e2e, tmp_assets, tiny_pdf, monkeypatch):
 
 def test_mineru_failed_end_to_end(webapp_tmp, tmp_assets, tiny_pdf,
                                   fake_llm, fake_embed, monkeypatch):
-    """**审查项回归（端到端）**：MinerU 失败 → 报告仍可用、**不建索引**、问答被闸门拦住。
+    """**降级与容灾（端到端，2026-09-22 契约变更）**：MinerU 失败 → 报告可用、
+    **索引照建**、问答**降级到 pymupdf 备用路仍然可用**，且降级**显性**。
 
     走的是**真实**代码路径（只把"是否可用"换成 False）：
     真 `_lane_mineru` → 真 `run_mineru`（failed 是**正常返回**，不抛异常）
-    → 真 meta 落盘 → 真 `qa_blocked_reason()` → 真 graph 拒绝分支。
+    → 真 meta 落盘 → 真 `_lane_index` → 真 `qa_blocked_reason()` → 真 graph。
 
-    这正是"凭 future 没抛异常就当成 ok"那个 bug 会漏掉的场景：状态说错、索引白跑。
+    旧契约是"MinerU 失败 → 不建索引 + 问答被闸门拒绝"。问题：报告链**早就在降级**
+    （走 pymupdf），只有问答被拦 → "默认路失败降级到备用路"**永远走不到**。
     """
     from paperpilot import ingest, worker
 
@@ -158,22 +160,27 @@ def test_mineru_failed_end_to_end(webapp_tmp, tmp_assets, tiny_pdf,
     assert r.status_code == 202
     final = _wait_ready(client, r.json()["job_id"])
 
-    # ① 状态如实：MinerU failed、索引 skipped（未白跑）、报告仍 ready
+    # ① 状态如实：MinerU failed，但**索引照建**（降级后问答要用）
     assert final["status"] == jobs.STATUS_READY, final
     assert final["stages"]["mineru"]["status"] == "failed"
-    assert seen["index"] == 0
-    assert final["stages"]["index"]["status"] == "skipped"
-    assert "failed" in final["stages"]["index"]["note"]
+    assert seen["index"] == 1
+    assert final["stages"]["index"]["status"] == "ok"
 
     # ② 报告可读，且带**用户可见**的警告（不静默）
     got = client.get(f"/api/report/{tiny_pdf}")
     assert got.status_code == 200
     assert "mineru_warning" in got.json()
 
-    # ③ 问答被明确拒绝并说明原因（不是静默降级到 pymupdf 检索）
-    ask = client.post("/api/ask", json={"question": "这篇论文提出了什么？", "pdf": tiny_pdf})
+    # ③ **降级而非拒绝**：问答照常可用（代价是表值可能缺）
+    ask = client.post("/api/ask", json={"question": "这篇论文提出了什么？", "pdfs": [tiny_pdf]})
     assert ask.status_code == 200
     body = ask.json()
-    assert body["route"] == ["ingest_blocked"]
-    assert "MinerU" in body["answer"]
-    assert body["validator"]["action"] == "blocked"
+    assert "ingest_blocked" not in (body.get("route") or []), body
+    assert body.get("answer"), body
+    assert (body.get("validator") or {}).get("action") != "blocked"
+
+    # ④ 降级**必须显性**：判为 `degraded`（不是 `pending`"还没跑"）且原因可查
+    from paperpilot.agents.document_cache import mineru_status
+    st, why = mineru_status(tiny_pdf)
+    assert st == "degraded", f"MinerU 跑过但失败 → 应判 degraded，实际 {st!r}"
+    assert why

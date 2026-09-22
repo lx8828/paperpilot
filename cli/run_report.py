@@ -19,7 +19,8 @@ sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAcces
 
 from paperpilot.tools import llm
 from paperpilot.tools.pdf_parser import parse_pdf
-from paperpilot.tools.report import build_guide, build_overview, render_report
+from paperpilot.tools.report import (MaterialEmpty, build_guide,
+                                     build_overview, render_report)
 
 ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
 PAPERS_DIR = ROOT / "assets" / "papers"
@@ -51,9 +52,14 @@ def get_overview(pdf: str, groups: list[dict[str, Any]], title: str, force: bool
     if cache.exists() and not force:
         return str(json.loads(cache.read_text(encoding="utf-8"))["overview"])
     print("  生成概述（LLM）…")
-    overview = build_overview(groups, title)
-    cache.write_text(json.dumps({"overview": overview}, ensure_ascii=False,
-                                indent=2), encoding="utf-8")
+    try:
+        overview, err = build_overview(groups, title), ""
+    except MaterialEmpty as e:
+        # 材料为空 → 不生成（旧行为会写进 LLM 的拒答话术，见 tools/report.py）
+        overview, err = "", f"概述降级：{e}"
+        print(f"  ⚠️ {err}")
+    cache.write_text(json.dumps({"overview": overview, "error": err},
+                                ensure_ascii=False, indent=2), encoding="utf-8")
     return overview
 
 
@@ -62,9 +68,13 @@ def get_guide(pdf: str, groups: list[dict[str, Any]], title: str, force: bool) -
     if cache.exists() and not force:
         return str(json.loads(cache.read_text(encoding="utf-8"))["guide"])
     print("  生成导读（LLM）…")
-    guide = build_guide(groups, title)
-    cache.write_text(json.dumps({"guide": guide}, ensure_ascii=False,
-                                indent=2), encoding="utf-8")
+    try:
+        guide, gerr = build_guide(groups, title), ""
+    except MaterialEmpty as e:
+        guide, gerr = "", f"导读降级：{e}"
+        print(f"  ⚠️ {gerr}")
+    cache.write_text(json.dumps({"guide": guide, "error": gerr},
+                                ensure_ascii=False, indent=2), encoding="utf-8")
     return guide
 
 
