@@ -21,9 +21,14 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
 from paperpilot.ingest import PAPERS_DIR, ingest, mineru_available  # noqa: E402
+from paperpilot.tools import llm  # noqa: E402
 
 
 def main() -> int:
+    # ⚠️ 必须与其它 CLI 一致地加载 .env（2026-09-23 补）：
+    # 否则**新鲜摄取**时报告链拿不到 LLM key → claims 提取 0 条、去重/打标/概述全部失败
+    # （已有缓存产物的篇会"看起来正常"，从而掩盖这个 bug）。
+    llm._load_dotenv(str(ROOT))
     ap = argparse.ArgumentParser()
     ap.add_argument("pdfs", nargs="*", help="论文库（assets/papers）下的文件名")
     ap.add_argument("--all", action="store_true", help="摄取论文库全部 PDF")
