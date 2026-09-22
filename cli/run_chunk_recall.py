@@ -59,6 +59,8 @@ def main() -> int:
     ap.add_argument("--group", default="group1")
     ap.add_argument("--ks", nargs="+", type=int, default=[5, 10, 20])
     ap.add_argument("--mrr-k", type=int, default=20)
+    ap.add_argument("--alphas", type=float, nargs="+", default=[0.3, 0.5, 0.7],
+                    help="加权 RRF 的向量权重 α（bm 权重=1-α）；**线上现状 = 等权 0.5**")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
@@ -86,10 +88,18 @@ def main() -> int:
             continue
         d = json.loads(f.read_text(encoding="utf-8"))   # dict（含 _note）或裸 list
         for q in (d.get("questions") if isinstance(d, dict) else d) or []:
-            items.append({**q, "scope": "single", "home": f"{stem}.pdf"})
+            # 只评**检索类**题：
+            #   · L0 —— 引文来自摘要，而摘要被 `extractable` 的 PREAMBLE 过滤
+            #     → **本就不在检索视图**，把它算进 chunk 召回是错的口径；
+            #   · negative —— 该拒答的题，不是检索题。
+            if str(q.get("category")) in ("L0", "negative"):
+                continue
+            items.append({**q, "scope": str(q.get("category") or "single"),
+                          "home": f"{stem}.pdf"})
     for q in grp["questions"]:
-        if q.get("evidence"):
-            items.append({**q, "scope": "multi"})
+        # 跨篇题只取 M1（跨篇检索）；M0 是总览层、X5 是负例 → 同理排除。
+        if str(q.get("kind")) == "M1" and q.get("evidence"):
+            items.append({**q, "scope": "M1"})
     print(f"题目 {len(items)} 道（single/multi="
           f"{sum(1 for q in items if q['scope'] == 'single')}/"
           f"{sum(1 for q in items if q['scope'] == 'multi')}）")
@@ -98,11 +108,11 @@ def main() -> int:
     # ⚠️ 必须**每块一份**的变体列表：拼成一整篇再比对会退化成「逐字符找」
     variants = {pdf: [sources_variants(t) for t in ntexts[pdf]] for pdf in pdfs}
 
-    cols = ("vec", "bm25", "hyb")
-    hit = {s: {c: {k: 0 for k in args.ks} for c in cols}
-           for s in ("single", "multi", "all")}
-    mrr = {s: {c: 0.0 for c in cols} for s in ("single", "multi", "all")}
-    den = {s: 0 for s in ("single", "multi", "all")}
+    cols = ("vec", "bm25") + tuple(f"hyb{a:.2f}" for a in args.alphas)
+    SCOPES = ("single", "table", "M1", "all")
+    hit = {s: {c: {k: 0 for k in args.ks} for c in cols} for s in SCOPES}
+    mrr = {s: {c: 0.0 for c in cols} for s in SCOPES}
+    den = {s: 0 for s in SCOPES}
     fail: list[str] = []
     n_page = 0      # 走「按页码兜底」定位的题数（多为表格题）
 
@@ -123,8 +133,10 @@ def main() -> int:
                 # 兜底：**按页码**取该篇内该页的全部块。
                 # 为什么需要：表格题的 gold 引文取自 pymupdf 文本形态（逐格数字），
                 # 而上线检索视图走 MinerU（表格是另一种形态）→ 子串必然对不上 ✗
+                # 页码容忍 0/1 基：pymupdf 的页码是 1 基，MinerU 的 `page_idx` 是 0 基。
+                pg = int(ev["page"])
                 loc = {i for i in range(nch)
-                       if int(getattr(flat[off + i], "page", 0) or 0) == int(ev["page"])}
+                       if int(getattr(flat[off + i], "page", 0) or 0) in (pg, pg - 1)}
                 by_page = by_page or bool(loc)
             cg |= {off + i for i in loc}
         if by_page:
@@ -141,8 +153,10 @@ def main() -> int:
         ob = np.argsort(-bs, kind="stable")
         rv = np.empty(n); rb = np.empty(n)
         rv[ov] = np.arange(n); rb[ob] = np.arange(n)
-        rrf = 0.5 / (RRF_K + rv + 1) + 0.5 / (RRF_K + rb + 1)     # 等权，与线上一致
-        orders = {"vec": ov, "bm25": ob, "hyb": np.argsort(-rrf, kind="stable")}
+        orders = {"vec": ov, "bm25": ob}
+        for a in args.alphas:      # α=向量权重；**α=0.5 即线上现状（等权）**
+            rrf = a / (RRF_K + rv + 1) + (1 - a) / (RRF_K + rb + 1)
+            orders[f"hyb{a:.2f}"] = np.argsort(-rrf, kind="stable")
 
         for s in (q["scope"], "all"):
             den[s] += 1
@@ -162,11 +176,12 @@ def main() -> int:
          f"> 语料 {len(pdfs)} 篇 ｜ 扁平候选池 **{len(flat)}** 块（=上线 L3 同源检索视图）",
          f"> 题目 {len(items)} 道 ｜ gold 定位失败 **{len(fail)}** 道"
          + (f"（{'；'.join(fail[:4])}）" if fail else ""),
-         f"> 三种检索：vec（向量）/ bm25 / hyb（RRF 等权 α=0.5，与线上一致）",
+         f"> 检索器：vec / bm25 / hyb（加权 RRF，α=向量权重）｜ **线上现状 = hyb0.50 等权**",
          f"> gold 定位：**按页码兜底 {n_page} 道**（表格题：引文取自 pymupdf 形态，"
          f"检索视图走 MinerU → 子串对不上，退化为该页全部块；口径偏宽）", ""]
-    for s, name in (("single", "单篇题（gold 都在同一篇内）"),
-                    ("multi", "跨篇题（gold 跨 ≥2 篇）"), ("all", "合计")):
+    for s, name in (("single", "单篇·正文检索题"),
+                    ("table", "单篇·表格题（页码兜底）"),
+                    ("M1", "跨篇检索题"), ("all", "合计（三类）")):
         d = den[s]
         L += [f"## {name}（分母 {d}）",
               f"| 检索器 | {' | '.join(f'R@{k}' for k in args.ks)} | MRR@{args.mrr_k} |",
