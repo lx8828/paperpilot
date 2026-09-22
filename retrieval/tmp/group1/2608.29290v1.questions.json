@@ -1,0 +1,265 @@
+{
+  "_note": [
+    "出题来源：仅用 pymupdf 抽取的 PDF 原文（retrieval/tmp/group1/2608.29290v1.txt，16 页）+ 表格页渲染图（同目录 pages/）。",
+    "**刻意不用任何项目产物**出题（不读 report.json / overview / core_points / out_mineru）——避免按「我们系统已经答得好的口径」出题。",
+    "判定锚点：must_all=必现（数字/英文专名，全中才算过）→ runner.must_all；must_any=备选措辞（任一即可）→ runner.must_have；must_not=出现即判错。",
+    "锚点已过 `_check_reachable.py`（must_all 在系统 L3 检索视图中逐字可命中）；expect/route_min 按该自检结论填写，档位词表只用 {L0, L3}（v2 四层漏斗已下线）。",
+    "evidence.quote 为原文逐字片段（英文），page 为 PDF 页码（见 txt 里的 [[pN]] 标记）。"
+  ],
+  "paper": "2608.29290v1.pdf",
+  "title": "Database-Augmented RAG for Automated Repair of REST API Misuses",
+  "venue_note": "arXiv:2608.29290v1 [cs.IR]；Ritsumeikan University",
+  "questions": [
+    {
+      "qid": "29290-L0-1",
+      "category": "L0",
+      "role": "dev",
+      "intent": "overview",
+      "question": "这篇论文研究什么问题？采用了什么方法、主要结论是什么？",
+      "hint": "研究「REST API 误用的自动修复」中一个此前不清楚的问题：**API 规范应该如何存进 RAG 数据库**。做法：构造 **11 种 RAG 数据库配置**（按版本 deprecated/latest × 内容类型 code/text 划分，含单库与多库），与**不使用 RAG 的基线方法**比较修复率。数据集：从真实仓库收集的 SwitchBot 与 Fitbit 误用案例。结论：基线修复率 **54.3%**，**使用四个数据库的 RAG 方法最高 88.6%**；按**版本**与**内容类型**组织规范是 RAG 修复 REST API 误用的有效设计选择。",
+      "evidence": [
+        {"page": 1, "quote": "This study evaluates how different configurations for organizing API specifications affect RAG-based repair of REST API misuse."},
+        {"page": 1, "quote": "the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%"}
+      ],
+      "must_all": ["54.3", "88.6"],
+      "must_any": ["database", "数据库"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "29290-L0-2",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话说，这篇论文想让 RAG 更好用，他们到底试了什么？结果怎么样？",
+      "hint": "背景：IoT 服务的 REST API 经常改版（比如 SwitchBot 从 v1.0 到 v1.1，新增了 sign、t、nonce 三个请求头），客户端代码跟着过时，而报错信息又说不清根因。他们想让大模型自动把这类代码修好，但直接把规范塞进去有坑：**新旧规范混在一个库里检索，模型可能捞到「过时但对得上」的片段**。于是他们拿 11 种「规范怎么存」的组合（旧/新 × 代码/文字，分成几个库）去测。结果：**不用 RAG 只有 54.3%，按版本和内容类型拆成 4 个库能到 88.6%**。",
+      "evidence": [
+        {"page": 1, "quote": "Retrieval-Augmented Generation (RAG) is a promising approach for providing large language models (LLMs) with external knowledge."},
+        {"page": 11, "quote": "Answer to RQ: The repair rate increases as more databases are added."}
+      ],
+      "must_all": ["88.6"],
+      "must_any": ["54.3", "数据库", "database"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "29290-U1",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话讲，这篇论文修的是哪类 bug？怎么修的？",
+      "hint": "修的是 **REST API 客户端程序里的「误用」**（例如调用了**已废弃**的接口或请求头）。做法：把 API 规范按 **版本（deprecated / latest）× 内容类型（代码片段 / 自然语言）** 分门别类存进**数据库**，检索出相关片段后交给 LLM 改代码。实测**不用 RAG 的基线修复率 54.3%**，**用四个数据库的 RAG 方法最高 88.6%**。",
+      "evidence": [
+        {"page": 1, "quote": "The results show that, in the studied datasets, the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%."},
+        {"page": 1, "quote": "These results indicate that organizing specifications according to version and content type can be an effective design choice for RAG-based REST API misuse repair."}
+      ],
+      "must_all": ["REST"],
+      "must_any": ["deprecated", "废弃", "misuse"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0",
+      "_src": "复用 qa/questions/2608.29290v1.json#29290-U1（档位改为现行词表）"
+    },
+    {
+      "qid": "29290-S1",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "11 种配置的命名规则是什么？D、L、m、s、c、t 各代表什么？名字里不带存储策略符号意味着什么？",
+      "hint": "**D** = deprecated specifications（旧规范），**L** = latest specifications（新规范）。存储策略符号：**m** = 把 D 与 L **混存**在单个数据库；**s** = 把代码片段与自然语言文本**分开存**；**c** = 只存代码；**t** = 只存文本。配置名里**不带**存储策略符号（如 D、L）表示这些规范存放在**单个数据库**中。例如 DLs = 旧规范放一个库，新规范按代码片段/自然语言文本拆成三个库。",
+      "evidence": [
+        {"page": 6, "quote": "D denotes deprecated specifications, and L denotes latest specifications."},
+        {"page": 6, "quote": "m denotes mixed storage of D and L in a single database, s denotes separate storage of code snippets and natural-language text, c denotes code-only storage, and t denotes text-only storage."},
+        {"page": 6, "quote": "A configuration name without storage strategy symbols, such as D or L, indicates that the specifications are stored in a single database."}
+      ],
+      "must_all": ["deprecated", "mixed storage", "code-only"],
+      "must_any": ["latest", "separate storage", "单库"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "29290-S2",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "标准 RAG（DLm）的分块策略和检索参数具体是怎么设的？用什么模型做向量化？每个库取多少片段？",
+      "hint": "用 **LlamaIndex** 做索引与检索：规范文本先在**段落级**切分；某段超长时，按**句子边界 → 正则表达式 → 空白 → 字符级**逐级细分。**chunk size = 2048 tokens，overlap = 200 tokens**（目的是把相关规范留在同一块内）。分块用 OpenAI 的 **text-embedding-3-large** 向量化后存入向量库；用同一模型编码目标函数做语义检索，取 **top 60** 相关片段（相关上下文不足时可能少于 60 条）。",
+      "evidence": [
+        {"page": 7, "quote": "We set the chunk size to 2048 tokens and the overlap length to 200 tokens to preserve related specifications within a single chunk."},
+        {"page": 7, "quote": "the chunks are vectorized using OpenAI's text-embedding-3-large model and stored in a vector database."},
+        {"page": 7, "quote": "target functions and retrieve the top 60 relevant segments."}
+      ],
+      "must_all": ["2048", "200", "top 60"],
+      "must_any": ["text-embedding-3-large", "LlamaIndex", "chunk"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "29290-S3",
+      "category": "single",
+      "role": "dev",
+      "intent": "key_number",
+      "question": "实验的评估协议是什么？「成功率」怎么算、一个案例算「成功」的判据是什么？数据集由哪些案例构成？",
+      "hint": "成功率的算法：**每个案例执行 5 次**，统计 5 次中成功生成补丁的次数，**除以总执行次数**。一个案例算成功需**满足既有研究定义的规则**、对应 GitHub 仓库**编译通过**，且补丁必须**修复目标函数内的全部误用实例**；由第一作者人工比对仓库代码、最新规范与生成补丁。数据集：共 **21 个案例**——**9 个**是请求头 + 端点的**混合**误用，**12 个**是**仅端点**误用。",
+      "evidence": [
+        {"page": 9, "quote": "for each case, we counted the number of successful patches across five executions and divided it by the total number of executions."},
+        {"page": 10, "quote": "A successful patch must fix all misuse instances in the target function."},
+        {"page": 9, "quote": "we obtained nine cases involving both request header and endpoint misuse, and twelve cases involving endpoint-only misuse."}
+      ],
+      "must_all": ["21", "nine", "twelve"],
+      "must_any": ["five executions", "successful patches", "5"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "29290-S4",
+      "category": "single",
+      "role": "dev",
+      "intent": "ablation",
+      "question": "讨论里做了几组配置对比？DL 与 DLm 的差别说明了什么？DcLc 与 DtLt 的差别说明了什么？",
+      "hint": "**DL vs DLm**：两者都用新旧规范，唯一差别是 DL 把旧/新规范**分库存** —— DL 修复率比 DLm 高 **3.8%**，多修复 **1.0** 个混合误用案例 → 说明按**版本分开存**能把新旧用法呈现成**不同上下文**（信息相同，改善应来自**检索噪声降低**）。**DcLc vs DtLt**：DcLc 比 DtLt 多修复 **0.6** 个案例，且在**多误用实例**上修复率是所有配置中最高的 → 说明**以代码片段为检索目标**比依赖文本描述更有效（代码结构与误用代码更接近）。另外 **DsL** 在**仅端点误用**上修复率最高，但与基线只差 **1.4** 个案例，说明简单端点错误所需外部上下文较少。",
+      "evidence": [
+        {"page": 11, "quote": "DL achieves a 3.8% higher repair rate than DLm and repairs 1.0 more mixed-misuse cases."},
+        {"page": 11, "quote": "DcLc repairs 0.6 more cases than DtLt and achieves the highest repair rate for multiple misuse instances among all configurations."},
+        {"page": 11, "quote": "DsL achieves the highest repair rate for single-endpoint misuse instances, but the difference from the baseline is only 1.4 cases."}
+      ],
+      "must_all": ["3.8", "0.6", "1.4"],
+      "must_any": ["DLm", "DcLc", "DtLt"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "29290-S5",
+      "category": "single",
+      "role": "dev",
+      "intent": "baseline_compare",
+      "question": "只用旧规范（D、Ds）的配置表现如何？作者认为这说明什么？",
+      "hint": "**D 与 Ds 只把旧规范放进 prompt，修复率远低于基线方法**；特别是在**请求头 + 端点的混合误用**上，两者修复率都是 **0%**。作者的解读：① 提供**过时的**上下文会引导模型写出过时的 API 用法，**比不给上下文更差**；② 即使公开的 REST API 规范可能已在预训练数据中，**显式提供过时上下文仍会降低修复准确率**；③ 混合误用受影响最重，因为它需要**多个**纠正决策。",
+      "evidence": [
+        {"page": 11, "quote": "D and Ds include only the deprecated specification in the prompt and show much lower repair rates than the baseline method."},
+        {"page": 11, "quote": "In particular, Table 3 shows that both methods achieve a 0% repair rate for mixed misuse cases involving request headers and endpoints."},
+        {"page": 11, "quote": "that explicitly provided deprecated context can still reduce repair accuracy."}
+      ],
+      "must_all": ["0%"],
+      "must_any": ["deprecated", "过时", "baseline"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "29290-S6",
+      "category": "single",
+      "role": "dev",
+      "intent": "limitation",
+      "question": "作者列出的效度威胁（Threats to Validity）有哪些？",
+      "hint": "四条：**① 数据集小**——只覆盖两个 API 服务（SwitchBot、Fitbit）与 21 个误用案例，且集中在请求头与端点，趋势未必泛化到其他 REST 生态/文档格式/鉴权机制；88.6% **不应被当作**更广真实场景的修复性能估计。**② 混杂**——数据库拆分与「检索到的上下文**数量**」可能混杂，当前设计**无法区分**增益来自数据库结构、上下文量还是两者交互。**③ 基线控制有局限**——基线依赖 web 搜索与链接，其失败不能只归因于「没有 RAG」；更受控的对比需要一个**拿到相同规范文本、相同块数、相同 token 预算**的非 RAG 基线。**④ 评估者依赖**——每案例只跑 5 次、由第一作者人工判定成功，边界案例仍受影响。",
+      "evidence": [
+        {"page": 12, "quote": "First, the evaluation covers only two API services, SwitchBot and Fitbit, and 21 misuse cases."},
+        {"page": 12, "quote": "the current design cannot fully isolate whether the gain originates from database structure, context quantity, or their interaction."},
+        {"page": 12, "quote": "A more controlled comparison would require a non-RAG baseline that receives the same specification text, number of chunks, and token budget as the RAG configurations."},
+        {"page": 12, "quote": "evaluator-dependent judgment can still affect borderline cases."}
+      ],
+      "must_all": ["21", "SwitchBot", "Fitbit"],
+      "must_any": ["validity", "混杂", "baseline"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "29290-S7",
+      "category": "single",
+      "role": "dev",
+      "intent": "definition",
+      "question": "论文里的 RH、EP 指什么？prompt 的三种补充信息类型 p1 / p2 / p3 分别是什么？",
+      "hint": "**RH** = request header errors（**请求头**误用），**EP** = endpoint errors（**端点**误用）。prompt 的三种补充信息：**p1** 插入指向 REST API 规范的**链接**；**p2** 插入规范的**相关片段**；**p3** **分别**插入**代码片段与自然语言文本**。",
+      "evidence": [
+        {"page": 10, "quote": "where RH denotes request header errors and EP denotes endpoint errors."},
+        {"page": 6, "quote": "p1 inserts a link to the REST API specification, p2 inserts relevant parts of the specification, and p3 separately inserts code snippets and natural-language text."}
+      ],
+      "must_all": ["request header errors", "endpoint errors"],
+      "must_any": ["p1", "p2", "p3"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "29290-C2",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "DsLs 配置的提示词三阶段分别做什么？作者说这样设计有什么作用？",
+      "hint": "**Stage 1**：模型分析**废弃规范的代码片段与自然语言文本**；**Stage 2**：把**目标程序与废弃规范比对，识别出误用实例**；**Stage 3**：用**最新规范的代码片段与自然语言文本**生成**修正后的代码**。作用：**分阶段提示有助于引导模型、减少推理错误**。（检索侧四个库各取 top 60，分块与 top-k 设置与标准 RAG 一致。）",
+      "evidence": [
+        {"page": 9, "quote": "The prompt consists of three stages."},
+        {"page": 9, "quote": "In Stage 1, the model analyzes deprecated code snippets and natural-language text. In Stage 2, it compares the target program with the deprecated specifications to identify misuse instances. In Stage 3, it uses the latest code snippets and natural-language text to generate the corrected code."},
+        {"page": 9, "quote": "This staged prompt design helps guide the model and reduce reasoning errors."}
+      ],
+      "must_all": ["three stages", "Stage 1", "Stage 3"],
+      "must_any": ["staged prompt", "推理错误", "reasoning errors"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_src": "复用 qa_set_v2.json#29290-C2（档位改为现行词表）"
+    },
+    {
+      "qid": "29290-T1",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 3，基线 BL 与最佳配置 DsLs 的修复率各是多少、总修复数各是多少？D 和 Ds 在混合误用（RH & EP）上的修复数是多少？",
+      "hint": "**BL：总修复 11.4、修复率 54.3%**；**DsLs：总修复 18.6、修复率 88.6%**（全表最高）。**D 与 Ds 在 RH & EP（9 个混合误用）上的修复数都是 0.0**；两者总修复分别为 4.4 与 6.2，修复率 21.0% 与 29.5%。",
+      "evidence": [
+        {"page": 10, "quote": "Total (21)\n11.4 4.4 18.0\n17.0\n17.8 6.2 18.0 18.2\n17.8\n18.6\n18.0\n17.4"},
+        {"page": 10, "quote": "Rate (%)\n54.3 21.0 85.7\n81.0\n84.8 29.5 85.7 86.7\n84.8\n88.6\n85.7\n82.9"}
+      ],
+      "must_all": ["54.3", "88.6", "18.6"],
+      "must_any": ["11.4", "repair rate"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2608.29290v1_p10.png 上逐格核对 Table 3（12 列 × 4 行全部对齐）"
+    },
+    {
+      "qid": "29290-T2",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_fact",
+      "question": "按 Table 1，SwitchBot API 规范要求的请求头参数分别是什么类型、位于哪里、是否必填？哪些是 v1.1 新增的？",
+      "hint": "Table 1 列出四个参数，**Location 全部是 header、Required 全部是 Yes**：**Authorization = String**、**sign = String**、**t = Long**、**nonce = Long**。其中 **sign、t、nonce 是 v1.1 新增**的请求头参数（表中加粗，脚注说明加粗表示 v1.1 加入），Authorization 在 v1.0 就存在。",
+      "evidence": [
+        {"page": 3, "quote": "Parameter\nType Location Required\nAuthorization\nString\nheader\nYes\nsign\nString header\nYes\nt\nLong header\nYes\nnonce\nLong header\nYes"},
+        {"page": 3, "quote": "The bold text indicates parts of the REST API specification added in version 1.1."}
+      ],
+      "must_all": ["Authorization", "nonce"],
+      "must_any": ["header", "sign", "v1.1"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2608.29290v1_p3.png 上核对 Table 1（4 行 × Type/Location/Required 三列）"
+    },
+    {
+      "qid": "29290-N1",
+      "category": "negative",
+      "role": "dev",
+      "intent": "negative",
+      "question": "论文报告了被修复代码的运行时开销变化、或这套方法自身的执行时间与 token 成本吗？",
+      "hint": "**没有**。论文只报告**功能类**结果（修复率 / 修复案例数）与评估协议，**未给出任何运行时（runtime）、延迟、执行时间、token 消耗或计算成本的实测数字**；成功判据也只要求「编译通过 + 修掉目标函数内全部误用实例」。所以「修完全更慢/更贵吗」这类问题，正确回答是**论文未报告**。",
+      "evidence": [
+        {"page": 10, "quote": "A successful patch must fix all misuse instances in the target function."},
+        {"page": 9, "quote": "for each case, we counted the number of successful patches across five executions and divided it by the total number of executions."}
+      ],
+      "must_all": [],
+      "must_any": ["未报告", "未给出", "未提供", "没有报告", "没有给出", "没有提供", "未提及", "未涉及"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0",
+      "_verify": "缺席性核对：对 2608.29290v1.txt 与 MinerU 检索视图 grep `runtime|latency|execution time|performance overhead|computational cost|token` → **0 命中**"
+    }
+  ]
+}

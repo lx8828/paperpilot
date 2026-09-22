@@ -1,0 +1,278 @@
+{
+  "_note": [
+    "出题来源：仅用 pymupdf 抽取的 PDF 原文（retrieval/tmp/group1/2609.01456v1.txt，16 页）+ 表格页渲染图（同目录 pages/）。",
+    "**刻意不用任何项目产物**出题（不读 report.json / overview / core_points / out_mineru）——避免按「我们系统已经答得好的口径」出题。",
+    "判定锚点：must_all=必现（数字/英文专名，全中才算过）→ runner.must_all；must_any=备选措辞（任一即可）→ runner.must_have；must_not=出现即判错。",
+    "锚点已过 `_check_reachable.py`（must_all 在系统 L3 检索视图中逐字可命中）；expect/route_min 按该自检结论填写，档位词表只用 {L0, L3}。",
+    "**原 01456-07（附录 A.3 Fashion200K 的 0.7049/0.4404）经自检判定不在检索块内 → 已弃用**（负例题 01456-N1 补位）。",
+    "evidence.quote 为原文逐字片段，page 为 PDF 页码（见 txt 里的 [[pN]] 标记）。"
+  ],
+  "paper": "2609.01456v1.pdf",
+  "title": "AutoConcept: Training-Free Concept-Guided Reranking for Metadata-Available Composed Image Retrieval",
+  "venue_note": "arXiv:2609.01456v1 [cs.IR]；Soochow University / INSA Lyon",
+  "questions": [
+    {
+      "qid": "01456-L0-1",
+      "category": "L0",
+      "role": "dev",
+      "intent": "overview",
+      "question": "这篇论文研究什么问题、提出了什么方法？方法的核心机制由哪几个部件构成，在两个第一级检索器上分别取得什么结果？",
+      "hint": "研究 **metadata-available 的 CIR reranking**：固定第一级 CIR 检索器先返回 top-K 候选池，之后才用 gallery metadata 做第二阶段概念引导打分。提出 **AutoConcept**，一个 **training-free** 的概念引导 reranker，部件有四：① **概念记忆构建**（从 concept evidence 抽短属性短语 → sentence encoder 编码 → 聚类近重复 → 正负证据打分 → 质量过滤）；② **query-relevant 概念激活**（relevance gate，可逐查询推断 τq）；③ **候选–概念对齐**（cos(e(mi), e(c))，正/负概念都用 **max pooling** 聚合，负概念作轻量惩罚）；④ **闭式推理时校准**（由 base margin 与激活强度推出 wq/wp/wn 及最外层插值 λq，不训练新参数）。结果：**WeiMoCIR 0.1125→0.1379 R@10**，**LinCIR 候选池 0.2605→0.3009**，增益集中在早期名次（R@10 / MRR / NDCG@10）。",
+      "evidence": [
+        {"page": 2, "quote": "We propose AutoConcept, a training-free concept-guided reranker. AutoConcept keeps the first-stage CIR model fixed and operates on its top-K candidate pool."},
+        {"page": 2, "quote": "AutoConcept improves WeiMoCIR [29] from 0.1125 to 0.1379 Recall@10 and LinCIR candidates [8] from 0.2605 to 0.3009 under the same metadata-available reranking protocol."},
+        {"page": 1, "quote": "On FashionIQ, AutoConcept yields significant early-rank improvements over WeiMoCIR and consistent plug-in gains on LinCIR candidate pools."}
+      ],
+      "must_all": ["0.1379", "0.3009"],
+      "must_any": ["AutoConcept", "概念", "CIR"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "01456-L0-2",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话说，这篇论文要解决的麻烦是什么？他们把「概念证据」怎么用起来，和「直接拿查询文字去比对商品描述」差在哪？",
+      "hint": "麻烦：CIR 是「给一张参考图 + 一句修改文字去找目标商品」；第一级模型（如 WeiMoCIR）已能给出一个 **top-K 候选池**，但**靠前名次的排序**还不够好。商品条目通常自带 **titles / attributes / tags / descriptions** 这类 metadata，本可当额外线索，但**只在候选池形成之后才可用**。他们的做法：把受控的概念证据做成一份**可检视的概念记忆** —— 过滤掉泛化名、极性冲突、grounding 差、强度弱的概念，只**激活与本次查询相关**的概念，再把「候选 metadata 与概念的对齐分数」与「第一级分数」按**推理时置信度**做闭式校准融合。与「直接比对」的差别：不是把整段查询文字或抽取属性直接怼到 metadata 上，而是**概念级的稀疏匹配（max pooling）+ 逐查询自适应权重**；**metadata-aware 对照**显示这种结构化概念记忆在 query-text→metadata、extracted-attribute→metadata 之外**还有增量**，且概念带 **name / polarity / strength / grounding / evidence count**，能被人检查和诊断。",
+      "evidence": [
+        {"page": 2, "quote": "The central question is whether explicit concept evidence can improve a strong CIR candidate pool beyond direct query-to-metadata or attribute-to-metadata matching."},
+        {"page": 1, "quote": "Metadata-aware controls show that structured concept memory adds signal beyond direct query-text and extracted-attribute matching, while a query-only variant further supports the effectiveness of concept-level reranking."},
+        {"page": 1, "quote": "A complementary second-stage layer that exposes and applies such concepts can make reranking more controllable and easier to inspect."}
+      ],
+      "must_all": ["AutoConcept", "WeiMoCIR"],
+      "must_any": ["概念", "候选池", "元数据", "metadata"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01456-06",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话说，AutoConcept 跟「普通检索重排」差在哪？",
+      "hint": "普通做法是把商品与查询压成**看不懂的向量**比相似度；AutoConcept 在**第一级模型已经给出的候选池**之上加一层**可读的概念记忆**：把候选 metadata 与**本次查询相关的概念**逐一对齐（**正概念加分、负概念轻惩罚**），再按**推理时置信度**决定「信概念」还是「信原分数」（base margin 大 → 分数质量留在第一级）。差别在于**依据是看得见、改得动、删得掉的概念**，而且**不训练、不调参**，可作为**模块化的一层插到不同 CIR 候选生成器**上。",
+      "evidence": [
+        {"page": 1, "quote": "A complementary second-stage layer that exposes and applies such concepts can make reranking more controllable and easier to inspect."},
+        {"page": 2, "quote": "The result is a modular reranking layer that can be attached to different CIR candidate generators."}
+      ],
+      "must_all": ["AutoConcept"],
+      "must_any": ["概念", "候选池", "元数据", "向量"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3",
+      "_src": "复用 qa/questions/2609.01456v1.json#01456-06（补 user 视角；档位改为现行词表）"
+    },
+    {
+      "qid": "01456-S1",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "在 metadata-available 协议下，哪些信息允许用于构造概念证据与打分、哪些被明确排除？一条 concept 记录保存哪些字段？",
+      "hint": "**允许**（Table 1）：**reference image xr**（作第一级 CIR 查询）、**modification text tq**（查询编码 + 概念激活）、**training-side evidence item text**（受控概念证据构建）、**candidate metadata mi**（第二阶段 candidate–concept 对齐）。**排除**：**target image / target metadata、ground-truth target ID、candidate rank / relevance label**。概念证据**在 reranking 之前**构造好，且**不接触**候选排名或检索后相关性标签；候选 metadata **只在 reranking 时**用于给第一级已返回的条目打分。每条 concept 存五个字段：**normalized name、polarity、score、grounding score、evidence count**。",
+      "evidence": [
+        {"page": 4, "quote": "For each evaluation query, concept evidence is constructed before reranking and excludes the ground-truth target identity, target image, target metadata, candidate ranks, and post-retrieval relevance labels."},
+        {"page": 4, "quote": "A concept stores a normalized name, polarity, score, grounding score, and evidence count."},
+        {"page": 4, "quote": "Candidate metadata is used only at reranking time to score items already returned by the first-stage retriever."}
+      ],
+      "must_all": ["candidate metadata", "polarity", "grounding"],
+      "must_any": ["target metadata", "evidence count", "relevance labels"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01456-S2",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "AutoConcept 的概念分数由哪几项构成、正负概念怎么聚合？逐查询的权重与最外层插值 λq 分别由哪些推理时信号决定？",
+      "hint": "概念分数 **s_concept = wq·s_base + wp·s+ − wn·s−**；正、负概念分数各自在**激活集合**上做 **max pooling**（空集贡献为 0）。权重不是常数：先由候选池最高与次高分差得 base confidence **bq = clip((s(1)−s(2))/δ, 0, 1)**，再由激活强度得可靠性尺度 c+ 与 c−（在 [amin, amax] 上 clip、下限 cmin），于是 **wp = wcap_p·c+·(1−0.5bq)**、**wn = wcap_n·c−·(1−0.5bq)**、**wq = wmin_q + max(wcap_p−wp, 0) + max(wcap_n−wn, 0)**。最外层插值 **λq = clip(λbase + γ·āq, λmin, λmax_q)**，其中 λmax_q 与 λbase 都由 bq 决定，āq 是激活概念的平均激活强度；最终 **sq = (1−λq)·s_base + λq·s_concept**。直觉：概念证据弱或第一级很自信时，分数质量留在第一级；概念强且 base margin 小时，正概念拿到更大权重。全流程**不训练额外参数**。",
+      "evidence": [
+        {"page": 6, "quote": "Positive concept scores and the auxiliary disliked-concept penalty are aggregated by max pooling"},
+        {"page": 6, "quote": "Thus, when concept evidence is weak or the base retriever is confident, more score mass stays with the base retriever; when active concepts are strong and the base margin is small, positive concepts receive larger weights."},
+        {"page": 6, "quote": "This closed-form inference-time calibration makes the scoring coefficients query-dependent without training additional parameters."}
+      ],
+      "must_all": ["max pooling", "interpolation"],
+      "must_any": ["calibrat", "权重", "negative penalty"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01456-S3",
+      "category": "single",
+      "role": "dev",
+      "intent": "key_number",
+      "question": "概念/文本编码器与图像编码器分别用什么？候选池大小 K 和 gate 参考值 τ 取多少？质量过滤规则与校准边界是否用标签调过？",
+      "hint": "**概念名、查询、metadata 文本**用 **all-MiniLM-L6-v2** 编码；**图像嵌入与 CLIP-based grounding** 用 **CLIP ViT-B/32**。主实验候选池 **top-100**（K = 100；FashionIQ 表里 Mean K = 100.00，Fashion200K 为 62.00）。**relevance gate 分析在 τ = 0.35 附近**，0.30–0.40 区间增益相近、所有测试值都高于 WeiMoCIR。**质量过滤规则与校准边界在评测前固定**，跨种子、候选生成器、metadata-aware 对照**共用**；**不使用任何 query label、target rank 或 relevance label 调参**。复杂度 **O(K(|A+| + |A−|)d)**，靠 relevance gate 把激活概念集压小。",
+      "evidence": [
+        {"page": 13, "quote": "Concept names, query text, and metadata text are encoded with all-MiniLM-L6-v2; CLIP ViT-B/32 is used for image embeddings and CLIP-based grounding."},
+        {"page": 13, "quote": "no query labels, target ranks, or relevance labels are used for tuning."},
+        {"page": 11, "quote": "Table 9 reports a gate-sensitivity analysis around τ = 0.35."},
+        {"page": 4, "quote": "In the main FashionIQ experiments, K = 100."}
+      ],
+      "must_all": ["all-MiniLM-L6-v2", "ViT-B/32"],
+      "must_any": ["0.35", "top-100", "K = 100"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01456-S4",
+      "category": "single",
+      "role": "dev",
+      "intent": "ablation",
+      "question": "Table 8 的消融说明哪些部件真正有用？把聚合换成 mean / top-k mean、去掉外层插值、或加强负惩罚，各自掉多少？",
+      "hint": "**正概念激活是主要来源**：只留正概念 **0.1380 / 0.0742 / 0.0847**，与 **Full AutoConcept 的 0.1375 / 0.0741 / 0.0845** 几乎一致（甚至略高）；**加强负惩罚**只到 0.1363 / 0.0738 / 0.0840，变化很小。**max pooling 才是关键**：换成 **Mean pooling 掉到 0.1240 / 0.0679 / 0.0764**、**Top-k mean pooling 0.1270 / 0.0695 / 0.0783**。**去掉外层插值（Dynamic gate without outer interpolation）掉到 0.1302 / 0.0703 / 0.0798**，说明逐查询 λq 仍有贡献。作者结论：**移除轻量负惩罚影响很小，FashionIQ 上的增益主要由正概念激活驱动**。",
+      "evidence": [
+        {"page": 10, "quote": "Mean pooling 0.1240 0.0679 0.0764"},
+        {"page": 10, "quote": "Positive concepts only 0.1380 0.0742 0.0847"},
+        {"page": 10, "quote": "Dynamic gate without outer interpolation 0.1302 0.0703 0.0798"},
+        {"page": 10, "quote": "Max pooling is important because concept matches are sparse. Removing the lightweight negative penalty changes little, confirming that FashionIQ gains are driven mainly by positive concept activation."}
+      ],
+      "must_all": ["0.1240", "0.1380"],
+      "must_any": ["max pooling", "mean pooling", "negative penalty"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2609.01456v1_p10.png 上逐格核对 Table 8"
+    },
+    {
+      "qid": "01456-S5",
+      "category": "single",
+      "role": "dev",
+      "intent": "baseline_compare",
+      "question": "在 metadata-aware 对照里，query-only AutoConcept 相对 text→metadata、attribute→metadata、constraint matching 表现如何？aligned 与 shuffled 概念证据的差距说明什么？",
+      "hint": "同一 top-100 WeiMoCIR 候选池（FashionIQ seed 1）下：**Query-only AutoConcept（0.1400 / 0.2630 / 0.0800 / 0.0893）在早期名次指标上优于 Query text→metadata（0.1318 / 0.2513 / 0.0731 / 0.0822）、Extracted attributes→metadata（0.1363 / 0.2591 / 0.0754 / 0.0850）与 Constraint matching（0.1383 / 0.2603 / 0.0763 / 0.0861）**。但 **Reference text + query→metadata（0.1430 / 0.2645 / 0.0811 / 0.0910）更高**，作者明确把它当作「更丰富文本信号下的 **text-only 上界参考**」、**不是同证据的概念记忆基线**；同表的 Controlled-evidence AutoConcept（0.1375 / 0.2435 / 0.0741 / 0.0845）属另一设定。**aligned vs shuffled**：Aligned 达 **0.1892 / 0.2715 / 0.1050 / 0.1213**，Shuffled 仅 **0.1388 / 0.2469 / 0.0738 / 0.0845**，Δ 为 **+0.0504 / +0.0246 / +0.0312 / +0.0368** —— 说明起作用的是**查询与证据的对齐关系**，而不只是类别先验分布。",
+      "evidence": [
+        {"page": 9, "quote": "Query-only AutoConcept Yes Yes 0.1400 0.2630 0.0800 0.0893"},
+        {"page": 9, "quote": "Extracted attributes →metadata Yes No 0.1363 0.2591 0.0754 0.0850"},
+        {"page": 9, "quote": "Aligned evidence 0.1125 0.1892 ± 0.0028 0.2715 ± 0.0014 0.1050 ± 0.0010 0.1213 ± 0.0014"},
+        {"page": 9, "quote": "Shuffled evidence 0.1125 0.1388 ± 0.0010 0.2469 ± 0.0010 0.0738 ± 0.0008 0.0845 ± 0.0004"}
+      ],
+      "must_all": ["0.1213", "shuffled"],
+      "must_any": ["aligned", "0.1400", "constraint matching"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2609.01456v1_p9.png 上逐格核对 Table 5 与 Table 6"
+    },
+    {
+      "qid": "01456-S6",
+      "category": "single",
+      "role": "dev",
+      "intent": "limitation",
+      "question": "作者把方法适用范围界定在什么条件下？从候选池敏感性、人类标注实验和信息协议看，有哪些已知边界？",
+      "hint": "定位：**metadata-available product-style galleries** 上的**第二阶段 reranker**；**最适用**于 gallery metadata 可用且与商品外观大体对齐时，**metadata 缺失或不一致是实际边界**。**候选池敏感性**（Table 10）：**top-50 覆盖面不足（0.1144）、top-100 最好（0.1375）、更大池子（200 / 500）反而引入更多 metadata 噪声（0.1165 / 0.1180）** —— 需要第一级给出「相对精确」的候选池，弱检索器得先做更强的 metadata 去噪或视觉校验。**人类标注实验**：参与者历史稀疏、只标有限子集、所选 tag 未必覆盖每个 FashionIQ modifier，所以增益更小（+0.0034 R@10），说明**在标注噪声下可用但有限**。作者给出的扩展方向：更广领域、更强视觉 grounding、更大规模人类偏好研究、更强 metadata 去噪、更重的学习式校验 reranker。",
+      "evidence": [
+        {"page": 10, "quote": "The method is most suitable when gallery metadata is available and reasonably aligned with item appearance; missing or inconsistent metadata remains a practical boundary."},
+        {"page": 12, "quote": "The default top-100 pool gives the strongest AutoConcept result in this analysis. Top-50 limits candidate coverage, while larger pools introduce more metadata noise for the same concept-memory scorer."},
+        {"page": 12, "quote": "For weaker retrievers that require very large pools, stronger metadata denoising or visual verification would be needed before reranking."},
+        {"page": 10, "quote": "participants label only a limited subset of items, selected tags may not cover every FashionIQ modifier, and human memories are not constructed around the benchmark target for each query."}
+      ],
+      "must_all": ["0.1144", "top-100"],
+      "must_any": ["metadata", "denoising", "human"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01456-S7",
+      "category": "single",
+      "role": "dev",
+      "intent": "definition",
+      "question": "论文里的 metadata-available reranking protocol、query-only evidence variant、controlled concept evidence、以及 aligned / shuffled 分别是怎么定义的？",
+      "hint": "**metadata-available protocol**：固定的第一级检索器先产出候选池，**gallery metadata 只在候选池形成之后**才可用，并**只在第二阶段**用于给已返回条目打分；概念证据构造与打分都排除 target image / target metadata、ground-truth target ID、candidate ranks、post-retrieval relevance labels。**query-only variant**：概念**只从 modification text tq 抽取**，用查询局部证据评估 concept-memory scorer。**controlled concept evidence**：从**同类别、训练侧 item text** 采样，经**固定的抽取 + 过滤管线**转成概念约束。**aligned 分析**用受控属性族（color、printed patterns、sleeve length、neckline、length、fit），同样排除 target 侧信息；**shuffled 控制**保持同一证据分布，但**在类别内打乱 query–evidence 映射**，用来检验是否只靠类别先验。",
+      "evidence": [
+        {"page": 2, "quote": "A fixed first-stage retriever returns candidate images, and gallery metadata is available only after this candidate pool has been formed."},
+        {"page": 4, "quote": "We additionally evaluate a query-only evidence variant, where concepts are extracted from the modification text tq."},
+        {"page": 13, "quote": "The aligned analysis uses controlled attribute families such as color, printed patterns, sleeve length, neckline, length, and fit."},
+        {"page": 13, "quote": "The shuffled control keeps the evidence distribution but shuffles query-evidence mappings within category."}
+      ],
+      "must_all": ["metadata-available", "query-only", "shuffled"],
+      "must_any": ["aligned", "controlled"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01456-03",
+      "category": "single",
+      "role": "dev",
+      "intent": "definition",
+      "question": "AutoConcept 的概念记忆里存的是什么、不存什么？这样设计带来哪些实际好处？",
+      "hint": "存的是**显式的具名概念（explicit named concepts）**，而不是**不透明的用户嵌入（opaque user embeddings）**：概念带 name / polarity / strength / grounding / evidence count，因此**可检查、可删除、可编辑**。论文还说明可以列出**激活概念、证据项、候选侧匹配**，从而看清记忆条目如何参与重排；真人研究只用**自愿的 item 级标签**、不索取敏感用户属性，并建议更大规模部署要**避免受保护属性推断、提供记忆保留控制**。",
+      "evidence": [
+        {"page": 14, "quote": "AutoConcept stores explicit named concepts rather than opaque user embeddings, supporting inspection, deletion, and editing."},
+        {"page": 14, "quote": "AutoConcept can list active concepts, evidence items, and candidate-side matches, exposing how memory entries participate in reranking."}
+      ],
+      "must_all": ["named concepts", "opaque"],
+      "must_any": ["inspection", "editing", "显式"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_src": "复用 qa/questions/2609.01456v1.json#01456-03（附录 E 伦理/可检视性；档位改为现行词表）"
+    },
+    {
+      "qid": "01456-T1",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 3，WeiMoCIR 与 LinCIR 两个第一级检索器在「不用 / 用 AutoConcept」时的 R@10、R@50、MRR、NDCG@10 分别是多少？增益集中在哪些指标？",
+      "hint": "**WeiMoCIR none：0.1125 / 0.2256 / 0.0604 / 0.0680**；**WeiMoCIR AutoConcept：0.1379 ± 0.0011 / 0.2452 ± 0.0018 / 0.0739 ± 0.0008 / 0.0844 ± 0.0009**；**LinCIR none：0.2605 / 0.4618 / 0.1449 / 0.1637**；**LinCIR AutoConcept：0.3009 ± 0.0018 / 0.4915 ± 0.0023 / 0.1677 ± 0.0010 / 0.1912 ± 0.0008**。两个候选生成器都表明增益**集中在早期名次指标**（R@10 / MRR / NDCG@10），**R@50 提升最小**；LinCIR 的四个 delta 在 query-level paired bootstrap 下 **p < 0.001**。",
+      "evidence": [
+        {"page": 8, "quote": "WeiMoCIR AutoConcept 0.1379 ± 0.0011 0.2452 ± 0.0018 0.0739 ± 0.0008 0.0844 ± 0.0009"},
+        {"page": 8, "quote": "LinCIR AutoConcept 0.3009 ± 0.0018 0.4915 ± 0.0023 0.1677 ± 0.0010 0.1912 ± 0.0008"},
+        {"page": 8, "quote": "WeiMoCIR none 0.1125 0.2256 0.0604 0.0680"},
+        {"page": 8, "quote": "Table 3 shows consistent gains on both candidate generators, concentrated in early-rank metrics."}
+      ],
+      "must_all": ["0.1379", "0.3009", "0.0844", "0.1912"],
+      "must_any": ["LinCIR", "WeiMoCIR"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2609.01456v1_p8.png 上逐格核对 Table 3（4 行 × 4 指标）"
+    },
+    {
+      "qid": "01456-T2",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 12，FashionIQ 与 Fashion200K 的查询数、图库规模、平均 K、第一级检索器耗时、AutoConcept 全流程耗时、概念打分循环耗时分别是多少？缓存设置下 AutoConcept 的额外开销占比多少？",
+      "hint": "**FashionIQ：6016 查询 / 74381 图库 / Mean K 100.00 / Base retriever 5.7290 ms / AC full 1.8080 / AC loop 0.3199**；**Fashion200K：413 / 40000 / 62.00 / 3.1184 / 6.2910 / 0.1928**。缓存设置下 AutoConcept 在 FashionIQ 上**每查询 +0.3199 ms（占第一级延迟 5.58%）**、Fashion200K 上 **+0.1928 ms（6.18%）**；Fashion200K 的 AC full 偏高来自**未缓存**的文本编码器启动与 metadata 编码（其查询集更小），而这些嵌入在 reranking 场景中**可预计算**。",
+      "evidence": [
+        {"page": 13, "quote": "FashionIQ 6016 74381 100.00 5.7290 1.8080 0.3199"},
+        {"page": 13, "quote": "Fashion200K 413 40000 62.00 3.1184 6.2910 0.1928"},
+        {"page": 12, "quote": "In the cached setting, AutoConcept adds 0.3199 ms/query on FashionIQ and 0.1928 ms/query on Fashion200K, corresponding to 5.58% and 6.18% of first-stage retrieval latency."}
+      ],
+      "must_all": ["0.3199", "0.1928", "5.58", "6.18"],
+      "must_any": ["ms/query", "latency"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2609.01456v1_p13.png 上逐格核对 Table 12，并与 p12 正文占比数字对齐"
+    },
+    {
+      "qid": "01456-N1",
+      "category": "negative",
+      "role": "dev",
+      "intent": "negative",
+      "question": "论文报告了时尚域之外（更广领域）的效果吗？比如别类商品或非时尚图库上的结果。",
+      "hint": "**没有**。论文的实验**只在时尚域**：FashionIQ（主实验）与 Fashion200K（次要检查）；作者把**更广领域（broader domains）**、更强视觉 grounding、更大规模人类偏好研究、更强 metadata 去噪、更重的学习式校验 reranker 明确列为**自然扩展**（未来工作），并说明方法**最适用于 metadata 可用且与外观对齐的 product-style 图库**。所以正确回答是**论文未给出非时尚/更广领域的实验**。",
+      "evidence": [
+        {"page": 10, "quote": "AutoConcept is scoped as a second-stage reranker for metadata-available product-style galleries."},
+        {"page": 10, "quote": "The main experiments use controlled concept evidence, while real-human annotations provide participant-supplied evidence under natural label noise and sparse item text."},
+        {"page": 10, "quote": "The method is most suitable when gallery metadata is available and reasonably aligned with item appearance; missing or inconsistent metadata remains a practical boundary."}
+      ],
+      "must_all": [],
+      "must_any": ["未给出", "未报告", "没有给出", "没有报告", "未涉及", "未提供", "未来工作", "只限时尚"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0",
+      "_verify": "缺席性核对：全文实验数据集只有 FashionIQ / Fashion200K；broader domains 出现在 p10 的扩展方向（未来工作）里"
+    }
+  ]
+}

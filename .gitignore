@@ -88,9 +88,14 @@ retrieval/results/*.jsonl
 retrieval/results/*.npy
 retrieval/results/*.csv
 retrieval/_scratch/
-# 出题工作区：论文原文抽取（.txt）+ 表格页渲染图（.png，单篇可达 10MB+）
-# —— 全是**从 PDF 可重生成**的临时产物，不入库。
-retrieval/tmp/
+# ── 出题工作区 retrieval/tmp/<group>/ ─────────────────────
+# **题集真源在 `retrieval/tmp/<group>/*.questions.json`**（含 gold `evidence` 引文）
+# → **必须入库**（`qa/questions/` 下的是 `_export_questions.py` 导出的衍生副本）。
+# 只忽略**从 PDF 可重生成**的中间产物：
+#   · pages/*.png  表格页渲染图（出表格数字题时看图核对版面用；单篇可达 10MB+）
+#   · *.txt        pymupdf 抽的 PDF 原文（出题读原文用）
+retrieval/tmp/**/pages/
+retrieval/tmp/**/*.txt
 
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db

@@ -1,0 +1,269 @@
+{
+  "_note": [
+    "出题来源：仅用 pymupdf 抽取的 PDF 原文（retrieval/tmp/group1/2608.30333v1.txt，13 页）+ 表格页渲染图（同目录 pages/）。",
+    "**刻意不用任何项目产物**出题（不读 report.json / overview / core_points / out_mineru）——避免按「我们系统已经答得好的口径」出题。",
+    "判定锚点：must_all=必现（数字/英文专名，全中才算过）→ runner.must_all；must_any=备选措辞（任一即可）→ runner.must_have；must_not=出现即判错。",
+    "锚点已过 `_check_reachable.py`（must_all 在系统 L3 检索视图中逐字可命中）；expect/route_min 按该自检结论填写，档位词表只用 {L0, L3}。",
+    "⚠️ 本篇题注格式为 `Table N` 单独一行（无冒号），渲染脚本第一版漏判过，已修正。",
+    "evidence.quote 为原文逐字片段，page 为 PDF 页码（见 txt 里的 [[pN]] 标记）。"
+  ],
+  "paper": "2608.30333v1.pdf",
+  "title": "Beyond Ranking Accuracy: Evaluating LLM-Cited Feature Rationales for Next Basket Repurchase Recommendation",
+  "venue_note": "arXiv:2608.30333v1；Walmart Global Tech；GenAIECommerce'26 @ RecSys",
+  "questions": [
+    {
+      "qid": "30333-L0-1",
+      "category": "L0",
+      "role": "dev",
+      "intent": "overview",
+      "question": "这篇论文研究什么问题？围绕哪两个研究问题、主要结论是什么？",
+      "hint": "研究**下一篮复购推荐**中「LLM 引用的特征理由」的评估问题——不止看排序准确率。两个研究问题：**RQ1** 现成 LLM 能否用结构化复购特征作为下一篮打分器（对比启发式与监督排序器）；**RQ2** LLM 引用的特征理由是否捕获了**跨不同推荐模型类别**仍重要的行为信号。做法：构造 **28 个可解释工程特征**（cadence / frequency / recency / user behavior / item popularity 五维），在**两个公开杂货数据集 + 一个自有零售数据集**上评估；RQ2 用**跨模型特征掩码协议**（把被选特征替换为训练集中位数，看排序指标下降多少）。结论：**LLM 打分不敌监督排序器**（不应直接当作独立复购推荐器）；但**prompt 与证据表示的改变**能在某些设置下产生更强的 outcome-grounded 掩码结果，**该模式依赖数据集**且**不一致地**匹配模型专属归因基线。定位：把 LLM 当**经校验的解释组件**，而不是主力排序器。",
+      "evidence": [
+        {"page": 1, "quote": "Our results provide a nuanced view of LLM scorers for repurchase recommendation."},
+        {"page": 1, "quote": "LLM scores are not competitive with supervised rankers, suggesting that off-the-shelf LLMs should not be used directly as standalone repurchase recommenders."},
+        {"page": 1, "quote": "not as primary next-basket rankers, but as tools for surfacing behavioral evidence whose outcome-grounded relevance should be evaluated separately from ranking accuracy."}
+      ],
+      "must_all": ["XGBoost", "VNN"],
+      "must_any": ["监督", "特征级", "XGBoost"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-L0-2",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话说，这篇论文想搞清什么？结论出乎意料吗？",
+      "hint": "复购推荐通常当「排序题」做，但顾客看到推荐时还想知道**凭什么**（多久没买了、平时多久买一次）。大模型能把行为特征写成一句人话理由，可**说得顺不等于说得对**——它可能引用「听着合理、其实跟这次会不会买无关」的特征。所以他们问两件事：① 直接让大模型拿这些行为特征打分，能打过正经的排序模型吗？② 大模型引用的那三个特征，是不是**对不同种类的排序模型都真的重要**（用「抹掉它们看排序掉多少」来测）。结论：**打分打不过**（别拿它当主力推荐器）；但**理由**这块有一点价值——换提问方式和证据表示有时能让引用的特征更「有依据」，可**看数据集**、**并不稳定**。定位是「经校验的解释组件」。",
+      "evidence": [
+        {"page": 2, "quote": "we study LLM feature rationales for next-basket repurchase recommendation beyond ranking accuracy."},
+        {"page": 1, "quote": "However, fluent explanations may still cite features that are plausible but not relevant to future repurchase outcomes."}
+      ],
+      "must_all": ["XGBoost"],
+      "must_any": ["看似合理", "理由", "排序"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-06",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话说，这篇论文发现了什么反直觉的结论？",
+      "hint": "**「排得准」不等于「理由给得对」**：LLM 能写出流畅解释，却可能引用**听着合理、其实与未来是否复购无关**的特征（base GPT-4o 与 Gemini 都**不能稳定匹配跨家族归因基线**）。换提示词/证据表示（norm-prompt）能让引用的特征**相对 base prompt 更有依据**，但**并不等于与归因基线一致**（Instacart 只超 10/18 个指标、自有数据只超 4/18）。所以**排序质量与理由质量是两个要分开评估的维度**。",
+      "evidence": [
+        {"page": 1, "quote": "However, fluent explanations may still cite features that are plausible but not relevant to future repurchase outcomes."},
+        {"page": 8, "quote": "Thus, improvement over the base prompt does not necessarily imply agreement with an attribution baseline."},
+        {"page": 8, "quote": "Base GPT-4o and Gemini do not reliably match the cross-family attribution baseline, indicating that plausible feature citations are not necessarily outcome-grounded."}
+      ],
+      "must_all": ["GPT-4o", "Gemini"],
+      "must_any": ["看似合理", "归因基线", "理由"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3",
+      "_src": "复用 qa/questions/2608.30333v1.json#30333-06（补 user 视角；档位改为现行词表）"
+    },
+    {
+      "qid": "30333-S1",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "特征集是怎么构造的（多少个、哪几个维度）？LLM 一次要输出哪三样东西？为什么要求引用「精确的特征名」？",
+      "hint": "所有模型共用同一套 **28 个可解释工程特征**，只用**目标篮子之前**的信息，覆盖**五个维度**：cadence、frequency、recency、user behavior、item popularity。每个顾客-商品对渲染成结构化**证据卡**（相关特征分组、**保留原始特征名**）。LLM 输出三样：**① 0~1 的复购支持分；② 恰好三个特征名；③ 一段自然语言解释**。**要求精确特征名**是为了把解释**绑定到结构化证据**上，防止理由只基于泛化的商品语义。LLM 在推理时不看监督模型分数、也不看未来标签。",
+      "evidence": [
+        {"page": 4, "quote": "All models use the same 28 interpretable engineered features computed from purchase history before the target basket."},
+        {"page": 4, "quote": "Given an evidence card, the LLM outputs a repurchase support score between 0 and 1, exactly three feature names, and a natural-language explanation."},
+        {"page": 4, "quote": "Requiring exact feature names links the generated explanation to the structured evidence and prevents rationales based only on generic product semantics."}
+      ],
+      "must_all": ["28", "exactly three"],
+      "must_any": ["cadence", "evidence card", "feature names"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-S2",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "RQ2 的「跨模型特征掩码」协议具体怎么做？masking gap 怎么定义？为什么选 3 个特征？对照了哪些归因方法？",
+      "hint": "对每个顾客-商品对，特征选择器 A 给出 **3 个**特征；**选 3 个是因为 LLM 被要求恰好引用 3 个，以保证各方法的掩码预算相同**。把每个被选特征**替换为训练集中位数**得到扰动向量，再用**目标模型重新打分**；**masking gap** = 原排序指标 M(f(x)) − 掩码后 M(f(x̃))，M 为 Precision@k / Recall@k / NDCG@k。**gap 越大 ⇒ 被选特征对该目标模型携带的排序信号越多。** 对照方法：**TreeSHAP**（针对 XGBoost 目标）、**integrated gradients**（针对 VNN 目标）、**跨家族归因**（对 XGBoost 目标用 IG、对 VNN 目标用 TreeSHAP）、以及**随机 top-3**。两个目标模型都要评，用来检验所选特征是否**跨模型家族**都重要。",
+      "evidence": [
+        {"page": 5, "quote": "We use three features because the LLM is instructed to cite exactly three, ensuring the same masking budget across methods."},
+        {"page": 6, "quote": "We replace each selected feature with its training-set median, producing the perturbed vector"},
+        {"page": 6, "quote": "A larger gap indicates that the selected features carry more ranking signal for the target model."},
+        {"page": 5, "quote": "We compare LLM citations with TreeSHAP features for XGBoost, integrated-gradient features for VNN, and random feature selection."}
+      ],
+      "must_all": ["three features", "median", "TreeSHAP"],
+      "must_any": ["masking", "integrated-gradient", "归因"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-S3",
+      "category": "single",
+      "role": "dev",
+      "intent": "key_number",
+      "question": "GPT-4o norm-prompt 相对 base GPT-4o 的改进幅度是多少（Instacart / 自有数据）？它相对跨家族归因基线呢？DC 上又是什么情况？",
+      "hint": "**Instacart：norm-prompt 在 18 个掩码指标中改进 7 个**；**自有数据集：18 个指标全部改进**。但**超过跨家族归因基线**的指标数是：**Instacart 10/18、自有数据集只有 4/18**。DC 上模式不同：对 XGBoost 目标，LLM 选出的特征产生**接近零或负的 gap**，且 norm-prompt 只在 **8/18** 个指标上优于 base GPT-4o。作者结论：**相对 base prompt 有改进 ≠ 与归因基线一致**；百分位证据的作用**依赖数据集**，不是通用解。",
+      "evidence": [
+        {"page": 8, "quote": "On Instacart, GPT-4o norm-prompt improves over base GPT-4o on 7 of 18 masking metrics, whereas on the proprietary dataset it improves on all 18 metrics."},
+        {"page": 8, "quote": "However, it exceeds the cross-family attribution baseline on 10 of 18 Instacart metrics and only 4 of 18 proprietary metrics."},
+        {"page": 8, "quote": "Thus, improvement over the base prompt does not necessarily imply agreement with an attribution baseline."}
+      ],
+      "must_all": ["7 of 18", "10 of 18", "4 of 18"],
+      "must_any": ["norm-prompt", "attribution baseline", "8 of 18"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-S4",
+      "category": "single",
+      "role": "dev",
+      "intent": "ablation",
+      "question": "RQ1 的结论是什么？LLM 打分器在三个数据集上的表现有何差别？norm-prompt 变体为何没能提升排序？",
+      "hint": "**三个数据集上 XGBoost 与 VNN 都最强**，说明**监督排序器显著优于现成 LLM 打分器**。分数据集看：**Instacart** 上 GPT-4o 在**多数指标上超过 personal-frequency 基线**，但仍低于监督模型；**DC 与自有数据集**上，LLM 打分器**普遍连 personal-frequency 基线都不如**。**GPT-4o norm-prompt 也未能提升排序性能**——由于它**只改了 prompt 与证据表示**，这说明**仅靠百分位特征与 prompt 精修不足以**让 LLM 成为有竞争力的独立排序器；原因在于 LLM 能为单个顾客-商品对**识别显著信号**，却难以把它们的**相对重要性**转成**跨候选可比的分数**。",
+      "evidence": [
+        {"page": 6, "quote": "Across all three datasets, XGBoost and VNN achieve the strongest results, showing that supervised rankers remain substantially more effective than off-the-shelf LLM scorers."},
+        {"page": 6, "quote": "On DC and the proprietary dataset, however, LLM scorers generally trail even the personal-frequency baseline."},
+        {"page": 7, "quote": "this result suggests that percentile-based features and prompt refinement alone are insufficient to make an LLM a competitive standalone ranker."}
+      ],
+      "must_all": ["XGBoost", "personal-frequency"],
+      "must_any": ["supervised", "norm-prompt", "监督"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-S5",
+      "category": "single",
+      "role": "dev",
+      "intent": "baseline_compare",
+      "question": "「文本到证据」的 groundedness 检查是怎么做的？四项指标各是多少？作者如何解读「精确高、召回低」？",
+      "hint": "作为互补分析，在 **Instacart** 上评估 **3,599 条**解释（LLM 在 RQ1 里信号最清晰的数据集）：把解释文本表达的**行为组**与「引用特征所隐含的组」比较，并核对提到的**数值**是否与底层证据一致。结果：**Group Prec. 0.951、Group Rec. 0.740、Group F1 0.805、Numeric Cons. 0.996**。解读：**精确率高（0.951）** 说明很少引入额外理由组；**数值一致率极高（0.996）**；**召回偏低（0.740）** 说明**部分被引用的证据没有被写进文本**。因此：**一旦特征被选中，LLM 一般能准确转述**；**更难的仍然是「选出 outcome-grounded 的特征」**。",
+      "evidence": [
+        {"page": 8, "quote": "We evaluate 3,599 Instacart explanations, where the LLM shows its clearest ranking signal in RQ1."},
+        {"page": 8, "quote": "The explanations achieve high reason-group precision (0.951) and numeric consistency (0.996)."},
+        {"page": 8, "quote": "The lower recall (0.740) indicates that some cited evidence is omitted from the text, while the high precision indicates that additional reason groups are introduced infrequently."}
+      ],
+      "must_all": ["0.951", "0.740", "0.996"],
+      "must_any": ["3,599", "groundedness", "reason-group"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-S6",
+      "category": "single",
+      "role": "dev",
+      "intent": "limitation",
+      "question": "作者列的局限有哪些？",
+      "hint": "四条：**① 掩码 gap 的语义**——它只说明被引特征对训练好的目标模型携带**预测**信号，**不能**证明这些特征**因果**影响未来购买，也**不忠实反映** LLM 内部推理；结果应理解为**特定扰动方案下的敏感性**而非绝对特征重要性；**用中位数替换对二值/类别变量不够自然**，且**未掩码的相关特征会保留冗余信息、削弱观察到的 gap**。**② 文本-证据分析是自动的、只限 Instacart**——没有评估顾客是否觉得解释清楚/有用/有说服力/可信；也**没证明 LLM 转述必要或优于确定性模板解释**。**③ 每个数据集只评估 100 个顾客**（LLM 推理成本），小差异须谨慎解读。**④ 只评了两个 LLM 家族、两个目标排序器家族、一套领域设计的 28 个特征**，换其他模型/架构/特征集/领域结论可能不同。",
+      "evidence": [
+        {"page": 9, "quote": "First, the feature-masking gap measures whether cited features carry predictive signal for trained target models, but it does not establish that these features causally affect future purchases or faithfully represent the LLM's internal reasoning."},
+        {"page": 9, "quote": "Second, the text-to-evidence analysis is automatic and limited to Instacart."},
+        {"page": 9, "quote": "Third, because LLM inference is costly, we evaluate only 100 customers per dataset."},
+        {"page": 9, "quote": "Finally, we evaluate two LLM families, two target-ranker families, and a domain-designed set of 28 behavioral features."}
+      ],
+      "must_all": ["causal", "100 customers"],
+      "must_any": ["Instacart", "limitation", "局限"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-S7",
+      "category": "single",
+      "role": "dev",
+      "intent": "definition",
+      "question": "论文中的「outcome-grounded」是怎么操作化定义的？证据卡的 base 与 norm-prompt 两个变体差别在哪？",
+      "hint": "**outcome-grounded（操作化定义）**：**当掩码某特征后，在「对未来复购标签评估的排序指标」上造成更大下降时**，就认为被引用特征更 outcome-grounded；该判据衡量的是 **outcome-relevant 排序信号**，而**不是因果相关性，也不是完整的解释忠实性**。证据卡两变体：**base** 只给**原始可解释特征值**，要求 LLM 指出最强的支持/削弱证据；**norm-prompt** **保留这些值**，并**额外提供百分位视图**——对**顾客级与顾客-商品级**特征，百分位在**同一顾客的候选项之间**计算；对**全局商品级**特征，百分位在**全局商品总体**上计算；两者都**不使用未来标签**。",
+      "evidence": [
+        {"page": 2, "quote": "cited features are considered more outcome-grounded when masking them produces greater degradation in ranking metrics evaluated against future repurchase labels."},
+        {"page": 2, "quote": "This criterion measures outcome-relevant ranking signal rather than causal relevance or complete explanation faithfulness."},
+        {"page": 5, "quote": "The base evidence card contains raw, interpretable feature values. The norm-prompt variant retains these values and additionally provides percentile-based views that contextualize each value relative to an appropriate historical reference distribution without using future labels."}
+      ],
+      "must_all": ["percentile", "outcome-grounded"],
+      "must_any": ["masking", "掩码", "ranking metrics"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "30333-02",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "论文提出的「受限混合设计」是什么？三个组件各自负责什么？",
+      "hint": "结论给出的 **constrained hybrid design**：**监督模型负责给候选商品排序**、**特征级评估负责识别与结果相关的证据**、**LLM 负责把该证据转写成简洁解释**。也就是说 LLM **不做主力排序器**（实验显示现成 LLM 打分器一致落后于监督排序器），而是当**经过校验的解释层**。",
+      "evidence": [
+        {"page": 9, "quote": "Our results support a constrained hybrid design: supervised models rank candidate items, feature-level evaluation identifies outcome-relevant evidence, and LLMs translate that evidence into concise explanations."},
+        {"page": 1, "quote": "not as primary next-basket rankers, but as tools for surfacing behavioral evidence whose outcome-grounded relevance should be evaluated separately from ranking accuracy."}
+      ],
+      "must_all": ["constrained hybrid design"],
+      "must_any": ["feature-level", "supervised", "解释"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_src": "复用 qa/questions/2608.30333v1.json#30333-02（档位改为现行词表）"
+    },
+    {
+      "qid": "30333-T1",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 1，两个公开数据集各有多少唯一顾客 ID、唯一商品、平均历史商品数、以及 LLM 打分的 pair 数？",
+      "hint": "**Instacart：100,000 唯一 CID / 49,071 唯一商品 / 平均历史 64.6 件 / LLM 打分 pair 3,599**；**DC：283,047 / 910 / 9.8 / 1,214**。（因 LLM 推理成本，每个数据集只抽取 **100 个 held-out 顾客**。）",
+      "evidence": [
+        {"page": 5, "quote": "Instacart\n100,000\n49,071\n64.6\n3,599\nDC\n283,047\n910\n9.8\n1,214"},
+        {"page": 5, "quote": "Because of LLM inference cost, we sample 100 held-out customers per dataset."}
+      ],
+      "must_all": ["100,000", "49,071", "3,599"],
+      "must_any": ["283,047", "held-out", "DC"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2608.30333v1_p5.png 上逐格核对 Table 1"
+    },
+    {
+      "qid": "30333-T2",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 4，Instacart 审计集上的 N、Group Prec.、Group Rec.、Group F1、Numeric Cons. 分别是多少？",
+      "hint": "**N = 3,599；Group Prec. = 0.951；Group Rec. = 0.740；Group F1 = 0.805；Numeric Cons. = 0.996**（唯一样本为 Instacart）。",
+      "evidence": [
+        {"page": 8, "quote": "Instacart\n3,599\n0.951\n0.740\n0.805\n0.996"}
+      ],
+      "must_all": ["0.951", "0.805", "0.996"],
+      "must_any": ["3,599", "Numeric"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2608.30333v1_p8.png 上逐格核对 Table 4"
+    },
+    {
+      "qid": "30333-N1",
+      "category": "negative",
+      "role": "dev",
+      "intent": "negative",
+      "question": "论文做了人工评估或用户研究，来验证这些解释是否让顾客觉得有用、可信吗？",
+      "hint": "**没有**。论文的文本-证据分析是**自动的且只限 Instacart**，作者在局限里明确说它**不评估顾客是否觉得解释清楚、有用、有说服力或可信**；解释的**有用性、用户信任、决策速度与线上业务影响**被列为**未来工作**（需受控用户研究或 A/B 实验）。所以正确回答是**论文未做人工/用户评估**，而不是给出一个人工评分。",
+      "evidence": [
+        {"page": 9, "quote": "Second, the text-to-evidence analysis is automatic and limited to Instacart."},
+        {"page": 9, "quote": "whether generated text reflects the cited groups and numerical values, it does not evaluate whether customers find the explanations clear, useful, persuasive, or trustworthy."},
+        {"page": 9, "quote": "explanation usefulness, user trust, decision speed, and online business impact through controlled user studies or A/B experiments."}
+      ],
+      "must_all": [],
+      "must_any": ["未做", "没有做", "未进行", "没有进行", "未评估", "没有评估", "未来工作", "未报告", "未给出"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0",
+      "_verify": "缺席性核对：全文只有 limitations/future work 提到 user studies / A/B 是**未做**的工作；无任何人工评分或用户研究结果表"
+    }
+  ]
+}

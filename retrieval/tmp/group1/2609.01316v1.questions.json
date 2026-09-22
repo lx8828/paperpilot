@@ -1,0 +1,269 @@
+{
+  "_note": [
+    "出题来源：仅用 pymupdf 抽取的 PDF 原文（retrieval/tmp/group1/2609.01316v1.txt，23 页）+ 表格页渲染图（同目录 pages/）。",
+    "**刻意不用任何项目产物**出题（不读 report.json / overview / core_points / out_mineru）——避免按「我们系统已经答得好的口径」出题。",
+    "判定锚点：must_all=必现（数字/英文专名，全中才算过）→ runner.must_all；must_any=备选措辞（任一即可）→ runner.must_have；must_not=出现即判错。",
+    "锚点已过 `_check_reachable.py`（must_all 在系统 L3 检索视图中逐字可命中）；expect/route_min 按该自检结论填写，档位词表只用 {L0, L3}。",
+    "**原 01316-T2（附录 Table 8 的按域页数/文档数）经自检判定不在检索块内 → 已替换为 Table 2（英文域主表的 Avg. 行）**，并在渲染图 2609.01316v1_p7.png 上核对。",
+    "evidence.quote 为原文逐字片段，page 为 PDF 页码（见 txt 里的 [[pN]] 标记）。"
+  ],
+  "paper": "2609.01316v1.pdf",
+  "title": "MIDR: Enrichment-Augmented Indexing for Multimodal Document Retrieval",
+  "venue_note": "arXiv:2609.01316v1 [cs.IR]；Bloomberg NYC",
+  "questions": [
+    {
+      "qid": "01316-L0-1",
+      "category": "L0",
+      "role": "dev",
+      "intent": "overview",
+      "question": "这篇论文的核心主张是什么？它与 ColPali 系视觉检索方法的根本分歧在哪？",
+      "hint": "核心主张：**多模态文档检索不必把多模态推理放在查询时** —— MIDR 把多模态理解**移到索引时**：摄取阶段用多模态 LLM 把渲染页面转成**经过校验的文本字段**，用 **BM25F**（可融合 dense）索引，查询时只走**文本检索**。与 ColPali 系（ColPali / ColQwen2.5）的**根本分歧**：后者用 patch 级**多向量图像索引** + late interaction 打分，把视觉检索留在**查询时服务路径**上；MIDR 只把**渲染页面用于摄取**，服务时**不处理页面图像、不维护视觉多向量索引、不做 late interaction**。结果：ViDoRe V3 五个英文域 **0.6219** avg nDCG@10，**比 BM25 相对提升 23.0%**，与 ColQwen2.5 有竞争力；7 个域中 **4 个领先**，索引**约小 9×**、查询延迟**约低 2×**。",
+      "evidence": [
+        {"page": 1, "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing that shifts multimodal reasoning to index time."},
+        {"page": 2, "quote": "rather than serving every query over rendered-page image representations, use MLLMs during ingestion to convert visual and layout-dependent evidence into retrieval-ready textual fields"},
+        {"page": 1, "quote": "MIDR Hybrid achieves 0.6219 average nDCG@10 across five English domains, a 23.0% relative gain over BM25, remaining competitive with ColQwen2.5."}
+      ],
+      "must_all": ["0.6219", "ColQwen2.5"],
+      "must_any": ["索引时", "23.0"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "01316-L0-2",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话说，这篇论文要解决什么问题？它的思路和现在的做法有什么不一样？",
+      "hint": "企业文档里的关键信息常藏在**表格、图表、版面关系**里，纯 OCR 会把它拉平、弄坏或漏掉。现在的解法是**直接拿页面截图去检索**（ColPali 系），效果强，但**每个查询都要重算一遍图像** —— 索引巨大、延迟高。MIDR 换了位置：**在「入库」那一步就把多模态理解做完** —— 用多模态大模型把每页读成一组**校验过的文字字段**（表格摘要、图表摘要、关键短语、粗/细粒度问答对等），之后检索只是**普通文本检索**（BM25F + 可选向量）。好处：贵的那步只做一次、可**摊销**；索引小得多（约小 **9×**）、查询快约 **2×**。而且字段是**英文**生成的，顺带成了**跨语言桥**：英文问题搜法文文档时 BM25 崩到 0.1532，MIDR 能到 0.5448。",
+      "evidence": [
+        {"page": 2, "quote": "We call this design enrichment-augmented indexing: use rendered pages for multimodal reasoning at index time, but serve retrieval through lexical, dense, and hybrid text-search infrastructure."},
+        {"page": 2, "quote": "Multimodal reasoning performed during indexing can therefore be amortized over future queries, while serving retrieval over visual multi-vector indexes carries recurring query-time costs"}
+      ],
+      "must_all": ["MIDR", "ColQwen2.5"],
+      "must_any": ["索引时", "索引阶段", "入库", "摄取"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-U1",
+      "category": "L0",
+      "role": "user",
+      "intent": "overview",
+      "question": "用大白话讲，MIDR 是怎么做到既快又好的？它把「贵的那一步」放在哪？",
+      "hint": "MIDR 不训练新检索器，而是**把多模态理解挪到索引时**：入库时用**多模态 LLM 把渲染页读成检索就绪的文本字段**（表格摘要、图表摘要、关键短语、粗/细粒度问答对，并做校验），之后检索只是**普通文本检索**（BM25F，可融合 dense，hybrid 用 RRF）。好处：贵的 MLLM 调用**只做一次、可被未来查询摊销**；服务时**不再处理页面图像、不维护视觉多向量索引、不做 late interaction**。收益：五个英文域平均 **0.6219 nDCG@10（相对 BM25 +23.0%）**，索引**约小 9×**、查询延迟**约低 2×**。",
+      "evidence": [
+        {"page": 2, "quote": "rather than serving every query over rendered-page image representations, use MLLMs during ingestion to convert visual and layout-dependent evidence into retrieval-ready textual fields"},
+        {"page": 2, "quote": "Multimodal reasoning performed during indexing can therefore be amortized over future queries, while serving retrieval over visual multi-vector indexes carries recurring query-time costs"},
+        {"page": 1, "quote": "Across all seven domains, MIDR leads ColQwen2.5 on four while using ∼9× smaller index memory and approximately 2× lower query latency."}
+      ],
+      "must_all": ["0.6219"],
+      "must_any": ["索引时", "BM25F", "摊销", "amortized"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0",
+      "_src": "复用 qa/questions/2609.01316v1.json#01316-U1（与新题 L0-2 角度不同：聚焦「贵的一步放哪/如何摊薄」）"
+    },
+    {
+      "qid": "01316-S1",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "MIDR 的 enrichment 分几级？文档级用哪些页、产出哪些字段？页面级 enrichment 用哪些输入、产出哪些「索引字段」与「路由/控制字段」？",
+      "hint": "分**文档级**与**页面级**。**文档级**：只用**前五页**，产出 `document_type`（genre/来源类型，属**路由/控制**）、`document_focus`（全局主题或目的，**索引字段**）、`main_entities`（显著的组织/产品/数据集/法规/药物/系统，**索引字段**）。**页面级**有**四个输入**：渲染页图、抽取文本、文档级 enrichments、页面元数据。页面级 **索引字段** = `topic_tags`、`keyphrases`、`table_summary`、`chart_summary`、`coarse_qa`、`fine_qa`；页面级 **路由/控制字段** = `layout`、`signal_quality`、`verification_issues`、`refinement_edits`。",
+      "evidence": [
+        {"page": 4, "quote": "MIDR first produces document-level enrichments from the first five pages."},
+        {"page": 4, "quote": "Each page is then enriched using four inputs: the rendered page image, extracted page text, document-level enrichments, and page metadata."},
+        {"page": 5, "quote": "Table 1: MIDR enrichment schema. Indexed fields are used by BM25F and dense retrieval; routing and control fields guide enrichment, verification, and analysis."},
+        {"page": 5, "quote": "signal_quality\nMarks low-signal or decorative pages; gates enrichment."}
+      ],
+      "must_all": ["document_focus", "fine_qa", "table_summary", "signal_quality"],
+      "must_any": ["first five pages", "indexed field"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-S2",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "extract–verify–refine 循环具体怎么运作？verifier 审计哪几个方面？refiner 改哪些字段？这个循环的实测触发率是多少？",
+      "hint": "三步循环：**extractor** 从「渲染页图 + 抽取文本 + 文档级 enrichments + 页面元数据」生成结构化页面 enrichment；**确定性后处理器**归一化 tags/keyphrases、去除重复 QA pair、强制 layout flags 与 summary 字段一致。**verifier** 对草稿做**五个方面**审计：**grounding、layout consistency、internal consistency、answer quality、completeness**。若发现问题，**refiner 只修改被标记（flagged）的字段**，然后**再次**应用后处理。作者强调这个保守循环重要，因为**索引时的错误会影响未来很多查询**。实测触发率：**全库 9.6% 的页面**，在最难的域达 **52%**。",
+      "evidence": [
+        {"page": 5, "quote": "Page enrichment follows an extract–verify–refine loop."},
+        {"page": 5, "quote": "The verifier audits the draft against the rendered page and extracted text for grounding, layout consistency, internal consistency, answer quality, and completeness."},
+        {"page": 5, "quote": "If issues are found, the refiner revises only the flagged fields and postprocessing is applied again."},
+        {"page": 4, "quote": "with refinement firing on 9.6% of pages overall and 52% on the hardest domain."}
+      ],
+      "must_all": ["verifier", "grounding", "9.6%", "52%"],
+      "must_any": ["refiner", "flagged"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-S3",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "索引与检索的具体配置是什么？文档级字段怎么处理？BM25F 字段权重怎么设、为什么？dense 用什么模型、字段怎么合并？hybrid 用什么融合？",
+      "hint": "校验后的页面 enrichments 与**原始页面文本**被索引为**相互独立的 BM25F 字段**；**文档级索引字段会在该文档的每一页上复制**，使每页同时暴露局部证据与全局上下文。**所有 BM25F 字段权重统一（均为 1.0）、不做调参** —— 因为 ViDoRe V3 **没有 dev split**，无法在不拟合评测查询的前提下调权重。Dense：用 **EmbeddingGemma** 分别嵌入原始页面文本与每个 enrichment 字段，再用 **mean pooling** 合并字段嵌入。Hybrid：用 **Reciprocal Rank Fusion (RRF)** 融合 BM25F 与 dense 排名。",
+      "evidence": [
+        {"page": 5, "quote": "The verified page enrichments and original page text are indexed as separate BM25F fields (Robertson et al., 2004)."},
+        {"page": 5, "quote": "Document-level indexed fields are replicated across the pages of the corresponding document so that each page exposes both local evidence and global context."},
+        {"page": 5, "quote": "All BM25F fields are weighted uniformly; Appendix N reports an a-priori role-based variant and shows that the schema is insensitive to this choice."},
+        {"page": 5, "quote": "fuses BM25F and dense rankings with Reciprocal Rank Fusion (Cormack et al., 2009)."}
+      ],
+      "must_all": ["BM25F", "EmbeddingGemma", "Reciprocal Rank Fusion"],
+      "must_any": ["mean pooling", "uniform"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-S4",
+      "category": "single",
+      "role": "dev",
+      "intent": "ablation",
+      "question": "group ablation 的关键结论是什么？QA-only 变体表现如何、移除 QA 会怎样？table summary 的贡献有什么特点？",
+      "hint": "**QA 对是主导性的低成本 enrichment 面**：`qa_only` 达 **0.6200**（hybrid），**恢复了 markdown-only hybrid 基线之上总增益的 94%**；反过来，**移除 QA 让 hybrid 掉到 0.5788**，接近 markdown-only 设置。这说明**生成的 QA 对构造了主要的 query–page 桥**，而完整 schema 通过 table summaries、document focus 等字段提供**定向增益**。字段层面：QA 对提供**最强的词法桥**，keyphrases 与 QA 字段**支持 dense 匹配**；**table summaries 的总效果很小，但价值集中在表格页** —— 在表格页上移除它们损失 **0.028** nDCG@10。（对照：Full MIDR role-based 在 hybrid 上 0.6231。）",
+      "evidence": [
+        {"page": 8, "quote": "Group ablations in Table 6 show that QA pairs are the dominant low-cost enrichment surface: qa_only reaches 0.6200, recovering 94% of the enrichment gain over a markdown-only hybrid baseline."},
+        {"page": 8, "quote": "Conversely, removing QA drops hybrid retrieval to 0.5788, close to the markdown-only setting."},
+        {"page": 8, "quote": "Table summaries have little aggregate effect, but their value is concentrated on table pages, where removing them costs 0.028 nDCG@10."}
+      ],
+      "must_all": ["0.6200", "0.5788", "0.028"],
+      "must_any": ["QA", "table summar"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-S5",
+      "category": "single",
+      "role": "dev",
+      "intent": "baseline_compare",
+      "question": "按页型与查询型分层，增益最大和最小的分别是什么？这个模式支持什么机制解释？",
+      "hint": "**增益最大处正是 OCR 丢失结构最多的地方**：按**页面视觉内容** —— **Mixed visual +38.6%**、**Table +31.8%**、Infographic +30.4%、Chart +21.1%、**Text only 仅 +14.3%**（相对 nDCG@10）；按**查询类型** —— **Numerical +41.7%**、Open-ended +38.2%、Compare +23.8%、Extractive +21.0%、Multi-hop +14.3%、**Boolean 仅 +11.7%**。**增益最小**的是 Text-only 页与 Boolean 查询，因为那里**原始词法证据已经给 BM25 一个较好的起点**。这支持核心机制：**MIDR 在「检索依赖被 OCR 拉平的结构」时帮助最大**。",
+      "evidence": [
+        {"page": 8, "quote": "Table 7 shows that the gains are largest where OCR loses structure."},
+        {"page": 8, "quote": "Mixed-visual pages improve by 38.6% relative nDCG@10, table pages by 31.8%, and numerical queries by 41.7%."},
+        {"page": 8, "quote": "Text-only pages and boolean queries improve least (+14.3% and +11.7%), where raw lexical evidence already gives BM25 a stronger starting point."}
+      ],
+      "must_all": ["38.6", "41.7", "14.3", "11.7"],
+      "must_any": ["OCR", "Mixed-visual"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-S6",
+      "category": "single",
+      "role": "dev",
+      "intent": "limitation",
+      "question": "作者承认的局限有哪些？尤其摄取成本、对 enrichment MLLM 的依赖、以及字段层面的已知问题。",
+      "hint": "五方面（§7）：**① 对比范围**——只覆盖 ViDoRe V3，榜上还有未评测系统；且 **MIDR 不是这个方向最准的检索器**：**ColEmbed-3B-v2 在英文域达 0.6730**（MIDR 0.6219），但每页存**约 11 MB**（MIDR 仅 **0.038 MB**）→ 主张的是**精度–部署权衡**。**② 服务成本**——延迟对比是对**未优化**的 late-interaction 打分做的；优化后**不会减少存储 patch 级表示的显存**，所以结构性差异在**索引内存**而非延迟。**③ 摄取成本**——MIDR 是**搬移计算而非消除计算**：平均每页 **2.1 次 MLLM 调用、约 8k tokens**；一次性成本但**随语料规模增长**，文档变更或 schema 修订必须**重做**。**④ 对 enrichment MLLM 的依赖**——前沿后端在英文上聚在 **0.011** 内，开源后端落后 **0.046**、法文上**崩塌（0.298 vs 0.534）**。**⑤ 字段与语言覆盖**——**chart summaries 聚合上中性偏负、某些域明显有害**；**main-entity 字符串保留源语言形式，在法文上成为混淆项**。",
+      "evidence": [
+        {"page": 9, "quote": "Ingestion requires on average 2.1 MLLM calls and approximately 8k tokens per page."},
+        {"page": 9, "quote": "ColEmbed-3B-v2 reaches 0.6730 average nDCG@10 on the English domains against MIDR's 0.6219, while storing roughly 11 MB per page against MIDR's 0.038 MB."},
+        {"page": 9, "quote": "the open-weight backend we tested trails by 0.046 on English and collapses on French (0.298 vs. 0.534; Appendix K)."},
+        {"page": 9, "quote": "Chart summaries are net-neutral to negative on aggregate and clearly harmful on some domains, and main-entity strings retain source-language forms that act as confounders on French"}
+      ],
+      "must_all": ["2.1", "8k"],
+      "must_any": ["ColEmbed", "0.038", "chart"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-S7",
+      "category": "single",
+      "role": "dev",
+      "intent": "definition",
+      "question": "「enrichment-augmented indexing」的定义是什么？per-query oracle 是什么、结果多少？它说明两套系统是什么关系？",
+      "hint": "**enrichment-augmented indexing（论文自己的命名）**：**在索引时**用渲染页面做多模态推理，但**检索服务走词法、dense、hybrid 的文本检索基础设施** —— 也就是「需要多模态理解」**不等于**「必须在服务时检索渲染页面的图像表示」。**per-query oracle**：一个**上界分析** —— 对每个查询**选 MIDR 与（本地重现的）ColQwen2.5 中更好的那个**，达 **0.7042** nDCG@10，比 MIDR 高 **13.0%**、比重现的 ColQwen2.5 高 **11.8%**。这说明两者**编码的是互补而非冗余的证据**：在 1,489 个英文查询中约一半有决定性胜负，**MIDR 赢 351 个、ColQwen2.5 赢 362 个**；MIDR 赢在把财务/制药/法规的确切数量写进 QA 对与关键短语，ColQwen2.5 赢在**代码块、公式、图表、多个视觉相似表格**这类文本化会模糊的区分上。",
+      "evidence": [
+        {"page": 2, "quote": "We call this design enrichment-augmented indexing: use rendered pages for multimodal reasoning at index time, but serve retrieval through lexical, dense, and hybrid text-search infrastructure."},
+        {"page": 8, "quote": "A per-query oracle that selects the better of the two systems reaches 0.7042 nDCG@10, a 13.0% relative gain over MIDR and 11.8% over reproduced ColQwen2.5 (Appendix M)."},
+        {"page": 8, "quote": "MIDR wins 351 queries and ColQwen2.5 wins 362."}
+      ],
+      "must_all": ["0.7042", "351", "362"],
+      "must_any": ["oracle", "13.0"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "01316-U2",
+      "category": "single",
+      "role": "user",
+      "intent": "detail",
+      "question": "MIDR 在「英文问题搜法文文档」上表现如何？为什么这个结果特别？",
+      "hint": "两个**法文文档**域上页面是法文、查询是英文，**原始 BM25 崩到 0.1532 nDCG@10**。MIDR 因为**在索引时用英文生成富集字段**，查询时变成「英文问题 vs 英文富集字段」的**单语匹配**：**MIDR Hybrid 达 0.5448**，**在聚合与两个域上都超过复现的 ColQwen2.5**（energy 0.6192 vs 0.5967；physics 0.4704 vs 0.4663）。特别之处：**富化本身成了跨语言桥**（视觉检索器只能靠渲染页隐式承担）；但作者提醒该结论**只针对「法文文档 + 英文查询」这一对**，更广语言对未覆盖。",
+      "evidence": [
+        {"page": 2, "quote": "On the two French-document domains, the same pipeline acts as a cross-lingual bridge: raw BM25 collapses to 0.1532 nDCG@10 because English queries share little surface vocabulary with French page text, while MIDR Hybrid reaches 0.5448 and leads ColQwen2.5 on both domains by generating English enrichments at index time (Section 5)."},
+        {"page": 7, "quote": "The result is specific to French documents with English queries; broader language-pair coverage remains"}
+      ],
+      "must_all": ["0.1532", "0.5448"],
+      "must_any": ["cross-lingual", "French", "跨语言"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3",
+      "_src": "复用 qa_set_v2.json#01316-C4 与 qa/questions/2609.01316v1.json#01316-U2（合并为一道 user 题；档位改为现行词表）"
+    },
+    {
+      "qid": "01316-T1",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 4，BM25、Enriched BM25F、MIDR Hybrid、ColQwen2.5 的相对延迟与索引内存各是多少倍（以 BM25 为 1）？",
+      "hint": "归一化到 BM25：**BM25 = 1.0× 延迟 / 1.0× 内存**；**Enriched BM25F = 3.4× / 2.5×**；**MIDR Hybrid = 14.0× / 7.5×**；**ColQwen2.5 = 27.9× / 65.0×**。即相对 ColQwen2.5，MIDR Hybrid 查询**约快 2×、约小 9×**。",
+      "evidence": [
+        {"page": 7, "quote": "Retrieval path\nLatency\nMemory\nlower is better\nBM25\n1.0×\n1.0×\nEnriched BM25F\n3.4×\n2.5×\nMIDR Hybrid\n14.0×\n7.5×\nColQwen2.5\n27.9×\n65.0×"}
+      ],
+      "must_all": ["14.0", "7.5", "27.9", "65.0"],
+      "must_any": ["Latency", "Memory"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2609.01316v1_p7.png 上逐格核对 Table 4"
+    },
+    {
+      "qid": "01316-T2",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 2（英文域 nDCG@10），五个系统的平均（Avg.）分别是多少？MIDR Hybrid 与 ColQwen2.5 的差距有多大？",
+      "hint": "Table 2 的 Avg. 列：**BM25 over markdown 0.5057、Enriched BM25F 0.5592、Dense mean-pool 0.5898、ColQwen2.5 0.6300、MIDR Hybrid (ours) 0.6219**。即 **MIDR 比原始 BM25 高 23.0%（0.6219 vs 0.5057）、比 ColQwen2.5 低 0.0081**；per-domain 上 MIDR 在 HR（0.6043 vs 0.6018）与 pharmaceuticals（0.6424 vs 0.6382）领先，在 computer science（0.7170 vs 0.7623）落后最多。",
+      "evidence": [
+        {"page": 7, "quote": "ColQwen2.5\n0.7623\n0.6276\n0.6018\n0.5200\n0.6382\n0.6300\nMIDR Hybrid (ours)\n0.7170\n0.6261\n0.6043\n0.5197\n0.6424\n0.6219"},
+        {"page": 7, "quote": "reaches 0.6219 nDCG@10, competitive with ColQwen2.5 aggregate of 0.6300 and leading on two of five English domains. Relative to raw BM25 (0.5057), this is a 23.0% gain"}
+      ],
+      "must_all": ["0.5057", "0.6300", "0.6219"],
+      "must_any": ["Avg", "平均"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2609.01316v1_p7.png 上逐格核对 Table 2 的 Avg. 列；**原 T2（附录 Table 8 按域页数）不在检索块内 → 已替换**"
+    },
+    {
+      "qid": "01316-N1",
+      "category": "negative",
+      "role": "dev",
+      "intent": "negative",
+      "question": "论文报告了下游问答或生成任务的准确率吗（例如用检索到的证据做 QA 的分数）？",
+      "hint": "**没有**。MIDR 的评测**只到检索层**：报告的是 ViDoRe V3 上的 nDCG@10（英文五域 + 法文两域）、延迟/内存、以及消融与 oracle 上界分析，**没有任何下游问答/生成任务的准确率或端到端指标**（全文只在参考文献里出现 question answering）。所以正确回答是**论文未报告下游 QA/生成指标**。",
+      "evidence": [
+        {"page": 9, "quote": "Our evaluation covers ViDoRe V3, with detailed analysis on five English-document domains and a targeted cross-lingual study on two French-document domains."}
+      ],
+      "must_all": [],
+      "must_any": ["未报告", "未给出", "未提供", "没有报告", "没有给出", "没有提供", "未涉及", "只到检索"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0",
+      "_verify": "缺席性核对：全文 `question answering|QA accuracy|downstream|end-to-end` 命中**仅在参考文献**（第 17 页起），正文无任何下游任务指标"
+    }
+  ]
+}
