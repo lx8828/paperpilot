@@ -348,11 +348,16 @@ def main() -> int:
                   f" ｜ 均 gold {s['n_gold'].mean():>5.2f}"
                   f" ｜ facet 数 {s.groupby(['cluster', 'facet']).ngroups}")
     print(f"\n已写 {outp}")
-    _emit_report(arms, m, keep, KDIR, GOLDF, outp)
+    _emit_report(arms, m, keep, KDIR, GOLDF, outp, args)
     return 0
 
 
-def _emit_report(arms, m, keep, KDIR, GOLDF, outp) -> None:
+def _emit_report(arms, m, keep, KDIR, GOLDF, outp, args) -> None:
+    # ⚠️ `args` **必须显式传入**：本函数是模块级函数，看不到 `main()` 的局部 `args`。
+    #    2026-10-05 实测踩过：原先漏传 → `NameError: name 'args' is not defined`，
+    #    而它被下面的 `except` 静默吞掉（评测照跑、只是**没有记录**）——
+    #    因此"接线接好了"整整一天都没人发现（README 写着已接 emit，但从未真跑过）。
+    #    回归防护见 `tests/test_eval_emit_wiring.py`。
     """把**主表**（`sorter == "B mq_max"`）的汇总落进统一记录格式。
 
     为什么：本脚本原先只写**逐簇 CSV**，汇总只 print —— 无法与 L1/L3 比、
@@ -365,12 +370,28 @@ def _emit_report(arms, m, keep, KDIR, GOLDF, outp) -> None:
         sys.path.insert(0, str(HERE.parent))
         from evals import report as R  # noqa: PLC0415
 
+        # ★ 把「实选字符」也摆进口径：等字符预算是**整块加入**（见下方选取逻辑），
+        #   末块必然超出，而**粗粒度臂超得更多** —— 实测 C_pdf_prod 实选 13,233
+        #   字符/篇，A/B 只有 ~12,025（差约 10%）。不写明的话，跨臂比
+        #   `ev_recall_c12k` 会**看起来公平、其实偏粗粒度臂**。
+        chars_txt = ""
+        if "chars_c12k" in m.columns:
+            parts = [f"{a}={m[m.arm == a]['chars_c12k'].mean():,.0f}"
+                     for a in arms if len(m[m.arm == a])]
+            if parts:
+                chars_txt = (" ｜ ★ 但「等字符」是**整块加入**、末块会超出，"
+                             "粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时"
+                             "请一并看实选字符/篇@12k（" + "、".join(parts) + "）")
+        # ★ `combos=auto` 是**待解析值**（解析为 `--gold`）—— 写进口径等于没写，
+        #   读者还得自己查解析规则。这里落**解析后**的值。
+        cbs = args.combos if args.combos != "auto" else args.gold
         # ★ 口径必须写全：换真值文件 / 换切块 / 换题集，数字都不可比。
         note = (f"R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **{args.corpus}**"
                 f"＝{len(keep)} 篇 ｜ 真值 `{GOLDF.name}` ｜ 切块 "
-                f"`{KDIR.parent.name}/{KDIR.name}` ｜ 题集 combos={args.combos}"
-                f" ｜ ★ 块口径**不公平**（块越大越占便宜）→ 以 "
-                f"`ev_recall_c12k`（等字符预算）为准")
+                f"`{KDIR.parent.name}/{KDIR.name}` ｜ 题集 combos={cbs}"
+                f" ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 "
+                f"`ev_recall_c12k`（等字符预算）"
+                + chars_txt)
         # 指标 -> 列名。`MRecall/StRecall/aNDCG` 来自 `_r2_std_metrics`（文献口径）。
         COLS = (("MRecall@10", "r2.mrecall@10"), ("StRecall@10", "r2.strecall@10"),
                 ("setF1@10", "r2.setf1@10"), ("aNDCG@10", "r2.andcg@10"),
@@ -392,7 +413,15 @@ def _emit_report(arms, m, keep, KDIR, GOLDF, outp) -> None:
                                  evidence_path=str(outp)))
         if recs:
             p = R.emit(*recs)
-            print(f"→ 汇总记录已落 {p.relative_to(HERE.parent)}（{len(recs)} 条）")
+            # ⚠️ 不要用 `p.relative_to(HERE.parent)` 硬算显示路径：报告目录可被
+            #    重定向到仓库之外（测试用 tmp_path、棘轮有 `--dir`），那样会抛
+            #    `ValueError` 并被下面的 `except` 吞掉 —— 于是"记录**其实写成功了**"
+            #    却显示"落盘失败"，把真问题掩盖掉。
+            try:
+                shown = p.relative_to(HERE.parent)
+            except ValueError:
+                shown = p
+            print(f"→ 汇总记录已落 {shown}（{len(recs)} 条）")
     except Exception as e:  # noqa: BLE001  报告失败不能弄挂评测
         print(f"⚠️ 汇总记录落盘失败（不影响本次评测结果）：{type(e).__name__}: {e}",
               file=sys.stderr)

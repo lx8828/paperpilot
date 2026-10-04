@@ -1,1 +1,380 @@
-{}
+{
+ "L2|r2_A_ls_fix|r2.andcg@10": {
+  "value": 0.8568020322776666,
+  "metric": "r2.andcg@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_A_ls_fix|r2.ev_recall@12": {
+  "value": 0.5596959759539093,
+  "metric": "r2.ev_recall@12",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_A_ls_fix|r2.ev_recall_c12k": {
+  "value": 0.4626202634969977,
+  "metric": "r2.ev_recall_c12k",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_A_ls_fix|r2.mrecall@10": {
+  "value": 0.4642857142857143,
+  "metric": "r2.mrecall@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_A_ls_fix|r2.setf1@10": {
+  "value": 0.48034609193941347,
+  "metric": "r2.setf1@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_A_ls_fix|r2.strecall@10": {
+  "value": 0.8372874149659862,
+  "metric": "r2.strecall@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_B_pdf_fix|r2.andcg@10": {
+  "value": 0.8167171421116345,
+  "metric": "r2.andcg@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_B_pdf_fix|r2.ev_recall@12": {
+  "value": 0.5409555583050053,
+  "metric": "r2.ev_recall@12",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_B_pdf_fix|r2.ev_recall_c12k": {
+  "value": 0.44244707730463434,
+  "metric": "r2.ev_recall_c12k",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_B_pdf_fix|r2.mrecall@10": {
+  "value": 0.4642857142857143,
+  "metric": "r2.mrecall@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_B_pdf_fix|r2.setf1@10": {
+  "value": 0.46995526311371066,
+  "metric": "r2.setf1@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_B_pdf_fix|r2.strecall@10": {
+  "value": 0.8033163265306124,
+  "metric": "r2.strecall@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_C_pdf_prod|r2.andcg@10": {
+  "value": 0.7975132307692219,
+  "metric": "r2.andcg@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_C_pdf_prod|r2.ev_recall@12": {
+  "value": 0.8706842940815693,
+  "metric": "r2.ev_recall@12",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_C_pdf_prod|r2.ev_recall_c12k": {
+  "value": 0.53323156827954,
+  "metric": "r2.ev_recall_c12k",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_C_pdf_prod|r2.mrecall@10": {
+  "value": 0.5,
+  "metric": "r2.mrecall@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_C_pdf_prod|r2.setf1@10": {
+  "value": 0.4982800021002144,
+  "metric": "r2.setf1@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L2|r2_C_pdf_prod|r2.strecall@10": {
+  "value": 0.8662414965986394,
+  "metric": "r2.strecall@10",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **20**＝47 篇 ｜ 真值 `gold_final2.csv` ｜ 切块 `r2dev/prodchunk` ｜ 题集 combos=new ｜ ★ 块口径**不公平**（块越大越占便宜）→ 优先看 `ev_recall_c12k`（等字符预算） ｜ ★ 但「等字符」是**整块加入**、末块会超出，粗粒度臂超得更多 → 跨臂比 `ev_recall_c12k` 时请一并看实选字符/篇@12k（A_ls_fix=12,025、B_pdf_fix=12,032、C_pdf_prod=13,233）"
+ },
+ "L4|qampari_audit_k40_k40|qampari.coverage": {
+  "value": 0.8148148148148148,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_audit_k40_k40|qampari.em": {
+  "value": 0.47,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_audit_k40_k40|qampari.subspan_em": {
+  "value": 0.69,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_direct128k_k20|qampari.coverage": {
+  "value": 0.7989999999999999,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_direct128k_k20|qampari.em": {
+  "value": 0.49,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_direct128k_k20|qampari.subspan_em": {
+  "value": 0.7,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k20_k20|qampari.coverage": {
+  "value": 0.7869999999999999,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k20_k20|qampari.em": {
+  "value": 0.45,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k20_k20|qampari.subspan_em": {
+  "value": 0.66,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k40_ce_k40|qampari.coverage": {
+  "value": 0.86,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k40_ce_k40|qampari.em": {
+  "value": 0.15,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k40_ce_k40|qampari.subspan_em": {
+  "value": 0.18,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k40_k40|qampari.coverage": {
+  "value": 0.8208754208754209,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k40_k40|qampari.em": {
+  "value": 0.44,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k40_k40|qampari.subspan_em": {
+  "value": 0.7,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k80_k80|qampari.coverage": {
+  "value": 0.8538461538461539,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k80_k80|qampari.em": {
+  "value": 0.18,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_exh_k80_k80|qampari.subspan_em": {
+  "value": 0.18,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_k40_noexh_k40|qampari.coverage": {
+  "value": 0.6013468013468014,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_k40_noexh_k40|qampari.em": {
+  "value": 0.31,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_k40_noexh_k40|qampari.subspan_em": {
+  "value": 0.48,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_ground_k40|qampari.coverage": {
+  "value": 0.7652777777777778,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_ground_k40|qampari.em": {
+  "value": 0.21,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_ground_k40|qampari.subspan_em": {
+  "value": 0.55,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_k40_k40|qampari.coverage": {
+  "value": 0.7690972222222222,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_k40_k40|qampari.em": {
+  "value": 0.23,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_k40_k40|qampari.subspan_em": {
+  "value": 0.57,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_verify_k40|qampari.coverage": {
+  "value": 0.7101754385964912,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_verify_k40|qampari.em": {
+  "value": 0.24,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr1m_verify_k40|qampari.subspan_em": {
+  "value": 0.54,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr_k20|qampari.coverage": {
+  "value": 0.5973063973063973,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr_k20|qampari.em": {
+  "value": 0.29,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_retr_k20|qampari.subspan_em": {
+  "value": 0.43,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_smoke_k20|qampari.coverage": {
+  "value": 0.76,
+  "metric": "qampari.coverage",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_smoke_k20|qampari.em": {
+  "value": 0.02,
+  "metric": "qampari.em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ },
+ "L4|qampari_smoke_k20|qampari.subspan_em": {
+  "value": 0.03,
+  "metric": "qampari.subspan_em",
+  "tol": 0.02,
+  "direction": "up",
+  "note": "LoFT-RAG / **QAMPARI 128k 档**（755 段 ≈ 105k token，100 题，gold 5~6/题） ｜ ★ `coverage` **只有 recall**；官方 `f1` 恒为 0（多值分支未赋值） → **别引用** ｜ ★ 边界：**限 128k 档**且该档**保证 gold 存在** → 测不了「空集」；系统是「我们的检索 + deepseek-flash」，与下列其它系统**不同源**，只作参照：专用 RAG pipeline 0.55 / Gemini 1.5 Pro（直读） 0.44 / GPT-4o 0.27 / Claude 0.25 ｜ ★ 其中约 0.15 来自模型**闭卷知识**，讲「检索贡献」应报差额 ｜ 指标用 **LoFT 官方评测代码**（`retrieval/data/loft/official/`）算，非自实现 ｜ 题数 100"
+ }
+}

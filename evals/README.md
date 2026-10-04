@@ -88,6 +88,7 @@ evals/
 | **L4 口径完整性** | `evals/runners/l4_loft.py` + `tests/test_l4_loft.py` | 坏指标文件（**0KB**/缺字段）**被跳过而非当 0 分**；五任务的口径坑、档位边界、公开参照必须写在 `note` 里；指标**透传**（官方加指标不必改代码） |
 | 草稿/备份是否混在 gold 旁 | `tests/test_eval_assets.py` | 无（同前缀会让人改错文件） |
 | CLI 入口能否跑 | 同上（`@pytest.mark.local`） | `cli/eval/*.py --help` 退出码 0（验证 `parents[2]`） |
+| **跑批入口的 emit 接线** | `tests/test_eval_emit_wiring.py` | 记录**真落盘**（断言**副作用**，不是"没抛异常"）。曾因 `_emit_report` 漏传 `args` → `NameError` 被 `except` 静默吞掉 → **一整天没记录也没人发现**；而"没抛异常"这条断言对它**完全无效** |
 
 跑法：`uv run pytest -q`（L0 全在默认套件里，无需 key / GPU / 网络）。
 
@@ -118,8 +119,8 @@ evals/
 
    ⚠️ 接的时候**没动各自的判分口径**（那是另一件事）。
 
-3. **指标棘轮已就位**：`evals/baselines/metrics.json` 初始 `{}`，
-   **跑过一次批后执行一次**即可建立基线：
+3. **指标棘轮已通电**（2026-10-05）：`evals/baselines/metrics.json` 已建 **54 条**
+   （L2 检索侧 18 + L4 QAMPARI 36）。以后跑过批再执行一次 `--update` 更新/收缩：
 
        python evals/checks/metrics_ratchet.py --update   # 建/更新基线
        python evals/checks/metrics_ratchet.py            # 比对（掉出容差 → 退出码 1）
@@ -154,4 +155,17 @@ evals/
 
 5. **`evals/reports/` 是 gitignore 的** → 干净 clone 里指标棘轮**无数据可比**（会跳过并说明）。
    若要让"指标历史"进版本库，应入库 `--md` 摘要（`python evals/report.py --md`），
-   而不是每次跑的原始 JSONL。
+   而不是每次跑的原始 JSONL。当前摘要落在 **`evals/RESULTS.md`**。
+
+6. **已知未决（2026-10-05 收尾时记下 —— 不留在聊天里）**：
+
+   - **L2 只跑了检索侧，判定质量未测。** `_r2_retr_eval.py`（证据召回）已落 18 条；
+     reader 侧 `_r2_reader.py` 要**真调 LLM 判官**，**尚未跑** → `r2.reader_*` 无基线，
+     "判得对不对"这一半**还是空白**。
+   - **L4 只有 QAMPARI。** `rag` / `retrieval` / `sql` / `icl` 四个任务**无数据无运行**
+     （`--check` 显示"尚无运行"）；QAMPARI 的 **`32k` 档有数据但无运行**（补跑要真调 LLM）。
+   - **L4 容差待实测。** 默认 `0.02` 在 `n=100` 上 = **2 题翻转**：
+     只跟"**重收同一批 preds**"比是**确定性**的（没问题）；**重跑 preds**（LLM 采样）
+     则可能误报。线索：`audit_k40_k40`(em 0.47) 与 `exh_k40_k40`(em 0.44) 疑似
+     同配置两次跑，差 3pt。**验证法**：同一配置跑两次量离散度再定容差。
+     ★ 未测前**不要凭感觉放宽** —— 放宽容差等于把闸门关小。
