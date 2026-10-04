@@ -45,7 +45,7 @@ from paperpilot.tools.evidence import dict_to_claim, verify_evidence
 from paperpilot.tools.figures import extract_figures
 from paperpilot.tools.pdf_parser import parse_pdf
 
-ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
+ROOT = Path(__file__).resolve().parents[2]  # cli/eval/ → 项目根
 PAPERS_DIR = ROOT / "assets" / "papers"
 CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
 VIEWS_DIR = ROOT / "assets/artifacts/out_views"

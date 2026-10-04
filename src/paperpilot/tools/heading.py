@@ -1,6 +1,7 @@
 """论文标题识别（V3 正式版）。
 
-从 tests/_heading_scoring.py 迭代沉淀而来，经 14 篇规范论文验收（含 2 批测试集）：
+从 `tests/_heading_scoring.py`（迭代期脚本，**已不在仓库**）沉淀而来，
+经 14 篇规范论文验收（含 2 批测试集）：
   - 硬性：References 之后无非附录标题、L1 一级标题全覆盖、正文不产生碎片 chunk
   - 覆盖风格：编号(1 / 1.1 / A)与无编号、全大写 / title case / sentence case、
     单行与多行标题、不同字号（r 1.0x~1.3x）

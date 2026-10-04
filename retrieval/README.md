@@ -189,7 +189,7 @@ top-k 篇上现算（几十篇 × 20 块），成本可忽略。**不需要给 6
 | 层 | 用什么 | 指标 | 状态 |
 |---|---|---|---|
 | **篇级召回** | LitSearch（64,183 篇） | Recall@1/5/10、MRR@k | 本次要建 |
-| **段级证据** | QASPER（426 篇，段落级 gold evidence） | Recall@k、nDCG@10 | 已有（`cli/run_retrieval_eval.py`） |
+| **段级证据** | QASPER（426 篇，段落级 gold evidence） | Recall@k、nDCG@10 | 已有（`cli/eval/run_retrieval_eval.py`） |
 
 消融对照（每项都要给"有效/无效 + 原因"，而不是只报数字）：
 
@@ -206,6 +206,11 @@ E. D + 元数据过滤 / one-hop 引文扩展
 - 按 `specificity` / `query_set` 分组 → 解释不同查询类型的难度。
 
 ## 结果：完整消融（2026-09-18，597 题，63,269 篇）
+
+> 📄 **全部指标一页汇总**：`results/LITSEARCH_METRICS_20260927.md`
+> （2026-09-27 **重跑**：检索前端 GPU 真跑 50 秒；新 `topk1000_v2.npz` 与旧产物
+> **6 个系统逐位一致** → CE/LLM 产物可直接复用。含 recall 曲线 / 精排链 / 论文口径对标 /
+> 配对显著性 / 成本延迟。）
 
 | 配置 | R@1 | R@5 | R@10 | R@100 | MRR@10 |
 |---|---|---|---|---|---|
@@ -1045,6 +1050,18 @@ LitSearch 语料有两条硬边界：**NLP 领域**（ACL 家族压倒性，CVPR
 - [x] 显著性检验（McNemar + 配对 bootstrap）
 - [x] cross-encoder 精排（`bge-reranker-v2-m3`，+6.6pt R@1，显著）
 - [x] L1 分类评测 + 分流前置验证 → **负结果：`specificity` 不分流**（见上）
+- [x] **交付数 N 与池深 K 的决策**（`results/LITSEARCH_DELIVER_N_20260927.md`）：
+      结论是**线上 `corpus_search` 配置（POOL 200 / K_CE 50 / N_OUT 10 / 交付 5）不用改**
+      （池 50 已是收益拐点；`N_OUT=10` 即便交付 20 篇也够用，只差 0.0pt hit）；
+      **覆盖导向重排（MMR）两种用法全部无效**（负结果，机制见报告 §3）；
+      覆盖率天花板由**池深**决定（池 100 → 44.1%、池 500 → 73.5%、池 1000 → 85.3%），
+      **CE 只吃到池内可得的 47%、LLM listwise 吃到 100%** → 空白是"廉价且能识别的多篇排序器"
+- [ ] ⚠️ **线上基准已饱和，必须先难化题集**：`arXiv200`（中文问 / 54 万语料）上
+      **CE 交付 5 篇 = 99.5%、LLM = 100%、池深 100/200/400 无差别**
+      → 在此题集上**任何 rerank/池深改动都无法体现**（见
+      `results/LITSEARCH_DELIVER_N_20260927.md` §6）。建议：**难度自适应出题**
+      （gold 进 top-5 即判太易并重写）+ 同主题干扰 + 方向型多答案题（gold≥3）
+      + 人工抽查"其余几篇是否真是同主题噪声"
 - [ ] **L5 查询分解 + `quota_union`**（`query_optimizer.py` 里最可能有正收益的一级）
 - [ ] **L3 改写 + `quota_union`**（复现"病根是等权 RRF"的诊断）
 - [ ] L4 HyDE（先判"假设文档比 title+abstract 长"的长度错配是否成立）

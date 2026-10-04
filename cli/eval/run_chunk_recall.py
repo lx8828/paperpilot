@@ -9,14 +9,14 @@
 - Recall@k = gold 里**任一** chunk 落在 top-k；MRR@k = 首个 gold 的位次（<k 才计）。
 - 三种检索：`vec` / `bm25` / `hyb`（RRF 等权，与线上一致）。
 
-## 为什么不复用 `cli/run_retrieval_eval.py`
+## 为什么不复用 `cli/eval/run_retrieval_eval.py`
 
 那个的 gold 来源**绑死 QASPER**（`qa.sources.qasper`），而本组语料是**真 arXiv PDF**，
 gold 在 `retrieval/tmp/<group>/` 的题集里（`evidence` 刻意不导出给端到端 runner，
 就是留给检索层当 gold 的 —— 见 `_export_questions.py`）。定位与指标逻辑沿用同一套。
 
 用法：
-    python cli/run_chunk_recall.py --group group1 [--ks 5 10 20] [--out <md>]
+    python cli/eval/run_chunk_recall.py --group group1 [--ks 5 10 20] [--out <md>]
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "retrieval" / "scripts"))   # 复用校验器的鲁棒归一化
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]

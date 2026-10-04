@@ -20,10 +20,10 @@
     ❌ 不重解析 PDF/MinerU —— 复用 summary.json 里已缓存的 ev_state
 
 用法：
-    uv run python cli/run_repair_labels.py --scan           # 只列出待修篇（不调 LLM）
-    uv run python cli/run_repair_labels.py --all            # 修补全部待修篇
-    uv run python cli/run_repair_labels.py 2606.18837 ...   # 指定篇（按 stem）
-    uv run python cli/run_repair_labels.py --all --dry-run  # 只看将要做什么
+    uv run python cli/eval/run_repair_labels.py --scan           # 只列出待修篇（不调 LLM）
+    uv run python cli/eval/run_repair_labels.py --all            # 修补全部待修篇
+    uv run python cli/eval/run_repair_labels.py 2606.18837 ...   # 指定篇（按 stem）
+    uv run python cli/eval/run_repair_labels.py --all --dry-run  # 只看将要做什么
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 
@@ -186,7 +186,7 @@ def main() -> int:
             fail += 1
             print(f"  ✗ 失败: {type(e).__name__}: {str(e)[:200]}")
     print(f"\n{'=' * 78}\n完成：成功 {ok} ｜ 失败 {fail}")
-    print("建议复核：uv run python cli/run_repair_labels.py --scan")
+    print("建议复核：uv run python cli/eval/run_repair_labels.py --scan")
     return 0 if fail == 0 else 1
 
 

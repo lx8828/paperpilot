@@ -1,8 +1,8 @@
 """成果层：`report.json` → **跨篇可比、可算**的规范卡。
 
-    uv run python cli/run_outcome.py 2408.09273.pdf
-    uv run python cli/run_outcome.py 2408.09273.pdf --force     # 忽略缓存重建
-    uv run python cli/run_outcome.py 2408.09273.pdf --json      # 打印原始 JSON
+    uv run python cli/eval/run_outcome.py 2408.09273.pdf
+    uv run python cli/eval/run_outcome.py 2408.09273.pdf --force     # 忽略缓存重建
+    uv run python cli/eval/run_outcome.py 2408.09273.pdf --json      # 打印原始 JSON
 
 ⏱ 一次约 20~60s（1 次 LLM 调用）；之后**走缓存秒回**。
 ⚠️ 严格校验：`quote` 必须 verbatim 回原文，`value` 还必须在该 quote 里 ——
@@ -14,7 +14,7 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 

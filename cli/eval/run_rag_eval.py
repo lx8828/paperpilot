@@ -7,7 +7,7 @@
     答案   与 note 大意是否一致（人工判读）
 
 用法：
-    uv run python cli/run_rag_eval.py
+    uv run python cli/eval/run_rag_eval.py
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAcces
 from paperpilot.graph import ask
 from paperpilot.tools import llm
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 QA_FILE = ROOT / "qa" / "qa_set.json"
 OUT_FILE = ROOT / "qa" / "rag_eval_out.json"
 

@@ -1,6 +1,7 @@
 """表块纯函数：caption 清噪 / 表头 / 摘要 / 并集配额 / 按块权重 / RRF 融合。
 
-迁移自 `qa/recall/_selftest_tables_20260912.py`（改写为参数化用例），并补了边界。
+迁移自 `qa/recall/_selftest_tables_20260912.py`（该脚本**已不在仓库**；改写为参数化
+用例），并补了边界。
 
 为什么必须测：这些函数全都在**生产路径**上——
 正则在 caption 上宽一点会**误删真 caption**（`TABLE IV` 就是这么踩过的），

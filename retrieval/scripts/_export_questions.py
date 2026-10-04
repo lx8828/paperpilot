@@ -1,4 +1,4 @@
-"""把组 gold 题集导出成 `cli/run_qa_v2.py` 能直接跑的 `qa/questions/<stem>.json`。
+"""把组 gold 题集导出成 `cli/eval/run_group_qa.py` 能直接跑的 `qa/questions/<stem>.json`。
 
 **为什么要导出而不是手写两份**：gold 题集是**唯一真源**（每题都有逐字原文引文，
 由 `_validate_questions.py` 把关）；runner 只认另一套扁平字段。两份手写必漂移。
@@ -50,7 +50,7 @@ def split_anchors(q: dict) -> tuple[list[str], list[str]]:
 
 
 def export_group(group: str) -> None:
-    """组级题集 → `qa/multi/<group>.json`（`cli/run_multi_qa.py` 的 B 组格式）。
+    """组级题集 → `qa/multi/<group>.json`（`cli/eval/run_multi_qa.py` 的 B 组格式）。
 
     ⚠️ 与单篇层的关键差别：组级 runner 的判定是
     `must_all`（全部命中）+ `must_any`（任一命中）+ `must_not`，
@@ -119,6 +119,10 @@ def main() -> int:
                 "route_min": q.get("route_min", "L0"),
                 "hint": q.get("hint", ""),
                 "must_have": any_,
+                # 2026-09-23 补：显式写 `must_any`（与组级导出一致）。
+                # 拒答题是 `must_all=[] + must_any=拒答措辞`——只写 must_have 时，
+                # runner 的旧 schema 回退会把 must_have 当**必现** → 10/10 误判。
+                "must_any": any_,
                 "must_all": all_,
                 "must_not": q.get("must_not") or [],
                 "chunk_kw": None,

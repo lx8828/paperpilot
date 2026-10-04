@@ -2,7 +2,7 @@
 
 ## 定位
 
-**固定顺序，没有 agent 决策** —— 这就是 workflow 阶段（`design.md` 的"当前 MVP 范围"）。
+**固定顺序，没有 agent 决策** —— 这就是 workflow 阶段（早期 `archive/design.md` 的"当前 MVP 范围"）。
 将来做 agent 时，本模块的 `step_*` 会被包装成 tool，由 LLM 决定调用顺序与参数；
 **现在不引入那层**，先把链路跑通。
 
@@ -13,7 +13,7 @@
 
 ## 复用 web 的三条 lane（顺序化）
 
-`web/worker.py` 跑的是 **MinerU ∥ process_pdf → 索引**（前两条互不依赖，所以并行）。
+`src/paperpilot/worker.py` 跑的是 **MinerU ∥ process_pdf → 索引**（前两条互不依赖，所以并行）。
 这里为了 CLI 可读性**串行**跑，产物完全等价：
 
     ① search        问题 → top-k 论文（`tools/corpus_search.py`）

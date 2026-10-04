@@ -26,9 +26,9 @@
 - gold = 全部人工 evidence 段并集（gold_answer_full）
 
 用法：
-    uv run python cli/run_chunk_eval.py                       # 全量
-    uv run python cli/run_chunk_eval.py --limit-papers 40     # 冒烟
-    uv run python cli/run_chunk_eval.py --strat-papers 60     # C 组对照论文数
+    uv run python cli/eval/run_chunk_eval.py                       # 全量
+    uv run python cli/eval/run_chunk_eval.py --limit-papers 40     # 冒烟
+    uv run python cli/eval/run_chunk_eval.py --strat-papers 60     # C 组对照论文数
 """
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "cli"))
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]

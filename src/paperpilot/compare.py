@@ -199,7 +199,7 @@ def _require_cached(pdf: str) -> PaperOutcome:
     from paperpilot.outcome import load_outcome
     o = load_outcome(pdf)
     if o is None:
-        raise FileNotFoundError(f"缺成果层缓存：{pdf}（先跑 cli/run_outcome.py）")
+        raise FileNotFoundError(f"缺成果层缓存：{pdf}（先跑 cli/eval/run_outcome.py）")
     return o
 
 

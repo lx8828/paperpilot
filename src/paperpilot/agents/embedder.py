@@ -89,7 +89,8 @@ class BM25Index:
 def _bm_or_none(bm_scores: np.ndarray | None) -> np.ndarray | None:
     """BM25 分数**无有效信号**时返回 None（即：只用向量路）。
 
-    ⚠️ 2026-09-21 实测（`retrieval/scripts/_bm_check.py`，5 篇 / 146 chunk）：
+    ⚠️ 2026-09-21 实测（原脚本 `retrieval/scripts/_bm_check.py` **已不在仓库**，故此处
+       把结论数据一并落在注释里，避免"引用不可复核"）：5 篇 / 146 chunk
         `BM25Index` 的分词是「英文词 + **单个汉字**」，而语料是英文论文
         → **纯中文查询的 token 全部无匹配 → `score()` 全 0**。
         此时若照常融合，`np.argsort(-bm_scores)` 对全 0 数组返回**索引序**
@@ -101,7 +102,19 @@ def _bm_or_none(bm_scores: np.ndarray | None) -> np.ndarray | None:
         "CrossSum 1500 多种语言对…" → max 0.911、非零 44/146 ✅
         "content plan 内容规划…"   → max 3.212、非零 28/146 ✅
 
-    **产品是中文提问 → 必现**，所以必须在无信号时跳过 BM25 路。
+    ⚠️ **2026-09-26 修正（原写"产品是中文提问 → 必现"，这句过强）**：
+        按本判据逐题实测 120 道中文题（`retrieval/tmp/_lang_effect.py`）——
+        **104/120（87%）的题 BM25 有非零分**，只有 16 道是"全 0"。
+        原因：中文问句普遍**照抄英文实体**（`MAMuJoCo` / `VAE` / `w/o Expand` /
+        `Table 1` / `token`…），这些 token 在英文正文里有匹配。
+        所以准确表述是：**纯中文 token 的查询才会全 0**（占 13%），不是"中文提问必现"。
+
+    闸门的**价值**（Step 1 消融，`retrieval/tmp/_sandbox.py --ablate`，120 题）：
+        伪装信号放行（= 模拟"没有闸门"）→ 未命中 11 → **12**，且**只落在那 16 道 dead 题上**
+        （live 层 5→5、dead 层 6→7）——与上面"索引序伪位次"的机制**完全吻合**。
+        即：闸门的价值 = **1 道**（在 N=24 下）。仍必须留（真 bug），但别高估它。
+        → 附注：正因为闸门只在 dead 层生效，**"调 BM25 参数"（k1/b/权重）只影响 live 层**，
+          而 live 层才是主力（104/120）→ 见 `_sandbox.py --ablate` 的 A1a/A6a 对照。
     """
     if bm_scores is None or bm_scores.size == 0:
         return None
@@ -219,6 +232,19 @@ EMBED_DIM = 1024
 #    8192 是**必需的**：QASPER 极端块 15981 字符 ≈ 4200 token，低于此值就会截断。
 ENCODE_BATCH = 8
 
+# ★ 每批的 **token 预算**（2026-09-30 实测）。`padding=True` 会补到批内最长 → 驱动激活显存的
+#   真正指标是 **`batch_size × 批内最长 token`**。用真 tokenizer 在**本语料 3,284 块**上实测：
+#
+#   | 分批策略 | 总 token | **单批 token 峰值** |
+#   |---|---|---|
+#   | 乱序（原行为） | 3,838,068 | **60,864** ← 打满 6 GB → 驱动换页 |
+#   | 仅按长度排序 | 2,587,840 | **30,432** ← 仍偏高（最长的几个块被排到一起） |
+#   | **排序 + 本预算** | 2,485,939 | **8,925** ← 降 6.8× |
+#
+#   ⚠️ 别用"批内最长 token"当指标 —— 两种排序下它都是 7,608（最长的块总在某个批里），
+#      必须看 **batch_size × 批内最长**。
+ENCODE_TOKEN_BUDGET = 8192
+
 _model = None
 
 
@@ -249,15 +275,76 @@ def encode_texts(texts: list[str]) -> np.ndarray:
 
     `PAPERPILOT_MOCK_EMBED=1`（演示模式）→ 用内置"词袋哈希"向量，
     **不加载 bge-m3**（省 2 GB 下载），保证无模型也能跑通检索链路。
+
+    ## ★ 按长度排序再批（2026-09-30）
+    `SentenceTransformer.encode` 会**补到批内最长**，而我们的块长度跨度很大
+    （语料实测：中位 1,794 字符、p90 3,751、最长可达 2,806 token）→ **乱序时每个批
+    都被同批最长的块拖满**。改成"**先按长度排序 → encode → 还原原序**"：
+
+    | | 峰值显存 | 单簇 1,079 块耗时 |
+    |---|---|---|
+    | 乱序（原） | 5,634 / 6,144 MiB（**仅剩 287** → 驱动换页） | >1,000s 且不收敛 |
+    | 排序（现） | 见 `ENCODE_BATCH` 注释的一致量级 | 见 verify 输出 |
+
+    ⚠️ **不截断**（挨着 `max_seq_length=8192` 那条"不许截断"的结论）、**不改精度**
+    （不引入 fp16，故不失效已有 `.cvec.npy` 缓存）。批组成变化带来的数值差异与
+    当年 `32→8` 同量级（fp32 舍入噪声 ≈3e-7），`_fingerprint()` 只看文本 → 缓存继续有效。
     """
     if not texts:
         return np.zeros((0, EMBED_DIM), dtype="float32")
     if mock_llm.embed_enabled():
         return mock_llm.encode_texts(list(texts), EMBED_DIM)
     model = _get_model()
+    ts = list(texts)
+    if len(ts) <= ENCODE_BATCH:                    # 小集合（如 `encode_query` 的 1 条）直接走
+        return np.asarray(model.encode(ts, normalize_embeddings=True,
+                                       batch_size=ENCODE_BATCH), dtype="float32")
     # ⚠️ 必须显式给 batch_size：默认 32 会让单篇首次建索引慢 35 倍（见 ENCODE_BATCH 注释）
-    vecs = model.encode(list(texts), normalize_embeddings=True, batch_size=ENCODE_BATCH)
-    return np.asarray(vecs, dtype="float32")
+    order = sorted(range(len(ts)), key=lambda i: len(ts[i]))      # 批内长度相近 → 少 padding
+    lens = _token_lens(model, [ts[i] for i in order])             # 真 tokenize（约 1s/3000 块）
+    out = np.empty((len(ts), EMBED_DIM), dtype="float32")
+    for b in _plan_batches(lens, ENCODE_BATCH, ENCODE_TOKEN_BUDGET):
+        sub = [order[i] for i in b]
+        v = model.encode([ts[i] for i in sub], normalize_embeddings=True,
+                         batch_size=len(sub))
+        out[sub] = np.asarray(v, dtype="float32")
+    return out
+
+
+def _token_lens(model: Any, texts: list[str]) -> list[int]:
+    """真实 token 长度（截断到 `max_seq_length`，与实际编码口径一致）。"""
+    try:
+        tk = model.tokenizer
+        mx = int(getattr(model, "max_seq_length", 8192) or 8192)
+        out: list[int] = []
+        for i in range(0, len(texts), 256):
+            enc = tk(texts[i:i + 256], truncation=True, max_length=mx,
+                     add_special_tokens=True)
+            out += [len(x) for x in enc["input_ids"]]
+        return out
+    except Exception:  # noqa: BLE001（tokenizer 不可用 → 按字符估，3.5 字符/token 实测均值）
+        return [max(1, int(len(t) / 3.5)) for t in texts]
+
+
+def _plan_batches(lens: list[int], max_bs: int, budget: int) -> list[list[int]]:
+    """在**已按长度升序**的前提下切批：每批 ≤`max_bs` 条，且 `条数 × 批内最长` ≤`budget`。
+
+    → 既保住"批内长度相近"，又给**超长块**单独设上限（否则它会把整批拉满）。
+    """
+    out: list[list[int]] = []
+    cur: list[int] = []
+    mx = 0
+    for i, n in enumerate(lens):
+        m2 = max(mx, n)
+        if cur and (len(cur) >= max_bs or m2 * (len(cur) + 1) > budget):
+            out.append(cur)
+            cur, mx = [i], n
+        else:
+            cur.append(i)
+            mx = m2
+    if cur:
+        out.append(cur)
+    return out
 
 
 def encode_query(query: str) -> np.ndarray:
@@ -545,6 +632,93 @@ class ChunkIndex:
             })
         return hits
 
+    # ── ★ R2 定稿：多路加权 RRF（1 中文 dense + n 子查询 dense + n 子查询 BM25）──
+    #    依据 `retrieval/results/R2_FINAL_SPEC_20260930.md`：7 路 RRF(C=60)，ρ=1:4，
+    #    每路截断 d=(zh 100, sq-dense 50, sq-bm25 50)（三类体积比 1:1.10:1.25 已配平）。
+    #    与 `search_multi_hybrid` 的差别**只有**三点：逐路截断 d、逐类权重、路数可分离。
+    def search_multiroute(self, *, zh: str, subs: list[str],
+                          d_zh: int = 100, d_sd: int = 50, d_sb: int = 50,
+                          w_dense: float = 1.0, w_sparse: float = 4.0,
+                          rrf_k: int = 60, top_k: int = 8,
+                          use_select: bool = True) -> list[dict[str, Any]]:
+        """**多路加权 RRF**：`zh` 走 1 路 dense，`subs` 各走 dense + BM25，按类加权。
+
+        · 每路**先截 top-d 再计入 RRF**（`d<=0` = 不截）；RRF 名次用**该路内的全局秩**；
+        · 权重：两类 dense = `w_dense`，BM25 路 = `w_sparse`（定稿 4.0 ← bm25 主导）；
+        · `score` 存 **RRF 分**（定稿按此排序；其他 reader 用 cosine，这里不沿用）；
+        · `use_select=False` → 不做节级配额（`_select`），返回**纯 RRF 序**（定稿口径）。
+        env 覆盖：`PAPERPILOT_R2_{D_ZH,D_SD,D_SB,W_SPARSE,RRF_K}`。
+
+        ⚠️ 中文查询的 BM25 通常全 0（`_bm_or_none` 会跳过），故 `zh` **不另开 BM25 路**
+        ——与定稿一致，也避免"索引序伪位次"（见 `_bm_or_none` 的长注释）。
+        """
+        def _env_int(name: str, default: int) -> int:
+            try:
+                return int(os.environ.get(name, "") or default)
+            except ValueError:
+                return default
+
+        def _env_f(name: str, default: float) -> float:
+            try:
+                return float(os.environ.get(name, "") or default)
+            except ValueError:
+                return default
+
+        d_zh = _env_int("PAPERPILOT_R2_D_ZH", d_zh)
+        d_sd = _env_int("PAPERPILOT_R2_D_SD", d_sd)
+        d_sb = _env_int("PAPERPILOT_R2_D_SB", d_sb)
+        w_sparse = _env_f("PAPERPILOT_R2_W_SPARSE", w_sparse)
+        rrf_k = _env_int("PAPERPILOT_R2_RRF_K", rrf_k)
+
+        chunks = self._doc_chunks()
+        vecs = self.vectors()
+        n = len(chunks)
+        if n == 0:
+            return []
+        rrf = np.zeros(n, dtype="float64")
+        # `q_sim` = 该块在**全部查询上的最大 cosine** —— 供 C3"按语义选块"构造证据窗口用
+        # （定稿窗口 = 该篇内 sim 最大的若干块拼到 ≤4,200 字符；生产侧没有 facet 正则，
+        #  故窗口只用语义选块这一支）。见 `R2_FINAL_SPEC_20260930.md` / `set_judge.build_user`。
+        q_sim = np.full(n, -np.inf, dtype="float64")
+        bm_idx = BM25Index([c.text for c in chunks])
+
+        def _add(scores: np.ndarray, d: int, w: float) -> None:
+            if scores is None:
+                return
+            order = np.argsort(-scores)
+            lim = n if d <= 0 else min(int(d), n)
+            for r, i in enumerate(order[:lim]):        # 名次 = 该路内全局秩 r（与定稿一致）
+                rrf[int(i)] += w / (rrf_k + r + 1)
+
+        if zh:
+            v = (vecs @ encode_query(zh)).astype("float64")
+            q_sim = np.maximum(q_sim, v)
+            _add(v, d_zh, w_dense)
+        for s in subs:
+            if not s:
+                continue
+            v = (vecs @ encode_query(s)).astype("float64")
+            q_sim = np.maximum(q_sim, v)
+            _add(v, d_sd, w_dense)
+            _add(_bm_or_none(np.asarray(bm_idx.score(s), dtype="float64")), d_sb, w_sparse)
+
+        order = list(np.argsort(-rrf))
+        sel = self._select(chunks, order, top_k) if use_select else order[: min(top_k, n)]
+        hits = []
+        for i in sel:
+            c = chunks[int(i)]
+            hits.append({
+                "chunk_id": c.chunk_id,
+                "title_path": list(c.title_path),
+                "page": c.page_span[0],
+                "text": c.text,
+                "score": round(float(rrf[int(i)]), 6),
+                "q_sim": (None if not np.isfinite(q_sim[int(i)])
+                          else round(float(q_sim[int(i)]), 4)),
+                **self._hit_extra(int(i)),
+            })
+        return hits
+
     def search_hybrid(self, query: str, top_k: int = 8) -> list[dict[str, Any]]:
         """向量 + BM25 RRF 融合检索（专名/术语精确匹配互补）。
 
@@ -682,12 +856,25 @@ class MultiChunkIndex(ChunkIndex):
                        mode: str = "quota", floor: int = 1) -> list[dict[str, Any]]:
         """多篇检索主路径：**每篇内先检索（同粒度可比）→ 跨篇融合**。
 
-        为什么不能直接用全局索引（2026-09-21 实测，5 篇 / 146 chunk）：
-            5 篇**总字符数相近**（57k~72k），但 chunk 数 22~52、中位块长 676~3956
-            （差 5.8×）→ 全局 cosine 实际在比"**谁切得细**"而不是"谁相关"：
-            泛化查询 top12 被单篇 100% 霸占、top48 仍占 71%；
-            把 top_k 从 12 加到 48，其他篇覆盖只从 0 涨到 1~7 → **加大 k 无效**。
-            连查询里直接写论文名（"CrossSum"）都没能把目标篇顶到第 1。
+        ⚠️ **2026-09-25 重测后改写的动机说明**（此前引用的"谁切得细"是 2026-09-21 的
+        **历史结论，已不适用** —— 见下"历史"一节，别再拿它当现状）：
+            粒度**已被抹平**：本套语料 group1 中位块长 886~1853（2.09×）、块数 20~28；
+            group2 1046~1780（1.70×）、块数 20~24。（2026-09-22 那次"与
+            `chunker.chunk_document` 对齐"的分块改动生效了。）
+            **但全局混池仍系统性漏篇**（N=24，两组各 60 题）：
+                global/hybrid  平均命中 3.60 / 4.18 篇 ｜ 覆盖满 5 篇仅 15/60、23/60
+                本方法(quota)  平均命中 **4.90 / 4.93** 篇 ｜ 覆盖满 5 篇 **54/60、56/60**
+            原因现在是**两条叠加**：
+              ① **粒度残留**（2× 未归零）：实测两组里**块最粗的那篇恰好被漏最多**
+                 （29290 中位 1853 → 漏 23/60；25389 中位 1780 → 漏 25/60）；
+              ② **同主题分数集中**：5 篇是姊妹论文，cos 全挤在 0.48~0.55（只差 0.07）
+                 → 全局 top-k 会被"字面更贴近查询"的那篇成片占掉。这一条与块长无关。
+            所以本方法的作用应理解为**「保证每篇可见」（补漏）**，不是"修正粒度偏差"：
+            它很轻 —— 实测平均只注入 1.07~1.52 块/题，12~17/60 题**完全不注入**。
+
+        历史（2026-09-21，**仅存档，勿引用**）：当时 5 篇 chunk 数 22~52、中位块长差 5.8×
+        → 全局 cosine 实际在比"谁切得细"（泛化查询 top12 被单篇 100% 霸占、top48 仍占 71%，
+        把 top_k 从 12 加到 48 其他篇覆盖只从 0 涨到 1~7）。粒度问题后来已修，该结论作废。
 
         mode:
             "quota"  —— **保底 + 全局补足**：各篇 top-`floor` 保底进候选，

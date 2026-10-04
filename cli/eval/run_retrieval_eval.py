@@ -10,7 +10,7 @@ gold evidence chunk 上的 Recall@k 与 MRR@k，并输出 gold 跨块/块内位�
 - Recall@k = |top_k ∩ C_gold| > 0 占比；MRR@k 以第一个 gold 位次 < k 计。
 
 用法：
-    uv run python cli/run_retrieval_eval.py --set qa/recall/recall_set_v1.json \
+    uv run python cli/eval/run_retrieval_eval.py --set qa/recall/recall_set_v1.json \
         --out qa/recall/RECALL_BASELINE.md [--limit-papers N]
 """
 from __future__ import annotations
@@ -21,7 +21,7 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 

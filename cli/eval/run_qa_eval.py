@@ -9,7 +9,7 @@
 若某类在任何一档都答不好 → 结构化层对该类问题无价值 / 检索或提取有缺口。
 
 用法：
-    uv run python cli/run_qa_eval.py
+    uv run python cli/eval/run_qa_eval.py
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ from paperpilot.tools import analyzer, llm
 from paperpilot.tools.chunker import chunk_document
 from paperpilot.tools.pdf_parser import parse_pdf
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 VIEW_DIR = ROOT / "assets/artifacts/out_views"
 PAPERS_DIR = ROOT / "assets" / "papers"
 QA_FILE = ROOT / "qa" / "qa_set.json"

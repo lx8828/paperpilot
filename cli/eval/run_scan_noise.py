@@ -19,7 +19,7 @@ sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAcces
 from paperpilot.tools import llm
 from paperpilot.tools.quality import is_abnormal, scan_claims
 
-ROOT = Path(__file__).resolve().parents[1]  # cli/ → 项目根
+ROOT = Path(__file__).resolve().parents[2]  # cli/eval/ → 项目根
 CLAIMS_DIR = ROOT / "assets/artifacts/out_claims"
 
 

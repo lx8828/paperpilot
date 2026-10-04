@@ -1,8 +1,8 @@
 """跨篇分析：N 篇同主题论文 → **一次 LLM 调用** → 对比分析。
 
-    uv run python cli/run_compare_papers.py 2408.09273.pdf 2305.14205.pdf 2403.13240.pdf
-    uv run python cli/run_compare_papers.py <pdf> ... --question "我更关心低资源语言上的表现"
-    uv run python cli/run_compare_papers.py <pdf> ... --cache-only   # 成果层缺了就报错，不调 LLM
+    uv run python cli/eval/run_compare_papers.py 2408.09273.pdf 2305.14205.pdf 2403.13240.pdf
+    uv run python cli/eval/run_compare_papers.py <pdf> ... --question "我更关心低资源语言上的表现"
+    uv run python cli/eval/run_compare_papers.py <pdf> ... --cache-only   # 成果层缺了就报错，不调 LLM
 
 产物：`assets/artifacts/out_compare/<名字>.md` + `.json`
 
@@ -15,7 +15,7 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.stdout.reconfigure(encoding="utf-8")  # pyright: ignore[reportAttributeAccessIssue]
 

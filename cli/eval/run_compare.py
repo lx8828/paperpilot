@@ -4,14 +4,14 @@
 
 用法：
     1. 锁定样本（从旧 run 文件取论文，确保 pipeline 产物已存在）：
-        uv run python cli/run_compare.py sample --from-run qa/qasper_overnight_full_20260907_142814.json \
+        uv run python cli/eval/run_compare.py sample --from-run qa/qasper_overnight_full_20260907_142814.json \
             --n 20 --out qa/compare/papers_compare.json
     2. 分别跑三列（可分开/后台跑，结果互不依赖）：
-        uv run python cli/run_compare.py run --column B1 --papers qa/compare/papers_compare.json \
+        uv run python cli/eval/run_compare.py run --column B1 --papers qa/compare/papers_compare.json \
             --out qa/compare/run_<ts>_B1.json
-        uv run python cli/run_compare.py run --column B0 --papers qa/compare/papers_compare.json \
+        uv run python cli/eval/run_compare.py run --column B0 --papers qa/compare/papers_compare.json \
             --out qa/compare/run_<ts>_B0.json
-        uv run python cli/run_compare.py run --column B2 --papers qa/compare/papers_compare.json \
+        uv run python cli/eval/run_compare.py run --column B2 --papers qa/compare/papers_compare.json \
             --out qa/compare/run_<ts>_B2.json
 
 约定（与 run_qasper_eval.py 同源）：
@@ -35,7 +35,7 @@ sys.path.insert(0, str(next(p for p in Path(__file__).resolve().parents if (p / 
 from qa.sources.qasper import _clean_para, gold_answer, load_papers
 from paperpilot.tools import llm
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 QA_DIR = ROOT / "qa"
 OUT_VIEWS = ROOT / "assets/artifacts/out_views"
 QASPER_PREFIX = "qasper_"
