@@ -162,4 +162,7 @@ retrieval/tmp/_gold_history/
 
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db
+# ↑ 测试临时目录：本身带权限问题（Windows），每次 `git status` 都会吐
+#   `warning: could not open directory '.pytest-tmp/'` —— 挡掉即静音。
+.pytest-tmp/
 .DS_Store
