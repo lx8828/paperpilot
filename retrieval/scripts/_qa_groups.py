@@ -108,7 +108,7 @@ GROUPS: dict[str, dict] = {
     # 论文来源：`cli/run_search.py`（本地 arXiv 索引 540k）→ `cli/run_fetch.py` 抓取。
     # 选篇口径：5 篇同题不同机制，且在**多个正交维度**上可切分（这样 M1 的
     # "哪些篇做了 X" 才有区分度）；并用"实验密度"（Table/百分比/消融/小数个数）
-    # 剔除实验过薄的篇（详见 `retrieval/tmp/_exp_density.py` 的实测）。
+    # 剔除实验过薄的篇（详见 `retrieval/tmp/_archive/_exp_density.py` 的实测）。
     "group3": {
         "title": "第三组 · 智能体长期记忆五篇（动态互联笔记 / 层级记忆 / 加权记忆树 / "
                  "可维护主题文档 / 学习式记忆管理）",

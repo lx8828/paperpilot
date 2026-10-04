@@ -3,9 +3,9 @@
 ## 为什么要有这条路径（2026-09-27 实测结论）
 
 跨篇题（M1）在"检索式"架构下已经见顶：失败分解显示 **50.5% 的失败是"篇进来了但选错块"**、
-**篇内 top1 命中只有 20%**（`retrieval/tmp/_design_probe.py`）；而"只有 5 篇"这个约束
+**篇内 top1 命中只有 20%**（`retrieval/tmp/_archive/_design_probe.py`）；而"只有 5 篇"这个约束
 （≈180k 字符 / ≈48k tokens）**让"不检索、直接全读"成为可行**。小样实测
-（`retrieval/tmp/_fullctx_trial.py`，17 题）：
+（`retrieval/tmp/_archive/_fullctx_trial.py`，17 题）：
 
     · 全上下文 13/17（人工核对 17/17）｜ 检索臂 11/17
     · 均耗时 **1.9 秒 vs 13.1 秒**（单次调用 vs 4.8 次调用 + 检索）

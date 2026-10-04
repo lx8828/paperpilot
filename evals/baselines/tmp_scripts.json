@@ -1,8 +1,8 @@
 {
- "note": "retrieval/tmp/*.py 分类（库/入口/一次性）+ 保留/归档判定。生成器：retrieval/tmp/_dep_graph.py（只读，可重跑复核）",
+ "note": "retrieval/tmp/*.py 分类（库/入口/一次性）+ 保留/归档判定。生成器：evals/checks/tmp_scripts_audit.py（只读，可重跑复核）",
  "counts": {
-  "scratch": 37,
   "entrypoint": 86,
+  "scratch": 38,
   "library": 12
  },
  "decision": {
@@ -62,6 +62,7 @@
   "_f1_selfcheck": "keep",
   "_f1_why": "archive",
   "_f1_why2": "archive",
+  "_fix_archived_refs": "archive",
   "_fullctx_review": "archive",
   "_fullctx_trial": "archive",
   "_fullctx_vs_retrieval": "archive",
@@ -318,6 +319,7 @@
   "_dir_relevance": "entrypoint",
   "_f1_crossrun": "scratch",
   "_f1_selfcheck": "entrypoint",
+  "_fix_archived_refs": "scratch",
   "_hn_disc": "entrypoint",
   "_k_deliver_litsearch": "entrypoint",
   "_lang_effect": "entrypoint",

@@ -191,7 +191,7 @@ print("归档 = 无出处的 entrypoint + scratch（其脚本名**在任何 .md 
 
 OUT.write_text(json.dumps({
     "note": "retrieval/tmp/*.py 分类（库/入口/一次性）+ 保留/归档判定。"
-            "生成器：retrieval/tmp/_dep_graph.py（只读，可重跑复核）",
+            "生成器：evals/checks/tmp_scripts_audit.py（只读，可重跑复核）",
     "counts": dict(cnt),
     "decision": dict(sorted(decision.items())),
     "class": dict(sorted(cls.items())),

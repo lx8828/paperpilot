@@ -16,26 +16,17 @@
   "qa/RETRIEVAL_EVAL_FRAMEWORK.md",
   "qa/RETRIEVAL_EXPLORATION_20260908.md"
  ],
- "cli/run_fullctx_qa.py": [
-  "retrieval/tmp/_fullctx_vs_retrieval.py",
-  "retrieval/tmp/_m1_pick.py"
- ],
  "cli/run_group_qa.py": [
   "DEVELOPMENT_LOG.md",
   "retrieval/results/R2_CLEAN_NUMBERS_20260929.md",
   "retrieval/results/R2_SET_READER_PROD_20260929.md",
   "retrieval/results/RAG2_DATAFLOW_20260929.md",
-  "retrieval/tmp/_fullctx_vs_retrieval.py",
-  "retrieval/tmp/_prod_leak_audit.py",
-  "retrieval/tmp/_run_m1_baseline.py",
-  "retrieval/tmp/_run_precheck.py"
+  "retrieval/tmp/_prod_leak_audit.py"
  ],
  "cli/run_multi_qa.py": [
   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
   "retrieval/results/R2_CLEAN_NUMBERS_20260929.md",
-  "retrieval/tmp/_m1_baseline.py",
-  "retrieval/tmp/_prod_leak_audit.py",
-  "retrieval/tmp/_rescore.py"
+  "retrieval/tmp/_prod_leak_audit.py"
  ],
  "cli/run_qa_eval.py": [
   "DEVELOPMENT_LOG.md",
@@ -83,8 +74,6 @@
   "qa/RAG_ENGINE_DESIGN.md",
   "qa/README.md",
   "qa/REPORT_2.0_20260911.md",
-  "qa/_archive/recall/_gold_rank.py",
-  "qa/_archive/recall/_rerank_ab.py",
   "qa/recall/RERANK_AB_20260911.md",
   "qa/recall/_run_bg.ps1",
   "qa/recall/_smoke_rerank.md"
@@ -192,50 +181,19 @@
  "qa/recall/_ab_v3regress.py": [
   "qa/recall/_v3regress_bg.ps1"
  ],
- "qa/recall/_b2_ab.py": [
-  "qa/_archive/recall/_b2_ab.py"
- ],
- "qa/recall/_b2_rows_t1600.json": [
-  "qa/_archive/recall/_b2_xcause.py"
- ],
- "qa/recall/_diag_equation_value.py": [
-  "qa/_archive/recall/_diag_equation_value.py"
- ],
  "qa/recall/_diag_l2win/_l3win.py": [
   "qa/RETRIEVAL_EVAL_FRAMEWORK.md"
  ],
  "qa/recall/_diag_still_fail.py": [
-  "qa/_archive/recall/_diag_still_fail.py",
   "qa/recall/STILL_FAIL_DIAG_20260911.md"
  ],
- "qa/recall/_diag_tbl_rank.py": [
-  "qa/_archive/recall/_diag_tbl_rank.py"
- ],
  "qa/recall/_ext_variants.py": [
-  "qa/_archive/recall/_ext_variants.py",
   "qa/recall/EXT_REPR_20260911.md"
  ],
- "qa/recall/_facts_fix_regress.py": [
-  "qa/_archive/recall/_facts_fix_regress.py"
- ],
- "qa/recall/_facts_probe.py": [
-  "qa/_archive/recall/_facts_probe.py"
- ],
- "qa/recall/_judge_facts_pos.py": [
-  "qa/_archive/recall/_judge_facts_pos.py"
- ],
- "qa/recall/_latex_norm_probe.py": [
-  "qa/_archive/recall/_latex_norm_probe.py"
- ],
- "qa/recall/_merge_ab.py": [
-  "qa/_archive/recall/_merge_ab.py"
- ],
  "qa/recall/_mineru_coverage.py": [
-  "qa/_archive/recall/_mineru_coverage.py",
   "qa/recall/MINERU_COVERAGE_20260912.md"
  ],
  "qa/recall/_only_table_retr.py": [
-  "qa/_archive/recall/_only_table_retr.py",
   "qa/recall/SPLIT_RETRIEVAL_20260911.md"
  ],
  "qa/recall/_order_ab.py": [
@@ -245,11 +203,7 @@
   "qa/recall/_run_bg.ps1"
  ],
  "qa/recall/_quota_cost.py": [
-  "qa/_archive/recall/_quota_cost.py",
   "qa/recall/SPLIT_RETRIEVAL_20260911.md"
- ],
- "qa/recall/_rerank_ab.py": [
-  "qa/_archive/recall/_rerank_ab.py"
  ],
  "qa/recall/_selftest_tables_20260912.py": [
   "qa/recall/EXT_REPR_20260911.md",
@@ -263,11 +217,7 @@
   "tests/test_validator_offline.py"
  ],
  "qa/recall/_spike_v2.py": [
-  "qa/_archive/recall/_spike_v2.py",
   "qa/recall/_spike_bg.ps1"
- ],
- "qa/recall/_supp_ab_result.json": [
-  "qa/_archive/recall/_supp_ab.py"
  ],
  "qa/recall/_t1_ab.ps1": [
   "qa/REPORT_NIGHT_20260911.md"
@@ -277,9 +227,6 @@
  ],
  "qa/recall/_v3c14_regress.py": [
   "qa/recall/_v3c14_bg.ps1"
- ],
- "qa/recall/_weight_sweep.py": [
-  "qa/_archive/recall/_weight_sweep.py"
  ],
  "qa/review/_selftest_identity_20260913.py": [
   "DEVELOPMENT_LOG.md",
@@ -292,9 +239,11 @@
  "retrieval/scripts/_bm_check.py": [
   "src/paperpilot/agents/embedder.py"
  ],
+ "retrieval/tmp/_author_kit.py": [
+  "retrieval/tmp/group3/_group.questions.json"
+ ],
  "scripts/count_objects.py": [
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_content_list_v2.json",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_middle.json"
+  "retrieval/tmp/group2/2604.20087.txt"
  ],
  "src/paperpilot/agents/nodes/retrieve.py": [
   "archive/qa_funnel_v2/README.md"
@@ -313,17 +262,9 @@
   "src/paperpilot/tools/heading.py"
  ],
  "tests/expected_output.json": [
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087.md",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_content_list.json",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_content_list_v2.json",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_middle.json",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_model.json"
+  "retrieval/tmp/group2/2604.20087.txt"
  ],
  "tests/test_outputs.py": [
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087.md",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_content_list.json",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_content_list_v2.json",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_middle.json",
-  "assets/artifacts/out_mineru/2604.20087/2604.20087/auto/2604.20087_model.json"
+  "retrieval/tmp/group2/2604.20087.txt"
  ]
 }

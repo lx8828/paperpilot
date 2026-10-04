@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -48,21 +49,73 @@ REF = re.compile(
     r"((?:" + "|".join(TOPS) + r")/[\w./-]+\.(?:py|md|json|csv|html|ps1|js))"
 )
 
-SKIP_PARTS = (".venv", "node_modules", ".git", ".pytest-tmp", "site-packages")
+SKIP_PARTS = (".venv", "node_modules", ".git", ".pytest-tmp", "site-packages",
+              # ⚠️ **归档区不扫**（2026-10-05 加）。理由不是"为了变绿"，而是：
+              #    归档 = 冻结的历史脚本，内部路径字符串**天然指向搬走前的布局**。
+              #    扫它们会产生一大批"设计使然"的死链，淹没真信号。
+              #    闸门守的是**在用的树**；归档的可追溯性由
+              #    `evals/baselines/tmp_scripts.json` 负责，不靠路径存活。
+              "_archive", "_gold_history")
+
+# ⚠️ **剪枝目录**（按相对路径前缀）：**生成物 / 数据集**，不是"引用源"。
+#    为什么必须剪：`assets/artifacts` 有 **18,850 个文件**（MinerU 解析产物），
+#    全走一遍要几十秒 —— 闸门跑一次就慢到没人愿意跑，等于失效。
+#    这不是"为了变绿而排除"：它们与归档区同理，是**数据/生成物**，
+#    里面出现的路径字符串不构成"谁引用了谁"。
+PRUNE = (
+    "assets/",                 # 18,850 个解析产物
+    "retrieval/data/",         # 数据集（8GB）
+    "qa/multi/_runs/",         # 跑批产出
+    "retrieval/tmp/_archive/", "retrieval/tmp/_gold_history/",
+)
 SKIP_EXT = (".py", ".md", ".json", ".html", ".ps1", ".js", ".toml", ".cfg", ".ini", ".txt")
 
 # ⚠️ 文档里的**举例/省略**写法，不是引用。不放白名单 → 假阳性淹没闸门。
 PLACEHOLDER = re.compile(r"(^|/)x\.py$|xxx|\.\.\.|/x/|(\.\w+){2,}$")
 
 
+def _is_pruned(rel_dir: str) -> bool:
+    """相对目录路径（**带尾斜杠**）是否落在剪枝范围：生成物 / 数据集 / 归档 / 基线数据。"""
+    return rel_dir.startswith(PRUNE) or rel_dir.startswith("evals/baselines/")
+
+
 def _tracked_and_worktree() -> set[Path]:
-    """入库文件 ∪ 工作区文本文件（后者含尚未入库的脚本 —— 它们也是"真实存在的引用源"）。"""
+    """入库文件 ∪ 工作区文本文件（后者含尚未入库的脚本 —— 它们也是"真实存在的引用源"）。
+
+    ⚠️ **用 `os.walk` + 剪枝，不用 `glob("**/*.json")`**：后者会先枚举再筛，
+    把 `.venv` 与 `assets/artifacts`（18,850 个文件）全走一遍 → 几十秒（实测踩过）。
+    剪枝后亚秒级 —— 闸门慢到没人跑就等于失效。
+    """
     out = subprocess.run(["git", "-C", str(ROOT), "ls-files"],
                          capture_output=True, encoding="utf-8", errors="replace")
     files = {ROOT / p for p in out.stdout.splitlines() if p.endswith(SKIP_EXT)}
-    for pat in ("**/*.py", "**/*.md", "**/*.json", "**/*.ps1"):
-        files |= {p for p in ROOT.glob(pat) if p.is_file()}
-    return {p for p in files if not any(s in p.parts for s in SKIP_PARTS)}
+
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        rel_dir = Path(dirpath).relative_to(ROOT).as_posix()
+        prefix = "" if rel_dir == "." else rel_dir + "/"
+        # 原地剪枝：把不该进的目录从 dirnames 里删掉，walk 就不会下去（这才是"剪枝"）
+        dirnames[:] = [d for d in dirnames
+                       if d not in SKIP_PARTS and not _is_pruned(prefix + d + "/")]
+        for fn in filenames:
+            if fn.endswith(SKIP_EXT):
+                files.add(Path(dirpath) / fn)
+
+    keep: set[Path] = set()
+    for p in files:
+        if any(s in p.parts for s in SKIP_PARTS):
+            continue
+        rel = p.relative_to(ROOT).as_posix()
+        if any(rel.startswith(x) for x in PRUNE):
+            continue
+        # ⚠️ **基线目录是数据，不是引用源**（2026-10-05 加）。
+        #    否则会"自己喂自己"：`path_liveness.json` 里存着死链**作为数据**，
+        #    扫描器把它们当引用读 → 基线越跑越胖（实测 78 → 92，新增的正是它自己）。
+        #    （**不**排除检查器自身 —— 为变绿而排除自己就是关闸门；它若真含死链，
+        #      应该改它的文档，而不是把它从扫描里拿掉。）
+        if rel.startswith("evals/baselines/"):
+            continue
+        keep.add(p)
+    return keep
 
 
 def scan() -> dict[str, list[str]]:

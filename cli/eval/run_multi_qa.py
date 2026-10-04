@@ -226,7 +226,7 @@ _BRIDGE: dict[str, list[str]] | None = None
 
 
 def anchor_bridge() -> dict[str, list[str]]:
-    """**中英桥接表**：中文锚点 → 该锚点在论文原文里的英文表述（见 `retrieval/tmp/_anchor_bridge.py`）。
+    """**中英桥接表**：中文锚点 → 该锚点在论文原文里的英文表述（见 `retrieval/tmp/_archive/_anchor_bridge.py`）。
 
     为什么需要（2026-09-27 逐题复核实测）：`must_all`/`must_any` 里有些锚点是**中文**
     （如「技能门控」），而"全上下文"路径倾向**逐字照抄英文原词**（`skill gating mechanism`）
