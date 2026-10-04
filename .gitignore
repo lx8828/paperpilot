@@ -115,6 +115,7 @@ retrieval/data/r2dev/*
 retrieval/results/*.json
 retrieval/results/*.jsonl
 retrieval/results/*.npy
+retrieval/results/*.npz
 retrieval/results/*.csv
 retrieval/_scratch/
 

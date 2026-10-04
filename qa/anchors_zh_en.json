@@ -1,0 +1,116 @@
+{
+ "上下文": [
+  "context"
+ ],
+ "不足": [
+  "fall short",
+  "bottleneck"
+ ],
+ "信用分配": [
+  "credit"
+ ],
+ "剪枝": [
+  "prune"
+ ],
+ "协作": [
+  "coordination"
+ ],
+ "协议": [
+  "protocol"
+ ],
+ "反射": [
+  "self-feedback",
+  "self-revision",
+  "self-reflection"
+ ],
+ "反思": [
+  "self-feedback",
+  "self-revision",
+  "self-reflection"
+ ],
+ "反馈": [
+  "feedback"
+ ],
+ "噪声": [
+  "noise"
+ ],
+ "因果": [
+  "causal"
+ ],
+ "基准": [
+  "benchmark"
+ ],
+ "外部反馈": [
+  "external feedback"
+ ],
+ "多任务": [
+  "multi-agent system"
+ ],
+ "审计": [
+  "audit"
+ ],
+ "局限": [
+  "Limitations"
+ ],
+ "成本": [
+  "token cost"
+ ],
+ "技能库": [
+  "skill library"
+ ],
+ "技能生成": [
+  "skill generation"
+ ],
+ "持续学习": [
+  "continual learning"
+ ],
+ "推理错误": [
+  "reasoning errors"
+ ],
+ "标签": [
+  "tag"
+ ],
+ "消融": [
+  "ablation"
+ ],
+ "灵活": [
+  "flexible"
+ ],
+ "瓶颈": [
+  "bottleneck"
+ ],
+ "离散": [
+  "discrete"
+ ],
+ "稳定性": [
+  "stability"
+ ],
+ "精炼": [
+  "Refinement"
+ ],
+ "自反馈": [
+  "self-feedback",
+  "self feedback"
+ ],
+ "解耦": [
+  "adaptation decoupling"
+ ],
+ "证据": [
+  "evidence"
+ ],
+ "资源": [
+  "resources"
+ ],
+ "路由": [
+  "route"
+ ],
+ "轨迹": [
+  "trajectory"
+ ],
+ "过时": [
+  "deprecated"
+ ],
+ "选择性反思": [
+  "selective reflection"
+ ]
+}
