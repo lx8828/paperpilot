@@ -13,6 +13,17 @@
 于是历史债不阻塞任何人，而"以后别再写死链"这条纪律**从今天起生效**。
 基线里的条目**修一个就少一个**（`--update` 收缩），只进不退。
 
+## ⚠️ 2026-10-05 晚：判据从「磁盘」改为「**版本库视图**」（CI 当场红）
+
+原先扫**磁盘**、并用 `(ROOT / t).exists()` 判存活。后果是**同一条纪律在两处结论不同**：
+
+    本机（磁盘）  : 悬空 66，基线 66 → 绿 ✓
+    干净 clone    : 悬空 141，基线 66 → **红 ✗**   ← 推上去 CI 立刻红
+
+因为本机磁盘比 clone **多**出被 `.gitignore` **有意**挡住的那批产物/归档。
+本棘轮要回答的是「**干净 clone 能不能跑**」，故判据必须落在版本库视图上
+（见 `_repo_files` / `_sources`）。基线随之重建（当前 **123** 条）。
+
 ## 用法
 
     python evals/checks/path_liveness.py            # 检查（有新死链 → 退出码 1）
@@ -30,7 +41,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import subprocess
 import sys
@@ -74,54 +84,68 @@ SKIP_EXT = (".py", ".md", ".json", ".html", ".ps1", ".js", ".toml", ".cfg", ".in
 PLACEHOLDER = re.compile(r"(^|/)x\.py$|xxx|\.\.\.|/x/|(\.\w+){2,}$")
 
 
-def _is_pruned(rel_dir: str) -> bool:
-    """相对目录路径（**带尾斜杠**）是否落在剪枝范围：生成物 / 数据集 / 归档 / 基线数据。"""
-    return rel_dir.startswith(PRUNE) or rel_dir.startswith("evals/baselines/")
+# ⚠️ 原先还有个 `_is_pruned()` 辅助（配 `os.walk` 原地剪枝）。改用**版本库视图**后
+#    不再需要：视图里本来就没有行数万级的生成物目录。判据已并入 `_sources()`。
 
 
-def _tracked_and_worktree() -> set[Path]:
-    """入库文件 ∪ 工作区文本文件（后者含尚未入库的脚本 —— 它们也是"真实存在的引用源"）。
+def _repo_files() -> set[str]:
+    """**版本库视图**里的**全部**文件（相对路径）＝ 干净 clone 里会存在的文件。
 
-    ⚠️ **用 `os.walk` + 剪枝，不用 `glob("**/*.json")`**：后者会先枚举再筛，
-    把 `.venv` 与 `assets/artifacts`（18,850 个文件）全走一遍 → 几十秒（实测踩过）。
-    剪枝后亚秒级 —— 闸门慢到没人跑就等于失效。
+    ＝ 已跟踪 ∪ 会被提交的未跟踪（`--others --exclude-standard`：
+
+    后者很重要 —— 刚写好、还没 `git add` 的脚本**也会进版本库**，它们同样是
+    "真实存在的文件"，不能因为"此刻还没 add"就被判成悬空。
+
+    ## ★ 为什么不能扫磁盘（2026-10-05 修 —— CI 当场红）
+    原先扫**磁盘**（`os.walk`）、并逐个 `(ROOT / t).exists()` 判存活。而本机磁盘比
+    干净 clone **多**出一大批被 `.gitignore` **有意**挡住的产物/归档
+    （`qa/_archive/`、`qa/qasper_*.json`、`qa/baseline.json`、`qa/_*.py` …）
+    → **同一条纪律在两个地方得出不同结论**：
+
+        本机（磁盘）  : 悬空 66，基线 66 → 绿 ✓
+        干净 clone    : 悬空 141，基线 66 → **红 ✗**   （CI 就是这样红的）
+
+    实测那多出来的 **75 条全部**是「引用了被 ignore 的历史产物」，**真死链 0 条**。
+    本棘轮要回答的问题是「**干净 clone 能不能跑**」，所以**引用源**与**存活判据**
+    都必须落在版本库视图上 —— 这样本机与 CI 结论一致，基线也才**可复现**。
+
+    ⚠️ `PRUNE` / `SKIP_PARTS` 的剪枝**保留作保险**，但正常已不起作用：版本库视图
+       只有 ~742 个文件（`.venv` / `assets/artifacts` 本来就被 ignore）。
     """
-    out = subprocess.run(["git", "-C", str(ROOT), "ls-files"],
-                         capture_output=True, encoding="utf-8", errors="replace")
-    files = {ROOT / p for p in out.stdout.splitlines() if p.endswith(SKIP_EXT)}
+    rels: set[str] = set()
+    for extra in ([], ["--others", "--exclude-standard"]):
+        r = subprocess.run(["git", "-C", str(ROOT), "ls-files", *extra],
+                           capture_output=True, encoding="utf-8", errors="replace")
+        rels |= {p for p in r.stdout.splitlines() if p.endswith(SKIP_EXT)}
+    return rels
 
-    for dirpath, dirnames, filenames in os.walk(ROOT):
-        rel_dir = Path(dirpath).relative_to(ROOT).as_posix()
-        prefix = "" if rel_dir == "." else rel_dir + "/"
-        # 原地剪枝：把不该进的目录从 dirnames 里删掉，walk 就不会下去（这才是"剪枝"）
-        dirnames[:] = [d for d in dirnames
-                       if d not in SKIP_PARTS and not _is_pruned(prefix + d + "/")]
-        for fn in filenames:
-            if fn.endswith(SKIP_EXT):
-                files.add(Path(dirpath) / fn)
 
-    keep: set[Path] = set()
-    for p in files:
-        if any(s in p.parts for s in SKIP_PARTS):
-            continue
-        rel = p.relative_to(ROOT).as_posix()
-        if any(rel.startswith(x) for x in PRUNE):
-            continue
-        # ⚠️ **基线目录是数据，不是引用源**（2026-10-05 加）。
-        #    否则会"自己喂自己"：`path_liveness.json` 里存着死链**作为数据**，
-        #    扫描器把它们当引用读 → 基线越跑越胖（实测 78 → 92，新增的正是它自己）。
-        #    （**不**排除检查器自身 —— 为变绿而排除自己就是关闸门；它若真含死链，
-        #      应该改它的文档，而不是把它从扫描里拿掉。）
-        if rel.startswith("evals/baselines/"):
-            continue
-        keep.add(p)
-    return keep
+def _sources(alive: set[str]) -> set[Path]:
+    """从版本库视图里挑出**引用源**（绝对路径）—— 在它之上再排除剪枝项。
+
+    ★ 必须与**存活判据**分成两个集合，不能合成一个（2026-10-05 踩过，CI 修复中）：
+      `evals/baselines/` 属于「是**数据**、不当引用源」，但它**明明在版本库里**。
+      若把"不当引用源"直接当成"不算存在"，指向它的引用会被误判成悬空 ——
+      实测多出 3 条假悬空（`metrics.json` / `path_liveness.json` / `tmp_scripts.json`）。
+    """
+    return {ROOT / p for p in alive
+            if not any(part in SKIP_PARTS for part in p.split("/"))
+            and not p.startswith(PRUNE)
+            # ⚠️ **基线目录是数据，不是引用源**：否则会"自己喂自己"——
+            #    `path_liveness.json` 里存着死链**作为数据**，被当成引用读进来 →
+            #    基线越跑越胖（实测 78 → 92，新增的正是它自己）。
+            #    （**不**排除检查器自身 —— 为变绿而排除自己就是关闸门。）
+            and not p.startswith("evals/baselines/")}
 
 
 def scan() -> dict[str, list[str]]:
-    """返回 `{不存在的被引路径: [引用它的文件, ...]}`（已排占位符）。"""
+    """返回 `{不存在的被引路径: [引用它的文件, ...]}`（已排占位符）。
+
+    「不存在」＝**在版本库视图里不存在**（= 干净 clone 里也没有）。
+    """
+    alive = _repo_files()
     refs: dict[str, set[str]] = {}
-    for f in sorted(_tracked_and_worktree()):
+    for f in sorted(_sources(alive)):
         try:
             text = f.read_text(encoding="utf-8", errors="ignore")
         except OSError:
@@ -131,7 +155,7 @@ def scan() -> dict[str, list[str]]:
             t = m.group(1)
             if t == rel_self or PLACEHOLDER.search(t):
                 continue
-            if not (ROOT / t).exists():
+            if t not in alive:      # ★ 存活判据用**全量**版本库视图（含 baselines）
                 refs.setdefault(t, set()).add(rel_self)
     return {k: sorted(v) for k, v in refs.items()}
 

@@ -41,11 +41,9 @@
  "cli/run_qasper_eval.py": [
   "DEVELOPMENT_LOG.md",
   "qa/CAMPAIGN_20260906-07.md",
-  "qa/QASPER_EVAL_LOG.md",
   "qa/README.md",
   "qa/REPORT_2.0_20260911.md",
   "qa/RETRIEVAL_EVAL_FRAMEWORK.md",
-  "qa/_scratch/_launch_full.ps1",
   "qa/recall/QASPER_TBL_EXP_20260911.md",
   "qa/recall/_gate_fix_verify.py",
   "qa/recall/_qasper_tbl_exp.py",
@@ -81,75 +79,100 @@
  "cli/run_scan_noise.py": [
   "DEVELOPMENT_LOG.md"
  ],
- "qa/_bm25_ab.py": [
-  "qa/_scratch/_launch_bm25.ps1"
+ "qa/QASPER_EVAL_LOG.md": [
+  "DEVELOPMENT_LOG.md",
+  "qa/REPORT_2.0_20260911.md"
  ],
- "qa/_cov.py": [
-  "qa/_scratch/_launch_cov.ps1"
+ "qa/_archive/qasper_run_20260905_224146.json": [
+  "qa/REPORT_2.0_20260911.md",
+  "qa/REPORT_NIGHT_20260911.md"
  ],
- "qa/_diag_concept.py": [
-  "qa/_scratch/_launch_diag2.ps1"
+ "qa/_archive/qasper_run_20260906_065230.json": [
+  "qa/REPORT_2.0_20260911.md"
  ],
- "qa/_diag_rank.py": [
-  "qa/_scratch/_launch_diag.ps1"
+ "qa/_archive/qasper_sub500_from1000.json": [
+  "qa/REPORT_NIGHT_20260911.md"
  ],
- "qa/_final_ab_worker.py": [
-  "qa/_scratch/_launch_final.ps1"
+ "qa/_archive/recall/_merge_plan.py": [
+  "docs/RAG_COMPONENT_NOTES.md"
  ],
- "qa/_peek_A.py": [
-  "qa/_scratch/_launch_peekA.ps1"
+ "qa/_scratch/_bm25_ab.py": [
+  "qa/RAG_ENGINE_DESIGN.md"
  ],
- "qa/_qw_ab.py": [
-  "qa/_scratch/_launch_qw.ps1"
+ "qa/baseline.json": [
+  "DEVELOPMENT_LOG.md",
+  "docs/DOC_INDEX.md",
+  "evals/checks/path_liveness.py"
  ],
- "qa/_rank_full.py": [
-  "qa/_scratch/_launch_rank.ps1"
+ "qa/compare/run_20260907_191606_B0.json": [
+  "qa/compare/_slice.py"
  ],
- "qa/_run_yn.py": [
-  "qa/_scratch/_launch_yn.ps1"
+ "qa/compare/run_20260907_191606_B1.json": [
+  "qa/compare/_slice.py"
  ],
- "qa/_run_yn2.py": [
-  "qa/_scratch/_launch_yn2.ps1"
+ "qa/compare/run_20260907_191606_B2.json": [
+  "qa/compare/_slice.py"
  ],
  "qa/multi/_runs/fullctx_graph_group1.json": [
   "cli/eval/run_fullctx_qa.py"
  ],
  "qa/multi/_runs/group2_graph.json": [
-  "cli/eval/run_group_qa.py"
+  "cli/eval/run_group_qa.py",
+  "tests/test_evals_report.py"
+ ],
+ "qa/negqa/neg_run_20260907_195322.json": [
+  "qa/negqa/NEGQA_REPORT_20260907.md"
+ ],
+ "qa/negqa/neg_run_20260910_230436.json": [
+  "qa/REPORT_2.0_20260911.md"
  ],
  "qa/qa_run_20260904_215226.json": [
   "qa/QA_V2_RUN1_REPORT.md"
  ],
- "qa/qasper_deep_20260906_010435.json/.md": [
-  "qa/QASPER_EVAL_LOG.md"
+ "qa/qasper_final_lock_20260907_183225.json": [
+  "qa/CAMPAIGN_20260906-07.md",
+  "qa/recall/_ab_v3base.py"
  ],
- "qa/qasper_judgeA_20260906_021512.json": [
-  "qa/QASPER_EVAL_LOG.md"
- ],
- "qa/qasper_judgeA_20260906_023404.json": [
-  "qa/QASPER_EVAL_LOG.md"
- ],
- "qa/qasper_judgeL3_20260906_034500.json": [
-  "qa/QASPER_EVAL_LOG.md"
+ "qa/qasper_overnight_full_20260907_142814.json": [
+  "cli/eval/run_compare.py",
+  "qa/REPORT_NIGHT_20260911.md"
  ],
  "qa/qasper_run_20260905_224146.json": [
-  "qa/FULL_RERUN_20260906_REPORT.md",
-  "qa/QASPER_EVAL_LOG.md",
-  "qa/_scratch/_cmp_full.py",
-  "qa/_scratch/_launch_full.ps1",
-  "qa/_scratch/_reg.py",
-  "qa/_scratch/_reg_class.py"
+  "qa/FULL_RERUN_20260906_REPORT.md"
  ],
  "qa/qasper_run_20260906_065230.json": [
-  "qa/FULL_RERUN_20260906_REPORT.md",
-  "qa/_scratch/_bm25_ab.py",
-  "qa/_scratch/_cmp_full.py",
-  "qa/_scratch/_reg.py",
-  "qa/_scratch/_reg_class.py",
-  "qa/_scratch/_remain57.py"
+  "qa/FULL_RERUN_20260906_REPORT.md"
  ],
- "qa/qasper_yn_20260906_055651.json": [
-  "qa/_scratch/_yn_cmp.py"
+ "qa/qasper_run_20260911_005347.json": [
+  "qa/REPORT_2.0_20260911.md",
+  "qa/recall/GATE_FIX_VERIFY_20260911.md",
+  "qa/recall/GATE_PROBE_ADJ.md",
+  "qa/recall/GATE_PROBE_AFTER_FIX.md",
+  "qa/recall/GATE_PROBE_QASPER_20260911.md",
+  "qa/recall/_gate_fix_verify.py",
+  "qa/recall/_gate_probe_qasper.py",
+  "qa/recall/_rescore_unans.py"
+ ],
+ "qa/qasper_run_20260911_052532.json": [
+  "qa/REPORT_NIGHT_20260911.md"
+ ],
+ "qa/qasper_run_20260911_072510.json": [
+  "README.md",
+  "qa/REPORT_NIGHT_20260911.md",
+  "qa/recall/_fail_attrib.py",
+  "qa/recall/_qasper_tbl_exp.py"
+ ],
+ "qa/qasper_summary_20260911_005347.md": [
+  "qa/REPORT_2.0_20260911.md"
+ ],
+ "qa/qasper_summary_20260911_052532.md": [
+  "qa/REPORT_NIGHT_20260911.md"
+ ],
+ "qa/qasper_summary_20260911_072510.md": [
+  "qa/REPORT_NIGHT_20260911.md"
+ ],
+ "qa/reader/fidelity_result.json": [
+  "qa/reader/_fidelity.py"
  ],
  "qa/recall/RECALL_BASELINE.md": [
   "cli/eval/run_retrieval_eval.py"
@@ -180,6 +203,10 @@
  ],
  "qa/recall/_ab_v3regress.py": [
   "qa/recall/_v3regress_bg.ps1"
+ ],
+ "qa/recall/_attrib_500_20260911.json": [
+  "qa/recall/_fetch_arxiv.py",
+  "qa/recall/_qasper_tbl_exp.py"
  ],
  "qa/recall/_diag_l2win/_l3win.py": [
   "qa/RETRIEVAL_EVAL_FRAMEWORK.md"
@@ -228,22 +255,196 @@
  "qa/recall/_v3c14_regress.py": [
   "qa/recall/_v3c14_bg.ps1"
  ],
+ "qa/recall/ab_l2strict_result.json": [
+  "qa/recall/JUDGE_L2_STRICT_AB_20260908.md"
+ ],
+ "qa/recall/ab_l2target_result.json": [
+  "qa/recall/_diag_center.py"
+ ],
+ "qa/recall/ab_multiq_result.json": [
+  "qa/recall/_run_multiq.py"
+ ],
+ "qa/recall/ab_nol3j_result.json": [
+  "qa/recall/_ab_rewrite.py"
+ ],
+ "qa/recall/ab_rewrite_result.json": [
+  "qa/recall/_ab_rewrite.py"
+ ],
+ "qa/recall/ab_v3base_result.json": [
+  "qa/recall/_ab_rewrite.py",
+  "qa/recall/_ab_v3base.py"
+ ],
+ "qa/recall/ab_v3regress_result.json": [
+  "DEVELOPMENT_LOG.md",
+  "archive/qa_funnel_v2/README.md",
+  "src/paperpilot/graph/__init__.py"
+ ],
+ "qa/recall/e2e_union_q0_20260912.json": [
+  "qa/recall/UNION_AND_CONTEXT_20260911.md"
+ ],
+ "qa/recall/mineru_hard_result.json": [
+  "qa/REPORT_2.0_20260911.md",
+  "qa/recall/run_mineru_hard.py"
+ ],
+ "qa/recall/mineru_hard_result_20260910_1836.json": [
+  "qa/REPORT_2.0_20260911.md"
+ ],
+ "qa/recall/mineru_hard_set_v1.json": [
+  "qa/REPORT_NIGHT_20260911.md",
+  "qa/recall/MINERU_AB_20260911.md",
+  "qa/recall/_ab_table.py",
+  "qa/recall/_gate_probe.py",
+  "qa/recall/_reach_diag.py",
+  "qa/recall/run_mineru_hard.py"
+ ],
+ "qa/recall/multiq_set.json": [
+  "qa/recall/_run_multiq.py"
+ ],
+ "qa/recall/qasper_tbl_cites_20260911.json": [
+  "qa/recall/_verify_tbl_cites.py"
+ ],
+ "qa/recall/qasper_tbl_exp_20260911.json": [
+  "qa/recall/_qasper_tbl_exp.py",
+  "qa/recall/_table_policy_ab.py",
+  "qa/recall/_verify_tbl_cites.py"
+ ],
+ "qa/recall/recall_set_v1.json": [
+  "cli/eval/run_chunk_eval.py",
+  "cli/eval/run_retrieval_eval.py",
+  "qa/RAG_ENGINE_DESIGN.md",
+  "qa/REPORT_2.0_20260911.md",
+  "qa/RETRIEVAL_EXPLORATION_20260908.md",
+  "qa/recall/_run_bg.ps1",
+  "qa/recall/_table_policy_ab.py"
+ ],
+ "qa/recall/table_policy_ab_20260911.json": [
+  "qa/recall/_table_policy_ab.py"
+ ],
+ "qa/recall/tblfix2_new_20260912.json": [
+  "qa/recall/_tblfix_ab2.ps1"
+ ],
+ "qa/recall/tblfix2_v1_20260912.json": [
+  "qa/recall/_tblfix_ab2.ps1"
+ ],
+ "qa/recall/tblfix3_new_20260912.json": [
+  "qa/recall/_tblfix_ab3.ps1"
+ ],
+ "qa/recall/tblfix3_v1_20260912.json": [
+  "qa/recall/_tblfix_ab3.ps1"
+ ],
+ "qa/recall/tblfix_new_20260912.json": [
+  "qa/recall/_tblfix_ab.ps1"
+ ],
+ "qa/recall/tblfix_v1_20260912.json": [
+  "qa/recall/_tblfix_ab.ps1"
+ ],
  "qa/review/_selftest_identity_20260913.py": [
   "DEVELOPMENT_LOG.md",
   "docs/RAG_COMPONENT_NOTES.md",
   "qa/review/RESPONSES_20260913.md"
  ],
+ "retrieval/data/loft/official/run_evaluation.py": [
+  "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md"
+ ],
+ "retrieval/data/loft/qampari/1m/rerank_top40.json": [
+  "retrieval/results/R2_QAMPARI_RERANK_20260929.md",
+  "retrieval/tmp/_qampari_mapreduce.py"
+ ],
+ "retrieval/data/r2dev/calib2.csv": [
+  "retrieval/results/R2_CALIB_20260928.md"
+ ],
+ "retrieval/data/r2dev/calib2_3judge.csv": [
+  "retrieval/results/R2_CALIB_20260928.md"
+ ],
+ "retrieval/data/r2dev/mt_cache.json": [
+  "retrieval/results/R2_NLI_LANG_20260928.md"
+ ],
+ "retrieval/data/r2dev/nli_calibration.csv": [
+  "retrieval/results/R2_L3_NLI_20260928.md"
+ ],
  "retrieval/results/LITSEARCH_RERANK.md": [
   "docs/RAG_COMPONENT_NOTES.md"
+ ],
+ "retrieval/results/R2_L3_NLI.csv": [
+  "retrieval/results/R2_L3_NLI_20260928.md"
+ ],
+ "retrieval/results/R2_NLI_ROUTE.csv": [
+  "retrieval/results/R2_NLI_LANG_20260928.md"
+ ],
+ "retrieval/results/R2_PHASE1.csv": [
+  "retrieval/results/R2_PHASE1_20260929.md"
+ ],
+ "retrieval/results/R2_SETSEL_raw.csv": [
+  "retrieval/results/R2_SETSEL_20260927.md"
+ ],
+ "retrieval/results/R2_r2fullread.csv": [
+  "retrieval/results/R2_SC_VERDICT_20260929.md"
+ ],
+ "retrieval/results/official_runs/audit_k40_k40/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/direct128k_k20/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/exh_k20_k20/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/exh_k40_ce_k40/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/exh_k40_k40/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/exh_k80_k80/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/k40_noexh_k40/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/retr1m_ground_k40/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/retr1m_k40_k40/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/retr1m_verify_k40/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/retr_k20/preds_metrics.json": [
+  "evals/RESULTS.md"
+ ],
+ "retrieval/results/official_runs/smoke_k20/preds_metrics.json": [
+  "evals/RESULTS.md"
  ],
  "retrieval/scripts/_bm_check.py": [
   "src/paperpilot/agents/embedder.py"
  ],
+ "retrieval/tmp/_archive/_anchor_bridge.py": [
+  "cli/eval/run_multi_qa.py"
+ ],
+ "retrieval/tmp/_archive/_design_probe.py": [
+  "src/paperpilot/components/fullctx.py"
+ ],
+ "retrieval/tmp/_archive/_exp_density.py": [
+  "retrieval/scripts/_qa_groups.py"
+ ],
+ "retrieval/tmp/_archive/_fullctx_trial.py": [
+  "src/paperpilot/components/fullctx.py"
+ ],
+ "retrieval/tmp/_archive/_fuse_sweep.py": [
+  "retrieval/tmp/_sandbox.py"
+ ],
+ "retrieval/tmp/_archive/_inter_ab.py": [
+  "src/paperpilot/agents/nodes/pull_chunk.py"
+ ],
  "retrieval/tmp/_author_kit.py": [
   "retrieval/tmp/group3/_group.questions.json"
  ],
- "scripts/count_objects.py": [
-  "retrieval/tmp/group2/2604.20087.txt"
+ "retrieval/tmp/_scan_quota.json": [
+  "retrieval/tmp/_xling_ab.py"
+ ],
+ "retrieval/tmp/_xling_cache.json": [
+  "retrieval/tmp/_xling_ab.py"
  ],
  "src/paperpilot/agents/nodes/retrieve.py": [
   "archive/qa_funnel_v2/README.md"
@@ -260,11 +461,5 @@
  ],
  "tests/_heading_scoring.py": [
   "src/paperpilot/tools/heading.py"
- ],
- "tests/expected_output.json": [
-  "retrieval/tmp/group2/2604.20087.txt"
- ],
- "tests/test_outputs.py": [
-  "retrieval/tmp/group2/2604.20087.txt"
  ]
 }

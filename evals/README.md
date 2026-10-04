@@ -81,7 +81,7 @@ evals/
 | gold 是否全部入库 | `tests/test_eval_assets.py` | 磁盘上**每个** gold 都已在 git（曾 15 个只入库 7 个） |
 | r2dev 真值是否入库 | 同上 | 现役真值 + 题集 + 子查询在库；大件/可再生件**不**在库 |
 | gold ↔ 导出是否同步 | 同上 + `_check_export_sync.py` | 不同步 = 跑批**静默测另一份题** |
-| 悬空路径引用 | `evals/checks/path_liveness.py` + `tests/test_path_liveness.py` | 无**新增**悬空引用（棘轮，66 条历史债不阻塞） |
+| 悬空路径引用 | `evals/checks/path_liveness.py` + `tests/test_path_liveness.py` | 无**新增**悬空引用（棘轮，123 条历史债不阻塞）。★ 判据是**版本库视图**（不是磁盘）—— 否则本机绿、CI 红 |
 | `retrieval/tmp` 脚本归属 | `evals/checks/tmp_scripts_audit.py` + `tests/test_tmp_scripts_audit.py` | 保留脚本**已入库**；归档**不造断 import** |
 | 统一记录格式 | `evals/report.py` + `tests/test_evals_report.py` | 缺 `n`/`note` 的记录**写不进去**；NaN/inf 被拒；表格列宽自适应且**对齐** |
 | **指标棘轮** | `evals/checks/metrics_ratchet.py` + `tests/test_metrics_ratchet.py` | 跑批后指标**掉出容差**就报错；★ 带容差（M1 ±16pt）与**方向**（健康指标越低越好） |
