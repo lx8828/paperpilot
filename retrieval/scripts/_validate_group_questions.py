@@ -27,9 +27,9 @@ sys.stdout.reconfigure(encoding="utf-8")
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _qa_groups import (  # noqa: E402
-    GROUP_QUOTA,
     group_expected_total,
     group_gold_file,
+    group_quota,
     material_dir,
     papers,
 )
@@ -69,19 +69,21 @@ def main() -> int:
     for q in qs:
         cnt[q.get("kind", "?")] = cnt.get(q.get("kind", "?"), 0) + 1
     print(f"  题数 {len(qs)}（期望 {group_expected_total(args.group)}）")
-    for k, w in GROUP_QUOTA.items():
+    for k, w in group_quota(args.group).items():
         got = cnt.get(k, 0)
         print(f"    {'✓' if got == w else '⚠️'} {k:<4} {got} / 期望 {w}")
     for k in cnt:
-        if k not in GROUP_QUOTA:
-            print(f"  ❌ 未知 kind {k!r}（只允许 {sorted(GROUP_QUOTA)}）")
+        if k not in group_quota(args.group):
+            print(f"  ❌ 未知 kind {k!r}（只允许 {sorted(group_quota(args.group))}）")
             bad += 1
 
     # ── 材料（reach 用；只取所需，逐题打印便于定位）──
     # M0 的 reach 必须查**真实合并总览**（`report_l0` 对 5 篇的实际产出），
     # 不能查"各篇 L0 材料拼接"：后者信息量大得多，会放过答不出的题。
     # 实测 2026-09-23：M0-2 在拼接口径下通过，跑 `--l0` 时 judge 却判「不够」
-    # （真实合并总览只有 20 条要点 / 1803 字符，且不含各篇的 limitations）。
+    # （当时真实合并总览只有 20 条要点 / 1803 字符）。
+    # ⚠️ 2026-09-24 起 `report_l0` **已带上 limitations**（`L0_LIM_PER_PAPER`），
+    # 所以下面那行 `_st0.get("limitations")` 不再是恒为空 —— 材料口径与生产一致了。
     from paperpilot.agents.nodes.report import report_l0
 
     # ⚠️ 必须传 **`<stem>.pdf` 全名**：`report_l0` 内部用 `Path(pdf).stem` 定位报告，
@@ -94,7 +96,9 @@ def main() -> int:
            for c in (_st0.get("core_points") or [])]
         + [str(x if isinstance(x, str) else (x.get("text") or x.get("rep_text") or ""))
            for x in (_st0.get("limitations") or [])])
-    print(f"  [材料] 合并总览 {len(l0_all)} 字（{len(_st0.get('core_points') or [])} 条要点）",
+    print(f"  [材料] 合并总览 {len(l0_all)} 字"
+          f"（{len(_st0.get('core_points') or [])} 条要点"
+          f" + {len(_st0.get('limitations') or [])} 条局限）",
           end="", flush=True)
     l3_all, st = "", []
     for s in corpus:

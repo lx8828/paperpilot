@@ -12,7 +12,7 @@
 | L2 | `restate()` | 问题重述：口语化 → 检索友好 | 未实现 |
 | **L3** | **`expand()`** | **查询改写与扩展：补同义/上位/领域表述** | ✅ **已实现**（原 `pull_chunk._rewrite_queries`） |
 | L4 | `hyde()` | HyDE：生成"假设答案文档"，用其向量检索 | 未实现 |
-| L5 | `decompose()` | 查询分解与多查询生成：高概念密度查询拆子查询 | 未实现 |
+| L5 | `decompose()` | 查询分解与多查询生成：高概念密度查询拆子查询 | ✅ **已实现**（2026-09-30 R2 多路检索；`_has_cjk` 门控，中文题才生成英文子查询） |
 
 **融合策略（这是本组件存在的核心教训）**
 
@@ -47,13 +47,59 @@
 """
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 from paperpilot.tools import llm
 
 LEVELS: tuple[str, ...] = ("l1", "l2", "l3", "l4", "l5")
+
+# ── LLM 变换结果的**磁盘缓存**（2026-10-01）────────────────────────────
+# 为什么必须有：`decompose()` 每次调用都会**重新生成**子查询（temperature=0.5）→
+# 同一道题两次运行拿到不同子查询 → 候选集不同 → **端到端指标 run-to-run 漂移 ±0.04**
+# （实测：同一配置两次跑 F1 0.619 / 0.656）。这让任何 A/B 对比都不可信。
+# 缓存后：同题 → 同子查询 → **可复现**；也顺带省掉重复调用。
+#
+# 落盘 = 单个 JSON 字典（`{sha1(fn+题干): 结果}`），避免为每道题建小文件。
+# 关掉：`PAPERPILOT_QUERY_CACHE=0`。
+ROOT = Path(__file__).resolve().parents[3]           # components/ → paperpilot → src → 项目根
+Q_CACHE_DIR = Path(os.environ.get("PAPERPILOT_QUERY_CACHE_DIR")
+                   or ROOT / "assets" / "artifacts" / "out_query_cache")
+_CACHE_ON = (os.environ.get("PAPERPILOT_QUERY_CACHE") or "1").strip() not in ("0", "false")
+
+
+def _ckey(fn: str, s: str) -> str:
+    return hashlib.sha1(f"{fn}\x00{s}".encode()).hexdigest()[:20]
+
+
+def _cache_get(fn: str, q: str) -> Any:
+    """命中返回结果（含空列表），未命中或缓存关闭返回 `None`。"""
+    if not _CACHE_ON:
+        return None
+    try:
+        p = Q_CACHE_DIR / f"{fn}.json"
+        if not p.exists():
+            return None
+        return json.loads(p.read_text(encoding="utf-8")).get(_ckey(fn, q))
+    except Exception:  # noqa: BLE001（缓存坏了不该影响主链路）
+        return None
+
+
+def _cache_put(fn: str, q: str, val: Any) -> None:
+    if not _CACHE_ON:
+        return
+    try:
+        Q_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        p = Q_CACHE_DIR / f"{fn}.json"
+        d = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+        d[_ckey(fn, q)] = val
+        p.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        pass
 
 # 融合策略枚举（稳定公开）
 FUSION_EQUAL_RRF = "equal_rrf"
@@ -180,6 +226,60 @@ def expand(question: str, n: int = L3_MAX_VARIANTS) -> list[str]:
     return out[:n]
 
 
+# ─────────────────── L6 跨语言检索式（中文问 → 英文检索式）───────────────────
+# 为什么需要它（2026-09-24 A/B；2026-09-26 按 `retrieval/tmp/_sandbox.py` 重校数字）：
+#   语料是**英文论文**，产品是**中文提问**。⚠️ 但"中文提问 → 词法路必死"**不成立**：
+#   实测 120 题中 **87%** 的题 BM25 有非零分（问句照抄了英文实体名/数字，
+#   见 `retrieval/tmp/_lang_effect.py`）→ 真正缺的是**动词/领域表述**那部分英文措辞。
+#   给出**英文检索式**后，词法路能补上这部分：
+#       中文原问 11/120  →  中文原问 + 英文检索式**配额补充** **7/120**（生产口径）
+#   ⚠️ **数字口径极重要**（`_sandbox.py --union` 四臂实测）：
+#       英文臂按生产调用（`search_layered(en, top_k=L3_XLING_K)`，K=8 时 floor 会**替换 5 个槽位**）→ 7
+#       英文臂 = 24 选的前 8 / 纯全局 top8 → 5        ← 早前误记的 "5/120" 是这一口径
+#       英文臂**不截断**（全 24）→ **4**               ← 真正该走的方向（字符 56k vs 82k@N=48）
+#   与"硬加 top_k"的对照：N=48 是 5/120 但字符 82k；supplement 是**并集**，
+#   只**追加**候选（主路顺序不变）→ 实测**零回退**（纯英文会掉的中文胜出题，并集保住）。
+# 注意：现行 L3 `_L3_SYS` 规则 3 只对"**英文**问题"要求英文变体 → 中文问题不会输出英文，
+#       所以这一级必须单独存在。
+_XLING_SYS = (
+    "你是学术检索的**跨语言查询改写器**。目标语料是**英文论文全文**，用户的问题是**中文**。\n"
+    "现状：只有中文查询 → 词法（BM25）路完全失效（中文 token 在英文正文里零匹配），"
+    "只能靠向量路 → 英文专名/指标类证据捞不回来。你的任务是给出**英文检索式**，让词法路可用。\n"
+    "规则：\n"
+    "1. `translation`：把中文问题改写成**一条英文检索句**，≤25 词；\n"
+    "   用**论文正文里可能出现的英文表述**（不要逐字直译），例：'分哪几步' → 'stages pipeline'；\n"
+    "   **实体原名必须保留**（模型名/数据集名/指标/数字/公式符号，如 MAMuJoCo / VAE / w/o Expand）；\n"
+    "2. `variants`：2~3 条**更短**的英文查询（每条 ≤12 词），各覆盖问题的不同侧面或同义表述；\n"
+    "   问题里出现'哪几篇/哪些/分别'等比较时，variants 要覆盖各对比维度；\n"
+    "3. 不要回答问题、不要自创新问题，只产出检索式。\n"
+    '只输出 JSON：{"translation": "...", "variants": ["...", "..."]}'
+)
+
+
+def _has_cjk(s: str) -> bool:
+    return any("\u4e00" <= ch <= "\u9fff" for ch in (s or ""))
+
+
+def crosslingual(question: str) -> str:
+    """L6：中文问题 → **英文检索式**（仅当问题含中日韩字符时才调 LLM）。
+
+    返回单条英文检索式；任何异常/非中文问题 → `""`（不影响主链路）。
+    稳定性优先：`temperature=0.0`，且**不做缓存**（题干即 cache key，收益低于实现复杂度）。
+    """
+    if not _has_cjk(question):
+        return ""                       # 英文问题无需翻译，省一次调用
+    try:
+        obj = llm.chat_json(_XLING_SYS, f"问题：{question}", temperature=0.0)
+    except Exception:  # noqa: BLE001（翻译失败不影响主链路）
+        return ""
+    if not isinstance(obj, dict):
+        return ""
+    tr = str(obj.get("translation") or "").strip()
+    if tr.lower() == question.strip().lower():
+        return ""
+    return tr[:L3_MAX_QUERY_CHARS]
+
+
 # ─────────────────────────── L4 HyDE ───────────────────────────
 def hyde(question: str) -> str:
     """L4：生成"假设答案文档"，用其向量去检索 —— **未实现**。
@@ -198,19 +298,111 @@ def hyde(question: str) -> str:
 
 
 # ─────────────────────────── L5 查询分解 ───────────────────────────
-def decompose(question: str, max_subs: int = 3) -> list[str]:
-    """L5：把高概念密度查询拆成子查询 —— **未实现**。
+# ⚠️ 提示词直接沿用 R2 定稿修好的那一版（`retrieval/tmp/_r2_subq_fix.py::SYS_NEW`）：
+#    第 3 条"禁止照抄论断里的英文示例词"是**防泄露**硬约束（实测把 `knowledge_distill`
+#    的判据重合率从 45.8% 降到 25.0%，见 `R2_SUBQ_FACET_DIAG_20260930.md`）。
+_DECOMPOSE_SYS = (
+    "你是信息检索助手。给定一条关于**某篇论文**的中文论断，生成 3 条**互为补充、措辞不同**的"
+    "**英文**检索式，用于在论文正文中找出支持该论断的段落。\n"
+    "要求：\n"
+    "1. 覆盖论断的**不同侧面/不同表述**（例如\"做了什么实验\"\"报告了什么指标\"\"在什么数据上做\"）；\n"
+    "2. 不要只是把论断里的词堆在一起，要像论文作者会写的句子；\n"
+    "3. ★★ **禁止照抄论断原文里的英文原词原句**（论断中 `反引号` 内、或括号里的英文，如 "
+    "`we introduce X dataset`）—— 那些是判定标准，照抄会构成**答案泄露**。"
+    "请改用**同义的其它英文表述**（换动词、换主语、换语序、换同义词）。\n"
+    "4. ★ 三条之间**措辞必须明显不同**，不得出现两条近似同义；\n"
+    "5. ★★ 必须是**陈述句或名词短语**（像论文正文里会出现的句子，如 "
+    "`we ablate each component`、`inference latency on long inputs`）；"
+    "**绝对不要写成问句**（`What happens to…?`/`How does…?` 这类会让 BM25 匹配到 "
+    "what/how/does 等噪声词，向量也会偏离证据段）。\n"
+    '6. 只输出 JSON：{"queries": ["q1", "q2", "q3"]}'
+)
 
-    设计（本项目里**最可能有正收益**的一级）：
-      · LitSearch 的查询大量是多条件复合句（"methods that contain **both** manually
-        translated comments **and** additional data augmented…"）→ 拆开后每条子查询的
-        语义密度更高，召回的互补性更强（这正是混合检索生效的同一个机制）；
-      · 与 L3 的区别：L3 产**同义变体**（同方向），L5 产**互补子查询**（不同侧面）——
-        所以 L5 更适合配 `quota_union`（各子查询各占配额），而不是等权 RRF；
-      · 拆几段、要不要保留原问题一起检索，都应当**当参数测**，不要拍脑袋定。
+
+def decompose(question: str, max_subs: int = 3) -> list[str]:
+    """L5：把高概念密度查询拆成**互补子查询**（**英文**检索式，≤`max_subs` 条）。
+
+    与 L3 的区别：L3 产**同义变体**（同方向），L5 产**互补子查询**（不同侧面）。
+    → 定稿用法是"子查询同时进 dense 与 BM25 两路"（`search_multiroute`），
+      不是 `quota_union`（后者是"变体只做召回补充"的思路，与定稿不同）。
+
+    行为：非中文/空问题 → `[]`；LLM 异常 → `[]`（不影响主链路）；
+    自动去重 + 剔除与原问题雷同者。`temperature=0.5`（实测偏低温度会让三条趋同）。
     """
-    raise NotImplementedError(
-        "L5 查询分解未实现；请先只启用已实现的 l3（PAPERPILOT_QUERY_LEVELS=l3）")
+    q = (question or "").strip()
+    if not q or not _has_cjk(q):
+        return []                        # 英文问题无需分解（主链路自己够用）
+    # ⚠️ 键名带版本（`_v2`）：改了提示词就换版本号，否则**旧缓存继续命中**、改动看不出效果
+    hit = _cache_get("decompose_v2", q)   # ★ 缓存命中 → **同题可复现**（消掉 ±0.04 漂移）
+    if hit is not None:
+        return [str(x) for x in hit][: max(1, int(max_subs))]
+    try:
+        obj = llm.chat_json(_DECOMPOSE_SYS, f"论断：{q}", temperature=0.5,
+                            max_tokens=320)
+    except Exception:  # noqa: BLE001（分解失败不影响主链路）
+        return []
+    raw = obj.get("queries") if isinstance(obj, dict) else obj
+    out: list[str] = []
+    seen: set[str] = set()
+    for x in (raw or []):
+        s = str(x).strip()[:L3_MAX_QUERY_CHARS]
+        k = s.lower()
+        if not s or k in seen or k == q.lower():
+            continue
+        seen.add(k)
+        out.append(s)
+        if len(out) >= max(1, int(max_subs)):
+            break
+    _cache_put("decompose_v2", q, out)
+    return out
+
+
+# ── 判据锚点词（`criteria_terms`，2026-10-01）──────────────────────────
+# 用途：**证据窗口的第 2 支**。定稿的窗口 = 去重(判据词命中块 ∪ 语义 top-k) 拼到字符上限；
+# 生产原先只有"语义 top-k"一支 → 端到端 P/R 明显低于定稿。
+#
+# ⚠️ 这里刻意与 `decompose` 的**防泄露**约束相反：窗口的目标是**把证据块取给判官看**，
+#    而"判据词"正是证据块里会出现的词 → 命中判据词的块**优先入窗**（见 `R2_C3_W1_V2_20260930.md`
+#    的实测：把判据词从窗口里去掉，判官在 4/4 受影响 facet 上全面变差）。
+#    → 「泄露」在**检索**语境有害、在**窗口**语境有益，两者不共用一套查询。
+_CRITERIA_SYS = (
+    "给定一条关于**某篇论文**的中文论断。请列出**论文正文里会出现、且能证明该论断成立**的"
+    "**英文关键词或短语**（用于在正文里定位证据段）。\n"
+    "要求：\n"
+    "1. 每条 ≤4 个英文词，尽量是作者会写的**动词短语或名词短语**"
+    "（例：`we ablate each component` / `inference latency` / `human evaluation`）；\n"
+    "2. 覆盖该论断的**不同侧面**，互不重复；\n"
+    "3. 若论断里已给出英文示例词，**直接沿用**（那些就是判据词）；\n"
+    "4. 只列**词面**即可，不要解释、不要写句子。\n"
+    '只输出 JSON：{"terms": ["...", "..."]}'
+)
+
+
+def criteria_terms(claim: str, max_terms: int = 8) -> list[str]:
+    """从论断里抽**判据锚点词**（英文），供证据窗口优先取块用。失败 → `[]`（退化为纯语义窗口）。"""
+    q = (claim or "").strip()
+    if not q:
+        return []
+    hit = _cache_get("criteria", q)
+    if hit is not None:
+        return [str(x) for x in hit][:max_terms]
+    try:
+        obj = llm.chat_json(_CRITERIA_SYS, f"论断：{q}", temperature=0.0, max_tokens=300)
+    except Exception:  # noqa: BLE001
+        return []
+    raw = obj.get("terms") if isinstance(obj, dict) else obj
+    out: list[str] = []
+    seen: set[str] = set()
+    for x in (raw or []):
+        s = str(x).strip().strip("`\"'").lower()[:60]
+        if len(s) < 3 or s in seen:
+            continue
+        seen.add(s)
+        out.append(s)
+        if len(out) >= max_terms:
+            break
+    _cache_put("criteria", q, out)
+    return out
 
 
 # ─────────────────────────── 融合原语 ───────────────────────────
@@ -276,4 +468,4 @@ def optimize(question: str, *, levels: tuple[str, ...] | None = None,
 
 __all__ = ["LEVELS", "FUSION_NAMES", "FUSION_EQUAL_RRF", "FUSION_QUOTA_UNION",
            "FUSION_RERANK_ORIG", "QueryPlan", "enabled_levels", "classify", "restate",
-           "expand", "hyde", "decompose", "quota_union", "optimize"]
+           "expand", "crosslingual", "hyde", "decompose", "quota_union", "optimize"]

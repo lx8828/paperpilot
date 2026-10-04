@@ -108,7 +108,7 @@ def test_l3_garbage_reply_falls_back(monkeypatch):
 
 
 # ───────────────────────── 未实现的级别：必须响亮报错 ─────────────────────────
-@pytest.mark.parametrize("level", ["l1", "l2", "l4", "l5"])
+@pytest.mark.parametrize("level", ["l1", "l2", "l4"])
 def test_unimplemented_level_raises(monkeypatch, level):
     """刻意设计：启用未实现的级别 → 抛错，避免"开了却没发生"的沉默失败。"""
     monkeypatch.setenv("PAPERPILOT_QUERY_LEVELS", level)

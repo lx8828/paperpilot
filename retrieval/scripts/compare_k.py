@@ -22,6 +22,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# ⚠️ Windows GBK 控制台下打印 emoji（⚠️）会 `UnicodeEncodeError` → **最后一行崩掉**。
+#   与其它脚本一致：把 stdout 强制成 utf-8（`errors="replace"` 兜底，绝不因输出崩）。
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE / "scripts"))
 from significance import mcnemar  # noqa: E402
