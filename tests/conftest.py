@@ -51,6 +51,9 @@ _ENV_KEYS = (
     "PAPERPILOT_VALIDATOR_GATE", "PAPERPILOT_VALIDATOR_LLM",
     "PAPERPILOT_VALIDATOR_MISSING", "PAPERPILOT_VALIDATOR_REPAIR_MID",
     "PAPERPILOT_CHUNK_VIEW_DIR",
+    # 问答读取器（2026-09-27）：默认 `fullctx`（全文直读）—— 必须清掉，否则
+    # "本机设了 retrieval" 会让测试测到的是开发者机器而不是代码默认值。
+    "PAPERPILOT_QA_READER", "PAPERPILOT_FULLCTX_STYLE",
     # 演示模式开关：默认必须关（否则测试会误走假实现，漏测真实路径）
     "PAPERPILOT_MOCK_LLM", "PAPERPILOT_MOCK_EMBED", "PAPERPILOT_MINERU",
     # LLM/裁判的 key 也必须清掉：否则"本机 .env 里有 key"会让

@@ -186,6 +186,14 @@ def _has_table(entries: list[dict[str, Any]]) -> bool:
 
 # ── cites 解析 ────────────────────────────────────────────────────────────────
 
+# fullctx 直读路径的锚点：`[P1·§3.3·¶c9]` → `("1", "3.3", "c9")`。
+# ⚠️ **必须同时拿到 `P` 与 `cid`**（2026-10-03 修，评审指出）：`chunk_id` 只在**篇内**
+# 唯一（每篇都从 `c1` 开始），只按 cid 会**串篇** —— 实测 A、B 都有 `c1` 时，
+# 答案引 `[P2…c1]` 会返回 **A 篇的 c1**。旧版只 `([^\]]+)` 取了 cid、把 `P2` 丢了。
+# 也**不接受裸子串**（`cid in text`）：`c1` 会被 `c12` 命中。
+# `§` 后非贪婪到第一个 `·¶` → 章节名里带 `·`（如「3.1 · 引言」）也不会切错。
+_ANCHOR_RE = re.compile(r"\[P(\d+)\s*·\s*§([^\]]*?)·\s*¶\s*([^\]]+?)\s*\]")
+
 
 def _cites_from(text: str, entries: list[dict[str, Any]], pdf: str) -> list[dict[str, Any]]:
     """[n] 引用 → 合法 cites。
@@ -194,40 +202,88 @@ def _cites_from(text: str, entries: list[dict[str, Any]], pdf: str) -> list[dict
     core_points 的每条都带 `pdf`）→ cites 才能定位到具体是哪一篇；该条没有 `pdf` 时
     才回退到传入的 `pdf`（调用方给的兜底标签）。
     """
-    fallback = str(pdf or "").rsplit(".", 1)[0]
+    fb_pdf = str(pdf or "")          # ★ cites 要带**文件级** pdf 名（见下），不是 stem
+    fallback = fb_pdf.rsplit(".", 1)[0]
     cites: list[dict[str, Any]] = []
+    # ⚠️ 去重键**必须带「哪一篇」**：`chunk_id` 只在篇内唯一（每篇都从 `c1` 开始），
+    #    只按 cid 去重会让"A 的 c1"把"B 的 c1"挤掉 → 串篇（2026-10-03 修）。
     seen: set[tuple[Any, ...]] = set()
+
+    def _emit_chunk(n: Any, e: dict[str, Any], cid: str, p_no: int) -> None:
+        """写一条 chunk 引用（两条通道共用；键与字段都在这儿统一）。"""
+        pdf_e = str(e.get("pdf") or fb_pdf)
+        key = ("c", pdf_e, cid)
+        if not cid or key in seen:
+            return
+        seen.add(key)
+        stem = pdf_e.rsplit(".", 1)[0] or fallback
+        cites.append({
+            "n": n,                  # `[n]` 通道有号；锚点通道为 None
+            "p": p_no,               # 第几篇（1-based；0 = 未知）
+            "chunk_id": cid,         # ★ **裸** cid（前端按它把锚点映射回这条）
+            "pdf": pdf_e,            # ★ 文件级 pdf 名（前端标"出自哪一篇"、跨篇切篇）
+            "ref": f"{stem}#{cid}",
+            "gid": "",
+            "claim_id": "",
+            "evidence": e.get("text", ""),
+            "page": e.get("page", 0),
+        })
+
+    # ── ① `[n]` 通道（检索路径；n = entries 的序号）──
     for n in sorted({int(m) for m in CITE_RE.findall(text)}):
         if not (1 <= n <= len(entries)):
             continue
         e = entries[n - 1]
-        stem = str(e.get("pdf") or "").rsplit(".", 1)[0] or fallback
-        if e["kind"] == "claim":
-            key = ("g", e.get("gid", ""))
+        pdf_e = str(e.get("pdf") or fb_pdf)
+        if e.get("kind") == "claim":
+            key = ("g", pdf_e, e.get("gid", ""))     # ★ 同样带 pdf
             if key in seen:
                 continue
             seen.add(key)
+            stem = pdf_e.rsplit(".", 1)[0] or fallback
             cites.append({
                 "n": n,  # 答案里的引用号（前端按 n 匹配，不按下标）
+                "p": int(e.get("p") or 0),
+                "pdf": pdf_e,
                 "ref": f"{stem}#{e.get('gid','')}",
                 "gid": e.get("gid", ""),
                 "claim_id": e.get("rep_claim_id", ""),
                 "evidence": e.get("evidence", ""),
                 "page": e.get("page", 0),
             })
-        else:  # chunk
-            key = ("c", e.get("chunk_id", ""))
-            if key in seen:
+        else:
+            _emit_chunk(n, e, str(e.get("chunk_id") or ""), int(e.get("p") or 0))
+
+    # ── ② fullctx 锚点通道 `[P2·§3.3·¶c9]` ──
+    # 全上下文直读路径的答案用这套编号（编号是 chunk_id，不是 `[n]`），而本函数是
+    # **修复 / 补充**时重新对齐 cites 的唯一入口 —— 只认 `[n]` 的话，fullctx 答案
+    # **一旦被修复，引用会被全部清空**（实测：`repaired` 后 cites 9 条 → 0 条，静默）。
+    anchors = [(int(p), cid.strip())
+               for p, _sec, cid in _ANCHOR_RE.findall(text or "")]
+    if anchors:
+        # `p`（第几篇）→ pdf：优先用条目自带的 `p`（fullctx 产出的 cite 带它，**权威**）
+        p2pdf = {int(e["p"]): str(e.get("pdf") or fb_pdf)
+                 for e in entries if e.get("kind") == "chunk" and e.get("p")}
+        by_cid: dict[str, list[dict[str, Any]]] = {}
+        for e in entries:
+            if e.get("kind") == "chunk" and e.get("chunk_id"):
+                by_cid.setdefault(str(e["chunk_id"]), []).append(e)
+        for p_no, cid in dict.fromkeys(anchors):     # 去重且保序
+            cands = by_cid.get(cid) or []
+            if not cands:
                 continue
-            seen.add(key)
-            cites.append({
-                "n": n,
-                "ref": f"{stem}#{e.get('chunk_id','')}",
-                "gid": "",
-                "claim_id": "",
-                "evidence": e.get("text", ""),
-                "page": e.get("page", 0),
-            })
+            want = p2pdf.get(p_no)
+            if want:                                 # 知道是第几篇 → 就按篇取
+                hit = next((e for e in cands
+                            if str(e.get("pdf") or fb_pdf) == want), None)
+            elif len(cands) == 1:
+                hit = cands[0]                       # 只有一处 → 无歧义
+            else:
+                # ★ 歧义（同 cid 出现在多篇）且**拿不到 `p`** → **宁缺勿错**：
+                #   给一条错的引用比不给更糟（用户会顺着跳到别的论文上）。
+                hit = None
+            if hit is not None:
+                _emit_chunk(None, hit, cid, p_no)
     return cites
 
 
@@ -281,8 +337,11 @@ def _build_context(state: QAState) -> tuple[str, list[dict[str, Any]], str]:
         entries = _claim_entries(retrieved)
         header = f"论文概述：{overview or '（无）'}\n\n=== 检索到的相关主张 ==="
         return header, entries, "L1"
-    entries = _claim_entries(state.get("core_points") or [])
-    header = f"论文概述：{overview or '（无）'}\n\n=== 核心要点 ==="
+    # L0 材料 = 核心要点 + 局限/未来方向（2026-09-24：后者原先完全没进多篇合并，
+    # 导致"局限类"问题即使用上 L0 直答也答不出 —— 见 `report._material_entry` 注释）。
+    entries = _claim_entries(list(state.get("core_points") or [])
+                             + list(state.get("limitations") or []))
+    header = f"论文概述：{overview or '（无）'}\n\n=== 核心要点与局限 ==="
     return header, entries, "L0"
 
 
@@ -520,9 +579,69 @@ def _audit_absence(question: str, pdfs: list[str]) -> dict[str, Any]:
             "reason": "" if enough else "全文复核判定仍不足"}
 
 
+def _answer_from_fullctx(state: QAState, fc: dict[str, Any]) -> dict[str, Any]:
+    """**直读分支**（`PAPERPILOT_QA_READER=fullctx`）：答案已在 `read_full` 里成稿。
+
+    这里只做输出归一（route / debug / cites 透传），**不再挑块、不再组上下文**：
+    全文已在 `read_full` 一次性喂给模型，本函数重跑 `_build_context` 没有意义
+    （也会把 `l3_chunks` 的空值误当 L0 → 降级）。
+
+    ⚠️ cites 目前**原样透传**（fullctx 的 `{pdf, chunk_id, page, section, evidence}`，
+    **没有**前端要的 `n` 序号）—— 前端适配是后续独立改动（用户 2026-09-27 决定）。
+    闸门侧安全：`validator.gate` 自己从 `cites[].evidence` 重建 entries（validator.py:608）。
+    """
+    answer = str(fc.get("answer") or "")
+    cites = list(fc.get("cites") or [])
+    route = [x for x in (state.get("route") or []) if not x.startswith("answer_")]
+    route.append("answer_fullctx")
+    debug = dict(state.get("debug") or {})
+    debug["answer"] = {
+        "level": "FULLCTX",
+        "n_entries": len(cites),      # 供闸门的"引用越界"基准
+        "n_facts": 0,
+        "facts": [],
+        "enough": (state.get("verdict") or {}).get("enough"),
+        "gap": "",
+        # 诊断用：与 L3 分支同构地给出"证据锚点"，便于离线比对（此处 = cites 的 chunk_id）
+        "entry_ids": [str(c.get("chunk_id") or "") for c in cites],
+        "facts_n": [],
+    }
+    return {"answer": answer, "cites": cites, "route": route, "debug": debug}
+
+
+def _answer_from_set(state: QAState, sp: dict[str, Any]) -> dict[str, Any]:
+    """**集合问答分支**（`PAPERPILOT_QA_READER=set`）：答案已在 `answer_set` 里成稿。
+
+    与 `_answer_from_fullctx` 同构：只做输出归一（route / debug / cites 透传）。
+    `set_papers.papers` 是**结构化的篇集合 + 逐篇证据**，前端可直接渲染。
+    """
+    answer = str(sp.get("answer") or "")
+    cites = list(state.get("cites") or [])
+    route = [x for x in (state.get("route") or []) if not x.startswith("answer_")]
+    route.append("answer_set")
+    debug = dict(state.get("debug") or {})
+    debug["answer"] = {
+        "level": "SET",
+        "n_entries": len(cites),          # 供闸门的"引用越界"基准
+        "n_facts": int(sp.get("n_yes") or 0),
+        "facts": [],
+        "enough": (state.get("verdict") or {}).get("enough"),
+        "gap": "",
+        "entry_ids": [str(c.get("chunk_id") or "") for c in cites],
+        "facts_n": [],
+    }
+    return {"answer": answer, "cites": cites, "route": route, "debug": debug}
+
+
 def generate_answer(state: QAState) -> dict[str, Any]:
     question = state.get("question", "")
     pdfs = [str(p) for p in (state.get("pdfs") or []) if p]
+    # ── 集合问答分支：answer_set 已产出成稿答案 + 篇集合 → 原样返回 ──
+    if state.get("set_papers"):
+        return _answer_from_set(state, dict(state.get("set_papers") or {}))
+    # ── 直读分支（默认）：read_full 已产出成稿答案 → 原样返回（见 _answer_from_fullctx）──
+    if state.get("fullctx"):
+        return _answer_from_fullctx(state, dict(state.get("fullctx") or {}))
     # cites 前缀的**兜底标签**（正常每条证据自带 `pdf`）；**语料只有多篇**（2026-09-23）。
     pdf = pdfs[0] if pdfs else ""
     header, entries, level = _build_context(state)

@@ -47,9 +47,33 @@ _NOISE_TYPES = {"page_number", "aside_text"}
 # ── 文本净化 ──────────────────────────────────────────────────────────────
 
 
+def _sub_mode() -> str:
+    """`PAPERPILOT_SUP_SUB=keep|drop`（默认 `keep`）—— 见 `_strip_sup_sub`。"""
+    return (os.environ.get("PAPERPILOT_SUP_SUB") or "keep").strip().lower()
+
+
 def _strip_sup_sub(s: str) -> str:
-    """整体删除 <sup>/<sub> 角标（连同内容：脚注数字/†/作者标记，检索无价值）。"""
-    return re.sub(r"<(sup|sub)>.*?</\1>", "", s, flags=re.S)
+    """处理 `<sup>/<sub>` 角标：**只去标签、保留内容**（默认）。
+
+    ⚠️ 2026-09-24 改为通用"保留内容"（非单篇特例）。旧行为
+    （`PAPERPILOT_SUP_SUB=drop`）是**连内容一起删**，依据"角标内容=脚注数字/†/作者标记，
+    检索无价值"——该假设对**真角标**成立，但 MinerU 偶尔会把**整篇正文的普通字母误标成
+    下标**（字号/基线判定错误），此时删内容＝**把正文的字母删掉**：
+
+        LLM<sub>-</sub>b<sub>ase</sub>d        →  LLMbd
+        se<sub>p</sub>cialization              →  secialization
+        lon<sub>g</sub>-horizon                →  lon-horizon
+
+    全语料实测（54 篇，`retrieval/scripts/_check_view_health.py`）：52 篇正常（角标 0~41 个、
+    功能词损耗 ≤0.7%），**1 篇被误标 3926 处** → 正文丢 37% 字符、**功能词损耗 68%**（整篇
+    不可读）。改为保留内容后该篇 gold 引文覆盖 8%→61%，其余 51 篇**逐字不变**。
+
+    事故率仅 2%，但后果是**整篇报废**且不报错（`mineru_status()` 仍判 `ok`）→ 故选择保留。
+    代价：真角标内容（数字/†）会留在文本里，全语料合计约正文的 0.06%（可忽略）。
+    """
+    if _sub_mode() == "drop":
+        return re.sub(r"<(sup|sub)>.*?</\1>", "", s, flags=re.S)
+    return re.sub(r"</?su[bp]>", "", s or "")
 
 
 def _strip_tags(s: str) -> str:

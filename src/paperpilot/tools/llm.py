@@ -32,7 +32,13 @@ _JUDGE_PREFIX = "PAPERPILOT_JUDGE"
 # 每轮 _chat 成功返回后累加 usage（DeepSeek 等返回 prompt/completion tokens）；
 # 调用方在"一个题目"前后 reset / 读取即可得到该题消耗。向后兼容：不读这些
 # 计数器不影响任何既有功能。
-_USAGE = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
+_USAGE = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0,
+          "cache_hit_tokens": 0, "cache_miss_tokens": 0}
+# ⚠️ `cache_hit_tokens` / `cache_miss_tokens`（2026-09-27 新增）：全上下文方案（把 5 篇
+#    一次性塞进 prompt）的成本完全取决于**前缀缓存命中率** —— 同一份前缀在第 2 题以后
+#    几乎全命中，命中价通常只有未命中的 1/10。不记这两个数，就无法判断"全塞"真实成本。
+#    兼容两家 schema：DeepSeek 顶层 `prompt_cache_hit_tokens/miss`；
+#    OpenAI 风格 `prompt_tokens_details.cached_tokens`（miss = prompt - cached）。
 
 
 def usage_stats() -> dict[str, int]:
@@ -42,9 +48,8 @@ def usage_stats() -> dict[str, int]:
 
 def reset_usage() -> None:
     """清零累计用量（每题评测前调用）。"""
-    _USAGE["calls"] = 0
-    _USAGE["prompt_tokens"] = 0
-    _USAGE["completion_tokens"] = 0
+    for k in _USAGE:
+        _USAGE[k] = 0
 
 
 class LLMError(RuntimeError):
@@ -166,8 +171,18 @@ def _chat(system: str, user: str, *, temperature: float,
                 data = json.loads(resp.read().decode("utf-8"))
             # 累加该轮 usage（有些服务商长输出/长上下文场景必返回 usage；缺省按 0）
             _usage = data.get("usage") or {}
-            _USAGE["prompt_tokens"] += int(_usage.get("prompt_tokens") or 0)
+            pt = int(_usage.get("prompt_tokens") or 0)
+            _USAGE["prompt_tokens"] += pt
             _USAGE["completion_tokens"] += int(_usage.get("completion_tokens") or 0)
+            hit = _usage.get("prompt_cache_hit_tokens")
+            if hit is None:                       # OpenAI 风格
+                det = _usage.get("prompt_tokens_details") or {}
+                hit = det.get("cached_tokens")
+            hit = int(hit or 0)
+            miss = _usage.get("prompt_cache_miss_tokens")
+            miss = int(miss) if miss is not None else max(pt - hit, 0)
+            _USAGE["cache_hit_tokens"] += hit
+            _USAGE["cache_miss_tokens"] += miss
             break
         except urllib.error.HTTPError as e:
             if 400 <= e.code < 500:

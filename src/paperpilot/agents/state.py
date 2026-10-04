@@ -109,6 +109,12 @@ class QAState(TypedDict, total=False):
     title: str
     overview: str              # 论文概述（L0 answer 直接消费）
     core_points: list[dict[str, Any]]  # 必读主张（增强后含 gid/evidence/page 锚）
+    # 局限 / 未来方向（2026-09-24 新增，与 core_points 同构、`label="limitation"`）。
+    # ⚠️ **必须在这里登记**：LangGraph 只保留本 schema 声明的键 —— 未声明的键会在
+    # 节点之间被**静默丢弃**（实测：`debug.l0.n_limitations=27` 但 answer 节点
+    # `n_entries=20`，因为顶层 `limitations` 没登记）。给 `report_l0` 加字段时，
+    # 这里与 `components/router.route_state` 的白名单**两处都要改**。
+    limitations: list[dict[str, Any]]  # 局限/未来方向条目（L0 answer 与 judge_l0 消费）
 
     # ── L1 · Claims（retrieve_claims 节点产出）──
     retrieved: list[ClaimHit]  # embedding 命中的 topK 主张（含 home_section 供 L2 定向）
@@ -119,6 +125,18 @@ class QAState(TypedDict, total=False):
 
     # ── L3 · Global（search_l3 节点产出，独立保底）──
     l3_chunks: list[ChunkText]  # 独立全文检索结果（与 L2 的 chunks 隔离，不混合）
+
+    # ── 全文直读（read_full 节点产出；`PAPERPILOT_QA_READER=fullctx` = 默认）──
+    # 与 L3 的区别：**不产出 `l3_chunks`**，而是**直接产出成稿答案**（cites 为段号引用）
+    # → `generate_answer` 的直读分支原样返回，不再走"挑块 + 组上下文"。
+    # ⚠️ 与 `limitations` 同理：**必须在这里登记** —— 未登记的键会被 LangGraph **静默丢弃**
+    #    （见上面 `limitations` 的注释）。RAG-2（`search_l3`）保留，env 可一键切回。
+    fullctx: dict[str, Any]     # {answer, cites, ctx_chars, n_papers, style, seconds}
+
+    # ── 集合问答（`set` 节点产出；`PAPERPILOT_QA_READER=set`）──
+    # 「这 N 篇里哪几篇做了 X」→ **逐篇判定** + 逐篇证据（见 nodes/set_answer.py）。
+    # ⚠️ 与 `limitations` / `fullctx` 同理：**必须在这里登记**，否则被 LangGraph 静默丢弃。
+    set_papers: dict[str, Any]  # {answer, papers:[{pdf,evidence,why,score,...}], n_papers, n_yes, unclear, b}
 
     # ── 判定层（judge_* 节点产出）──
     verdict: Verdict           # enough / target_sections / gap

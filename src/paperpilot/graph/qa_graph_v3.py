@@ -29,15 +29,28 @@ from typing import Any
 
 from langgraph.graph import END, START, StateGraph
 
-from paperpilot.agents.nodes import (answer_unknown, generate_answer,
-                                     judge_l3, search_l3)
+from paperpilot.agents.nodes import (answer_fullctx, answer_set, answer_unknown,
+                                     generate_answer, judge_l3, search_l3)
+from paperpilot.agents.nodes.read_full import reader
 from paperpilot.agents.state import QAState
 from paperpilot.components.router import route_state
 
 
 def route_after_judge0_pure(state: QAState) -> str:
-    """纯两级：judge_l0 不够 → 直接全局 L3（无 L1/L2）。"""
-    return "answer" if (state.get("verdict") or {}).get("enough") else "search_l3"
+    """纯两级：judge_l0 不够 → 交给**当前问答读取器**（无 L1/L2）。
+
+    读取器由 `PAPERPILOT_QA_READER` 决定（见 `nodes/read_full.reader`）：
+        · `fullctx`（**默认**）→ `read_full`：全文一次塞进单次调用（≤5 篇，S/C ≤ 1）
+        · `retrieval`         → `search_l3`：RAG-2 块级检索（**保留**，可一键切回/对照）
+    """
+    if (state.get("verdict") or {}).get("enough"):
+        return "answer"
+    r = reader()
+    if r == "retrieval":
+        return "search_l3"
+    if r == "set":
+        return "set"
+    return "read_full"
 
 
 def route_after_judge3(state: QAState) -> str:
@@ -49,6 +62,9 @@ def _add_l3_tail(g, nodes):
     g.add_edge("search_l3", "judge_l3")
     g.add_conditional_edges("judge_l3", route_after_judge3,
                             {"answer": "answer", "answer_unknown": "answer_unknown"})
+    # ⚠️ 直读路径**不进 judge_l3**：它判的是"检索块够不够"，而直读没有 `l3_chunks`
+    #    → 若送进去必被判"不够"→ 误走 answer_unknown。直读一律试答（质量交给输出闸门）。
+    g.add_edge("read_full", "answer")
 
 
 def build_qa_graph_v3():
@@ -60,14 +76,18 @@ def build_qa_graph_v3():
     """
     g = StateGraph(QAState)
     for name, fn in [("router", route_state),
+                     ("read_full", answer_fullctx),      # 节点名 = 路由标签；函数名见其 docstring
+                     ("answer_set", answer_set),         # 集合问答（reader()=="set"）
                      ("search_l3", search_l3), ("judge_l3", judge_l3),
                      ("answer", generate_answer),
                      ("answer_unknown", answer_unknown)]:
         g.add_node(name, fn)
     g.add_edge(START, "router")
     g.add_conditional_edges("router", route_after_judge0_pure,
-                            {"answer": "answer", "search_l3": "search_l3"})
+                            {"answer": "answer", "search_l3": "search_l3",
+                             "read_full": "read_full", "set": "answer_set"})
     _add_l3_tail(g, None)
+    g.add_edge("answer_set", "answer")
     g.add_edge("answer", END)
     g.add_edge("answer_unknown", END)
     return g.compile()
@@ -87,14 +107,19 @@ def build_qa_graph_v3_nol3j():
     """
     g = StateGraph(QAState)
     for name, fn in [("router", route_state),
+                     ("read_full", answer_fullctx),      # 节点名 = 路由标签；函数名见其 docstring
+                     ("answer_set", answer_set),
                      ("search_l3", search_l3),
                      ("answer", generate_answer),
                      ("answer_unknown", answer_unknown)]:
         g.add_node(name, fn)
     g.add_edge(START, "router")
     g.add_conditional_edges("router", route_after_judge0_pure,
-                            {"answer": "answer", "search_l3": "search_l3"})
+                            {"answer": "answer", "search_l3": "search_l3",
+                             "read_full": "read_full", "set": "answer_set"})
     g.add_edge("search_l3", "answer")
+    g.add_edge("read_full", "answer")
+    g.add_edge("answer_set", "answer")
     g.add_edge("answer", END)
     g.add_edge("answer_unknown", END)
     return g.compile()
