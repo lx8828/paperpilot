@@ -163,6 +163,13 @@ def _machine_checks(question: str, answer: str, entries: list[dict[str, Any]],
             issues.append({"sev": HIGH, "type": "citation",
                            "sentence": answer[:120],
                            "detail": f"引用 [{n}] 越界（共 {bound} 个证据条目）"})
+    elif re.search(r"\[P\d+·§[^\]]*·¶[^\]]+\]", answer):
+        # ★ **直读（fullctx）路径**的引用形状是 `[P2·§4.2·¶c3]`（段号式），**不是** `[n]`，
+        #   故不能按"零引用"处理 —— 否则每条直读答案都会被误标"未给出任何 [n] 引用"。
+        #   ⚠️ 这里**刻意不做越界校验**：直读的 `cites` 本身就是"在答案里匹配 chunk_id"
+        #   得来的 → `cited ⊆ cites` 恒成立，越界检查在该路径下**天然无信号**（写上去是空转）。
+        #   2026-10-02 修：此前该情形落到下面的 `elif`，产生固定的假 no_citation 标注。
+        pass
     elif n_entries and len(answer) > 20:
         # 零引用（2026-09-13 独立成类型并分级，见 `_substantive_claim` 上方注释）：
         #   含实质断言 → MID（前端标注、可统计）；纯拒答/过短 → LOW。
@@ -563,16 +570,26 @@ def check(question: str, answer: str,
 
 FALLBACK_MSG = "抱歉，我可能无法准确回答这个问题——该答案未能通过内部事实校验。"
 
+# ★「非系统作答」标注的**唯一来源**（2026-10-02）。
+#   为什么定义在这里：它是**输出契约**的一部分，且必须由 `gate` 这一层**强制**
+#   —— 不能依赖具体 salvage 实现自觉（换实现就丢标注 = 用户分不清"系统答案"与"补充"）。
+SUPPLEMENT_MARK = "【补充说明 · 非系统作答】"
+
 
 def gate(question: str, answer: str, cites: list[dict[str, Any]],
-         *, repair=None, supplement=None, adjudicate=None, use_llm: bool | None = None,
+         *, repair=None, salvage=None, supplement=None, adjudicate=None,
+         use_llm: bool | None = None,
          n_entries: int | None = None,
          extra_chunks: list[Any] | None = None) -> dict[str, Any]:
     """输出前闸门（接入 graph 的 answer 之后）。
 
-    策略（2026-09-09 定，repair 2026-09-09 接上；supplement 2026-09-09 接上）：
+    策略（2026-09-09 定，repair 2026-09-09 接上；supplement 2026-09-09 接上；
+          **salvage 2026-10-02 接上**）：
       high 级问题 → 交给 repair 对症修复（Self-Refine/CRAG）；修好 → repaired；
-      修不好/无 repair → 统一输出兜底话术（拒答，不走 unknown 路径）。
+      **修不好 → 交给 salvage 产出"补充说明"（`action="supplemented"`；文本自带
+      `【补充说明 · 非系统作答】` 标注，见 `repairer.salvage`）**；
+      连 salvage 也失败/未接 → 统一输出兜底话术（拒答，不走 unknown 路径）。
+      ⚠️ `salvage` 的产物**不是系统作答**，前端必须按"补充"呈现（不能与正常答案同款）。
       mid/low → 原样输出（issues 随 debug 返回，供前端标注）。
       env PAPERPILOT_VALIDATOR_REPAIR_MID=1 时 mid 的 unsupported/off_topic/contradiction/
       vague 也触发 repair（默认关：软标注不硬修）。
@@ -601,7 +618,7 @@ def gate(question: str, answer: str, cites: list[dict[str, Any]],
         use_llm: 体检是否走 LLM（默认读 PAPERPILOT_VALIDATOR_LLM）
         extra_chunks: 全篇 chunks（Chunk/dict），数字层溯源用。
     Returns:
-        {"action": "pass"|"fallback"|"repaired", "answer": 最终输出文本,
+        {"action": "pass"|"repaired"|"supplemented"|"fallback", "answer": 最终输出文本,
          "cites": 最终引用（repaired 时为新对齐引用）, "issues": [...],
          "supplements": [...]}（供 debug/前端标注）
     """
@@ -643,6 +660,24 @@ def gate(question: str, answer: str, cites: list[dict[str, Any]],
                 new, new_cites = got
                 if str(new or "").strip() and str(new).strip() != answer:
                     return {"action": "repaired", "answer": str(new).strip(),
+                            "cites": list(new_cites or []), "issues": issues,
+                            "supplements": supplements}
+        # ★ 修复没成 → 不再直接拒答：叫一次 LLM 产出「补充说明」（**不是系统作答**）。
+        #   产物自带标注（`repairer.salvage` 里强制，不依赖模型自觉）；仍失败才走拒答。
+        if salvage is not None:
+            try:
+                got = salvage(question, answer, issues, cites)
+            except Exception:  # noqa: BLE001  补充失败不抛断，按兜底处理
+                got = None
+            if isinstance(got, tuple) and len(got) == 2:
+                new, new_cites = got
+                s = str(new or "").strip()
+                if s and s != answer:
+                    # ★ 标注**在这一层强制补**：任何 salvage 实现（含未来的）都不会漏掉，
+                    #   用户永远不会把"补充"误当成"系统作答"。
+                    if SUPPLEMENT_MARK not in s:
+                        s = f"{SUPPLEMENT_MARK}\n{s}"
+                    return {"action": "supplemented", "answer": s,
                             "cites": list(new_cites or []), "issues": issues,
                             "supplements": supplements}
         return {"action": "fallback", "answer": FALLBACK_MSG, "cites": [],

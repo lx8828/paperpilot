@@ -55,6 +55,32 @@ def ask(question: str, pdfs: list[str],
                 "debug": {"ingest": {"blocked": True, "pdf": _p}},
             }
 
+    # 上下文预算闸（2026-10-03）：**在跑图之前**拦。
+    # 为什么必须早拦：超预算时 ① 真去调 API 会被服务端 400（`build_context` 与
+    # `llm.chat_text` 都**没有截断保护**）；② 若把"话术"当 answer 传下去，validator
+    # 会把它当**无据答案**去修复/拒答，用户反而看不到这句解释。
+    # ⚠️ **只在 fullctx 下生效**：那是唯一"把全部语料塞进提示词"的读取器；
+    #    `retrieval`/`set` 的上下文只有 top-k 个块，拿语料总大小拦它们是错的。
+    from paperpilot.agents.nodes.read_full import reader as _reader
+    from paperpilot.components import fullctx as _fc
+    _budget = _fc.ctx_budget_chars()
+    if _budget and _reader() == "fullctx":
+        _n = _fc.estimate_ctx_chars(corpus)
+        if _n > _budget:
+            _per = _n // max(len(corpus), 1)
+            return {
+                "answer": (f"（未作答：本批 {len(corpus)} 篇全文约 **{_n:,} 字符**，"
+                           f"超过上下文预算 **{_budget:,} 字符**"
+                           f"（平均 {_per:,} 字符/篇）。\n请**减少篇数**"
+                           f"（预算内约可放 {max(_budget // max(_per, 1), 1)} 篇），"
+                           f"或调大 `{_fc.ENV_CTX_BUDGET}`。）"),
+                "cites": [],
+                "route": ["ctx_over_budget"],
+                "validator": {"action": "blocked", "issues": [], "supplements": []},
+                "debug": {"ctx": {"est_chars": _n, "budget": _budget,
+                                  "n_papers": len(corpus)}},
+            }
+
     out = qa_graph_v3.ask(question, corpus, history=history)
     if os.environ.get("PAPERPILOT_VALIDATOR_GATE", "1") != "0":
         from paperpilot.components import repairer, validator
@@ -71,6 +97,11 @@ def ask(question: str, pdfs: list[str],
             """数值裁决：数字在被引与全篇都找不到 → LLM 判是否支持（机器不判死）。"""
             return repairer.adjudicate_numbers(q, ans, nums, cites)
 
+        def _salv(q: str, ans: str, issues, cites):
+            """**修复失败后的补充说明**：LLM 产出、并由 `repairer.salvage` **强制标注**
+            「非系统作答」。取代旧的"直接拒答"，让用户至少拿到"部分可确证"的信息。"""
+            return repairer.salvage(q, ans, issues, cites)
+
         dbg = out.get("debug") or {}
         n_ctx = ((dbg.get("answer") or {}).get("n_entries")) or None
         # 全篇 chunks：机器数字层溯源"被引缺失数"的命中块（补充上下文候选）。
@@ -84,6 +115,12 @@ def ask(question: str, pdfs: list[str],
             chunks = []
         g = validator.gate(question, out.get("answer") or "",
                            list(out.get("cites") or []), repair=_rep,
+                           # ★ 修复失败 → 不再直接拒答，改叫 LLM 出一次「补充说明」
+                           #   （文本自带「非系统作答」标注）；`PAPERPILOT_VALIDATOR_SALVAGE=0`
+                           #   可关回旧的纯拒答行为。
+                           salvage=(_salv
+                                    if os.environ.get("PAPERPILOT_VALIDATOR_SALVAGE", "1") != "0"
+                                    else None),
                            supplement=_sup, adjudicate=_adj,
                            n_entries=n_ctx, extra_chunks=chunks)
         if g["action"] != "pass":

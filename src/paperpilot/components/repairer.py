@@ -32,14 +32,39 @@ _EV_CAP = 600
 
 
 def _entries_from_cites(cites: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """cites（答案实际引用，每条带 evidence 原文）→ gate 风格 chunk 条目。"""
+    """cites（答案实际引用，每条带 evidence 原文）→ gate 风格 chunk 条目。
+
+    ⚠️ **必须把「第几篇 / 文件名 / 裸 chunk_id」分开存**（2026-10-03 修，评审指出）：
+
+    `chunk_id` **只在篇内唯一** —— 每篇论文的块都从 `c1` 开始。所以任何**只按 cid**
+    的匹配都会串篇。旧实现把 `ref`（形如 `"<stem>#<chunk_id>"`）塞进 `chunk_id`，
+    而且**完全不产出 `pdf`**，后果有两个（都实测坐实过）：
+
+      ① `_cites_from` 的**锚点分支永远匹配不上**（`"2408.09273#c9"` ≠ 锚点里的 `c9`）
+         → fullctx 答案一旦被修复，引用被**清空**（"修好了"其实是没修上）；
+      ② `_cites_from` 里 `e.get("pdf")` 恒空 → 回退到调用方传的 `pdfs[0]` →
+         **多篇下所有 cite 都被标成第 1 篇**（比"没有 pdf"更糟：给了个错的）。
+
+    所以这里拆成三件：`p`（第几篇，1-based，0 = 未知）/ `pdf`（文件名）/
+    `chunk_id`（**裸 cid**）。多篇下的消歧全靠 `(p, chunk_id)` 这一对。
+    """
     out: list[dict[str, Any]] = []
     for c in cites or []:
         ev = str(c.get("evidence") or "")
-        if ev:
-            out.append({"kind": "chunk", "text": ev,
-                        "page": int(c.get("page") or 0),
-                        "chunk_id": str(c.get("ref") or "")})
+        if not ev:
+            continue
+        ref = str(c.get("ref") or "")
+        cid = str(c.get("chunk_id") or "")
+        pdf = str(c.get("pdf") or "")
+        if "#" in ref:                      # `ref = "<pdf(stem)>#<chunk_id>"`
+            head, _, tail = ref.partition("#")
+            cid = cid or tail
+            pdf = pdf or head
+        out.append({"kind": "chunk", "text": ev,
+                    "page": int(c.get("page") or 0),
+                    "chunk_id": cid, "pdf": pdf,
+                    "p": int(c.get("p") or 0),
+                    "ref": ref})
     return out
 
 
@@ -190,6 +215,73 @@ def _try_crag(question: str, pdfs: list[str], answer: str,
     if not new_cites or not _recheck_entries(question, new, full_entries):
         return None
     return new, new_cites
+
+
+# ── ①′ fullctx 专属修复：**同一份全上下文上再答一次**（2026-10-03）────────────
+#
+# 为什么不能沿用 CRAG（实测踩到）：
+#   fullctx 的提示词里**本来就有全部语料** —— "缺口证据"不用去检索，它已经在上下文里。
+#   CRAG 却去 `MultiChunkIndex.search_multi_hybrid(top_k=16)` **重新全局取块**（无篇配额），
+#   于是：① 字面命中多的那一篇占满 16 个名额 → 跨篇问题被修成"只讲第 1 篇"
+#   （实测修复后 5 条 cites 全来自 `2408.09273.pdf`）；② 答案改写成 `[n]` 编号 →
+#   **整套 `[P…·§…·¶…]` 锚点没了**，前端"点引用跳原文"跟着失效。
+#
+# 本路径的做法就是"**把初稿 + 质检意见塞回提示词，第二遍生成**"：
+#   · 语料一字未动 → 覆盖不丢；编号体系未换 → 锚点仍是 `[P…]`；
+#   · 成本可控：`sys + ctx` 是**稳定前缀**，第二遍**命中 prompt 前缀缓存**
+#     （这正是 fullctx 能成立的设计前提，见其模块头第 1 条）。
+#
+# 为何检索路径（RAG-2）仍保留 CRAG：那条路径的上下文**只有 top-k 个块**，
+# 缺口证据确实不在里面 → 必须重检索。两条路径的前提不同，所以修法不同。
+
+_REASK_TPL = """【你的初稿（未通过内部事实校验）】
+{draft}
+
+【校验发现的问题】
+{issues}
+
+【修订要求】
+1) 只依据**上文语料**修订：把没有原文支撑的断言**删除或改写**（宁缺毋编），其余内容保持原样；
+2) **保留 `[P…·§…·¶…]` 形式的引用锚点**（编号照上文语料，不要自造）；需要换依据时也用它；
+3) 某个断言在语料里确实找不到支撑 → 明确写成「语料中未提及」，不要含糊带过；
+4) 直接输出**修订后的完整答案**，不要解释你改了什么。
+"""
+
+
+def _is_fullctx() -> bool:
+    """当前问答读取器是不是 fullctx（决定修复走"同上下文再答"还是"重检索"）。"""
+    try:
+        from paperpilot.agents.nodes.read_full import reader
+        return reader() == "fullctx"
+    except Exception:  # noqa: BLE001  判不出来就当不是（退回旧路径，不冒险）
+        return False
+
+
+def _try_fullctx_reask(question: str, pdfs: list[str], answer: str,
+                       issues: list[dict[str, Any]]
+                       ) -> tuple[str, list[dict[str, Any]]] | None:
+    """fullctx 修复：**同一份全上下文** + 初稿 + 意见 → 再生成（保留 `[P…]` 锚点）。"""
+    from paperpilot.components import fullctx
+
+    if not pdfs:
+        return None
+    iss = [i for i in issues if i["sev"] in ("high", "mid")]
+    lines = "\n".join(
+        f"- [{i.get('type')}] {str(i.get('sentence') or '')[:120]}"
+        f" :: {str(i.get('detail') or '')[:200]}" for i in iss[:8]) or "（无明确意见——按'只依据原文'自查）"
+    q2 = _REASK_TPL.format(draft=str(answer or "")[:2500], issues=lines)
+    try:
+        out = fullctx.answer([str(p) for p in pdfs], q2)
+    except Exception:  # noqa: BLE001  调不通就交给下一条路径
+        return None
+    s = str(out.get("answer") or "").strip()
+    new_cites = list(out.get("cites") or [])
+    if not s or s == answer:
+        return None
+    # 复检：用**新版答案自己的**被引证据（允许它换依据），仍然 HIGH → 视为没修好
+    if not new_cites or not _recheck_entries(question, s, _entries_from_cites(new_cites)):
+        return None
+    return s, new_cites
 
 
 # ── ③ 补充复核（2026-09-09）────────────────────────────────────────────────
@@ -405,11 +497,25 @@ def repair(question: str, pdfs: list[str], answer: str,
            ) -> tuple[str, list[dict[str, Any]]] | None:
     """输出闸门检出问题后的一次性对症修复。
 
+    **按读取器分流**（2026-10-03）：
+      · **fullctx**（默认）→ `_try_fullctx_reask`：**同一份全上下文** + 初稿 + 质检意见
+        再生成一次。语料不用重检索（本来就在提示词里）、覆盖不丢、`[P…]` 锚点不换，
+        而且 `sys+ctx` 是稳定前缀 → 第二遍**命中 prompt 前缀缓存**，成本可控。
+      · **retrieval**（RAG-2）→ 老路：Self-Refine（生成型）→ CRAG（证据型）。
+        那条路径的上下文**只有 top-k 个块**，缺口证据确实不在里面 → **必须**重检索。
+
+    ⚠️ fullctx 下**不再退到 CRAG**：`_crag_regenerate` 是全局取块（无篇配额）→ 跨篇问题
+    会被修成"只讲第 1 篇"，且答案改写成 `[n]` 编号 → 锚点体系整体丢失。第一遍"同上下文
+    再答"若没修好，就交给 `gate` 的 `salvage` 出**标注过的补充说明** —— 那比一份
+    "覆盖残缺 + 引用跳不动"的答案更好。
+
     Returns: (new_answer, new_cites)；修不动/无对应类型问题 → None（gate 走兜底拒答）。
     """
     tgt = [i for i in issues if i["sev"] in ("high", "mid") and i.get("type") != "missing"]
     if not tgt or not (answer or "").strip():
         return None
+    if _is_fullctx():
+        return _try_fullctx_reask(question, pdfs, answer, tgt)
     has_ev = any(i["type"] in _EVIDENCE_TYPES for i in tgt)
     has_ge = any(i["type"] in _GENERATION_TYPES for i in tgt)
     # 生成问题（证据在没用对）先 Self-Refine（便宜）；仍有 evidence 型失败再做 CRAG。
@@ -422,3 +528,79 @@ def repair(question: str, pdfs: list[str], answer: str,
         if got:
             return got
     return None
+
+
+# ── ③ 兜底前的「LLM 补充说明」（2026-10-02）────────────────────────────────────
+#
+# 动机：闸门修复失败后原本**直接拒答**（`FALLBACK_MSG`）—— 把"证据不足"一刀切成
+# "什么都不说"。但多数失败是**部分**可确证的：原答案里有的说法有据、有的没据。
+# 全拒答会把**有据的那部分也一起丢掉**。
+#
+# 改法：叫**一次** LLM 产出**补充说明**，把「能确证 / 不能确证」分开写清，
+# 并**强制打上标注**（`SALVAGE_BANNER`）—— 前端与用户都必须能一眼看出
+# **这不是系统作答**，而是系统给出的"补充"。
+#
+# 与 ①② 的区别：①② 试图**修好原答案**（仍算系统作答）；③ 不修，
+# 而是**降级为"补充"**、并把这个降级事实**显式写在答案里**。
+
+def supplement_mark() -> str:
+    """「非系统作答」标注的**唯一来源**（定义在 `validator.SUPPLEMENT_MARK`）。
+
+    延迟导入避开模块级循环。⚠️ `gate` 那一层还会**再兜一次** ——
+    所以即使换了 salvage 实现、或模型不照做，标注也不会丢。
+    """
+    from paperpilot.components import validator as _V
+    return _V.SUPPLEMENT_MARK
+
+
+_SYS_SALVAGE_T = (
+    "你是论文问答助手。**系统先前给出的答案未通过证据校验**，现在需要你产出一段"
+    "**补充说明** —— 不是重写答案、也不是替系统作答。请严格遵守：\n"
+    "1) 输出第一行必须原样写：{mark}\n"
+    "2) 正文分两部分，标题原样使用：\n"
+    "   **能从证据确证的部分**：只写【可引用原文】里能直接读出的结论，逐条标 [n]。\n"
+    "   **无法确证的部分**：逐条指出系统原答案里哪些说法在【可引用原文】中找不到支撑，"
+    "写明「未找到支撑」。\n"
+    "3) **只依据【可引用原文】**：不得引入外部知识、不得推测补齐；"
+    "确实没有就写「给定文本中未提及」。\n"
+    "4) 数字、指标名、方法名、专有名词必须**逐字照抄原文**（原文是英文就保留英文）。\n"
+    "5) 直接给补充说明，不要复述题目、不要解释你的流程。"
+)
+
+
+def salvage(question: str, answer: str, issues: list[dict[str, Any]],
+            cites: list[dict[str, Any]]) -> tuple[str, list[dict[str, Any]]] | None:
+    """闸门修复失败后，产出**明确标注为"补充"**的说明（一次 LLM 调用）。
+
+    与 `repair` 的分工：`repair` 试图**修好**原答案（仍算系统作答，失败才到这）；
+    本函数**不修**，改为"降级成补充 + 显式标注"，让用户能拿到"部分可确证"的信息，
+    而不是一纸拒答。
+
+    Returns: `(补充文本, cites)`；无被引证据 / 调用失败 / 空输出 → `None`（gate 仍走拒答）。
+    """
+    entries = _entries_from_cites(cites)
+    if not entries:
+        return None                       # 连被引原文都没有 → 没什么可补充的，交给兜底
+    iss = [i for i in (issues or []) if i.get("sev") in ("high", "mid")]
+    lines = "\n".join(
+        f"- [{i.get('type')}] {str(i.get('detail') or i.get('sentence') or '')[:200]}"
+        for i in iss[:8]) or "（未给出具体意见）"
+    user = (f"【问题】{question}\n\n"
+            f"【系统原答案（未通过校验）】\n{str(answer or '')[:2000]}\n\n"
+            f"【校验发现的问题】\n{lines[:1200]}\n\n"
+            f"【可引用原文（[n] 对应编号；只是被引片段，非全文）】\n{_fmt_entries(entries)}\n\n"
+            "请输出补充说明：")
+    mark = supplement_mark()
+    try:
+        out = llm.chat_text(_SYS_SALVAGE_T.format(mark=mark), user,
+                            temperature=0.0, max_tokens=900)
+    except llm.LLMError:
+        return None
+    s = str(out or "").strip()
+    if not s:
+        return None
+    # ★ 模型没照做也必须带上标注 —— 这是"不得冒充系统作答"的硬保证（不依赖模型自觉）
+    if mark not in s:
+        s = f"{mark}\n{s}"
+    # 补充说明依据的仍是**同一批被引证据**，故 cites 原样带过（前端引用跳转不受影响）
+    return s, list(cites or [])
