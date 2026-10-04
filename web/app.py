@@ -5,9 +5,13 @@
 
 接口：
     GET  /                         前端页面（index.html）
+    POST /api/direction            **方向 → 检索并解析 k 篇**（一条龙；CLI / 不给用户挑的场景）→ `202`
+    POST /api/direction/search     ★ **阶段①：只检索出候选清单**（10 篇，前端"选篇页"）→ `202`
+    POST /api/direction/process    ★ **阶段②：处理用户挑中的那几篇**（≤SELECT_MAX）→ `202`
+                                   → 轮询 `/api/job/{id}`（多出 phase/query/k/progress/papers[]）
     POST /api/report               上传 PDF → **提交后台 job**（MinerU ∥ 报告链 → 索引）
                                    → `202 {job_id, pdf, status}`（已有产物的同内容重传：秒回报告）
-    GET  /api/job/{job_id}         任务状态（status/stage/stages 耗时/error）
+    GET  /api/job/{job_id}         任务状态（status/stage/stages 耗时/error；方向任务另有 papers[]）
     GET  /api/jobs/latest?pdf=     该论文最近一次 job（刷新页面后恢复进度）
     POST /api/job/{job_id}/cancel  请求取消（阶段边界生效；MinerU 真终止子进程）
     POST /api/job/{job_id}/retry   重试（已完成的阶段自动复用，很便宜）
@@ -381,7 +385,7 @@ def _job_view(j: dict[str, Any]) -> dict[str, Any]:
     status = str(j.get("status") or "")
     stages = {str(k): dict(v) for k, v in (j.get("stages") or {}).items()
               if isinstance(v, dict)}
-    return {
+    view = {
         "job_id": j.get("job_id", ""),
         "pdf": j.get("pdf", ""),
         "status": status,
@@ -399,6 +403,22 @@ def _job_view(j: dict[str, Any]) -> dict[str, Any]:
         "error": j.get("error") or "",
         "note": j.get("note") or "",
     }
+    # 「方向 → k 篇」批任务（2026-10-02）：**只在 kind=direction 时**附加字段 ——
+    # 单篇 job 的视图保持逐位不变（既有前端与测试不受影响）。
+    if str(j.get("kind") or "") == "direction":
+        view.update({
+            "kind": "direction",
+            "phase": j.get("phase") or "all",     # search / process / all
+            "query": j.get("query", ""),
+            "arxiv_ids": list(j.get("arxiv_ids") or []),   # process 阶段：所选 id
+            "k": j.get("k") or 0,
+            "progress": dict(j.get("progress") or {}),      # {stage,done,total,note}
+            "papers": [dict(p) for p in (j.get("papers") or [])
+                       if isinstance(p, dict)],
+            "n_usable": j.get("n_usable") or 0,
+            "reason": j.get("reason") or "",
+        })
+    return view
 
 
 def _report_payload(name: str) -> dict[str, Any] | None:
@@ -437,6 +457,8 @@ async def api_meta() -> JSONResponse:
     算 `AbortController` 的兜底超时（预算 = `ask_wait_s + 180s`），这样**超时值跟随服务端配置**，
     不会写死一个会漂移的魔数；也方便用户直接看到"实际生效的是什么"。
     """
+    from paperpilot.components import fullctx as _fc
+    from paperpilot.direction import SEARCH_K, SELECT_MAX
     from paperpilot.tools.mock_llm import (banner, embed_enabled, llm_enabled,
                                           mineru_enabled)
     mock = llm_enabled()
@@ -447,6 +469,15 @@ async def api_meta() -> JSONResponse:
         "llm_configured": llm.is_configured(),
         "ask_wait_s": _ask_wait_seconds(),
         "ask_concurrency": _ask_concurrency(),
+        # 「方向」两阶段的契约值：**前端据此渲染，而不是各写一个魔数**（免得两边漂移：
+        # 前端以为能选 8 篇、后端只收 10 篇，用户白勾一场）。
+        "search_k": SEARCH_K,          # 阶段①给几篇候选（10）
+        "select_max": SELECT_MAX,      # 用户最多能选几篇（10；依据见 direction.SELECT_MAX）
+        # 上下文预算（**字符**，0=不限制）：`fullctx` 把全文塞进提示词，这是硬闸。
+        # 前端可用它显示"当前语料 / 预算"，或据 `ctx_per_paper_chars` 提示篇数。
+        "ctx_budget_chars": _fc.ctx_budget_chars(),
+        "ctx_per_paper_chars": _fc.CTX_PER_PAPER_CHARS,   # 实测均值（我们这批 46,138）
+        "ctx_window_tokens": _fc.CTX_WINDOW_TOKENS,       # 模型窗口（1M），仅展示
         "banner": banner() if mock else "",
         "note": ("演示模式：概述/主张/答案为固定示例；引用锚点仍来自真实检索"
                  if mock else ""),
@@ -462,6 +493,130 @@ async def get_report(name: str) -> JSONResponse:
             status_code=404,
             detail=f"报告尚未生成：{_safe_pdf_name(name)}（若正在解析，请轮询 /api/job）")
     return JSONResponse(payload)
+
+
+class DirectionBody(BaseModel):
+    query: str                      # 研究方向（自然语言）
+    k: int = 5                      # 检索并逐篇处理的论文数
+    force: bool = False             # True = MinerU 与报告链全链路重跑
+
+
+_DIRECTION_MAX_K = 10
+
+
+@app.post("/api/direction")
+def start_direction(body: DirectionBody) -> JSONResponse:
+    """**方向 → 检索并解析 k 篇**（前端「检索并解析」按钮，2026-10-02）。
+
+    提交即返回 `202`（job 视图）；进度轮询 `GET /api/job/{job_id}`（返回里会多出
+    `query / k / progress{stage,done,total,note} / papers[]`）；完成后 `papers[]`
+    里每篇带 `pdf_name`（用它取 `GET /api/report/{pdf_name}` 与 `GET /pdf/{pdf_name}`），
+    `ok=false` 的篇带 `reason`。
+
+    为什么是同步 `def`：`submit_direction` 只做"建 job + 丢后台线程"（毫秒级），
+    真正的分钟级工作在 `direction-job` 线程里跑（与 `/api/report` 同一套模式）。
+
+    同一方向已有未结束的 job → 直接返回它（不重复排队、不重复花钱）。
+    """
+    if not llm.is_configured():
+        raise HTTPException(status_code=500, detail="LLM 未配置：请先复制 .env.example 为 .env 并填写。")
+    q = (body.query or "").strip()
+    if not q:
+        raise HTTPException(status_code=400, detail="请先填一个研究方向（不能为空）")
+    k = int(body.k or 5)
+    if not 1 <= k <= _DIRECTION_MAX_K:
+        raise HTTPException(
+            status_code=400,
+            detail=f"k 需在 1~{_DIRECTION_MAX_K} 之间（收到 {k}）："
+                   f"每篇都要跑 MinerU + 报告链，取太大必然等到天荒地老。")
+    job = worker.submit_direction(q, k=k, force=bool(body.force))
+    return JSONResponse(_job_view(job), status_code=202)
+
+
+# ── 「方向」两阶段版（2026-10-02）：先检索出候选 → 用户挑 ≤SELECT_MAX 篇 → 再处理 ──
+#
+# 为什么要拆：全文直读要**一次性把所选篇的全文塞进提示词**，所以"最终处理几篇"
+# 该由**用户**按需决定，而不是系统替他固定几篇：先给 `SEARCH_K`（=10）篇候选，
+# 他挑 ≤ `SELECT_MAX`（=10）篇再往下走。
+# `/api/direction`（一条龙）保留给 CLI / 不给用户挑的场景。
+#
+# ⚠️ 上限**不是**由模型窗口定的：窗口 1M token（`fullctx.CTX_WINDOW_TOKENS`），
+#    10 篇 ≈ 58~62k token，只占 ~6%。真正的约束是**候选数（10 篇 LLM 精排名次）**
+#    与**字符预算**，以及长上下文下的**质量**。
+
+
+class DirectionSearchBody(BaseModel):
+    query: str
+    k: int = 10                     # 候选数。**10 是自然的**：`corpus_search.N_OUT = 10`
+                                    # —— LLM listwise 本来就只输出前 10 名，k=10 拿到的
+                                    # 正好是全部 LLM 精排结果（一份钱没多花、质量不降）
+
+
+class DirectionProcessBody(BaseModel):
+    query: str                      # 与检索时同一个方向（后端会**重跑一次检索**取元数据）
+    arxiv_ids: list[str]            # 用户在候选里挑中的（≤ SELECT_MAX）
+    force: bool = False
+
+
+@app.post("/api/direction/search")
+def direction_search(body: DirectionSearchBody) -> JSONResponse:
+    """**阶段①：检索出候选清单**（前端"选篇页"的数据源）。
+
+    提交即返回 `202`；轮询 `GET /api/job/{id}`，`ready` 后读 `papers[]`
+    （每篇带 `arxiv_id / title / abstract / score / rank`）交给用户挑。
+    """
+    if not llm.is_configured():
+        raise HTTPException(status_code=500,
+                            detail="LLM 未配置：请先复制 .env.example 为 .env 并填写。")
+    q = (body.query or "").strip()
+    if not q:
+        raise HTTPException(status_code=400, detail="请先填一个研究方向（不能为空）")
+    k = int(body.k or 10)
+    if not 1 <= k <= _DIRECTION_MAX_K:
+        raise HTTPException(
+            status_code=400,
+            detail=f"k 需在 1~{_DIRECTION_MAX_K} 之间（收到 {k}）："
+                   f"超过 {_DIRECTION_MAX_K} 之后的名次不是 LLM 精排的（见 corpus_search.N_OUT）。")
+    job = worker.submit_direction(q, k=k, phase="search")
+    return JSONResponse(_job_view(job), status_code=202)
+
+
+@app.post("/api/direction/process")
+def direction_process(body: DirectionProcessBody) -> JSONResponse:
+    """**阶段②：处理用户挑中的那几篇**（②取料 → ③解析 → ④报告 → ⑤索引）。
+
+    提交即返回 `202`；进度轮询 `GET /api/job/{id}`（阶段键：fetch/mineru/report/index）。
+
+    ⚠️ 这里有一道**硬闸**：篇数 ≤ `direction.SELECT_MAX`（= 10）。两条依据：
+      ① **不大于候选数** —— 阶段① 只给 `SEARCH_K`（=10）篇；选更多就得去取更靠后的名次，
+         而那些名次**不是 LLM 精排的**（`corpus_search.N_OUT = 10`）→ 质量掉一档；
+      ② **上下文预算内** —— 全文直读受 `fullctx` 的**字符预算**约束：按实测均值
+         46,138 字符/篇，10 篇 ≈ 461k 字符 ≈ 预算（1.2M）的 38%，稳在预算内。
+    ⚠️ 这道闸**不是**"模型窗口不够"：窗口 1M token，10 篇只占 **~6%**；
+       真正的约束是**质量**与预算，不是窗口（要再放开应先做质量实测）。
+    """
+    from paperpilot.direction import SEARCH_K, SELECT_MAX
+
+    if not llm.is_configured():
+        raise HTTPException(status_code=500,
+                            detail="LLM 未配置：请先复制 .env.example 为 .env 并填写。")
+    q = (body.query or "").strip()
+    if not q:
+        raise HTTPException(status_code=400, detail="缺 query：需要与检索时同一个方向")
+    ids = [str(x).strip() for x in (body.arxiv_ids or []) if str(x).strip()]
+    if not ids:
+        raise HTTPException(status_code=400, detail="还没有选任何论文（至少选 1 篇）")
+    if len(ids) > SELECT_MAX:
+        raise HTTPException(
+            status_code=400,
+            detail=(f"一次最多处理 {SELECT_MAX} 篇（你选了 {len(ids)} 篇）："
+                    f"检索一共只给 {SEARCH_K} 篇候选，且问答是**全文直读**"
+                    f"（有字符预算）。请分两批处理，或去掉几篇。"))
+    if len(set(ids)) != len(ids):
+        raise HTTPException(status_code=400, detail="所选论文里有重复的 arXiv id")
+    job = worker.submit_direction(q, k=SEARCH_K, phase="process",
+                                  force=bool(body.force), arxiv_ids=ids)
+    return JSONResponse(_job_view(job), status_code=202)
 
 
 @app.get("/api/job/{job_id}")

@@ -158,6 +158,10 @@ def test_cancel_during_index_is_honoured(tmp_assets, monkeypatch):
     monkeypatch.setattr(worker, "_lane_report",
                         lambda job, ev: worker._mark(job, "report", status="ok"))
     monkeypatch.setattr(embedder, "ChunkIndex", _SlowIndex)     # 走**真实** `_lane_index`
+    # ★ 本测试测的是"**取消在索引阶段被尊重**"。而默认读取器 fullctx 下索引阶段
+    #   **整个被跳过**（2026-10-03，`read_full.index_needed()`）→ 阶段都不存在，
+    #   自然测不到取消。所以这里显式强制建索引，把这条路径**留在覆盖里**。
+    monkeypatch.setenv("PAPERPILOT_EAGER_INDEX", "1")
 
     job = jobs.new_job("a.pdf")
     jobs.save(job)

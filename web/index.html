@@ -99,6 +99,9 @@
   .cites { margin-top:6px; border-top:1px dashed var(--line); padding-top:4px; }
   .ci { font-size:12px; color:var(--muted); margin:2px 0; }
   .ci b { color:var(--accent); cursor:pointer; }
+  /* 这条引用出自哪一篇（方向流程是跨篇语料，不标出来会分不清） */
+  .ci .pchip { display:inline-block; font-size:10.5px; padding:0 5px; border-radius:6px;
+               background:#eef2ff; color:#3730a3; font-weight:700; margin-right:5px; }
   /* 答案自检（validator issues）：mid/low 只提示不拦，故这里只做"提示条"，不是警告弹窗 */
   .issues { margin-top:6px; border-top:1px dashed var(--line); padding-top:4px; font-size:12px; }
   .isr { color:var(--muted); margin:2px 0; line-height:1.6; }
@@ -124,13 +127,182 @@
   @keyframes sp { to { transform:rotate(360deg); } }
   .scr { scroll-margin-top:8px; }
   ::-webkit-scrollbar{width:9px;height:9px} ::-webkit-scrollbar-thumb{background:#c6cad1;border-radius:5px}
+
+  /* ═══════════ ① 顶栏：论文切换（方向流程进来后才有内容）═══════════ */
+  .psel { display:none; align-items:center; border:1px solid var(--line);
+          border-radius:9px; overflow:hidden; background:#fff; }
+  .psel.on { display:flex; }
+  .psel .idx { font-size:11px; color:#fff; background:var(--accent); padding:6px 7px; font-weight:700; }
+  select#papersel { font-size:13px; padding:6px 9px; border:none; outline:none;
+                    background:#fff; max-width:34vw; cursor:pointer; }
+
+  /* ═══════════ ② 起始页：给一个研究方向 ═══════════
+     现网原来是"上传 PDF"；方向流程把它换成**一个输入框 + 检索并解析**。 */
+  #landing { position:fixed; inset:0; z-index:50; background:var(--bg);
+             display:flex; flex-direction:column; align-items:center;
+             justify-content:center; gap:18px; }
+  #landing.hide { display:none; }
+  #landing h1 { font-size:22px; font-weight:800; }
+  #landing .sub { color:var(--muted); font-size:13.5px; margin-top:-8px; text-align:center; }
+  .ask { display:flex; gap:8px; width:min(680px,90vw); }
+  #dinput { flex:1; padding:13px 16px; font-size:14.5px; border:1px solid var(--line);
+            border-radius:12px; outline:none; background:#fff; }
+  #dinput:focus { border-color:var(--accent); box-shadow:0 0 0 3px #2563eb1a; }
+  #go { padding:13px 22px; border:none; border-radius:12px; background:var(--accent);
+        color:#fff; font-size:14.5px; cursor:pointer; white-space:nowrap; }
+  #go:disabled { opacity:.55; cursor:default; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:680px; }
+  .chip { font-size:12.5px; padding:4px 11px; border:1px solid var(--line); border-radius:20px;
+          background:#fff; cursor:pointer; color:var(--muted); }
+  .chip:hover { border-color:var(--accent); color:var(--accent); }
+  #landing .up2 { font-size:12.5px; color:var(--muted); }
+  #landing .up2 label { color:var(--accent); cursor:pointer; text-decoration:underline; }
+
+  /* ═══════════ ③ 过渡页：检索/解析进行中（整屏接管）═══════════
+     为什么单独一页：这一段**分钟级**。画在起始页下方的话，输入框与示例还都能点
+     （用户会一边等一边改方向）。这里整屏盖住 → 等待期间没有任何可点控件。
+     `.t-stage` 是**动画留白区**（后续做"消磨无聊"的动画只改它内部）。 */
+  #transit { position:fixed; inset:0; z-index:70; background:var(--bg); padding:24px;
+             display:none; align-items:center; justify-content:center; overflow:hidden; }
+  #transit.on { display:flex; }
+  .t-box { width:min(680px,90vw); display:flex; flex-direction:column; gap:16px; align-items:center; }
+  .t-brand { font-size:22px; font-weight:800; }
+  .t-brand em { color:var(--accent); font-style:normal; }
+  .t-dir { font-size:13px; color:var(--muted); margin-top:-8px; max-width:100%;
+           overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* ★★ 动画区（整块交给你，替换内部即可，不影响下面 5 个阶段与流程逻辑） */
+  .t-stage { width:100%; height:190px; display:flex; flex-direction:column;
+             align-items:center; justify-content:center; gap:16px; }
+  .t-orbit { display:flex; gap:12px; }
+  .t-orbit span { width:12px; height:12px; border-radius:50%; background:var(--accent);
+                  opacity:.3; animation:orb 1.2s infinite ease-in-out; }
+  .t-orbit span:nth-child(2) { animation-delay:.18s }
+  .t-orbit span:nth-child(3) { animation-delay:.36s }
+  @keyframes orb { 0%,100% { opacity:.22; transform:translateY(0) }
+                   50% { opacity:1; transform:translateY(-8px) } }
+  .t-bar { width:min(320px,62%); height:4px; border-radius:3px; background:#dfe3e8; overflow:hidden; }
+  .t-bar i { display:block; height:100%; width:0; border-radius:3px; background:var(--accent);
+             transition:width .35s ease; }
+  #stages { width:100%; display:flex; flex-direction:column; gap:9px; }
+  .stg { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted); }
+  .stg .dot { width:9px; height:9px; border-radius:50%; background:#d1d5db; flex:0 0 auto; }
+  .stg.run .dot { background:var(--accent); animation:pu 1s infinite; }
+  .stg.done .dot { background:var(--good); }
+  .stg.fail .dot { background:var(--bad); }
+  .stg.done { color:var(--text); }
+  .stg .pct { margin-left:auto; font-size:12px; }
+  @keyframes pu { 50% { opacity:.25 } }
+  .t-note { font-size:12.5px; color:var(--muted); text-align:center; line-height:1.7; }
+  .t-note .err { color:var(--bad); }
+
+  /* ═══════════ ④ 选篇页（2026-10-02）：从检索到的候选里挑要精读的几篇 ═══════════
+     为什么要有这一步：问答是**全文直读**（一次把所选篇的全文塞进提示词），所以
+     "最终处理几篇"该由**用户**定，而不是系统替他固定几篇。
+     上限由后端 `direction.SELECT_MAX` 给（=10，与候选数 `SEARCH_K` 同形：再靠后的
+     名次**不是 LLM 精排的**，质量掉一档）。前端不写死这个数。 */
+  #pick { position:fixed; inset:0; z-index:60; background:var(--bg); padding:24px;
+          display:flex; align-items:center; justify-content:center; }
+  #pick.hide { display:none; }
+  .pk-box { width:min(880px,94vw); max-height:92vh; display:flex; flex-direction:column;
+            background:#fff; border:1px solid var(--line); border-radius:14px;
+            overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,.10); }
+  .pk-head { padding:14px 18px 10px; border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .pk-title { font-size:17px; font-weight:800; }
+  .pk-sub { font-size:12.5px; color:var(--muted); margin-top:3px; }
+  .pk-list { flex:1 1 auto; min-height:0; overflow-y:auto; padding:8px 10px; }
+  .pk-item { display:flex; gap:10px; padding:9px 10px; border:1px solid var(--line);
+             border-radius:10px; margin:7px 0; cursor:pointer; align-items:flex-start; }
+  .pk-item:hover { border-color:var(--accent); }
+  .pk-item.on { border-color:var(--accent); background:#f5f8ff; }
+  .pk-item.dis { opacity:.45; cursor:not-allowed; }
+  .pk-item input { margin-top:3px; flex:0 0 auto; }
+  .pk-t { font-size:13.5px; font-weight:600; line-height:1.45; }
+  .pk-a { font-size:12px; color:var(--muted); margin-top:3px; line-height:1.5; }
+  .pk-meta { font-size:11px; color:var(--muted); margin-top:4px; }
+  .pk-rank { display:inline-block; font-size:11px; padding:0 6px; border-radius:6px;
+             background:#eef2ff; color:#3730a3; font-weight:700; margin-right:6px; }
+  .pk-foot { display:flex; align-items:center; gap:10px; padding:12px 18px;
+             border-top:1px solid var(--line); background:#fafbfc; flex:0 0 auto; }
+  .pk-count { font-size:13px; color:var(--muted); }
+  .pk-count.full { color:var(--bad); font-weight:600; }
+  .pk-foot .spacer { flex:1; }
+  #pkgo { padding:9px 18px; border:none; border-radius:10px; background:var(--accent);
+          color:#fff; font-size:13.5px; cursor:pointer; }
+  #pkgo:disabled { opacity:.45; cursor:default; }
 </style>
 </head>
 <body>
 <div id="mockbar" hidden></div>
+
+<!-- ══════════ 起始页：给一个**研究方向**（2026-10-02 接入真后端）══════════ -->
+<div id="landing">
+  <h1>⚡Paper<em>Pilot</em></h1>
+  <div class="sub">给一个研究方向 → 检索最相关的 10 篇 → 你挑几篇 → 逐篇精读 + 在它们上面直接问答</div>
+  <div class="ask">
+    <input id="dinput" value="如何用对比学习做跨语言摘要生成" placeholder="输入一个研究方向…">
+    <button id="go">检索并解析</button>
+  </div>
+  <div class="chips">
+    <span class="chip">如何用对比学习做跨语言摘要生成</span>
+    <span class="chip">大模型长上下文的高效注意力</span>
+    <span class="chip">表格问答的检索增强</span>
+  </div>
+  <div class="up2">也可以 <label for="file">直接上传一篇 PDF</label>（跳过检索）</div>
+</div>
+
+<!-- ══════════ 过渡页：检索 / 解析进行中（独立整屏，防误点）══════════
+     为什么单独一页：这一段是**分钟级**的。若把进度画在起始页输入框正下方，输入框与
+     示例 chip 还都能点（用户会一边等一边改方向/改词）。这里**整屏接管** → 等待期间
+     页面上没有任何可点控件。
+     ★ `.t-stage` 是**动画留白区**：后续做"消磨无聊"的动画只改它内部，不动流程逻辑。 -->
+<div id="transit" role="dialog" aria-modal="true" aria-busy="true" aria-label="正在检索并解析">
+  <div class="t-box">
+    <div class="t-brand">⚡Paper<em>Pilot</em></div>
+    <div class="t-dir" id="tdir">—</div>
+
+    <!-- ★★ 动画区（整块可替换；下面只是占位，让页面不空） -->
+    <div class="t-stage" id="tanim">
+      <div class="t-orbit"><span></span><span></span><span></span></div>
+      <div class="t-bar"><i id="tbar"></i></div>
+    </div>
+
+    <div id="stages">
+      <div class="stg" data-s="0"><span class="dot"></span>① 论文检索 — 从 arXiv 语料取回 top-k<span class="pct"></span></div>
+      <div class="stg" data-s="1"><span class="dot"></span>② 论文取料 — 按 arXiv id 下载 PDF<span class="pct"></span></div>
+      <div class="stg" data-s="2"><span class="dot"></span>③ 解析切块 — MinerU 骨架 + 表格/公式<span class="pct"></span></div>
+      <div class="stg" data-s="3"><span class="dot"></span>④ 生成报告 — 每篇:概述/要点/骨架/图表<span class="pct"></span></div>
+      <div class="stg" data-s="4"><span class="dot"></span>⑤ 建索引 — 直读问答就绪<span class="pct"></span></div>
+    </div>
+    <div class="t-note" id="tnote">正在处理，请勿关闭页面 —— 论文下载与解析可能需要几分钟</div>
+  </div>
+</div>
+
+<!-- ══════════ 选篇页：从检索到的候选里挑要精读的那几篇 ══════════
+     流程：起始页 →（阶段①只检索）→ **本页** →（阶段②~⑤）→ 工作台。
+     上限由后端 `direction.SELECT_MAX` 给（=10，与候选数同形），这里先按体验拦一次。 -->
+<div id="pick" class="hide">
+  <div class="pk-box">
+    <div class="pk-head">
+      <div class="pk-title">📑 选论文</div>
+      <div class="pk-sub" id="pksub">—</div>
+    </div>
+    <div class="pk-list" id="pklist"></div>
+    <div class="pk-foot">
+      <span class="pk-count" id="pkcount">已选 0/—</span>
+      <span class="spacer"></span>
+      <button class="mini" id="pkback">← 换方向</button>
+      <button id="pkgo" disabled>开始解析</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="logo">⚡Paper<em>Pilot</em></div>
-  <div class="docname" id="docname">未加载论文 —— 拖入 PDF 或上传</div>
+  <div class="docname" id="docname">未加载论文 —— 给一个方向，或上传 PDF</div>
+  <div class="psel" id="psel" title="在检索到的几篇之间切换">
+    <span class="idx" id="pidx">1/1</span>
+    <select id="papersel"></select>
+  </div>
   <div class="spacer"></div>
   <label class="up">📎 上传/换 PDF<input type="file" id="file" accept=".pdf" hidden></label>
 </header>
@@ -181,8 +353,19 @@ const $msgs=$('msgs'), $qin=$('qin'), $send=$('send'), $file=$('file');
 
 const REL_CN={implements:'实现机制',supports:'证据支撑',limits:'边界限制',contrasts:'对照区分'};
 const EV={hit:'✓',loose:'~',miss:'⚠'};
-let S={pdf:null,report:null,view:'report',pdfDoc:null,pdfReady:false,renderTask:null};
+// `papers`/`reports` 是**方向流程**（检索并解析 N 篇）新增的：
+//   papers[]  = 检索到的 N 篇（含 ok/reason/pdf_name），前端据此做论文切换与跨篇提问
+//   reports{} = 按 pdf 名缓存的报告 JSON（切篇不重复请求）
+let S={pdf:null,report:null,view:'report',pdfDoc:null,pdfReady:false,renderTask:null,
+       papers:[],reports:{},direction:null};
 const chat=[]; let lastAsk=null;
+
+// 问答的语料：方向流程下 = **全部可用篇**（所以能问跨篇问题）；
+// 单篇上传时 = 那一篇。两者走同一个 `/api/ask`（后端本来就支持 1~N 篇）。
+function askSources(){
+  const ok=(S.papers||[]).filter(p=>p.ok&&p.pdf_name).map(p=>p.pdf_name);
+  return ok.length?ok:(S.pdf?[S.pdf]:[]);
+}
 
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -448,9 +631,23 @@ function stagesHtml(j){
   if(!ks.length) return '';
   return '<div class="flow">'+ks.map(k=>esc(k.replace('report:',''))+' '+esc(fmtSecs(st[k].seconds))).join(' · ')+'</div>';
 }
-function showReport(data,quiet){
+// `keepChat=true` 用于**方向流程的切篇**：换一篇看报告时 PDF 视图要重置，
+// 但**对话必须留着**（问答是跨篇的，切阅读对象不该清空历史）。
+function showReport(data,quiet,keepChat){
   S.pdf=data.pdf; S.report=data; S.pdfDoc=null; S.pdfReady=false;
-  pdfPromise=null; lastAsk=null; chat.length=0;
+  pdfPromise=null;
+  if(!keepChat){
+    lastAsk=null; chat.length=0;
+    // 单篇路径（上传 / 拖入 / 刷新恢复单篇）：必须**清掉方向流程的语料**，
+    // 否则 `askSources()` 会继续把方向流程的那几篇当问答语料（用户以为在问单篇）。
+    S.papers=[]; S.reports={}; S.direction=null;
+    $('psel').classList.remove('on');
+  }
+  dLanding(false);                              // 有东西可看了 → 收起起始页
+  // 让用户一眼看出**问答语料有几篇**（方向流程是跨篇的，容易误以为只问当前这篇）
+  const nSrc=askSources().length;
+  document.querySelector('.qa-title').innerHTML='💬 追问（支持多轮）'
+    +`<span class="muted"> · ${nSrc>1?('全部 '+nSrc+' 篇'):'本篇'}</span>`;
   $('docname').textContent=(data.title||data.pdf)+' · '+data.pdf;
   $('rpv').innerHTML=''; $('pdfv').innerHTML='';
   buildNav(data); showView('report'); renderReport(data);
@@ -541,6 +738,9 @@ async function showMode(){
   try{
     const r=await fetch('/api/meta'); const m=await r.json();
     if(typeof m.ask_wait_s==='number'&&m.ask_wait_s>=0) askWaitS=m.ask_wait_s;
+    // 「方向」两阶段的选篇上限**由后端给**（`direction.SELECT_MAX`），前端不写死 ——
+    // 否则改了后端常量两边就漂移（用户会白勾一场，最后被 400 打回）。
+    if(typeof m.select_max==='number'&&m.select_max>=1) PICK.max=m.select_max;
     if(!m.banner) return;
     const b=$('mockbar'); b.hidden=false;
     b.innerHTML='🧪 '+esc(m.banner)+' —— 概述 / 主张 / 答案是**固定示例**，'
@@ -569,7 +769,10 @@ async function resumeJob(){
 // （服务崩了 / 代理断了 / 请求丢了）—— 那种情况下 `fetch` 永远不 settle，页面会一直转圈。
 async function ask(){
   const q=$qin.value.trim(); if(!q) return;
-  if(!S.pdf){ addMsg('ai','请先上传一篇 PDF。'); return; }
+  // 语料 = 方向流程的全部可用篇（可跨篇提问）；单篇上传时就是那一篇
+  const sources=askSources();
+  if(!sources.length){
+    addMsg('ai','还没有可问答的论文：先在起始页给一个方向，或直接上传一篇 PDF。'); return; }
   addMsg('user',q); chat.push({role:'user',content:q});
   const b=busy('ai','正在检索论文并回答…'); $send.disabled=true;
   const budgetS=askWaitS+180;
@@ -577,7 +780,7 @@ async function ask(){
   try{
     const res=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},
       signal:ac.signal,
-      body:JSON.stringify({question:q,pdfs:[S.pdf],history:chat.slice(0,-1)})});
+      body:JSON.stringify({question:q,pdfs:sources,history:chat.slice(0,-1)})});
     const data=await res.json(); b.remove();
     if(!res.ok) throw new Error(data.detail||res.statusText);
     chat.push({role:'assistant',content:data.answer});
@@ -598,16 +801,32 @@ function renderAnswer(d){
   const cs=d.cites||[]; const html=esc(d.answer||'');
   // 引用号 n → cite：后端 cites 每项带 n（= 答案里 [n] 的真实引用号），旧数据无 n 时回退下标
   const byN=(n)=>cs.find(c=>c.n===n)||cs[n-1];
-  const body=html.replace(/\[(\d{1,3})\]/g,(m,n)=>{
+  let body=html.replace(/\[(\d{1,3})\]/g,(m,n)=>{
     const i=parseInt(n,10);
     return byN(i)?`<a class="jump" data-cite="${i}">[${n}]</a>`:`[${n}]`;
   });
+  // ★ fullctx（直读）路径的锚点是 `[P2·§3.3·¶c9]` —— 编号是 **chunk_id**，不是 [n]。
+  //   ⚠️ **必须带「第几篇」匹配**：`c1` 这类 cid **每篇都有**，只按 cid 找会**串篇**
+  //   （实测：答案引 `[P2…c1]` 会跳到 P1 那篇）。`P{n}` → 哪一篇由 `d.pdfs` 决定 ——
+  //   那正是送给 fullctx 的顺序（后端 `_cites_from` 也按 `(篇, cid)` 对齐，两端口径一致）。
+  const src=d.pdfs||[];
+  const stem=s=>String(s||'').replace(/\.pdf$/i,'');
+  body=body.replace(/\[P(\d+)·§([^\]]*?)·¶([^\]]+)\]/g,(m,pn,sec,cid)=>{
+    const want=stem(src[Number(pn)-1]);
+    let i=cs.findIndex(c=>(c.chunk_id||'')===cid&&stem(c.pdf)===want);
+    if(i<0) i=cs.findIndex(c=>(c.chunk_id||'')===cid);   // 兜底：拿不到篇信息时只按 cid
+    return i<0?`[P${pn}·${sec}]`
+      :`<a class="jump" data-ci="${i}">[P${pn}·${sec}·¶${cid}]</a>`;
+  });
   let h=`<div>${body}</div>`;
   if(cs.length){
-    h+='<div class="cites"><b class="muted">引用出处（点击跳原文）</b>';
+    h+='<div class="cites"><b class="muted">引用出处（点击跳原文；跨篇会自动切到那一篇）</b>';
     cs.forEach((c,i)=>{
       const tag=(c.n!=null?c.n:i+1);   // 展示真实引用号（[3][5] 不再被标成 [1][2]）
-      h+=`<div class="ci"><b data-cite="${tag}">[${tag}]</b> ${esc(c.gid?c.ref:'正文片段')}（p${c.page}）`
+      const pn=String(c.pdf||'').replace(/\.pdf$/,'');
+      h+=`<div class="ci"><b data-ci="${i}">[${tag}]</b>`
+        +(pn?`<span class="pchip">${esc(pn)}</span>`:'')
+        +`${esc(c.gid?c.ref:'正文片段')}（p${c.page}）`
         +`<span class="muted"> ${esc((c.evidence||'').slice(0,100))}</span></div>`;
     });
     h+='</div>';
@@ -621,6 +840,7 @@ function renderAnswer(d){
   if(show.length){
     const act=vv.action||'pass';
     const head=act==='repaired'?'答案自检（发现的问题已自动修正，下列为修正前记录）'
+             :act==='supplemented'?'答案自检（原答案未通过校验，以下为补充说明、非系统作答）'
              :act==='fallback'?'答案自检（未通过校验，已拒答）'
              :'答案自检（AI 复核，仅供参考）';
     h+=`<div class="issues"><b class="muted">${head}</b>`;
@@ -640,8 +860,293 @@ function renderAnswer(d){
 function jumpCite(n){
   if(!lastAsk||!lastAsk.cites)return;
   const c=lastAsk.cites.find(x=>x.n===n)||lastAsk.cites[n-1];
-  if(!c)return;
-  goToPdf(c.page||1, c.evidence||'');
+  jumpCiteObj(c);
+}
+// 跳到某条引用的原文。★**跨篇**时先切到那一篇再跳 —— 方向流程的答案是跨 5 篇的，
+// 不切篇会"跳到当前这篇的第 N 页"，那不是引用真正的出处。
+// ⚠️ 比较用**去掉 .pdf 的 stem**：cite 里的 `pdf` 可能是文件名（fullctx 产出）
+//    也可能是 `ref` 里带的 stem（`_entries_from_cites` 的兜底），两种都要认。
+function jumpCiteObj(c){
+  if(!c) return;
+  const stem=s=>String(s||'').replace(/\.pdf$/i,'');
+  const want=stem(c.pdf);
+  const t=(want&&want!==stem(S.pdf))
+    ?(S.papers||[]).find(p=>stem(p.pdf_name)===want&&p.ok):null;
+  if(t){ dSelect(t.pdf_name); setTimeout(()=>goToPdf(c.page||1,c.evidence||''),80); }
+  else goToPdf(c.page||1,c.evidence||'');
+}
+
+// ═════════ 方向流程：起始页 → 过渡页 → 工作台（2026-10-02 接真后端）═════════
+// 后端接口：`POST /api/direction {query,k}` → `202` job；
+// 轮询 `GET /api/job/{id}` —— **方向任务的返回里多出** `query / k /
+// progress{stage,done,total,note} / papers[]`（每篇带 arxiv_id/title/pdf_name/ok/reason）。
+// 5 个阶段的键与顺序由后端定死：search → fetch → mineru → report → index。
+const D_STAGES=['search','fetch','mineru','report','index'];
+const D_KEY='pp_direction';                 // 刷新后恢复（同单篇的 JOB_KEY）
+// 两阶段下要连 `phase` 一起存 —— 只有它才知道"恢复出来该去选篇页还是工作台"。
+function dRemember(id,phase){
+  try{localStorage.setItem(D_KEY,JSON.stringify({id:id,phase:phase||''}));}catch(e){}}
+function dReadRemembered(){
+  try{
+    const raw=localStorage.getItem(D_KEY); if(!raw) return null;
+    const o=JSON.parse(raw);
+    return (o&&o.id)?o:null;             // 旧格式（裸 id 字符串）解析失败 → 当作没有
+  }catch(e){ return null; }
+}
+function dForget(){try{localStorage.removeItem(D_KEY);}catch(e){}}
+function dLanding(on){$('landing').classList.toggle('hide',!on);}
+
+function dShowTransit(on,query){
+  if(query!=null) $('tdir').textContent='方向：'+query;
+  $('transit').classList.toggle('on',!!on);
+  if(on){
+    $('tbar').style.width='0%';
+    document.querySelectorAll('.stg').forEach(s=>{s.className='stg';
+      s.querySelector('.pct').textContent='';});
+  }
+}
+// 失败/取消时留在过渡页上把话说清，并给**唯一**一个出口。
+// 出口去哪由**当前处在哪个阶段**决定：有候选在手 → 回选篇页（换个选择重试，最有用）；
+// 否则 → 回起始页。
+function dFail(msg){
+  $('transit').classList.add('on');
+  $('tnote').innerHTML=`<span class="err">${esc(msg)}</span>`
+    +`<br><span class="jump" id="tback">← 返回</span>`;
+  const b=$('tback');
+  if(b) b.onclick=()=>{
+    dShowTransit(false); dForget();
+    if(PICK.papers.length){                  // 阶段②失败 → 回选篇页（保留候选）
+      PICK.sel.clear(); renderPickList();
+      $('pick').classList.remove('hide');
+    }else{                                   // 阶段①失败 → 回起始页
+      $('landing').classList.remove('hide');
+      $('go').disabled=false;
+    }
+  };
+}
+// 用**真实 job 状态**渲染 5 个阶段：已完成的 ✓，正在跑的显示 done/total
+function dRenderStages(j){
+  // ⚠️ 关于 ① 那行：阶段② 的 job **会自己复跑一次检索**（`run_selected` 为了让
+  //    title/abstract/score 来自唯一真源，而不是信前端传的字符串；热路径 ~5s）——
+  //    所以正常它**自带** `search` 状态，这里只是在**缺**的时候兜一个 ✓。
+  //    `Object.assign` 后者优先 → **真实状态永远盖得住这个兜底**（不会把失败说成 ✓）。
+  const st=(String(j.phase||'')==='process')
+    ? Object.assign({search:{status:'ok'}},j.stages||{}) : (j.stages||{});
+  const pr=j.progress||{}, cur=D_STAGES.indexOf(String(j.stage||''));
+  document.querySelectorAll('.stg').forEach((el,i)=>{
+    const s=st[D_STAGES[i]]||{}, status=s.status||'', pct=el.querySelector('.pct');
+    el.className='stg';
+    if(status==='ok') el.classList.add('done');
+    else if(status==='failed') el.classList.add('fail');
+    if(i===cur&&status!=='ok'&&status!=='failed') el.classList.add('run');
+    pct.textContent = status==='ok' ? '✓'
+      : status==='failed' ? '✗'
+      : status==='skipped' ? '跳过'
+      : (i===cur ? (pr.total ? (pr.done||0)+'/'+pr.total : '…') : '');
+  });
+  // 总进度条 = 已完成阶段数 + 当前阶段内的比例
+  const doneN=D_STAGES.filter(k=>(st[k]||{}).status==='ok').length;
+  const frac=(cur>=0&&pr.total)?(pr.done||0)/pr.total:0;
+  $('tbar').style.width=Math.round(Math.min(1,(doneN+frac)/D_STAGES.length)*100)+'%';
+  if(pr.note) $('tnote').textContent=pr.note;
+}
+
+// **阶段①：只检索**（k=10）→ 完了去选篇页。真正耗时的 ②③④⑤ 等用户挑完再跑。
+async function dStart(){
+  const q=$('dinput').value.trim(); if(!q) return;
+  $('go').disabled=true;
+  S.direction=q;
+  dShowTransit(true,q);
+  $('tnote').textContent='正在检索候选论文…（首次会加载检索模型，约需 30~60 秒）';
+  let job;
+  try{
+    const r=await fetch('/api/direction/search',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({query:q,k:10})});     // 10 = LLM 精排的全部名次（见 corpus_search.N_OUT）
+    job=await r.json();
+    if(!r.ok) throw new Error(job.detail||r.statusText);
+  }catch(e){ dFail('提交失败：'+e.message); $('go').disabled=false; return; }
+  dRemember(job.job_id,job.phase);
+  dPoll(job.job_id);
+}
+
+async function dPoll(jobId){
+  let bad=0;
+  for(;;){
+    let j;
+    try{
+      const r=await fetch('/api/job/'+encodeURIComponent(jobId));
+      j=await r.json();
+      if(!r.ok) throw new Error(j.detail||r.statusText);
+      bad=0;
+    }catch(e){
+      if(++bad>=5){ dForget(); dFail('进度查询连续失败：'+e.message); return; }
+      await new Promise(s=>setTimeout(s,2000)); continue;
+    }
+    dRenderStages(j);
+    if(j.status==='ready'){
+      dForget();
+      // 阶段① 完成 → **去选篇页**让用户挑；阶段② 完成 → 直接进工作台
+      if(String(j.phase||'')==='process'){ await dEnter(j); }
+      else{ dShowPick(j); }
+      return;
+    }
+    if(j.status==='failed'){ dForget(); dFail(j.error||j.reason||'处理失败'); return; }
+    if(j.status==='cancelled'){ dForget(); dFail('任务已取消'); return; }
+    await new Promise(s=>setTimeout(s,1500));
+  }
+}
+
+// ═════════ 选篇页：从检索到的候选里挑要精读的那几篇（2026-10-02）═════════
+// `PICK.max` **从后端 `/api/meta` 的 `select_max` 取**（= `direction.SELECT_MAX`，
+// 不在这儿写死 —— 否则改了后端两边就漂移，用户白勾一场）。前端只为**体验**先拦一次，
+// **真正的闸在后端**（超了回 400）。默认值 10 只作 `/api/meta` 拿不到时的兜底。
+const PICK={query:'',papers:[],sel:new Set(),max:10};
+
+function dShowPick(job){
+  PICK.query=job.query||S.direction||'';
+  PICK.papers=job.papers||[];
+  PICK.sel.clear();
+  S.direction=PICK.query;
+  $('pksub').textContent=`方向：${PICK.query} ｜ 检索到 ${PICK.papers.length} 篇，`
+    +`勾选要精读的（最多 ${PICK.max} 篇）`;
+  renderPickList();
+  $('transit').classList.remove('on');        // 阶段①的过渡页收掉
+  $('landing').classList.add('hide');
+  $('pick').classList.remove('hide');
+}
+
+function renderPickList(){
+  const full=PICK.sel.size>=PICK.max;
+  $('pklist').innerHTML=PICK.papers.map((p,i)=>{
+    const on=PICK.sel.has(p.arxiv_id);
+    const ab=String(p.abstract||'');
+    return `<label class="pk-item${on?' on':''}${(!on&&full)?' dis':''}" data-i="${i}">`
+      +`<input type="checkbox" ${on?'checked':''} ${(!on&&full)?'disabled':''}>`
+      +`<div><div class="pk-t"><span class="pk-rank">#${p.rank||i+1}</span>`
+      +`${esc(p.title||p.arxiv_id)}</div>`
+      +`<div class="pk-a">${esc(ab.slice(0,180))}${ab.length>180?'…':''}</div>`
+      +`<div class="pk-meta">arXiv ${esc(p.arxiv_id)} · 相关度 `
+      +`${Number(p.score||0).toFixed(3)}</div></div></label>`;
+  }).join('');
+  $('pkcount').textContent=`已选 ${PICK.sel.size}/${PICK.max}`;
+  $('pkcount').classList.toggle('full',full);
+  $('pkgo').disabled=PICK.sel.size===0;
+  $('pkgo').textContent=PICK.sel.size?`开始解析（${PICK.sel.size} 篇）`:'开始解析';
+}
+
+function pickToggle(i){
+  const p=PICK.papers[i]; if(!p) return;
+  if(PICK.sel.has(p.arxiv_id)) PICK.sel.delete(p.arxiv_id);
+  else if(PICK.sel.size<PICK.max) PICK.sel.add(p.arxiv_id);   // 到上限就不再加
+  renderPickList();
+}
+
+// **阶段②：处理所选** → 过渡页跑 ②③④⑤ → 工作台
+async function dPickStart(){
+  const ids=PICK.papers.filter(p=>PICK.sel.has(p.arxiv_id)).map(p=>p.arxiv_id);
+  if(!ids.length) return;
+  $('pkgo').disabled=true;
+  $('pick').classList.add('hide');
+  dShowTransit(true,PICK.query);
+  $('tnote').textContent=`正在处理所选 ${ids.length} 篇…`;
+  let job;
+  try{
+    const r=await fetch('/api/direction/process',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({query:PICK.query,arxiv_ids:ids})});
+    job=await r.json();
+    if(!r.ok) throw new Error(job.detail||r.statusText);
+  }catch(e){
+    // 提交失败 → **退回选篇页**（别把用户卡在过渡页上），错误就地显示
+    $('pick').classList.remove('hide');
+    $('pkgo').disabled=false;
+    $('pksub').innerHTML=`<span style="color:var(--bad)">提交失败：${esc(e.message)}</span>`;
+    return;
+  }
+  dRemember(job.job_id,job.phase);
+  dPoll(job.job_id);
+}
+
+function dPickBack(){
+  $('pick').classList.add('hide');
+  $('landing').classList.remove('hide');
+  $('go').disabled=false;
+}
+
+// 就绪 → 进工作台：拉每篇报告、填切换器、默认看第 1 篇
+async function dEnter(job){
+  const papers=job.papers||[];
+  S.papers=papers;
+  S.direction=job.query||S.direction||'';
+  dShowTransit(false); dLanding(false); $('go').disabled=false;
+  // 逐篇取报告（只有 `ok` 的篇才值得取；失败的保留 reason 供展示，**不静默**）
+  for(const p of papers){
+    if(!p.ok||!p.pdf_name) continue;
+    try{ S.reports[p.pdf_name]=await fetchReport(p.pdf_name); }
+    catch(e){ p.ok=false; p.reason='报告读取失败：'+e.message; }
+  }
+  const usable=papers.filter(p=>p.ok&&p.pdf_name);
+  const sel=$('papersel');
+  sel.innerHTML=papers.map((p,i)=>`<option value="${esc(p.pdf_name||'')}"${p.ok?'':' disabled'}>`
+    +`${i+1}. ${esc(p.title||p.pdf_name||p.arxiv_id)}${p.ok?'':' ⚠'}</option>`).join('');
+  $('psel').classList.toggle('on',papers.length>1);
+  if(!usable.length){
+    $('navbody').innerHTML=''; $('pdfv').innerHTML='';
+    $('rpv').innerHTML=`<div class="card"><h2>⚠ 这一轮没有产出可用报告</h2>`
+      +(job.reason?`<p class="muted">${esc(job.reason)}</p>`:'')
+      +papers.map(p=>`<div class="pt"><span class="tag">${esc(p.arxiv_id)}</span>`
+        +`${esc(p.title||'')}<div class="muted">${esc(p.reason||'（没有报告）')}</div></div>`).join('')
+      +`</div>`;
+    $('docname').textContent='方向：'+S.direction+'（无可用报告）';
+    showView('report');
+    addMsg('ai','<span style="color:var(--bad)">这一轮没有产出可用报告 —— 每篇的原因见中间卡片。</span>');
+    return;
+  }
+  dSelect(usable[0].pdf_name);
+  addMsg('ai',`✅ 已就绪 <b>${usable.length}/${papers.length}</b> 篇。`
+    +`<br>右侧可直接提问：**这 ${usable.length} 篇全文会一起交给模型**（不做检索），`
+    +`所以能问跨篇问题（"这几篇各自怎么做的"）。答案里的 [n] 可点。`
+    +(papers.length>usable.length
+      ? `<br><span style="color:#a86200">⚠ 有 ${papers.length-usable.length} 篇没成功，`
+        +`已排除在问答语料之外。</span>`:''));
+  $qin.focus();
+}
+
+// 切篇：只换**阅读对象**（报告 / 原文），**不动对话** —— 问答是跨篇的，
+// 换一篇看报告不该清空历史（`showReport` 的第 3 个参数 keepChat=true）。
+function dSelect(pdfName){
+  const rep=S.reports[pdfName];
+  if(!rep) return;
+  showReport(rep,true,true);
+  const all=S.papers.findIndex(p=>p.pdf_name===pdfName);
+  $('pidx').textContent=(all+1)+'/'+S.papers.length;
+  $('papersel').value=pdfName;
+}
+
+// 刷新恢复：方向流程跑到一半 / 已完成（产物在 → 直接进工作台）
+async function resumeDirection(){
+  const saved=dReadRemembered();
+  if(!saved) return false;
+  const id=saved.id;
+  let j;
+  try{
+    const r=await fetch('/api/job/'+encodeURIComponent(id));
+    j=await r.json();
+    if(!r.ok) throw new Error(j.detail||j.statusText);
+  }catch(e){ dForget(); return false; }
+  if(j.kind!=='direction'){ dForget(); return false; }
+  S.direction=j.query||'';
+  if(j.status==='queued'||j.status==='running'){
+    dShowTransit(true,j.query); dRenderStages(j); dPoll(id);
+    return true;
+  }
+  if(j.status==='ready'){
+    // 阶段①已检索完但用户还没挑 → **回选篇页**（别把候选丢了，那等于让他重检索一遍）
+    if(String(j.phase||'')==='process'){ await dEnter(j); } else { dShowPick(j); }
+    return true;
+  }
+  dForget(); return false;
 }
 
 // ───────── 事件 ─────────
@@ -659,9 +1164,29 @@ $nav.addEventListener('click',e=>{
     requestAnimationFrame(()=>scrollTo(s.dataset.scroll));return;}});
 $msgs.addEventListener('click',e=>{
   const c=e.target.closest('[data-cite]'); if(c) jumpCite(+c.dataset.cite);
+  const q=e.target.closest('[data-ci]');   // fullctx 锚点 / 引用列表项（按下标取 cite）
+  if(q&&lastAsk) jumpCiteObj((lastAsk.cites||[])[+q.dataset.ci]);
   const x=e.target.closest('[data-cancel]'); if(x) cancelJob(x.dataset.cancel);
   const rt=e.target.closest('[data-retry]'); if(rt) retryJob(rt.dataset.retry);});
-window.addEventListener('load',()=>{ $qin.focus(); showMode(); resumeJob(); });
+// 方向流程的事件（起始页 / 过渡页 / 论文切换器）
+$('go').addEventListener('click',dStart);
+$('dinput').addEventListener('keydown',e=>{if(e.key==='Enter')dStart();});
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+  $('dinput').value=c.textContent;}));
+$('papersel').addEventListener('change',e=>dSelect(e.target.value));
+$('pklist').addEventListener('click',e=>{
+  const it=e.target.closest('.pk-item'); if(!it) return;
+  e.preventDefault();          // 勾选状态由我们自己管（避免与原生 checkbox 双重触发）
+  pickToggle(Number(it.dataset.i));
+});
+$('pkgo').addEventListener('click',dPickStart);
+$('pkback').addEventListener('click',dPickBack);
+
+window.addEventListener('load',async()=>{
+  $qin.focus(); showMode();
+  // 方向流程优先恢复（只有它带**跨篇**语料）；没恢复出东西，再看单篇上传的记录。
+  if(!await resumeDirection()) await resumeJob();
+});
 </script>
 </body>
 </html>

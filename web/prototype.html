@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PaperPilot · 原型：方向 → 检索 5 篇 → 精读 + 直读问答</title>
+<style>
+  /* ═══ 以下 token 与三栏布局**逐字沿用**现网 `web/index.html`（保证"几乎一样"）═══ */
+  :root { --bg:#eef1f5; --card:#fff; --line:#e2e5ea; --accent:#2563eb;
+          --text:#1a1d21; --muted:#6b7280; --good:#16a34a; --warn:#d97706; --bad:#dc2626; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body { display:flex; flex-direction:column; height:100vh; overflow:hidden;
+         font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+         color:var(--text); background:var(--bg); }
+  header { display:flex; align-items:center; gap:14px; padding:9px 18px;
+           background:#fff; border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .logo { font-weight:800; font-size:16px; white-space:nowrap; }
+  .logo em { color:var(--accent); font-style:normal; }
+  .spacer { flex:1; }
+  .cols { display:grid; grid-template-columns:235px minmax(0,1fr) 400px;
+          grid-template-rows:minmax(0,1fr); flex:1 1 0; min-height:0; height:100%; }
+  #nav { overflow-y:auto; background:#f7f8fa; border-right:1px solid var(--line); padding:8px; }
+  .nav-title { font-size:11px; color:var(--muted); margin:10px 8px 4px; letter-spacing:.6px; }
+  .ni { display:flex; align-items:center; gap:7px; padding:5px 9px; border-radius:7px;
+        cursor:pointer; font-size:13px; }
+  .ni:hover { background:#e9edf3; }
+  .ni .npage { margin-left:auto; font-size:11px; color:var(--muted); }
+  .ni.sec { padding-left:22px; }
+  #mid { display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; }
+  .tabs { display:flex; gap:4px; padding:6px 14px 0; background:#fff;
+          border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .tb { padding:6px 14px; font-size:13px; color:var(--muted); cursor:pointer;
+        border-radius:8px 8px 0 0; border:1px solid transparent; border-bottom:none; }
+  .tb.on { color:var(--accent); font-weight:600; background:var(--bg); border-color:var(--line); }
+  #view { flex:1 1 0; min-height:0; overflow:auto; padding:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px;
+          padding:16px 20px; margin:0 auto 14px; max-width:880px; }
+  .card h1 { font-size:19px; margin-bottom:2px; }
+  .card h2 { font-size:14.5px; margin:0 0 6px; }
+  .muted { color:var(--muted); font-size:12px; }
+  .card p { white-space:pre-wrap; margin:4px 0; }
+  .pt { padding:6px 0; border-bottom:1px dashed var(--line); font-size:13.5px; }
+  .tag { display:inline-block; font-size:11px; padding:0 6px; border-radius:8px;
+         background:#eef2ff; color:#3730a3; margin-right:6px; }
+  .star { color:#d97706; }
+  .hub { background:#f6f7f9; border:1px solid var(--line); border-radius:10px;
+         padding:8px 12px; margin:8px 0; }
+  .hub .hbt { font-weight:600; }
+  .fig { margin:6px 0; padding:7px 11px; background:#fafafa; border:1px solid var(--line); border-radius:8px; }
+  .jump { color:var(--accent); cursor:pointer; font-size:12px; text-decoration:none; }
+  .jump:hover { text-decoration:underline; }
+  .pdfwrap { position:relative; background:#fff; margin:0 auto 16px; max-width:900px;
+             box-shadow:0 1px 5px rgba(0,0,0,.12); padding:26px 30px; }
+  .pln { height:9px; background:#eceef1; border-radius:3px; margin:7px 0; }
+  .pln.s { width:62%; } .pln.m { width:84%; } .pln.t { width:44%; height:13px; background:#dfe3e8; }
+  .hl { position:absolute; left:22px; right:34px; height:22px; background:rgba(255,213,0,.5);
+        border-radius:2px; box-shadow:0 0 0 1px rgba(217,119,6,.3); opacity:0;
+        transition:opacity .18s; pointer-events:none; }
+  .hl.on { opacity:1; }
+  .phint { position:sticky; top:0; z-index:4; background:#fffbeb; color:#92400e;
+           border:1px solid #fde68a; border-radius:8px; padding:5px 12px; font-size:13px;
+           margin-bottom:10px; display:none; max-width:900px; margin-left:auto; margin-right:auto; }
+  #qa { display:flex; flex-direction:column; background:#fff; border-left:1px solid var(--line);
+        min-height:0; overflow:hidden; }
+  .qa-title { font-weight:700; font-size:14px; padding:10px 14px; border-bottom:1px solid var(--line); }
+  .qa-title .muted { font-weight:400; }
+  #msgs { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px; }
+  .empty { color:var(--muted); text-align:center; font-size:13px; margin:auto; line-height:1.9; }
+  .m { display:flex; flex-direction:column; }
+  .m.user { align-items:flex-end; }
+  .bub { max-width:92%; padding:8px 12px; border-radius:12px; font-size:13.5px;
+         white-space:pre-wrap; word-break:break-word; }
+  .m.user .bub { background:var(--accent); color:#fff; border-bottom-right-radius:4px; }
+  .m.ai .bub { background:#f4f5f7; border:1px solid var(--line); border-bottom-left-radius:4px; }
+  .cites { margin-top:6px; border-top:1px dashed var(--line); padding-top:4px; }
+  .ci { font-size:12px; color:var(--muted); margin:2px 0; }
+  .ci b { color:var(--accent); cursor:pointer; }
+  .flow { margin-top:5px; font-size:11px; color:var(--muted); }
+  .input { display:flex; gap:8px; padding:10px; border-top:1px solid var(--line); }
+  #qin { flex:1; padding:9px 12px; border:1px solid var(--line); border-radius:10px;
+         outline:none; font-size:13.5px; }
+  #qin:focus { border-color:var(--accent); }
+  #send { padding:9px 15px; border:none; border-radius:10px; background:var(--accent);
+          color:#fff; cursor:pointer; font-size:13px; }
+  ::-webkit-scrollbar{width:9px;height:9px} ::-webkit-scrollbar-thumb{background:#c6cad1;border-radius:5px}
+
+  /* ═══════════ 原型新增（相对现网）═══════════ */
+  /* ① 顶栏：方向 + 论文下拉 + 换方向 */
+  .dir { font-size:12px; color:var(--muted); padding:3px 9px; background:#f4f6f9;
+         border-radius:7px; max-width:26vw; overflow:hidden; text-overflow:ellipsis;
+         white-space:nowrap; }
+  .psel { display:flex; align-items:center; gap:0; border:1px solid var(--line);
+          border-radius:9px; overflow:hidden; background:#fff; }
+  .psel .idx { font-size:11px; color:#fff; background:var(--accent); padding:6px 7px; font-weight:700; }
+  select#papersel { font-size:13px; padding:6px 9px; border:none; outline:none;
+                    background:#fff; max-width:34vw; cursor:pointer; }
+  .btn { font-size:13px; padding:5px 11px; border:1px solid var(--line); border-radius:8px;
+         background:#fff; cursor:pointer; white-space:nowrap; }
+  .btn:hover { border-color:var(--accent); color:var(--accent); }
+  /* ② 起始页：给方向 */
+  #landing { position:fixed; inset:0; z-index:50; background:var(--bg);
+             display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; }
+  #landing h1 { font-size:22px; font-weight:800; }
+  #landing .sub { color:var(--muted); font-size:13.5px; margin-top:-8px; }
+  .ask { display:flex; gap:8px; width:min(680px,90vw); }
+  #dinput { flex:1; padding:13px 16px; font-size:14.5px; border:1px solid var(--line);
+            border-radius:12px; outline:none; background:#fff; }
+  #dinput:focus { border-color:var(--accent); box-shadow:0 0 0 3px #2563eb1a; }
+  #go { padding:13px 22px; border:none; border-radius:12px; background:var(--accent);
+        color:#fff; font-size:14.5px; cursor:pointer; white-space:nowrap; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:680px; }
+  .chip { font-size:12.5px; padding:4px 11px; border:1px solid var(--line); border-radius:20px;
+          background:#fff; cursor:pointer; color:var(--muted); }
+  .chip:hover { border-color:var(--accent); color:var(--accent); }
+  /* ③ 阶段进度（检索 → 取料 → 解析 → 报告 → 就绪）
+     ⚠️ 2026-10-02：**不再由自身 display 控制**，改由过渡页 `#transit` 统一显隐
+     （原来是画在起始页输入框正下方 → 等待期间输入框/示例 chip 还都能点）。 */
+  #stages { width:100%; display:flex; flex-direction:column; gap:9px; }
+  .stg { display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted); }
+  .stg .dot { width:9px; height:9px; border-radius:50%; background:#d1d5db; flex:0 0 auto; }
+  .stg.run .dot { background:var(--accent); animation:pu 1s infinite; }
+  .stg.done .dot { background:var(--good); }
+  .stg.done { color:var(--text); }
+  .stg .pct { margin-left:auto; font-size:12px; }
+  @keyframes pu { 50% { opacity:.25 } }
+  .pchip { display:inline-block; font-size:10.5px; padding:0 5px; border-radius:6px;
+           background:#eef2ff; color:#3730a3; margin-right:5px; font-weight:700; }
+  .proto-note { position:fixed; left:14px; bottom:12px; z-index:60; font-size:11.5px;
+               color:var(--muted); background:#ffffffd0; border:1px solid var(--line);
+               border-radius:8px; padding:4px 9px; }
+
+  /* ═══════════ ④ 过渡页（2026-10-02 新增）═══════════
+     问题：原先"处理流程"就画在起始页输入框正下方 → 等的时候输入框 / 示例 chip
+     全都还能点（改方向、改词，白等一场）。
+     改法：**整屏接管**（fixed 铺满 + z-index 高于起始页 50），等待期间页面上
+     **没有任何可点控件**。整块 `.t-stage` 是留给"消磨无聊"动画的位置。 */
+  #transit { position:fixed; inset:0; z-index:70; background:var(--bg); padding:24px;
+             display:none; align-items:center; justify-content:center; overflow:hidden; }
+  #transit.on { display:flex; }
+  .t-box { width:min(680px,90vw); display:flex; flex-direction:column; gap:16px;
+           align-items:center; }
+  .t-brand { font-size:22px; font-weight:800; }
+  .t-brand em { color:var(--accent); font-style:normal; }
+  .t-dir { font-size:13px; color:var(--muted); margin-top:-8px; max-width:100%;
+           overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* ★★ 动画区（整块交给你）：只动 `.t-stage` 里面的东西，不影响下面 5 个阶段与流程逻辑。
+     现在放的是**占位动画**（三点呼吸 + 总进度条），只为页面不空。 */
+  .t-stage { width:100%; height:190px; display:flex; flex-direction:column;
+             align-items:center; justify-content:center; gap:16px; }
+  .t-orbit { display:flex; gap:12px; }
+  .t-orbit span { width:12px; height:12px; border-radius:50%; background:var(--accent);
+                  opacity:.3; animation:orb 1.2s infinite ease-in-out; }
+  .t-orbit span:nth-child(2) { animation-delay:.18s }
+  .t-orbit span:nth-child(3) { animation-delay:.36s }
+  @keyframes orb { 0%,100% { opacity:.22; transform:translateY(0) }
+                   50% { opacity:1; transform:translateY(-8px) } }
+  .t-bar { width:min(320px,62%); height:4px; border-radius:3px; background:#dfe3e8; overflow:hidden; }
+  .t-bar i { display:block; height:100%; width:0; border-radius:3px; background:var(--accent);
+             transition:width .35s ease; }
+  .t-note { font-size:12.5px; color:var(--muted); text-align:center; line-height:1.7; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ 起始页：用户给**方向**（现网这里是"上传 PDF"）══════════ -->
+<div id="landing">
+  <h1>⚡Paper<em style="color:var(--accent);font-style:normal">Pilot</em></h1>
+  <div class="sub">给一个研究方向 → 我们检索 5 篇最相关的论文 → 逐篇精读 + 在它们上面直接问答</div>
+  <div class="ask">
+    <input id="dinput" value="如何用对比学习做跨语言摘要生成" placeholder="输入一个研究方向…">
+    <button id="go">检索并解析</button>
+  </div>
+  <div class="chips">
+    <span class="chip">如何用对比学习做跨语言摘要生成</span>
+    <span class="chip">大模型长上下文的高效注意力</span>
+    <span class="chip">表格问答的检索增强</span>
+  </div>
+</div>
+
+<!-- ══════════ 过渡页：检索 / 解析进行中（2026-10-02 独立成页）══════════
+     为什么单独一页：这一段**可能跑几十秒到几分钟**。原来进度就画在起始页输入框正下方，
+     此时输入框、示例 chip 全都还能点（用户会一边等一边改方向/改词）。现在**整屏接管**。
+     —— 等待期间本页**没有任何可点控件**（刻意的，别加按钮）。
+     —— `.t-stage` 整块是**动画留白**：你后面做"消磨无聊"的动画就改它内部，不动流程逻辑。 -->
+<div id="transit" role="dialog" aria-modal="true" aria-busy="true"
+     aria-label="正在检索并解析论文">
+  <div class="t-box">
+    <div class="t-brand">⚡Paper<em>Pilot</em></div>
+    <div class="t-dir" id="tdir">—</div>
+
+    <!-- ★★ 动画区：整块可替换（下面是占位，只为页面不空） -->
+    <div class="t-stage" id="tanim">
+      <div class="t-orbit"><span></span><span></span><span></span></div>
+      <div class="t-bar"><i id="tbar"></i></div>
+    </div>
+
+    <div id="stages">
+      <div class="stg" data-s="0"><span class="dot"></span>① 论文检索 — 从 arXiv 语料取回 top-5<span class="pct"></span></div>
+      <div class="stg" data-s="1"><span class="dot"></span>② 论文取料 — 按 arXiv id 下载 PDF<span class="pct"></span></div>
+      <div class="stg" data-s="2"><span class="dot"></span>③ 解析切块 — MinerU 骨架 + 表格/公式<span class="pct"></span></div>
+      <div class="stg" data-s="3"><span class="dot"></span>④ 生成报告 — 每篇:概述/要点/骨架/图表<span class="pct"></span></div>
+      <div class="stg" data-s="4"><span class="dot"></span>⑤ 建索引 — 直读问答就绪<span class="pct"></span></div>
+    </div>
+    <div class="t-note">正在处理，请勿关闭页面 —— 论文下载与解析可能需要几分钟</div>
+  </div>
+</div>
+
+<!-- ══════════ 主工作台（三栏与现网一致，顶栏换成"方向 + 论文切换"）══════════ -->
+<header>
+  <div class="logo">⚡Paper<em>Pilot</em></div>
+  <div class="dir" id="dir">—</div>
+  <div class="psel" title="在检索到的 5 篇之间切换">
+    <span class="idx" id="pidx">1/5</span>
+    <select id="papersel"></select>
+  </div>
+  <div class="spacer"></div>
+  <span class="muted" id="hintbar">问答「直读」：<b>5 篇全文一次</b>交给模型（不检索）· 答案里的 [n] 可点回原文，跨篇会自动切到那一篇</span>
+  <button class="btn" id="again">↺ 换方向</button>
+</header>
+
+<div class="cols">
+  <!-- 左：导航 -->
+  <aside id="nav">
+    <div class="nav-title">阅读</div>
+    <div class="ni" data-action="report"><span>📋 结构化报告</span></div>
+    <div class="ni" data-action="pdf"><span>📄 原文 PDF</span></div>
+    <div class="nav-title">论文结构</div>
+    <div id="navbody"></div>
+  </aside>
+
+  <!-- 中：视图 -->
+  <section id="mid">
+    <div class="tabs">
+      <div class="tb on" data-view="report">📋 结构化报告</div>
+      <div class="tb" data-view="pdf">📄 原文 PDF</div>
+    </div>
+    <div id="view">
+      <div id="rpv"></div>
+      <div id="pdfv" style="display:none">
+        <div class="phint" id="phint"></div>
+        <div class="pdfwrap" id="pdfpages"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 右：问答（直读口径） -->
+  <aside id="qa">
+    <div class="qa-title">💬 追问（支持多轮）<span class="muted" id="qsubj"> · 全部 5 篇</span></div>
+    <div id="msgs">
+      <div class="empty" id="empty">已就绪。<b>这 5 篇全文</b>会一次性交给模型（<b>不做检索</b>），<br>
+        所以可以直接问跨篇问题（"这 5 篇各自怎么做的"）。<br>
+        答案里的 [n] 可点 —— 会<b>自动切到那一篇</b>并高亮原文。</div>
+    </div>
+    <div class="input">
+      <input id="qin" autocomplete="off" placeholder="针对当前论文提问…">
+      <button id="send">发送</button>
+    </div>
+  </aside>
+</div>
+<div class="proto-note">原型（静态 mock，无后端）：交互可点，数据是假数据</div>
+
+<script>
+/* ══════════ mock 数据：一个方向 + 检索到的 5 篇 ══════════ */
+const DIR_DEFAULT = '如何用对比学习做跨语言摘要生成';
+const PAPERS = [
+  { id:'2401.05218', title:'Contrastive Learning for Cross-Lingual Summarization',
+    year:2024,
+    overview:'提出 CL-XSum：用双语平行文档构造正负样本对，在编码器层面把语义等价的跨语言句子拉到一起，再做摘要解码。在 XSum-zh / WikiLingua 上比 mBART 基线高 3.1 ROUGE-L。',
+    points:[{l:'method',t:'构造**跨语言对比对**：同一事件的两种语言报道为严格正例',i:6,e:'hit'},
+            {l:'experiment',t:'在 WikiLingua（18 语对）与 XSum-zh 上评测，ROUGE-L +3.1',i:6,e:'hit'},
+            {l:'ablation',t:'去掉对比损失 → −2.4 ROUGE-L；换成句级 InfoNCE → −1.1',i:6,e:'hit'},
+            {l:'limitation',t:'低资源语对（<10k 文档）上增益不显著',i:5,e:'loose'}],
+    sections:[{n:'Introduction',p:1},{n:'Related Work',p:2},{n:'Method',p:3},{n:'Experiments',p:5},{n:'Analysis',p:7}],
+    hubs:[{t:'跨语言对比损失',rel:'implements',items:['双语正例构造','温度系数 τ=0.07','batch 内负采样']},
+          {t:'摘要解码器',rel:'supports',items:['mBART 初始化','beam=5']}],
+    figs:[{id:'Fig.1',p:3,c:'CL-XSum 整体框架：双塔编码 + 对比对齐 + 摘要解码'},
+          {id:'Tab.2',p:6,c:'主结果：与 mBART / mT5 / LaBSE 基线的 ROUGE-L'}],
+    qa:[{q:'它的对比损失具体怎么算？',
+         a:'用**句级 InfoNCE** —— 同一事件的双语报道互为唯一正例，同 batch 内其他句子作负例，温度 τ=0.07；损失加在编码器 pooled 表示上，与摘要的交叉熵加权求和（权重 0.3）。',
+         c:[{ag:'【3.2 节 对比目标】',p:3},{ag:'【式(2) τ=0.07】',p:3}]},
+        {q:'消融做了什么？',
+         a:'跑了三组消融：① 去掉对比损失 → ROUGE-L −2.4；② 句级换成文章级对比 → −0.7；③ InfoNCE 换 margin loss → −1.1。结论是**句级 + InfoNCE** 最稳。',
+         c:[{ag:'【Tab.4 消融】',p:7}]}]},
+
+  { id:'2305.14205', title:'Multilingual Abstractive Summarization with Dual-Encoder Alignment',
+    year:2023,
+    overview:'把文档编码与摘要编码分别用两个 encoder，并在隐空间做对齐约束，使"跨语言同义"在摘要空间等价。优点是不依赖平行摘要语料。',
+    points:[{l:'method',t:'**双编码器对齐**：文档塔与摘要塔共享一个语义空间',i:6,e:'hit'},
+            {l:'method',t:'用回译构造伪平行摘要，避免人工标注',i:5,e:'hit'},
+            {l:'experiment',t:'在 MLSUM（5 语言）上 ROUGE-L 平均 +2.2',i:6,e:'hit'}],
+    sections:[{n:'Introduction',p:1},{n:'Approach',p:2},{n:'Setup',p:4},{n:'Results',p:5}],
+    hubs:[{t:'双塔对齐',rel:'implements',items:['共享投影头','回译伪平行']}],
+    figs:[{id:'Fig.2',p:2,c:'双编码器架构与对齐损失'},
+          {id:'Tab.1',p:5,c:'MLSUM 五语言主结果'}],
+    qa:[{q:'为什么不用平行摘要语料？',
+         a:'因为平行摘要极稀缺。改用**回译**把单语摘要翻成另一语言做伪平行对，作者实测伪平行已能带来 +1.8 ROUGE-L，接近真平行的 +2.2。',
+         c:[{ag:'【2.3 回译构造】',p:2},{ag:'【Tab.3 真平行 vs 伪平行】',p:6}]}]},
+
+  { id:'2409.02174', title:'Zero-Shot Cross-Lingual Summarization via Contrastive Pretraining',
+    year:2024,
+    overview:'在预训练阶段注入跨语言对比任务，使模型**零样本**迁移到没见过的目标语言；在 4 个未见语言上平均 +4.6 ROUGE-L。',
+    points:[{l:'method',t:'对比预训练 + 课程学习（先高资源后低资源）',i:6,e:'hit'},
+            {l:'experiment',t:'4 个**零样本**语言上平均 +4.6 ROUGE-L',i:6,e:'hit'},
+            {l:'limitation',t:'需要百万级单语语料做预训练',i:5,e:'loose'}],
+    sections:[{n:'Introduction',p:1},{n:'Pretraining',p:2},{n:'Zero-Shot Setup',p:4},{n:'Results',p:6}],
+    hubs:[{t:'课程学习',rel:'implements',items:['高资源先行','逐步加入低资源']}],
+    figs:[{id:'Tab.1',p:6,c:'零样本迁移：4 个未见语言'}],
+    qa:[{q:'零样本是怎么定义的？',
+         a:'目标语言在**预训练和微调都没出现**，只在推理时用该语言输入。4 个未见语言平均 +4.6 ROUGE-L，最差的 sw 也有 +2.1。',
+         c:[{ag:'【4.1 零样本协议】',p:4},{ag:'【Tab.1 sw 行】',p:6}]}]},
+
+  { id:'2210.09569', title:'Aligning Sentence Representations for Low-Resource Summarization',
+    year:2022,
+    overview:'面向低资源语言，用 LaBSE 类多语句向量做蒸馏对齐，把高资源摘要能力"搬"到低资源语言。',
+    points:[{l:'method',t:'用**多语句向量蒸馏**做能力迁移',i:6,e:'hit'},
+            {l:'experiment',t:'低资源 6 语言平均 +3.5 ROUGE-L',i:5,e:'hit'},
+            {l:'limitation',t:'高资源语言上几乎无增益（+0.3）',i:5,e:'hit'}],
+    sections:[{n:'Introduction',p:1},{n:'Method',p:2},{n:'Experiments',p:4}],
+    hubs:[{t:'蒸馏对齐',rel:'implements',items:['LaBSE teacher','句向量 MSE']}],
+    figs:[{id:'Fig.1',p:2,c:'蒸馏流程'}],
+    qa:[{q:'高资源上为什么没提升？',
+         a:'作者归因于**天花板效应**：基线在高资源上已接近人类摘要的一致性上限，蒸馏只带 +0.3。这也说明该方法的定位是低资源补位。',
+         c:[{ag:'【5.2 天花板讨论】',p:5}]}]},
+
+  { id:'2306.17481', title:'Cross-Lingual Transfer with Parallel Data Augmentation',
+    year:2023,
+    overview:'从数据侧出发：用合成平行数据增强跨语言迁移，与模型侧方法互补；在数据稀缺语对上与对比学习叠加有额外增益。',
+    points:[{l:'method',t:'合成平行数据 + 回译去噪',i:6,e:'hit'},
+            {l:'experiment',t:'与对比方法**叠加**再 +1.4 ROUGE-L',i:6,e:'hit'},
+            {l:'limitation',t:'合成数据引入的噪声在长文本上会放大',i:5,e:'loose'}],
+    sections:[{n:'Introduction',p:1},{n:'Data Augmentation',p:2},{n:'Results',p:5}],
+    hubs:[{t:'数据增强',rel:'implements',items:['合成平行','去噪过滤']}],
+    figs:[{id:'Tab.2',p:5,c:'单独 vs 与对比学习叠加'}],
+    qa:[{q:'它和对比学习是替代还是互补？',
+         a:'**互补**。论文 §5 明确测了叠加：数据增强单独 +2.6，对比学习单独 +3.1，两者叠加 +4.5（超出各自之和的解释是二者作用于不同瓶颈——数据覆盖 vs 表示对齐）。',
+         c:[{ag:'【Tab.2 叠加列】',p:5},{ag:'【5.1 互补性分析】',p:6}]}]},
+];
+
+/* ══════════ 交互 ══════════ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+let cur = 0, DIR = DIR_DEFAULT;
+
+/* ① 起始页 → **过渡页**（整屏接管，等待期间页面上没有任何可点控件）→ 工作台 */
+
+/* 打开过渡页并复位 5 个阶段；返回阶段元素列表（`#transit` 负责显隐，不再逐项 display） */
+function openTransit(){
+  $('tdir').textContent = '方向：' + DIR;
+  $('tbar').style.width = '0%';
+  $('transit').classList.add('on');
+  const stgs = [...document.querySelectorAll('.stg')];
+  stgs.forEach(s => { s.className = 'stg'; s.querySelector('.pct').textContent = ''; });
+  return stgs;
+}
+
+function runStages(){
+  $('go').disabled = true;
+  const stgs = openTransit();
+  const dur = [900, 1100, 1300, 1000, 700];   // 原型假耗时；真实耗时由后端 job 给
+  const total = dur.reduce((a, b) => a + b, 0);
+  let i = 0, passed = 0;
+  (function step(){
+    if (i >= stgs.length){
+      setTimeout(() => { $('transit').classList.remove('on'); select(0); }, 420);
+      return;
+    }
+    const el = stgs[i]; el.classList.add('run');
+    const t0 = Date.now();
+    const tk = setInterval(() => {
+      const r = Math.min(1, (Date.now() - t0) / dur[i]);
+      el.querySelector('.pct').textContent = Math.min(99, Math.round(r * 100)) + '%';
+      $('tbar').style.width = Math.round((passed + r * dur[i]) / total * 100) + '%';  // 总进度
+      if (r >= 1){
+        clearInterval(tk);
+        el.className = 'stg done'; el.querySelector('.pct').textContent = '✓';
+        passed += dur[i]; i++; step();
+      }
+    }, 60);
+  })();
+}
+
+/* ② 论文下拉：切换（报告 / PDF / 问答 全部跟着换） */
+function fillSelect(){
+  $('papersel').innerHTML = PAPERS.map((p, i) =>
+    `<option value="${i}">${i+1}. ${esc(p.title)}（${p.year}）</option>`).join('');
+}
+/* ⚠️ 下拉框只切**阅读区**（报告 / 原文 PDF）。
+   问答是"这 5 篇一起进去"，与当前看的是哪一篇**无关** → 切篇**不清空对话**。 */
+function select(i){
+  cur = i;
+  const p = PAPERS[i];
+  $('dir').textContent = '方向：' + DIR;
+  $('pidx').textContent = (i+1) + '/' + PAPERS.length;
+  $('papersel').value = String(i);
+  renderNav(p); renderReport(p); renderPdf(p);
+}
+
+/* 左栏：章节导航（点击滚动到报告对应卡片） */
+function renderNav(p){
+  $('navbody').innerHTML = p.sections.map(s =>
+    `<div class="ni sec" data-scroll="sc-sec-${p.sections.indexOf(s)}">
+       <span>${esc(s.n)}</span><span class="npage">p${s.p}</span></div>`).join('');
+  $('navbody').querySelectorAll('[data-scroll]').forEach(el => el.onclick = () => {
+    setTab('report');
+    const t = $(el.dataset.scroll);
+    if (t) t.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+}
+
+/* 中栏·报告（卡片结构沿用现网：概述 / 核心要点 / 章节 / 骨架 / 图表） */
+function renderReport(p){
+  const h = [];
+  h.push(`<div class="card scr" id="sc-overview">
+      <h1>${esc(p.title)}</h1>
+      <div class="muted">arXiv ${esc(p.id)} · ${p.year} · ${p.points.length} claims</div>
+      <p style="margin-top:8px">${md(p.overview)}</p>
+      <div style="margin-top:6px"><span class="jump" data-cite="1">查看原文 ↗</span></div>
+    </div>`);
+  h.push(`<div class="card scr" id="sc-core"><h2>🎯 核心要点</h2>`);
+  p.points.forEach((pt, i) => {
+    h.push(`<div class="pt"><span class="tag">${esc(pt.l)}</span>
+      ${pt.i >= 5 ? '<span class="star">★</span>' : ''}${md(pt.t)}
+      <span class="jump" data-cite="${i+2}">［证据 p${i+2}］</span></div>`);
+  });
+  h.push(`</div>`);
+  p.sections.forEach((s, i) => {
+    h.push(`<div class="card scr" id="sc-sec-${i}"><h2>📖 ${esc(s.n)}</h2>
+      <p class="muted">（原型示意：真实报告在此展开本章精读，含逐条主张 + 原文引文）</p></div>`);
+  });
+  h.push(`<div class="card"><h2>🕸️ 论证骨架</h2>`);
+  p.hubs.forEach(hb => {
+    h.push(`<div class="hub"><div class="hbt">${esc(hb.t)}</div>
+      <div class="muted">${esc(hb.rel)}</div><ul>${hb.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`);
+  });
+  h.push(`</div>`);
+  h.push(`<div class="card scr" id="sc-figs"><h2>🖼 图表</h2>`);
+  p.figs.forEach(f => h.push(`<div class="fig"><b>${esc(f.id)}</b>
+    <span class="muted">（p${f.p}）</span>：${esc(f.c)}</div>`));
+  h.push(`</div>`);
+  $('rpv').innerHTML = h.join('');
+  $('rpv').querySelectorAll('[data-cite]').forEach(el => el.onclick = () => jumpTo(el.dataset.cite));
+}
+
+/* 中栏·PDF（原型用占位页 + 高亮框演示"点引用→跳转+高亮"） */
+function renderPdf(p){
+  let pages = '';
+  for (let i = 1; i <= 3; i++){
+    pages += `<div class="pdfwrap" style="margin-bottom:16px" data-page="${i}">
+      <div class="muted" style="position:absolute;top:4px;right:8px">${esc(p.id)} · p${i}</div>
+      <div class="pln t"></div><div class="pln m"></div><div class="pln"></div>
+      <div class="pln s"></div><div class="pln m"></div><div class="pln"></div>
+      <div class="pln s"></div><div class="pln m"></div>
+      <div class="hl" data-hl="${i}"></div>
+    </div>`;
+  }
+  $('pdfpages').innerHTML = pages;
+}
+
+/* ★ 5 篇引用跳转的核心：先切到那一篇（顶部下拉框跟着动），再走现成的高亮 */
+function jumpToCite(pIdx, page){
+  if (pIdx !== cur + 1) select(pIdx - 1);
+  setTab('pdf');
+  $('phint').style.display = 'block';
+  $('phint').textContent = `已切到【P${pIdx}】并跳到第 ${page} 页的引用处`
+    + `（原型示意：真实实现按引文坐标圈选整行高亮）`;
+  const wrap = document.querySelector(`.pdfwrap[data-page="${Math.min(3, Math.max(1, page))}"]`);
+  document.querySelectorAll('.hl').forEach(h => h.classList.remove('on'));
+  if (wrap){
+    wrap.scrollIntoView({behavior:'smooth', block:'center'});
+    const hl = wrap.querySelector('.hl');
+    hl.style.top = (60 + (page % 5) * 34) + 'px';
+    hl.classList.add('on');
+  }
+}
+function setTab(v){
+  document.querySelectorAll('.tb').forEach(t => t.classList.toggle('on', t.dataset.view === v));
+  $('rpv').style.display = v === 'report' ? '' : 'none';
+  $('pdfv').style.display = v === 'pdf' ? '' : 'none';
+}
+function jumpTo(n){
+  setTab('pdf');
+  $('phint').style.display = 'block';
+  $('phint').textContent = `已跳到引用 [${n}] 的出处（原型：真实实现按引文坐标圈选整行高亮）`;
+  const page = Math.min(3, Math.max(1, Math.ceil(Number(n) / 2)));
+  const wrap = document.querySelector(`.pdfwrap[data-page="${page}"]`);
+  document.querySelectorAll('.hl').forEach(h => h.classList.remove('on'));
+  if (wrap){
+    wrap.scrollIntoView({behavior:'smooth', block:'center'});
+    const hl = wrap.querySelector('.hl');
+    hl.style.top = (60 + (Number(n) % 5) * 34) + 'px';
+    hl.classList.add('on');
+  }
+}
+
+/* ══════════ 预置的**跨篇**问答（演示"5 篇一起进去"的价值）；cites 带篇序号 ══════════ */
+const CROSS = [
+  { k:['对比损失','损失函数','用的什么损失'],
+    a:'5 篇里 **4 篇**用了对比类损失，但用法不同：\n'
+    + '· 【P1】句级 InfoNCE（τ=0.07），加在编码器 pooled 表示上；\n'
+    + '· 【P2】文档塔/摘要塔的**对齐损失**（共享投影头 + 回译伪平行，不是对比）；\n'
+    + '· 【P3】对比**预训练** + 课程学习（先高资源后低资源）；\n'
+    + '· 【P4】用 LaBSE 做**蒸馏对齐**（MSE，不是 InfoNCE）；\n'
+    + '· 【P5】没有用对比损失，走的是**合成平行数据增强**。',
+    c:[{p:1,page:3,ag:'【P1 · 3.2 对比目标】',t:'句级 InfoNCE，τ=0.07'},
+       {p:2,page:2,ag:'【P2 · 2.2 对齐损失】',t:'双塔共享投影头'},
+       {p:3,page:2,ag:'【P3 · 2 对比预训练】',t:'课程学习：先高资源'},
+       {p:4,page:2,ag:'【P4 · 2 蒸馏目标】',t:'LaBSE teacher + MSE'},
+       {p:5,page:2,ag:'【P5 · 2 数据增强】',t:'合成平行 + 去噪'}]},
+  { k:['零样本','未见','没见过的语言'],
+    a:'只有【P3】是**零样本**设定 —— 目标语言在预训练和微调阶段**都没出现**，'
+    + '4 个未见语言平均 +4.6 ROUGE-L。\n'
+    + '【P1】需要目标语言的**双语平行报道**；【P4】需要目标语**单语**语料；'
+    + '【P2】依赖一个双向翻译系统做回译；【P5】需要合成平行数据。'
+    + '→ **只有 P3 不依赖任何目标语言数据。**',
+    c:[{p:3,page:4,ag:'【P3 · 4.1 零样本协议】',t:'目标语言全程未出现'},
+       {p:1,page:3,ag:'【P1 · 3.1 数据要求】',t:'需双语平行报道'},
+       {p:4,page:4,ag:'【P4 · 实验设置】',t:'需目标语单语语料'}]},
+  { k:['高资源','天花板','增益最大'],
+    a:'增益最大的场合各不相同：\n'
+    + '· 低资源上最强的是【P4】（蒸馏搬能力），低资源 6 语言平均 +3.5；\n'
+    + '· **高资源上【P4】几乎无提升（+0.3）**，作者归因**天花板效应**；\n'
+    + '· 【P1】整体 +3.1 但拆开看高资源语对只有 +0.8；\n'
+    + '· 【P5】从数据侧入手，与对比类方法**互补**（叠加 +4.5）。',
+    c:[{p:4,page:5,ag:'【P4 · 5.2 天花板讨论】',t:'高资源 +0.3'},
+       {p:4,page:5,ag:'【P4 · Tab.1】',t:'低资源 +3.5'},
+       {p:1,page:6,ag:'【P1 · Tab.2 分语对】',t:'高资源语对 +0.8'},
+       {p:5,page:5,ag:'【P5 · Tab.2 叠加列】',t:'与对比法互补 +4.5'}]},
+];
+
+/* 问答：发送 → 先匹配**跨篇**预置答案，否则落到当前篇的单篇答案（均为 mock 直读输出） */
+function ask(){
+  const q = $('qin').value.trim();
+  if (!q) return;
+  $('msgs').querySelector('.empty')?.remove();
+  $('msgs').insertAdjacentHTML('beforeend', `<div class="m user"><div class="bub">${esc(q)}</div></div>`);
+  $('qin').value = '';
+  $('msgs').scrollTop = $('msgs').scrollHeight;
+
+  const cross = CROSS.find(x => x.k.some(k => q.includes(k)));
+  let ans, cites;
+  if (cross){
+    ans = cross.a; cites = cross.c;
+  } else {                                   // 单篇问题 → 用当前篇的 mock
+    const p = PAPERS[cur], hit = p.qa[0];
+    ans = hit.a; cites = hit.c.map(c => ({p: cur + 1, page: c.p, ag: c.ag, t: ''}));
+  }
+
+  const box = document.createElement('div');
+  box.className = 'm ai';
+  box.innerHTML = `<div class="bub">${md(ans).replace(/\n/g, '<br>')}</div>
+      <div class="cites"><b class="muted">引用出处（点击跳原文高亮；<b>跨篇会自动切到那一篇</b>）</b>
+      ${cites.map((c, i) => `<div class="ci"><b data-p="${c.p}" data-page="${c.page}">[${i + 1}]</b>` +
+          `<span class="pchip">P${c.p}</span>${esc(c.ag)}（p${c.page}）` +
+          (c.t ? ` · ${esc(c.t)}` : '') + `</div>`).join('')}
+      <div class="flow">reader=fullctx（直读） · 全文 5 篇一次调用 · 引用 ${cites.length} 条</div>
+      </div>`;
+  $('msgs').appendChild(box);
+  box.querySelectorAll('[data-p]').forEach(el =>
+    el.onclick = () => jumpToCite(Number(el.dataset.p), Number(el.dataset.page)));
+  $('msgs').scrollTop = $('msgs').scrollHeight;
+}
+
+/* 绑定 */
+$('go').onclick = () => { DIR = $('dinput').value.trim() || DIR_DEFAULT; runStages(); };
+document.querySelectorAll('.chip').forEach(c => c.onclick = () => { $('dinput').value = c.textContent; });
+$('dinput').addEventListener('keydown', e => { if (e.key === 'Enter') $('go').click(); });
+$('papersel').onchange = e => select(Number(e.target.value));
+$('again').onclick = () => {
+  $('transit').classList.remove('on');        // 万一过渡页还在跑，一起关掉
+  $('landing').style.display = 'flex';        // 回到起始页（阶段复位在 openTransit 里做）
+  $('go').disabled = false;
+};
+document.querySelectorAll('.tb').forEach(t => t.onclick = () => setTab(t.dataset.view));
+document.querySelectorAll('.ni[data-action]').forEach(el =>
+  el.onclick = () => setTab(el.dataset.action === 'pdf' ? 'pdf' : 'report'));
+$('send').onclick = ask;
+$('qin').addEventListener('keydown', e => { if (e.key === 'Enter') ask(); });
+
+fillSelect();
+select(0);                                   // 起始页背后先渲染好第 1 篇
+// 深链（演示/截图用）：
+//   #work       进工作台
+//   #work-pdf   演示"点引用→跳原文高亮"
+//   #work-qa    演示"跨篇问答 + 引用带篇名 P1..P5"
+//   #work-cite  演示"**跨篇**引用跳转"（自动切到 P4 再高亮）
+//   #transit    **只看过渡页**（调动画用）：冻在"跑到第 ④ 步"的样子，不自动进工作台
+if (location.hash.includes('transit')) {
+  $('landing').style.display = 'none';
+  const stgs = openTransit();
+  stgs.forEach((s, k) => {
+    s.className = k < 3 ? 'stg done' : 'stg';
+    s.querySelector('.pct').textContent = k < 3 ? '✓' : (k === 3 ? '62%' : '');
+  });
+  stgs[3].classList.add('run');
+  $('tbar').style.width = '58%';
+}
+if (location.hash.includes('work')) $('landing').style.display = 'none';
+if (location.hash.includes('pdf')) { setTab('pdf'); jumpTo(2); }
+if (location.hash.includes('qa')) { $('qin').value = '这 5 篇分别用了什么对比损失？'; ask(); }
+if (location.hash.includes('cite')) {
+  $('qin').value = '这 5 篇分别用了什么对比损失？'; ask(); jumpToCite(4, 2);
+}
+</script>
+</body>
+</html>

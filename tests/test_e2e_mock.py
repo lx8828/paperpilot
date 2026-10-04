@@ -56,7 +56,11 @@ def test_upload_to_report_to_answer(e2e, tmp_assets, tiny_pdf):
     stages = final["stages"]
     assert stages["mineru"]["status"] == "ok"        # 假产物 → 复用分支
     assert stages["report"]["status"] == "ok"
-    assert stages["index"]["status"] == "ok"
+    # 索引：**默认 fullctx 下跳过**（2026-10-03）—— 读全文只读切块、一个向量都不读；
+    # 真需要它的路径（L3 / L0 的缺失断言复核）会**惰性现建**。
+    # 下面第 ⑤ 步的问答会证明"跳过了照样能答"。
+    assert stages["index"]["status"] == "skipped"
+    assert "惰性" in stages["index"].get("note", "")
     assert final["elapsed"] >= 0
 
     # ③ 报告产物真的落盘了，且**有内容**（claims 来自假 LLM 的固定回答）
@@ -164,7 +168,7 @@ def test_mineru_failed_end_to_end(webapp_tmp, tmp_assets, tiny_pdf,
     assert final["status"] == jobs.STATUS_READY, final
     assert final["stages"]["mineru"]["status"] == "failed"
     assert seen["index"] == 1
-    assert final["stages"]["index"]["status"] == "ok"
+    assert final["stages"]["index"]["status"] == "skipped"   # fullctx 默认不建（切块够用）
 
     # ② 报告可读，且带**用户可见**的警告（不静默）
     got = client.get(f"/api/report/{tiny_pdf}")

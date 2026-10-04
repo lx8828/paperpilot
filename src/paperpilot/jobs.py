@@ -37,6 +37,9 @@ ACTIVE_STATUSES = (STATUS_QUEUED, STATUS_RUNNING)
 # 阶段 → 前端/CLI 显示文案（`report:<名>` 是报告链内部的子阶段）
 STAGE_LABEL: dict[str, str] = {
     "": "排队中…",
+    # ↓ 「方向 → k 篇」批任务的前两阶段（2026-10-02）；单篇摄取不经过它们
+    "search": "检索论文（arXiv 语料）…",
+    "fetch": "下载论文 PDF…",
     "mineru": "版面解析（MinerU · GPU）…",
     "report": "生成报告（pymupdf + LLM）…",
     "report:claims": "抽取主张（claims · LLM）…",

@@ -174,7 +174,9 @@ def test_demo_mode_end_to_end(webapp_tmp, tmp_assets, demo_env):
     assert final["status"] == jobs.STATUS_READY, final
     assert final["stages"]["mineru"]["status"] == "skipped"
     assert final["stages"]["report"]["status"] == "ok"
-    assert final["stages"]["index"]["status"] == "ok"
+    # 索引：默认 fullctx 下**跳过**（2026-10-03，`read_full.index_needed()`）——
+    # 演示模式也一样，别为了它白编码一遍。
+    assert final["stages"]["index"]["status"] == "skipped"
     assert final["elapsed"] < 60, "演示模式不该慢（无模型加载）"
 
     # ④ 报告有内容
