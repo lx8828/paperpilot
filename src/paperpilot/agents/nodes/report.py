@@ -29,7 +29,55 @@ def _load_report(pdf: str) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-L0_PER_PAPER = 4      # 多篇时**每篇**取几条核心要点（合并后要控制上下文规模）
+# 多篇时**每篇**取几条核心要点。= 8 即"**全取**"：全语料 466 篇的 core_points **上限就是 8**
+# （分布 {3:58,4:66,5:68,6:74,7:53,8:108}），n≥8 与 n=8 材料完全相同 → 8 是有效上限。
+#
+# 为什么默认改成 8（2026-09-24 实测，两组 A 组 L0 题共 30 道）：
+#   · **更准**：`全取+正常路由` 27/30 (90%) vs `全取+全部走检索` 24/30 (80%)
+#     —— 13 道分叉题上直答更好 3 题、更差 **0** 题；L0 材料是"已验证的要点摘要"，
+#     这类"全貌/总结"题它比检索回的原文块更命中。
+#   · **更省**：直答 prompt ~12.3k/题 vs 检索 ~18.0k/题（省 32%）；整臂 476k vs 545k tokens。
+#     → "全部去检索"并不便宜。
+#   · **上下文变长无害**：材料 2.5k→4.1k 字（entries 20→64），直答 prompt 仍 ~12k，
+#     远低于检索路径 —— 要点本来就短。
+#   · **不误伤**：n=4→8 对 `single`/`table` 题（每组 50 道，本该走检索）判够数**完全不变**
+#     （80 道里 0 道翻转），`negative` 仅 group1 有 1 道翻转（且有"缺失断言复核闸门"兜底）；
+#     L0 类共 +2 道转为直答。
+L0_PER_PAPER = 8
+# 多篇时**每篇**取几条「局限 / 未来方向」（2026-09-24 新增）。
+# 为什么必须有：单篇时代 L0 材料含**全部** limitations（平均 6.6 条/篇），
+# 多篇合并此前**完全不带** → 凡"局限/未来方向"类题在多篇下**结构性缺料**
+# （实测 `8837-L0-3`：判不够下钻检索后仍只答出"未来方向"、漏掉"局限"；
+#  全量摸底「局限/未来」类题 11/180，其中 3 道是 L0 类）。
+# 另：`retrieval/scripts/_validate_group_questions.py` 一直在读
+# `report_l0(...)["limitations"]`，但该字段从来没被返回过（恒为空）—— 本改动同时接上它。
+#
+# 配额取值（group2 的 A 组 L0 题 15 道实测，2026-09-24）：
+#   无局限  合计 14/15 ｜ 免检索 4 题(直答 4/4) ｜ 材料 2488 字
+#   lim=4   合计 14/15 ｜ 免检索 7 题(直答 6/7) ｜ 材料 3057 字   ← `0934-L0-3` 的锚点
+#                                                               `ALFWorld` 出自该篇第 6 条局限，漏取 → 直答答错
+#   lim=8   合计 14/15 ｜ 免检索 7 题(直答 7/7) ｜ 材料 3389 字   ← **取默认**
+# 结论：`8` ≈ 覆盖平均 6.6 条/篇的全部局限，免检索率 27%→47%（省 3 次检索）而正确率持平。
+L0_LIM_PER_PAPER = 8
+
+
+def _env_int(name: str, default: int) -> int:
+    """`PAPERPILOT_<name>` 覆盖（扫描 / A-B 用）；非法值回落默认。"""
+    import os
+    try:
+        return int(os.environ.get(f"PAPERPILOT_{name}") or default)
+    except ValueError:
+        return default
+
+
+def _l0_per_paper() -> int:
+    """每篇核心要点条数（`PAPERPILOT_L0_PER_PAPER`）。"""
+    return _env_int("L0_PER_PAPER", L0_PER_PAPER)
+
+
+def _l0_lim_per_paper() -> int:
+    """每篇局限条数（`PAPERPILOT_L0_LIM_PER_PAPER`；=0 退回"不带局限"的旧行为）。"""
+    return _env_int("L0_LIM_PER_PAPER", L0_LIM_PER_PAPER)
 
 
 def _corpus(state: QAState) -> list[str]:
@@ -56,12 +104,38 @@ def _src_label(pdf: str, report: dict[str, Any]) -> str:
     return (t if len(t) <= 30 else t[:30] + "…") or Path(pdf).stem
 
 
+def _material_entry(g: dict[str, Any], claims: dict[str, Any],
+                    src: str, pdf: str) -> dict[str, Any]:
+    """`report.json` 的 core_points/limitations 条目 → L0 材料条目。
+
+    两者字段**同构**（`gid/rep_claim_id/label/importance/text/pages`），差别只在 `label`
+    （`core_claim` vs `limitation`）；这里统一从全量 `claims` 补齐
+    `evidence/page/chunk_id/title_path`，并注入 `src`（显示名）与 `pdf`（cites 定位哪一篇）。
+    """
+    rep = claims.get(g.get("rep_claim_id", "")) or {}
+    return {
+        "gid": g.get("gid", ""),
+        "rep_claim_id": g.get("rep_claim_id", ""),
+        "label": g.get("label", ""),
+        "importance": g.get("importance", 0),
+        "text": g.get("text", ""),
+        "pages": list(g.get("pages") or []),
+        "evidence": rep.get("evidence_quote", ""),
+        "page": rep.get("page", 0),
+        "chunk_id": rep.get("chunk_id", ""),
+        "title_path": list(rep.get("title_path") or []),
+        "src": src,
+        "pdf": pdf,
+    }
+
+
 def report_l0(state: QAState) -> dict[str, Any]:
-    """L0 上下文（零检索）：**合并总览** overview + core_points。
+    """L0 上下文（零检索）：**合并总览** overview + core_points + limitations。
 
     语料**只有多篇**（`state["pdfs"]`，≥2 篇）：
         · 每篇概述前加 `〈显示名〉`，开头声明"本次语料共 N 篇"；
-        · 核心要点每篇取前 `L0_PER_PAPER` 条，条目带 `src`（显示名）/`pdf`（文件名）。
+        · 核心要点每篇取前 `L0_PER_PAPER` 条，条目带 `src`（显示名）/`pdf`（文件名）；
+        · 局限/未来方向每篇取前 `L0_LIM_PER_PAPER` 条（2026-09-24 新增，见常量注释）。
     ⚠️ 2026-09-23 删掉单篇形态（`multi` 分支）与"指代不明"声明：对着多篇提问必然
     指明篇名或编号，泛指"这篇论文"不是产品用法。
     """
@@ -75,6 +149,7 @@ def report_l0(state: QAState) -> dict[str, Any]:
 
     overviews: list[str] = []
     core_points: list[dict[str, Any]] = []
+    limitations: list[dict[str, Any]] = []
     for p, report in reports:
         claims = {c["claim_id"]: c for c in report.get("claims", [])}
         src = _src_label(p, report)
@@ -82,22 +157,13 @@ def report_l0(state: QAState) -> dict[str, Any]:
         overviews.append(f"〈{src}〉{ov}")
 
         groups = report.get("core_points") or []
-        for g in groups[:L0_PER_PAPER]:
-            rep = claims.get(g.get("rep_claim_id", "")) or {}
-            core_points.append({
-                "gid": g.get("gid", ""),
-                "rep_claim_id": g.get("rep_claim_id", ""),
-                "label": g.get("label", ""),
-                "importance": g.get("importance", 0),
-                "text": g.get("text", ""),
-                "pages": list(g.get("pages") or []),
-                "evidence": rep.get("evidence_quote", ""),
-                "page": rep.get("page", 0),
-                "chunk_id": rep.get("chunk_id", ""),
-                "title_path": list(rep.get("title_path") or []),
-                "src": src,
-                "pdf": p,
-            })
+        for g in groups[: _l0_per_paper()]:
+            core_points.append(_material_entry(g, claims, src, p))
+
+        # 局限 / 未来方向（字段与 core_points 同构，`label="limitation"`）。
+        # 单篇时代 L0 材料含全部 limitations；多篇合并此前完全不带 → 见文件头常量注释。
+        for g in (report.get("limitations") or [])[: _l0_lim_per_paper()]:
+            limitations.append(_material_entry(g, claims, src, p))
 
     # ⚠️ 2026-09-23 删：原先这里还有「用户若用「这篇论文」而未指明篇名，属于**指代不明**」。
     # 为什么删：对着多篇语料提问**必然指明篇名或编号**（泛指"这篇论文"不是产品用法）；
@@ -110,11 +176,13 @@ def report_l0(state: QAState) -> dict[str, Any]:
     if "L0" not in route:
         route.append("L0")
     debug = dict(state.get("debug") or {})
-    debug["l0"] = {"n_core_points": len(core_points), "n_papers": len(pdfs)}
+    debug["l0"] = {"n_core_points": len(core_points),
+                   "n_limitations": len(limitations), "n_papers": len(pdfs)}
     return {
         "title": title,
         "overview": overview,
         "core_points": core_points,
+        "limitations": limitations,
         "route": route,
         "debug": debug,
     }

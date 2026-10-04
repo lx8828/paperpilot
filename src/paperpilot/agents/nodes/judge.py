@@ -151,9 +151,16 @@ def _fmt_chunks(chunks: list[Any], max_show: int = 8) -> str:
 
 
 def judge_l0(state: QAState) -> dict[str, Any]:
+    # 局限/未来方向单独成段（2026-09-24）：`report_l0` 现在会带 `limitations` 条目
+    # （`label="limitation"`），此前多篇合并**完全没有**这类材料 → judge 对
+    # "局限/未来方向"类问题必然判不够、下钻检索后仍常答不全（实测 `8837-L0-3`）。
+    core = _fmt_core(state.get("core_points") or [])
+    lim = _fmt_core(state.get("limitations") or [])
+    if lim:
+        core = f"{core}\n\n局限 / 未来方向：\n{lim}"
     user = _L0_TPL.format(
         overview=state.get("overview") or "（无概述）",
-        core=_fmt_core(state.get("core_points") or []),
+        core=core,
         history=_fmt_history(state),
         question=state.get("question", ""),
         _json=_JSON,

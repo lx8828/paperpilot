@@ -49,6 +49,7 @@ def decide(question: str, pdfs: list[str],
     verdict = st.get("verdict") or {}
     enough = bool(verdict.get("enough"))
     core = list(st.get("core_points") or [])
+    lim = list(st.get("limitations") or [])
     return {
         "action": L0_ANSWER if enough else GLOBAL_RETRIEVE,
         "enough": enough,
@@ -56,7 +57,9 @@ def decide(question: str, pdfs: list[str],
         "title": st.get("title", ""),
         "overview": st.get("overview", ""),
         "core_points": core,
+        "limitations": lim,
         "n_core_points": len(core),
+        "n_limitations": len(lim),
     }
 
 
@@ -71,5 +74,10 @@ def route_state(state: dict[str, Any]) -> dict[str, Any]:
     st = dict(state)
     st.update(report_l0(st))
     st.update(judge_l0(st))
-    keys = ("title", "overview", "core_points", "verdict", "route", "debug")
+    # ⚠️ 这是一份**白名单**：`report_l0` 新产出的字段若不登记在这里，会在节点边界
+    # **被静默丢掉**（下游节点只拿到这里的返回值）。2026-09-24 实测踩到：
+    # 新增 `limitations` 后 judge_l0 看得到（判够率↑）、`generate_answer` 却看不到
+    # → "判够了但答不出"。**给 report_l0 加字段时，记得同步这一行。**
+    keys = ("title", "overview", "core_points", "limitations",
+            "verdict", "route", "debug")
     return {k: st[k] for k in keys if k in st}
