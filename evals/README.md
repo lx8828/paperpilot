@@ -22,7 +22,7 @@
 | **L1 · 篇级检索** | LitSearch（64,183 篇）：Recall@k / nDCG | 发版前 / 手动 | 分钟级 | 🟡 能力已有，入口在 `cli/eval/run_retrieval_eval.py` |
 | **L2 · 判官（论文线）** | r2dev 28 个 facet：证据召回 / reader 判定 | 发版前 / 手动 | 分钟~小时 | 🟡 能力已有，脚本在 `retrieval/tmp/_r2_*.py` |
 | **L3 · 端到端** | 生产全链路（`graph.ask`）+ 5 组 164 题 | 发版前 / 手动 | 小时级 | 🟡 能力已有：`cli/eval/run_group_qa.py` |
-| **L4 · 对外可比** | QAMPARI / LoFT 官方口径 | **按需** | 小时级（要重跑） | ✅ **已有**：`evals/runners/l4_qampari.py`（`--check` / `--collect` / `--official`） |
+| **L4 · 对外可比** | LoFT **五个任务**官方口径（QAMPARI / rag / retrieval / sql / icl） | **按需** | 小时级（要重跑） | ✅ **已有**：`evals/runners/l4_loft.py`（`--check` / `--collect` / `--official`） |
 
 **为什么这么分层**：区分「**免费且必须每次跑**」（L0）与「**贵且只需发版前跑**」（L1–L3），
 否则一套评测要么贵到没人跑、要么便宜到抓不住问题。L4 单独一档是因为它的价值在
@@ -54,8 +54,10 @@ evals/
   report.py                  ③ **统一记录格式** —— 让各层数字能放一张表里比
   reports/                     落盘（**gitignore**：可再生成；入库的是 .md 摘要）
   runners/
-    l4_qampari.py            ④ L4 对外可比：`--check` 前置 / `--collect` 汇总 /
+    l4_loft.py               ④ L4 对外可比：**LoFT 五个任务**（QAMPARI / rag /
+                             retrieval / sql / icl）。`--check` 前置 / `--collect` 汇总 /
                              `--official` 用**官方 CLI**重跑（**拒收 0KB 坏指标文件**）
+                             落盘约定：`retrieval/results/loft_runs/<task>/<name>/`
   (待建)
   datasets/                  题集与真值（**只放指针**，实体仍在原处）
 ```
@@ -83,7 +85,7 @@ evals/
 | `retrieval/tmp` 脚本归属 | `evals/checks/tmp_scripts_audit.py` + `tests/test_tmp_scripts_audit.py` | 保留脚本**已入库**；归档**不造断 import** |
 | 统一记录格式 | `evals/report.py` + `tests/test_evals_report.py` | 缺 `n`/`note` 的记录**写不进去**；NaN/inf 被拒；表格列宽自适应且**对齐** |
 | **指标棘轮** | `evals/checks/metrics_ratchet.py` + `tests/test_metrics_ratchet.py` | 跑批后指标**掉出容差**就报错；★ 带容差（M1 ±16pt）与**方向**（健康指标越低越好） |
-| **L4 口径完整性** | `evals/runners/l4_qampari.py` + `tests/test_l4_qampari.py` | 坏指标文件（**0KB**/缺字段）**被跳过而非当 0 分**；note 必须带官方口径的坑、档位边界与公开参照 |
+| **L4 口径完整性** | `evals/runners/l4_loft.py` + `tests/test_l4_loft.py` | 坏指标文件（**0KB**/缺字段）**被跳过而非当 0 分**；五任务的口径坑、档位边界、公开参照必须写在 `note` 里；指标**透传**（官方加指标不必改代码） |
 | 草稿/备份是否混在 gold 旁 | `tests/test_eval_assets.py` | 无（同前缀会让人改错文件） |
 | CLI 入口能否跑 | 同上（`@pytest.mark.local`） | `cli/eval/*.py --help` 退出码 0（验证 `parents[2]`） |
 
@@ -126,23 +128,29 @@ evals/
    （`reader_offlabel` / `gold_map_failed` 这些**越低越好**，一律"降了就红"
    会把**修好了**判成回退）。
 
-4. **L4 一条命令已就位**（`evals/runners/l4_qampari.py`）：
+4. **L4 已覆盖 LoFT 全部五个任务**（`evals/runners/l4_loft.py`）：
 
    ```bash
-   python evals/runners/l4_qampari.py --check     # 前置：官方包 / 语料 / 题集（离线秒级）
-   python evals/runners/l4_qampari.py --collect   # 把已有 official_runs 全落成 L4 记录
-   python evals/runners/l4_qampari.py --official <preds.jsonl> --name my_run
+   python evals/runners/l4_loft.py --check                          # 五任务前置（离线秒级）
+   python evals/runners/l4_loft.py --collect                        # 汇总已有运行
+   python evals/runners/l4_loft.py --collect --task retrieval       # 指定任务
+   python evals/runners/l4_loft.py --official --task sql --name my_run
    ```
 
-   ★ **口径随数字一起给**（写在 `note` 里）：官方实测的两个坑
-   —— `coverage` **只有 recall**、官方 `f1` **恒为 0**（多值分支未赋值，别引用）；
-   ★ **边界**：限 `128k` 档且该档**保证 gold 存在** → 测不了「空集」；
-   ★ **坐标**：随行给出论文 Table 2 的公开数字作参照；
-   ★ **闭卷知识** ≈ 0.150 → 讲「检索贡献」应报差额。
-   ★ 健康度 `qampari.unanswered`（空预测题数）：官方口径会把它们**剔出分母** → 虚高，**应为 0**。
+   **各任务指标不同，不可混谈**（口径要点都写在 `note` 里）：
 
-5. **LoFT 的另一半**：现在 L4 只覆盖 **QAMPARI**（RAG 多值）。LoFT 里还有
-   `retrieval` / `sql` / `icl` 三类任务，官方包已在位，可按同样方式接上。
+   | `--task` | 官方指标 | ★ 口径要点 |
+   |---|---|---|
+   | `multi_value_rag`（QAMPARI） | `em` / `coverage` / `subspan_em` | `coverage` **只有 recall**；官方 `f1` **恒为 0**（多值分支未赋值）→ 已从记录里**排除** |
+   | `rag` | `em` / `f1` | SQuAD 风格**单值** |
+   | `retrieval` | `recall@k` / `mrecall@k` | ★ **Capped**：gold 数 > `k` 时**除以 `k`** |
+   | `sql` | `execution_accuracy` | ★ **不强制顺序**（建集时已滤掉需排序的题） |
+   | `icl` | `em` | ★ 预测**多值被忽略**、实例**多轮** |
+
+   ★ 指标**透传**（官方输出里有什么数值指标就落什么，只排除已证实无意义的）——
+   硬编码清单会"官方加指标而这里**静默漏报**"。
+   ★ 健康度 `<前缀>.unanswered`（空预测题数）：官方口径会把它们**剔出分母** → 虚高，
+   应为 0；棘轮按**后缀**判方向（五个前缀逐个列名**必然漏**）。
 
 5. **`evals/reports/` 是 gitignore 的** → 干净 clone 里指标棘轮**无数据可比**（会跳过并说明）。
    若要让"指标历史"进版本库，应入库 `--md` 摘要（`python evals/report.py --md`），

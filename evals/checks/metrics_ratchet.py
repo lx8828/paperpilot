@@ -63,8 +63,13 @@ DOWN: frozenset[str] = frozenset({
     "qa.validator_rewritten",   # 被闸门改写/拦下的题数
     "qa.parse_degraded",        # 解析降级题数
     "retrieval.gold_map_failed",  # gold 定位失败条数；应为 0
-    "qampari.unanswered",       # 空预测题数；官方口径会把它们**剔出分母** → 虚高
 })
+
+# ★ **后缀**规则：任何 `<前缀>.unanswered` 都"越低越好"（空预测题数）。
+#   为什么用后缀而不是逐个列名：LoFT 有五个任务、各自一个前缀
+#   （`qampari` / `loft_rag` / `loft_retrieval` / `loft_sql` / `loft_icl`），
+#   逐个列名**必然漏**，而漏的后果是"空预测变多"被判成"变好"。
+_DOWN_SUFFIX: tuple[str, ...] = (".unanswered",)
 
 # 按**相对**幅度判的指标（绝对值大到 2 个点没意义）
 RELATIVE = frozenset({"qa.avg_prompt_tokens", "qa.cost_cny"})
@@ -79,7 +84,9 @@ def tol_of(metric: str) -> float:
 
 
 def direction_of(metric: str) -> str:
-    return "down" if metric in DOWN else "up"
+    if metric in DOWN or metric.endswith(_DOWN_SUFFIX):
+        return "down"
+    return "up"
 
 
 def load_baseline(p: Path | None = None) -> dict[str, dict[str, Any]]:

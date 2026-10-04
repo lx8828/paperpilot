@@ -55,6 +55,15 @@ def test_direction_defaults_up_but_health_metrics_are_down():
         assert M.direction_of(m) == "down", f"{m} 应为「越低越好」"
 
 
+def test_unanswered_suffix_is_down_for_every_task():
+    """★ `.unanswered` 用**后缀**规则判方向 —— 五个 LoFT 任务各一个前缀，
+    逐个列名**必然漏**，而漏的后果是"空预测变多"被判成"变好"。"""
+    for prefix in ("qampari", "loft_rag", "loft_retrieval", "loft_sql", "loft_icl"):
+        m = f"{prefix}.unanswered"
+        assert M.direction_of(m) == "down", f"{m} 应为越低越好"
+        assert M.worse(m, 5, 0) == pytest.approx(5.0), "升了才是变差"
+
+
 def test_worse_respects_direction():
     assert M.worse("qa.ok_strict", 0.40, 0.50) == pytest.approx(0.10)   # 降了 = 变差
     assert M.worse("qa.ok_strict", 0.60, 0.50) == pytest.approx(-0.10)
