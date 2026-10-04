@@ -1,6 +1,6 @@
 # PaperPilot · 论文帮读器（LLM 精读 + 可溯源问答）
 
-输入一篇 PDF 学术论文 → 系统自动完成 **解析 → claims 提取与证据溯源 → 语义去重 → 角色打标 → 重要性打分 → 论证骨架 → 图表指南 → 结构化精读报告**，并支持**带引用溯源的论文问答**（**v3 两级**：报告层直答 → 全局检索兜底，输出前经**事实闸门**校验）。
+输入一篇 PDF 学术论文 → 系统自动完成 **解析 → claims 提取与证据溯源 → 语义去重 → 角色打标 → 重要性打分 → 论证骨架 → 图表指南 → 结构化精读报告**，并支持**带引用溯源的论文问答**（**v3 两级**：报告层直答 → 不够时 **全文直读**（默认，`PAPERPILOT_QA_READER=fullctx`）/ **块级检索**（RAG-2，`=retrieval` 切回），输出前经**事实闸门**校验）。
 
 **给谁用**：想读论文、却被英文和专业门槛劝退的普通人。系统把论文**讲成能懂的话**（一分钟导读 / 大白话概述 / 引导式问答），同时每个关键结论都带回原文出处——让外行"读得懂、不跑偏、能自己点回原文核实"。
 
@@ -15,8 +15,8 @@
 |---|---|
 | 📄 **帮读型报告** | 一分钟导读 / 大白话概述 / 核心要点 / 论证骨架 / 章节精读（低分默认折叠可展开）/ 图表一览 |
 | 🔍 **证据溯源闭环** | 每条主张绑定原文 `evidence_quote` + 页码，报告里可一键跳回原文并**整行高亮** |
-| 💬 **两级问答（v3）** | `Router(L0 报告层)` 够 → 直答；不够 → `全局检索(L3)` → **一律试答**（默认无 L3 裁判）→ **输出闸门**兜底（修复 / 拒答话术）。答案带 `[n]` 引用，可点跳原文 |
-| 🛡 **输出前事实闸门** | 机器件（引用越界、编数/漏数）**硬拦** → 对症修复或兜底拒答；LLM 体检（无支撑断言/偏题/矛盾/含糊/零引用）**软标注** → 前端显示"答案自检（AI 复核）" |
+| 💬 **两级问答（v3）** | `Router(L0 报告层)` 够 → 直答；不够 → **全文直读**（默认；≤5 篇 ≈ 48k token 放得下，判据 S/C ≤ 1）→ **一律试答** → **输出闸门**兜底（修复 / 拒答话术）。RAG-2 块级检索**代码保留但前端不启用**（`PAPERPILOT_QA_READER=retrieval` 仅代码/对照可用）。直读的 `cites` **已含 `{pdf, chunk_id, page, section, evidence}`**（与检索路径**同形**）→ 点答案里的 `[n]` 可跳原文，**跨篇时会自动切到那一篇**（前端约 20 行；`web/prototype.html` 已实测验证） |
+| 🛡 **输出前事实闸门** | 机器件（引用越界、编数/漏数）**硬拦** → 对症修复 → 修不动则**LLM「补充说明」**（带「非系统作答」标注）→ 才兜底拒答；LLM 体检（无支撑断言/偏题/矛盾/含糊/零引用）**软标注** → 前端显示"答案自检（AI 复核）" |
 | 📊 **表格内容可检索** | MinerU 表格/公式注入**检索视图**（表格数值可被召回、可被作答读到）；表池**并集候选**（正文 top-12 原样保留 + 追加表池前 2 名） |
 | 🖥 **三栏工作台** | 左：结构导航 ｜ 中：报告 / 原文 PDF ｜ 右：多轮追问（含答案自检提示条） |
 | ✅ **评测体系** | 帮读问答 + 导读忠实度 + 防幻觉/压力/稳定性 + 三列公平对比 + QASPER 第三方基准（详见下） |
@@ -220,10 +220,12 @@ uv run python cli/run_skeleton.py <pdf名>    # 论证骨架
 uv run python cli/run_figures.py <pdf名>     # 图表识别 + 读图指南
 uv run python cli/run_report.py <pdf名>      # 结构化精读报告
 
-# ── 工具①②③ 端到端（问题 → 论文 → 报告）─────────────────────
-uv run python cli/run_search.py "问题"                  # ① 语料检索：问题 → top-k 论文（支持时间窗）
-uv run python cli/run_fetch.py 1706.03762 --ingest     # ② arXiv id → 论文库 PDF（--ingest 顺手摄取）
-uv run python cli/run_pipeline.py "问题"                # ①②③ 端到端：检索 → 抓取 → 精读 → 报告
+# ── 四个工具 ──────────────────────────────────────────────────
+uv run python cli/run_fetch.py 1706.03762 --ingest     # ① 论文取料：arXiv id → 论文库 PDF（--ingest 顺手摄取）
+uv run python cli/run_search.py "问题"                 # ② 论文检索：问题 → top-k 论文（支持时间窗）
+uv run python cli/run_pipeline.py "问题"               # ③ 论文直读：检索 → 抓取 → 精读 → 报告（端到端）
+uv run python cli/run_set.py --dir assets/papers --question "哪些篇做了消融？"   # ④ 多答案开放域问答：哪几篇做了 X + 逐篇证据
+# 评测/跑批脚本已归入 cli/eval/（见「评测与回归护栏」节）
 ```
 
 ---
@@ -236,7 +238,8 @@ uv run python cli/run_pipeline.py "问题"                # ①②③ 端到端�
 
 | 开关 | 默认 | 作用 |
 |---|---|---|
-| `PAPERPILOT_VALIDATOR_GATE` | `1`（开） | 输出前事实闸门：HIGH → 对症修复 / 兜底拒答；MID/LOW → 前端"答案自检"标注 |
+| `PAPERPILOT_VALIDATOR_GATE` | `1`（开） | 输出前事实闸门：HIGH → 对症修复 / 补充说明 / 兜底拒答；MID/LOW → 前端"答案自检"标注 |
+| `PAPERPILOT_VALIDATOR_SALVAGE` | `1`（开） | 修复失败后**叫一次 LLM 出「补充说明」**替代直接拒答：把"能确证 / 不能确证"分开写清，文本强制带 `【补充说明 · 非系统作答】` 标注（**由闸门层强制**，不依赖模型或实现自觉）。`=0` 回到纯拒答 |
 | `PAPERPILOT_VALIDATOR_LLM` | `1`（开） | 闸门的 LLM 体检（无支撑断言/偏题/矛盾/含糊；零引用走**格式体检**） |
 | `PAPERPILOT_EXT_QUOTA` | `2` | **表池并集候选**：正文 top-12 **原样保留**，追加表池前 2 名里没有的（候选 12 → 13/14）。`=0` 回退 |
 | `PAPERPILOT_EXT_RRF_ALPHA` | `0.5` | 外部块（表格/公式）两路权重 `(2α, 2(1-α))`；0.5 = 生产原样（文本块恒 1:1 不动） |
@@ -321,7 +324,9 @@ POST /api/report ──→ job_id（202，立即返回）
                                             └─ 不够 ──→ 全局检索 L3（向量 + BM25 混合，RRF 融合）
                                                         └─→ **一律试答**（默认无 judge_l3）
   输出前闸门 validator.gate()：
-    HIGH（引用越界 / 编数漏数）→ repairer 对症修复（Self-Refine / CRAG）→ 修不动则兜底话术
+    HIGH（引用越界 / 编数漏数）→ repairer 对症修复（Self-Refine / CRAG）
+                                └─ 修不动 → **LLM「补充说明」**（文本强制带「非系统作答」标注）
+                                           └─ 补充也失败 → 才走兜底拒答话术
     MID / LOW（无支撑断言 / 偏题 / 矛盾 / 含糊 / 零引用）→ 原样输出 + 前端"答案自检"标注
 ```
 
@@ -421,11 +426,14 @@ CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任�
 
 | 命令 | 作用 |
 |---|---|
-| `uv run python cli/run_qasper_eval.py --papers N` | QASPER 第三方基准（异源裁判 1~5 分，≥4 pass） |
-| `uv run python cli/run_qa_v2.py` | 中文 QA 回归（手写题集）。`--pdf`/`--limit` 定向冒烟；`--save-baseline` 固化基线 |
-| `uv run python cli/run_bench.py` | report 层回归护栏：本地重算产物与 `bench/baseline.json` 勾叉 diff（不调 LLM） |
-| `uv run python cli/run_compare.py sample/run` | 三列公平对比 harness（B0/B1/B2，见 `qa/COMPARE_DESIGN.md`） |
-| `uv run python cli/run_chunk_eval.py` / `run_retrieval_eval.py` | 分块 / 检索层专项评估 |
+| `uv run python cli/eval/run_bench.py` | report 层回归护栏：本地重算产物与 `bench/baseline.json` 勾叉 diff（不调 LLM） |
+| `uv run python cli/eval/run_compare.py sample/run` | 三列公平对比 harness（B0/B1/B2，见 `qa/COMPARE_DESIGN.md`） |
+| `uv run python cli/eval/run_qa_eval.py` | QA 验证：报告结构化分层是否支撑真实问答 |
+| `uv run python cli/eval/run_rag_eval.py` | RAG 评估：对 `qa_set` 每道题真实跑 LangGraph 问答图 |
+| `uv run python cli/eval/run_chunk_eval.py` / `run_retrieval_eval.py` / `run_chunk_recall.py` | 分块 / 检索层专项评估（零 LLM 尺子） |
+
+> 评测/跑批脚本 2026-10-01 已统一归入 **`cli/eval/`**（14 个 + `_anchors.py`）；`cli/` 根下只留
+> 四个工具与报告小组件入口。旧入口 `run_qasper_eval.py` / `run_qa_v2.py` 已不在。
 
 本 README 的评测数字**必须带口径与日期**；单次端到端运行的 churn 在 8%~25%，
 **<3 题的效应不可判**（见 `qa/recall/UNION_AND_CONTEXT_20260911.md` §2）。

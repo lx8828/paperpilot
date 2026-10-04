@@ -54,7 +54,7 @@
 | `qa/RETRIEVAL_EXPLORATION_20260908.md` | 1 | 2026-09-08 | **L2 存废之争全过程**（阶段 Q）——v2 四层为何被砍 |
 | `qa/reader/` `qa/negqa/` `qa/robust/` `qa/stress/` | 各 1~2 | 2026-09-07 | 帮读主口径 / 防幻觉 / 稳定性 / 压力边界 |
 | `qa/review/RESPONSES_20260913.md` | 1 | 2026-09-13 | 外部代码审查逐条核验台账 |
-| `retrieval/results/*.md` | 27 | 2026-09-18 ~ 09-21 | 篇级检索消融（LITSEARCH_* / ARXIV_*）；⚠️ **6 份是 0KB 空文件**（`ARXIV_CE100-100_*`、`LITSEARCH_SCORE100-100_*` 等），需重跑或删除 |
+| `retrieval/results/*.md` | 29 | 2026-09-18 ~ 09-27 | 篇级检索消融（LITSEARCH_* / ARXIV_*）；**全部指标一页汇总**=`LITSEARCH_METRICS_20260927.md`（09-27 重跑）；**交付数 N / 池深 K / 覆盖**见 `LITSEARCH_DELIVER_N_20260927.md`；⚠️ **6 份是 0KB 空文件**（`ARXIV_CE100-100_*`、`LITSEARCH_SCORE100-100_*` 等），需重跑或删除 |
 
 ---
 
@@ -150,6 +150,21 @@ echo 'retrieval/tmp/' >> .gitignore
 > 代价（必须先知道）：`retrieval/tmp/<group>/*.questions.json` 是**唯一真源**，一旦不入库就只在本机；
 > 入库的 `qa/questions/*.json` 是**导出产物**（无逐字引文）。若想给 gold 上版本控制，
 > 就把 **`*.questions.json` 单独 un-ignore**（它只有短引文，不含全文）。
+
+---
+
+## 5.5 本轮整理（2026-10-01 · 四工具收尾 + cli 归类）
+
+| 改动 | 内容 |
+|---|---|
+| 代码 | `cli/` 分两类：**工具/报告入口留根**（`main`/`run_fetch`/`run_search`/`run_pipeline`/`run_ingest`/`run_set` + `run_report`/`run_claims`/`run_summary`/`run_view`/`run_skeleton`/`run_figures`）；**评测·跑批移入 `cli/eval/`**（14 个 + `_anchors.py`） |
+| 代码 | 新增 `cli/run_set.py`（**工具④ 多答案开放域问答**入口，走 `set_judge.run` + `render`） |
+| 代码 | `components/query_optimizer.py` 的 **L5 `decompose()` 已实现**（此前 docstring 标"未实现"）；测试 `test_unimplemented_level_raises` 去掉 `l5` |
+| 代码 | `components/set_judge.py` 判官默认 **单判官 A**（`PAPERPILOT_SET_DUAL` 默认 0；见 `retrieval/results/R2_JUDGE_PROTO_20261001.md`） |
+| 文档 | `design.md` → `archive/`（早期设计稿，此前已标注"只作对照"） |
+| 文档 | README：CLI 段改为"四个工具" + `cli/eval/` 说明；评测表路径同步 |
+
+⚠️ §5.3 提到的"6 份 0KB 空报告"**现已不存在**（2026-10-01 扫描 0 命中）—— 该条作废。
 
 ---
 

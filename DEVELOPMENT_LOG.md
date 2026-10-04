@@ -1218,3 +1218,59 @@ _ASK_GATE = threading.Semaphore(int(os.environ.get("PAPERPILOT_ASK_CONCURRENCY",
 3. 分层原则再确认：**CI 判对错（当时 178 → 现 203，约 10s，免费）/ `local` 判真模型能不能跑（5，要 key+模型）/
    `ui` 判前端真的能用（1，要浏览器）** —— 每档都有自己的 skip 条件，于是"一条命令"永远绿。
 
+---
+
+## 2026-09-27 · 问答链换成**全文直读**（`fullctx`）—— RAG-2 不删、降级为可切回路径
+
+### 判据（为什么能换）
+
+**S/C 不等式**（语料规模 / 上下文预算）：
+
+| 场景 | S/C | 结论 |
+|---|---|---|
+| 本层：用户给的 ≤5 篇（≈180k 字符 ≈ **48k token**） | **≤ 1** | **直读优于"块级检索 + top-K 挑块"** |
+| 线上工具①：arXiv 54 万篇 ≈ 7.7 亿 token | ≫ 1 | 检索**物理必需**（不动） |
+
+实测（M1 50 题 / 5 组 164 题）：直读**仅答案 30/50** vs 检索 20/50；耗时 **4.3s vs 22.1s**；
+成本 **¥0.006 vs ¥0.026**；可核性：数字 99.5% 可在原文找到、引用段号归属 **100%** 正确。
+
+### 改了什么（**只动问答链；报告链一行未碰**）
+
+| 位置 | 改动 |
+|---|---|
+| `agents/nodes/read_full.py`（新） | 节点 `answer_fullctx`（**函数名≠模块名**，避免遮蔽）+ `reader()` 开关 |
+| `graph/qa_graph_v3.py` | 两个图都挂 `read_full` 节点；`route_after_judge0_pure` 按 `reader()` 分流；**直读不进 `judge_l3`**（它判的是"检索块够不够"） |
+| `agents/nodes/answer.py` | `generate_answer` 顶部加直读分支 `_answer_from_fullctx`（原样返回，不再挑块/组上下文） |
+| `components/fullctx.py` | 新增 `history` 参数（插在**问题之前** → `sys+ctx` 前缀不变，**缓存仍命中**） |
+| `agents/state.py` | 登记 `fullctx` 字段（未登记会被 LangGraph **静默丢弃**） |
+| `cli/run_group_qa.py` | 读取器白名单加 `fullctx`；用量统计把**全文直读单列**（否则与 L0 混算，看不出全塞规模） |
+| `tests/test_reader_switch.py`（新，13 例） | 守住：默认必须 fullctx / 可切回 RAG-2 / 直读原样返回 / 无语料不调 LLM |
+
+**开关**：`PAPERPILOT_QA_READER=fullctx`（默认）｜ `=retrieval`（切回 RAG-2，面试展示 / A-B 对照）。
+`PAPERPILOT_FULLCTX_STYLE=cover` 可切"逐篇穷举"提示词。
+
+### 刻意**没动**的东西（它们是半依赖 RAG-2 的）
+
+- **报告链** `pipeline.process_pdf`（claims / 骨架 / 报告）—— 只用切块 + claims，**与检索无关**；
+- **切块产物** `ordered_chunks` / `retrieval_chunks` / `MAX_CHUNK_LEN` —— 报告、claims 锚点、cites 跳转、闸门 `extra_chunks` 都依赖；
+- **问答链内部两处独立重检索**：`answer._audit_absence`（缺失断言复核）、`repairer._crag_regenerate`（CRAG 修复）—— 仍走 RAG-2（要的是"证据块"不是整篇）；
+- **`pull_chunk.py` 一行未改** —— RAG-2 的完整实现（篇内检索 / 跨篇 quota / 跨语言补充）原样保留。
+
+### 端到端证据（同题 `group1/29179-L0-3`，走完整图 `graph.ask`）
+
+| 读取器 | route | 读取器路径 | prompt tok | cites | 闸门 |
+|---|---|---|---|---|---|
+| **fullctx（默认）** | `L0,FULLCTX,answer_fullctx` | `fullctx` | **53,659** | 10 | pass |
+| `retrieval`（切回 RAG-2） | `L0,L3,answer_L3` | `layered_quota+xling` | **29,064** | 9 | pass |
+
+另有 L0 分支未被跳过（`route=L0,answer_L0`，12.4k tok）→ **"保留 L0 报告层直答"确实生效**（简单问题不读全文）。
+全量测试 **203 → 216 例全绿**（`exit 0`）。
+
+### 已知待办 / 边界
+
+1. ⚠️ **cites 前端适配未做**（用户 2026-09-27 决定"前端后面改"）：直读的 cites 是
+   `{pdf, chunk_id, page, section, evidence}`，**没有**前端要的 `n` 序号（答案用 `[P1·§…·¶cX]` 标引用）；
+   闸门侧安全（`validator.gate` 自己从 `cites[].evidence` 重建 entries）；
+2. ⚠️ **无超窗口保护**（用户决定不加）：语料 > 约 12 篇（128k 窗口）会超限 —— 当前只服务 ≤5 篇；
+3. 端到端水位是**单遍**结果（M1 噪声底 8/50 ≈ ±16pt）→ 结论只能说"无回退 + 改善迹象"。
+
