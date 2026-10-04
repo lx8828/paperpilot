@@ -125,6 +125,11 @@ retrieval/_scratch/
 #   · *.txt        pymupdf 抽的 PDF 原文（出题读原文用）
 retrieval/tmp/**/pages/
 retrieval/tmp/**/*.txt
+# ⚠️ 2026-10-05 新增：出题过程中的**草稿/备份**（`_group.draft*.json` /
+# `_group.new*.json` / `_group.questions.json.bak`）。
+# 它们与正牌 gold **同目录同前缀**，留在原地会让人改错文件（真发生过）。已集中
+# 归档到 `_gold_history/<group>/`：保留可追溯性，但不再进 git status、不再误导。
+retrieval/tmp/_gold_history/
 
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db
