@@ -1,0 +1,701 @@
+{
+ "_note": "group3（智能体长期记忆）组级题集 —— **只出 M1**（专测跨篇检索召回，不出 M0/X5）。出题素材：retrieval/tmp/group3/*.txt（pymupdf 原文）+ pages/*.png（表格版面）；引文已用 retrieval/tmp/_author_kit.py snap 吸附到原文并自动补页码。",
+ "group": "group3",
+ "corpus": [
+  "2502.12110",
+  "2601.06377",
+  "2608.20631",
+  "2606.10677",
+  "2601.01885"
+ ],
+ "questions": [
+  {
+   "qid": "G3-M1-1",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，各自的「记忆表示」形态是什么（笔记网络 / 层级 / 树 / 主题文档 / 工具化操作）？哪几篇明确避免把向量库或图数据库当作主存储？",
+   "hint": "五篇形态各异：**A-MEM**（2502.12110）沿用 **Zettelkasten** 方法，把每条记忆写成含结构化属性与嵌入向量的**互联笔记**，并自主生成链接；**HiMem**（2601.06377）是**层级**结构，把具体交互事件与抽象知识两类记忆语义链接（episodic + knowledge-oriented）；**Weighted Memory Tree**（2608.20631）把执行历史组织成**加权树**，节点带保留分数、分支带优先级；**Infini Memory**（2606.10677）把记忆组织成**主题文档（topic documents）**，靠缓冲写入 + 周期性合并维护，并明确 avoiding a mandatory dependency on vector or graph databases；**AgeMem**（2601.01885）把记忆操作本身当作**工具动作**（Add/Update/Delete/Summarize/Retrieve），不预设记忆结构。→ 最明确「避免向量/图库」的是 Infini Memory。",
+   "must_all": [
+    "Zettelkasten",
+    "topic documents"
+   ],
+   "must_any": [
+    "互联笔记",
+    "层级",
+    "加权树",
+    "工具动作",
+    "结构化"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2502.12110",
+     "quote": "Current memory systems enable basic storage and retrieval but lack sophisticated memory organization, despite recent attempts to incorporate graph databases.",
+     "page": 1
+    },
+    {
+     "paper": "2502.12110",
+     "quote": "This system equips LLM agents with long-term interaction capabilities without requiring predetermined memory operations.",
+     "page": 2
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "It organizes memory as topic docu- ments and maintains them through buffered writing and periodic consolidation, avoiding a mandatory dependency on vector or graph databases.",
+     "page": 2
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "These two memory types are semantically linked to form a hierarchical structure that bridges concrete interaction events and abstract knowledge, enabling efficient retrieval",
+     "page": 1
+    },
+    {
+     "paper": "2601.01885",
+     "quote": "AgeMem exposes memory operations as tool-based actions, enabling the LLM agent to autonomously decide what and when to store, retrieve, update, summarize, or discard infor- mation.",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-2",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，新观察到的事实是「立刻写入」还是「先进缓冲、再周期性整理」？哪几篇把「何时写、写什么、要不要丢」直接交给模型/策略自己决定？",
+   "hint": "**缓冲式只有一篇**：**Infini Memory**（2606.10677）明确 New observations are first staged in a buffer and periodically consolidated into coherent textual contexts，且 Appending to this buffer does not require scanning or rewriting existing topic documents；**A-MEM**（2502.12110）是即时式——每条新记忆当场构造 note 并触发链接生成与记忆演化；**WMT**（2608.20631）由**执行结果事件驱动**更新节点保留分数与分支优先级（非批量整理）；**HiMem**（2601.06377）在**冲突**时触发 conflict-aware Memory Reconsolidation 修订/补充；**AgeMem**（2601.01885）是唯一把「何时存/更新/总结/丢弃」整体交给**策略**（tool-based actions + 三阶段渐进式 RL）。→ 交给策略的是 AgeMem；先进缓冲的是 Infini Memory。",
+   "must_all": [
+    "staged in a buffer",
+    "tool-based actions"
+   ],
+   "must_any": [
+    "缓冲",
+    "即时",
+    "周期性",
+    "策略",
+    "写入"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2606.10677",
+     "quote": "New observations are first staged in a buffer and periodically consolidated into coherent textual contexts.",
+     "page": 1
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "Appending to this buffer does not require scanning or rewriting existing topic docu- ments.",
+     "page": 4
+    },
+    {
+     "paper": "2601.01885",
+     "quote": "AgeMem exposes memory operations as tool-based actions, enabling the LLM agent to autonomously decide what and when to store, retrieve, update, summarize, or discard infor- mation.",
+     "page": 1
+    },
+    {
+     "paper": "2502.12110",
+     "quote": "This integration process not only creates new links but also enables dynamic evolution when new memories are incorporated, they can trigger updates to the contextual representations of exist",
+     "page": 2
+    },
+    {
+     "paper": "2608.20631",
+     "quote": "Execution out- comes update node-level retention scores, which are aggregated into branch-level priorities.",
+     "page": 3
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-3",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪些篇显式设计了「遗忘 / 衰减 / 抑制」机制？被淘汰的记忆是**直接删除**，还是**保留但不再激活**？",
+   "hint": "**WMT 最完整**（2608.20631）：selection-based decay（被选中的记忆重置漏选计数，合格但未被选中的记忆获得衰减；且 Elapsed time alone does not affect retention，即不靠时间自然衰减）+ suppression（把根任务标记为 **OBSOLETE** 而 without deleting it）+ folding（完成任务折叠）→ **保留但不删**最典型；**HiMem**（2601.06377）有 conflict-aware Memory Reconsolidation（修订与补充），并自陈 forgetting primarily serves as a scalability-oriented mechanism ... and does not contribute directly to（正确性）；**Infini Memory**（2606.10677）靠周期性 consolidation 与事实修订，旧证据在同一 topic document 内被改写；**AgeMem**（2601.01885）把 **Delete memory** 列为可学习动作之一，且批评现有设计 lack adaptive, learning-based strategies for prioritization and forgetting；**A-MEM**（2502.12110）没有删除动作，只有 memory evolution 触发对已有记忆上下文/关键词/标签的更新。",
+   "must_all": [
+    "selection-based decay",
+    "OBSOLETE"
+   ],
+   "must_any": [
+    "衰减",
+    "抑制",
+    "删除",
+    "遗忘",
+    "折叠"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2608.20631",
+     "quote": "Event-based updates and selection-based decay revise these scores, allowing WMT to preserve useful infor- mation, fold completed trajectories, suppress low-utility content, and retain access",
+     "page": 1
+    },
+    {
+     "paper": "2608.20631",
+     "quote": "Suppression marks a root task OBSOLETE without deleting it, while task completion and resumption trigger folding and reopening, respectively.",
+     "page": 3
+    },
+    {
+     "paper": "2608.20631",
+     "quote": "Elapsed time alone does not affect retention.",
+     "page": 4
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "In this work, forgetting primarily serves as a scalability-oriented mechanism to control memory size and maintain retrieval efficiency, and does not contribute directly t",
+     "page": 4
+    },
+    {
+     "paper": "2601.01885",
+     "quote": "As memory grows, such designs commonly suffer from increased system complexity and lack adaptive, learning-based strate- gies for prioritization and forgetting.",
+     "page": 3
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-4",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "当新证据与已有记忆**矛盾或只部分重叠**时，各篇怎么处理？哪几篇是专门为「冲突」设计了机制，而不是靠相似度覆盖？",
+   "hint": "**HiMem**（2601.06377）机制名就叫 **conflict-aware Memory Reconsolidation**（补充缺失 + 修订已有），并明确批评现有系统 memory updates are typically static or similarity-driven；**Infini Memory**（2606.10677）指出 append-style 存储会让新旧两版同时可被检索（memory conflict），用周期性 consolidation 与 fact revision 解决，并批评 vector similarity / keyword matching / fixed top-k 的检索方式；**A-MEM**（2502.12110）由新记忆触发对已有记忆上下文、关键词、标签的更新（memory evolution 而不是覆盖）；**WMT**（2608.20631）用事件驱动更新 + 衰减压低不再相关的记忆；**AgeMem**（2601.01885）由策略决定 Update/Delete。→ 名字里带「冲突」且显式反对相似度驱动的，是 HiMem；显式点名「append 会留下两版」的是 Infini Memory。",
+   "must_all": [
+    "Memory Reconsolidation",
+    "fact revision"
+   ],
+   "must_any": [
+    "冲突",
+    "矛盾",
+    "修订",
+    "补充",
+    "演化"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2601.06377",
+     "quote": "HiMem performs conflict-aware Memory Reconsolidation to supplement missing knowledge and revise existing memories, enabling continuous self-evolution over long-term use.",
+     "page": 2
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "Third, memory updates are typically static or similarity-driven, lacking principled mechanisms to revise or correct stored knowledge when new information partially overlaps with, extends, or",
+     "page": 2
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "When newer observations con- tradict older ones, append-style storage can leave both versions available for retrieval (memory con- flict).",
+     "page": 1
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "Existing memory systems often store observations as isolated records, summaries, or indexed frag- ments, which makes evidence aggregation, fact revision, and memory maintenance difficult.",
+     "page": 1
+    },
+    {
+     "paper": "2502.12110",
+     "quote": "Additionally, this process enables memory evolution - as new memories are integrated, they can trigger updates to the contextual representations and attributes of existing historical memorie",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-5",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，取回记忆靠的是「单次相似度检索」「结构化排序/规则」还是「多轮工具调用」？哪几篇明确反对单次检索？",
+   "hint": "**Infini Memory**（2606.10677）最明确：agentic retrieval procedure lets the LLM read memory through iterative tool calls rather than a single retrieval step，并点名批评 Standard retrieval methods based on vector similarity, keyword matching, or fixed top-k；**HiMem**（2601.06377）给出 **hybrid** 与 **best-effort retrieval** 两种策略来平衡精度与效率，靠层级语义对齐而非单纯相似度；**WMT**（2608.20631）不按相似度，按节点保留分数/分支优先级决定哪些记忆进入工作上下文；**A-MEM**（2502.12110）沿链接与邻域做 relative memory 扩展；**AgeMem**（2601.01885）把 Retrieve 当作策略动作，并让 STM 管理减少冗余（resummarize/remove）。",
+   "must_all": [
+    "best-effort retrieval",
+    "iterative tool calls"
+   ],
+   "must_any": [
+    "相似度",
+    "优先级",
+    "多轮",
+    "检索",
+    "top-k"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2606.10677",
+     "quote": "At inference time, an agentic retrieval procedure lets the LLM read memory through iterative tool calls rather than a single retrieval step.",
+     "page": 1
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "Standard retrieval methods based on vector similarity, keyword match- ing, or fixed top-k procedures may return isolated",
+     "page": 1
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "HiMem supports both hybrid and best-effort retrieval strategies to balance accuracy and efficiency, and incorporates conflict-aware Memory Reconsolidation to revise and supplement stored kno",
+     "page": 1
+    },
+    {
+     "paper": "2608.20631",
+     "quote": "This moti- vates a central question: can long-horizon reason- ing be improved by explicitly estimating memory utility to regulate what enters the agent's working context?",
+     "page": 2
+    },
+    {
+     "paper": "2502.12110",
+     "quote": "For each new memory, we construct comprehensive notes, which integrates multiple representations: structured textual attributes including several attributes and embedding vect",
+     "page": 2
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-6",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇需要**训练**记忆管理策略、哪几篇是**免训练**（靠启发式规则或让 LLM 自己决定）？需要训练的那篇用的是什么方法？",
+   "hint": "**只有 AgeMem（2601.01885）需要训练**：提出 three-stage progressive reinforcement learning 策略 + **step-wise GRPO** 来处理稀疏/不连续奖励，并特别设置 The reset before Stage 2 ensures the agent cannot solve the final task via residual context, thereby forcing proper retrieval from LTM（用「重置」逼出真实检索行为）；它还批评现有系统 largely rely on predefined memory structures or heuristic update rules、lack adaptive, learning-based strategies for prioritization and forgetting。**其余四篇免训练**：A-MEM（LLM 自主生成链接/属性）、HiMem（语义对齐 + 再固化规则）、WMT（事件驱动 + 保留分数，无梯度更新）、Infini Memory（缓冲/合并的工程流程 + 规划式检索）。",
+   "must_all": [
+    "GRPO"
+   ],
+   "must_any": [
+    "强化学习",
+    "免训练",
+    "策略",
+    "启发式",
+    "梯度"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2601.01885",
+     "quote": "To train such unified behaviors, we pro- pose a three-stage progressive reinforcement learning strategy and design a step-wise GRPO to address sparse and discontinuous rewards",
+     "page": 1
+    },
+    {
+     "paper": "2601.01885",
+     "quote": "The reset before Stage 2 ensures the agent cannot solve the final task via residual context, thereby forcing proper retrieval from LTM and enabling effective training of",
+     "page": 4
+    },
+    {
+     "paper": "2601.01885",
+     "quote": "Although effective in orga- nizing and retrieving information, these approaches largely rely on predefined memory structures or heuristic update rules.",
+     "page": 3
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "New observations are first staged in a buffer and periodically consolidated into coherent textual contexts.",
+     "page": 1
+    },
+    {
+     "paper": "2608.20631",
+     "quote": "Agent interactions update node scores and branch priorities; lifecycle transitions and prompt-selection feedback de- termine which memories remain active.",
+     "page": 2
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-7",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇各自在**什么基准/环境**上评测？哪几篇是在**多个基座模型**上做受控比较？",
+   "hint": "**WMT**（2608.20631）：**GAIA** 及其纯文本子集 **GAIA-Text**，基座三个 —— **Qwen3-8B、Gemma 4 E4B、Llama-3.1-8B**，并附 memory-poisoning 实验；**Infini Memory**（2606.10677）：**MemoryAgentBench**（总分 64.7%）；**HiMem**（2601.06377）：长程对话基准（报告 accuracy / consistency / long-term reasoning / efficiency）；**A-MEM**（2502.12110）：在**六个基座模型**上对比既有 SOTA 基线；**AgeMem**（2601.01885）：**五个**长程、推理密集基准 + 多个 LLM backbone。→ 多基座受控比较最明确的是 A-MEM（6 个）与 WMT（3 个）。",
+   "must_all": [
+    "GAIA-Text",
+    "MemoryAgentBench"
+   ],
+   "must_any": [
+    "基准",
+    "基座",
+    "数据集",
+    "评测",
+    "benchmark"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2608.20631",
+     "quote": "We evaluate WMT on GAIA (Mialon et al., 2024) and its text-only subset, GAIA-Text, using Qwen3-8B (Yang et al., 2025), Gemma 4 E4B (Gemma Team et al., 2026), and Llama-3.1-8B",
+     "page": 2
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "On MemoryAgentBench, Infini Memory achieves 64.7% overall score.",
+     "page": 1
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "We evaluate Infini Memory on MemoryA- gentBench, where i",
+     "page": 2
+    },
+    {
+     "paper": "2502.12110",
+     "quote": "Empirical experiments on six foundation models show superior improvement against existing SOTA baselines.",
+     "page": 1
+    },
+    {
+     "paper": "2601.01885",
+     "quote": "Experiments on five long-horizon benchmarks demonstrate that AgeMem consistently outperforms strong memory-augmented baselines across multiple LLM backbones, achieving improve",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-8",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇报告了**具体数值提升**或**资源节省**？请至少给出两个不同论文的关键数字（含口径：准确率提升 / token 节省 / 总分）。",
+   "hint": "**WMT**（2608.20631）：Relative to linear memory, WMT improves accuracy by an average of **9.97 percentage points** while reducing **prompt-token usage by 32.8%**；在 GAIA-Text 上相对线性历史的绝对提升分别为 **13.39 / 8.66 / 7.87** 个百分点（Qwen3-8B / Gemma 4 E4B / Llama-3.1-8B）。**Infini Memory**（2606.10677）：MemoryAgentBench 总分 **64.7%**。**HiMem**（2601.06377）：开启 Memory Self-Evolution 使 Note Memory 提升约 **5.85%**。**A-MEM**（2502.12110）：六个基座模型上「superior improvement against existing SOTA baselines」（未逐项给数值）。**AgeMem**（2601.01885）：五个长程基准上一致优于强基线（自述）。",
+   "must_all": [
+    "9.97",
+    "64.7%"
+   ],
+   "must_any": [
+    "32.8",
+    "13.39",
+    "5.85",
+    "percentage points",
+    "个百分点"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2608.20631",
+     "quote": "Relative to linear memory, WMT improves accuracy by an average of 9.97 per- centage points while reducing prompt-token usage by 32.8%.",
+     "page": 1
+    },
+    {
+     "paper": "2608.20631",
+     "quote": "Relative to linear history on GAIA-Text, the WMT results correspond to absolute improvements of 13.39, 8.66, and 7.87 percentage points with Qwen3-8B, Gemma 4 E4B, and Ll",
+     "page": 6
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "On MemoryAgentBench, Infini Memory achieves 64.7% overall score.",
+     "page": 1
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "As shown in Figure 2 and Table 4, enabling Memory Self-Evolution improves Note Memory performance by approximately 5.85%, which further leads to a slight overall performa",
+     "page": 7
+    },
+    {
+     "paper": "2502.12110",
+     "quote": "Empirical experiments on six foundation models show superior improvement against existing SOTA baselines.",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-9",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪些篇做了**组件消融**？各自消融掉的是什么？（至少说出三篇的不同消融对象）",
+   "hint": "**WMT**（2608.20631）：三个组件消融 —— **unweighted tree（A1）**、**no-memory controller（A2）**、以及移除权重/反馈的第三个变体，另加 memory-poisoning 实验；**HiMem**（2601.06377）：消融 **hierarchical memory organization、semantic alignment、conflict-aware updating** 三者必要性（其中 Memory Self-Evolution ≈ +5.85%）；**Infini Memory**（2606.10677）：消融 **topic-structured maintenance** 与 **iterative evidence inspection**（互补）；**A-MEM**（2502.12110）：4.4 Ablation Study 主要消融 **Link Generation**；**AgeMem**（2601.01885）：围绕三阶段 RL 训练策略（含 Stage 2 前的 reset）做设计验证。",
+   "must_all": [
+    "unweighted tree",
+    "Memory Self-Evolution"
+   ],
+   "must_any": [
+    "消融",
+    "ablation",
+    "组件",
+    "必要性",
+    "变体"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2608.20631",
+     "quote": "We compare the full framework against a linear-memory baseline and three component ablations: an unweighted tree (A1), a no-memory controller ablation (A2), and an ablation wi",
+     "page": 2
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "Extensive ablation studies further validate the necessity of hierarchical memory organization, semantic alignment, and conflict-aware updating for robust long-term reasoning.",
+     "page": 2
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "As shown in Figure 2 and Table 4, enabling Memory Self-Evolution improves Note Memory performance by approximately 5.85%",
+     "page": 7
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "Ablations show that topic-structured maintenance and iterative evidence inspection improve complementary aspects of long-term memory use.",
+     "page": 1
+    },
+    {
+     "paper": "2502.12110",
+     "quote": "4.4 Ablation Study To evaluate the effectiveness of the Link",
+     "page": 7
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-10",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪些篇报告了**上下文 / 算力开销**的控制手段或数字？各自的手段是什么？",
+   "hint": "**WMT**（2608.20631）：报告 **prompt-token 用量 −32.8%**，机制是显式估计记忆效用、只让高保留分数者进入工作上下文（Our results suggest that effective long-horizon agent memory depends less on storing more informa- tion than on deciding which information should remain active）；**Infini Memory**（2606.10677）：**缓冲写入 + 周期性合并**，Appending to this buffer does not require scanning or rewriting existing topic docu- ments；**HiMem**（2601.06377）：层级 + hybrid/best-effort 检索平衡信息保真与检索效率，并自陈细粒度日志成本高、激进摘要丢细节；**AgeMem**（2601.01885）：针对有限上下文窗口做 LTM/STM 联合管理，effective STM management reduces redundancy and preserves salient context；**A-MEM**（2502.12110）：做了记忆规模的扩展分析（条目按 10× 递增的四个规模点，对比三种记忆系统）。",
+   "must_all": [
+    "32.8%",
+    "buffered writing"
+   ],
+   "must_any": [
+    "token",
+    "开销",
+    "冗余",
+    "效率",
+    "上下文"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2608.20631",
+     "quote": "Relative to linear memory, WMT improves accuracy by an average of 9.97 per- centage points while reducing prompt-token usage by 32.8%.",
+     "page": 1
+    },
+    {
+     "paper": "2608.20631",
+     "quote": "Our results suggest that effective long-horizon agent memory depends less on storing more informa- tion than on deciding which information should remain active.",
+     "page": 1
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "It organizes memory as topic docu- ments and maintains them through buffered writing and periodic consolidation",
+     "page": 2
+    },
+    {
+     "paper": "2606.10677",
+     "quote": "Appending to this buffer does not require scanning or rewriting existing topic docu- ments.",
+     "page": 4
+    },
+    {
+     "paper": "2601.06377",
+     "quote": "Fine-grained dialogue logs preserve rich context but incur high retrieval costs, whereas aggressively abstracted representations reduce cost at the expense of critical details",
+     "page": 2
+    },
+    {
+     "paper": "2601.01885",
+     "quote": "High-quality LTM supports efficient retrieval of accumulated knowledge, while effec- tive STM management reduces redundancy and preserves salient context.",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G3-M1-11",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇显式做了「记忆投毒 / 对抗性输入」这类鲁棒性实验或安全讨论？各自的结论是什么？",
+   "hint": "两篇最直接：**WMT**（20631）做了控制性的记忆投毒实验，结论是结构化记忆**限制了不可靠信息的存留与传播**，并把「长期记忆被投毒记录污染」列为一个安全问题；**HiMem**（06377）把「冲突感知更新」的收益论证为**鲁棒的长时程推理**。**A-MEM**（2502）的评测里含**对抗性问题**类型（考模型识别不可靠内容的能力），但没有专门的投毒实验。另两篇（10677 主题文档、01885 工具化记忆）没有投毒类实验。",
+   "evidence": [
+    {
+     "paper": "2608.20631",
+     "page": 1,
+     "quote": "mory-poisoning experi- ments show that WMT limits the persistence and propagation of unreliable information."
+    },
+    {
+     "paper": "2608.20631",
+     "page": 1,
+     "quote": "rsis- tent agent memory also introduces a security con- ce"
+    },
+    {
+     "paper": "2601.06377",
+     "page": 2,
+     "quote": "Extensive ablation studies further validate the necessity of hierarchical memory organization, semantic alignment, and conflict-aware updating for robust long-term reasoning."
+    },
+    {
+     "paper": "2502.12110",
+     "page": 5,
+     "quote": "adversarial questions assessing models' ability to identify"
+    }
+   ],
+   "must_all": [
+    "memory-poisoning",
+    "robust long-term reasoning"
+   ],
+   "must_any": [
+    "投毒",
+    "鲁棒",
+    "对抗",
+    "安全"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `memory-poisoning`（20631 p1 正文）与 `robust long-term reasoning`（06377 p2 正文）跨 2 篇；⚠️ 均为脆弱形状（纯小写）。"
+  },
+  {
+   "qid": "G3-M1-12",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇把「不依赖外部专家模型 / 辅助控制器 / 预定记忆操作」当成自己的设计卖点？各自的表述是什么？",
+   "hint": "三篇：**AgeMem**（01885）点名批评现有方法「依赖手工规则或**辅助专家模型**，限制适应性并抬高系统复杂度」，主张把记忆管理直接做进 agent；**Infini Memory / 主题文档**（10677）强调自己是**外部、可编辑**的持久状态，换取基础设施简单；**A-MEM**（2502）主张「**不需要预定的记忆操作**」，记忆结构自主演化。",
+   "evidence": [
+    {
+     "paper": "2601.01885",
+     "page": 1,
+     "quote": "most approaches still depend on handcrafted rules or auxiliary expert models, limiting adaptability and increasing system complexity"
+    },
+    {
+     "paper": "2502.12110",
+     "page": 2,
+     "quote": "This system equips LLM agents with long-term interaction capabilities without requiring predetermined memory operations."
+    },
+    {
+     "paper": "2606.10677",
+     "page": 1,
+     "quote": "use persistent mem- ory to refer to an external, editable memory state that survives across interaction sessions"
+    }
+   ],
+   "must_all": [
+    "auxiliary expert models",
+    "predetermined memory operations"
+   ],
+   "must_any": [
+    "专家模型",
+    "预定",
+    "控制器",
+    "卖点"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `auxiliary expert models`（01885 p1 正文）与 `predetermined memory operations`（2502 p2 正文）跨 2 篇；⚠️ 均为脆弱形状（纯小写）。"
+  },
+  {
+   "qid": "G3-M1-13",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇明确了「什么时候写入 / 什么时候整理」的触发条件（阈值、条件或事件）？各自的判据是什么？",
+   "hint": "三篇给出了**可判定的触发条件**：**Infini Memory**（10677）新记忆先进 `CURRENT` 缓冲，**达到 token 阈值或超过时间窗**就 flush 并整合；**HiMem**（06377）当 **Note Memory 证据不足**时，从 **Episode Memory** 补充并触发冲突感知的再巩固；**A-MEM**（2502）新记忆一旦被整合，就会**触发对既有记忆**上下文表示与属性的更新。",
+   "evidence": [
+    {
+     "paper": "2606.10677",
+     "page": 5,
+     "quote": "The buffer is flushed when it reaches a token threshold or remains active for a predefined time window"
+    },
+    {
+     "paper": "2601.06377",
+     "page": 3,
+     "quote": "Memory self-evolution: when evidence from Note Memory is insufficient, the system supplements potentially missing information from Episode Memory"
+    },
+    {
+     "paper": "2502.12110",
+     "page": 1,
+     "quote": "as new memories are integrated, they can trigger updates to the contextual representations and attributes of existing"
+    }
+   ],
+   "must_all": [
+    "token threshold",
+    "Episode Memory"
+   ],
+   "must_any": [
+    "触发",
+    "阈值",
+    "条件",
+    "何时"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `token threshold`（10677 p5 正文）与 `Episode Memory`（06377 p3 正文，专名）跨 2 篇。"
+  },
+  {
+   "qid": "G3-M1-14",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇把「记忆是人类可读 / 可编辑的外部状态」当成设计约束或卖点？各自的证据是什么？",
+   "hint": "三篇：**Infini Memory**（10677）把持久记忆定义为「**外部、可编辑**的状态」，并明确把**可解释性、可编辑状态、基础设施简单**列为对齐目标；**HiMem**（06377）强调语义对齐机制**保留可解释性**、抽出独立可解释的事实与情境单元；**A-MEM**（2502）遵循 **Zettelkasten 原子性**——每条笔记承载**单一自包含**的知识单元（天然人类可读）。",
+   "evidence": [
+    {
+     "paper": "2606.10677",
+     "page": 1,
+     "quote": "use persistent mem- ory to refer to an external, editable memory state that survives across interaction sessions"
+    },
+    {
+     "paper": "2606.10677",
+     "page": 3,
+     "quote": "interpretability, editable state, and infrastructure simplicity are important"
+    },
+    {
+     "paper": "2601.06377",
+     "page": 2,
+     "quote": "a unified semantic alignment mechanism that preserves interpretability"
+    },
+    {
+     "paper": "2502.12110",
+     "page": 4,
+     "quote": "Following the Zettelkasten principle of atomicity, each note captures a single, self-contained unit of knowledge."
+    }
+   ],
+   "must_all": [
+    "editable memory state",
+    "Zettelkasten"
+   ],
+   "must_any": [
+    "可读",
+    "可编辑",
+    "可解释",
+    "外部"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `editable memory state`（10677 p1 正文）与 `Zettelkasten`（2502 p3 正文，专名）跨 2 篇，后者非脆弱锚点。"
+  }
+ ]
+}

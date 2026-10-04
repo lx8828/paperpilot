@@ -12,7 +12,7 @@
       "category": "L0",
       "role": "dev",
       "intent": "overview",
-      "question": "这篇论文研究什么问题？提出的方法叫什么、核心做法是什么？在哪些基准上评估？",
+      "question": "MASkills 解决什么麻烦？它的核心做法（技能条件信用分配 + 进化）是什么、在哪些基准上评估？",
       "hint": "研究**多智能体 LLM 系统的持续改进**：现有 self-reflection 建的「经验记忆」难被调用、精炼与扩展，而**技能（skill）**是更可操作的单元（结构化的程序性知识，规定何时调用、如何行动、用哪些资源/工具）。提出 **MASkills**：一个在**技能空间**而非参数空间做策略改进的持续学习框架，整合**技能条件信用分配 + 分层信用聚合 + 动量平滑优化**，让技能库通过**精炼、归纳、固化、剪枝**演化；在 **HotpotQA、LoCoMo、GAIA** 上评估。",
       "evidence": [
         {"page": 1, "quote": "We introduce MASkills, a continual learning framework that optimizes multi-agent LLM systems through agent skills."},
@@ -29,7 +29,7 @@
       "category": "L0",
       "role": "user",
       "intent": "overview",
-      "question": "用大白话说，这篇论文想解决什么麻烦？他们的办法和以前的做法差在哪？",
+      "question": "用大白话说，MASkills 想解决什么麻烦？它的办法和以前「攒经验记忆」的做法差在哪？",
       "hint": "多智能体系统（多个 LLM 分工协作）跑久了应该越用越强，但**怎么持续变强**很难。以前的做法是让 agent 自我反思、把经验存成**记忆**——问题是这样攒下来的记录**说不清「该复用哪条动作」**、没有可靠的触发条件，越攒越乱（噪声、冗余、过时）。他们的做法是把经验沉淀成**技能**：一个有结构的「操作手册」（什么时候用、怎么做、配哪些工具/资源），像可调用的工具一样按需加载。然后让系统自己去**判断哪条技能在团队里真的有用**（信用分配），把这些判断**稳定下来**（分层聚合 + 动量），再据此**改技能**——精炼、新学、合并、删掉没用的，并且每次改动都要**过验证集，不行就回滚**。",
       "evidence": [
         {"page": 1, "quote": "A more useful unit for continual improvement is a skill."},
@@ -46,7 +46,7 @@
       "category": "L0",
       "role": "dev",
       "intent": "overview",
-      "question": "把技能演化扩展到多智能体场景，论文指出有哪三个具体挑战？",
+      "question": "MASkills 把技能演化扩展到多智能体场景时，指出有哪三个具体挑战？",
       "hint": "三个：(1) **技能级信用分配（Skill-level credit assignment）**——团队奖励不只该归给正确的 agent，还要归给**正确的技能**；一个技能可能只在少数时间步被调用，其效果又与其他 agent 的行为/技能纠缠，所以团队级乃至 agent 级反馈都不足以判断该改进哪条技能。(2) **噪声且异质的交互**——从轨迹里抽出的语言反馈常常**噪声大、不一致、跨学习周期不稳定**；而且不同协调结构（集中式规划 vs 去中心化对等通信）会带来不同的依赖与信用传播模式。(3) **离散且高风险的技能更新**——技能是**离散的语言制品**（如 SKILL.md 文件、脚本、参考材料），演化需要**开放式结构修改**而非平滑的数值更新，错误编辑会直接改变 agent 的有效动作空间。",
       "evidence": [
         {"page": 1, "quote": "Extending skill evolution to multi-agent settings requires agents to refine their skills through interaction"},
@@ -63,7 +63,7 @@
       "category": "single",
       "role": "dev",
       "intent": "method_detail",
-      "question": "论文把「技能制品（skill artifact）」定义成什么结构？三个组成部分分别是什么、各举什么文件为例？技能库在优化里扮演什么角色？",
+      "question": "MASkills 把「技能制品（skill artifact）」定义成什么结构？三个组成部分分别是什么、各举什么文件为例？技能库在优化里扮演什么角色？",
       "hint": "技能制品被建模为**基于文件系统的结构化表示**，三元组：**① 元数据文件 y**（如 `skill.yaml`）；**② 程序性指令文件 m**（如 `SKILL.md`）；**③ 一组辅助资源 R**（如脚本、参考材料、资产、配置文件）。实现上常对应一个**含程序性指令文件与可选资源目录的文件夹**，也有变体把元数据单独放 `skill.yaml`。每个 agent i 维护一个**不断演化的技能库 K_i = {k_i^(1), …, k_i^(M_i)}**，论文**把 K_i 当作 agent 策略中可学习的部分** —— 即 MASkills 优化的是**可复用的结构化技能制品**，而不是网络参数 θ。",
       "evidence": [
         {"page": 3, "quote": "denotes the metadata file, such as skill.yaml"},
@@ -82,7 +82,7 @@
       "category": "single",
       "role": "dev",
       "intent": "method_detail",
-      "question": "执行时技能是怎么暴露给 agent 的？为什么不是把技能全文塞进提示？技能调用记录为什么可观测？",
+      "question": "MASkills 里执行时技能是怎么暴露给 agent 的？为什么不是把技能全文塞进提示？技能调用记录为什么可观测？",
       "hint": "rollout 时只把每个 `skill.yaml` 里的**轻量元数据**（如技能名与简短描述）注入 agent 提示，让模型看到当前可用技能；agent **自主决定是否调用、调用哪条、如何组合多条技能**。技能以**可调用工具**的形式暴露，而非**完全展开的提示**：一旦某技能被选中，其 `SKILL.md` 与辅助资源才**动态载入上下文** —— 这样能让活跃上下文保持紧凑，同时获得专门化的程序性行为。因为**技能调用是显式的工具调用**，产生的技能轨迹可直接**从执行日志观测**，从而支撑后续的技能级信用分配。",
       "evidence": [
         {"page": 4, "quote": "lightweight metadata from each skill.yaml (e.g., skill name and short description) is injected into the agent prompt"},
@@ -101,7 +101,7 @@
       "category": "single",
       "role": "dev",
       "intent": "method_detail",
-      "question": "技能演化有哪四个算子？各自在什么条件下触发、做什么？",
+      "question": "MASkills 的技能演化有哪四个算子？各自在什么条件下触发、做什么？",
       "hint": "四类信用驱动的编辑算子：**① Refinement（精炼）** —— 对「有用但不完善」的技能做**局部的 diff 式编辑**，只改被聚合反馈指向的区域，保留无关的程序结构与已验证行为；**② Induction（归纳）** —— 当持续失败或未解决的协作模式**无法被现有技能库处理**时，从**困难轨迹**归纳出**全新技能**（引入全新的程序性抽象）；**③ Consolidation（固化）** —— 为防技能空间失控增长与碎片化，**周期性**把功能重叠的技能合并成更高层的程序性抽象；**④ Pruning（剪枝）** —— **周期性**移除效用信号**持续偏弱**的技能（贡献长期为负、冗余、不稳定或可忽略）。",
       "evidence": [
         {"page": 6, "quote": "Useful but imperfect skills are refined through localized diff-style edits guided by the aggregated edit direction"},
@@ -120,14 +120,14 @@
       "category": "single",
       "role": "dev",
       "intent": "method_detail",
-      "question": "技能更新为什么需要「验证与回滚」？候选更新被接受的条件是什么、δ 起什么作用？这套机制在概念上相当于什么？",
+      "question": "MASkills 的技能更新为什么需要「验证与回滚」？候选更新被接受的条件是什么、δ 起什么作用？这套机制在概念上相当于什么？",
       "hint": "因为技能更新会**直接修改 agent 的技能空间**，错误编辑可能引入**行为退化**。做法：所有候选编辑在**提交进技能库之前**都要在**留出的验证集 D_val**（当前优化周期不使用）上评估；评估候选更新后的技能空间 K′_i 时**固定其他 agent 的技能不动**。**接受条件**：Ĵ_val(K′_i | K_−i) ≥ Ĵ_val(K_i | K_−i) − **δ**，其中 **δ ≥ 0 用来吸收 rollout 方差与评估噪声**；否则**丢弃该编辑并恢复原技能空间**。概念上，这套机制相当于技能空间里的**信赖域（trust-region）式约束**，防止噪声批判导致的不稳定更新或对近期轨迹的过拟合。（消融显示它是影响最大的组件。）",
       "evidence": [
         {"page": 7, "quote": "all candidate edits are evaluated on a held-out validation set before being committed to the skill library"},
         {"page": 7, "quote": "where δ ≥0 absorbs rollout variance and evaluation noise. Otherwise, the proposed edit is discarded and the previous skill space is restored."},
         {"page": 7, "quote": "This validation-and-rollback mechanism acts as a trust-region-style constraint in skill space"}
       ],
-      "must_all": ["δ"],
+      "must_all": ["delta"],
       "must_any": ["回滚", "trust-region", "验证集"],
       "must_not": [],
       "expect": ["L3"],
@@ -138,7 +138,7 @@
       "category": "single",
       "role": "dev",
       "intent": "method_detail",
-      "question": "技能级信用分配具体怎么做？为什么 agent 级反馈不够？「agent 级残差信用」有什么特殊用途？",
+      "question": "MASkills 的技能级信用分配具体怎么做？为什么 agent 级反馈不够？「agent 级残差信用」有什么特殊用途？",
       "hint": "由**中心化的语言 critic** 评估：每个被调用的技能 k 对团队结果的贡献，是**相对于「该技能没被使用」这一反事实（counterfactual）**而言的；critic 输出**结构化的自然语言信用**，说明该技能是帮助了协作、冗余、导致了失败，还是应当被泛化/专门化。**agent 级反馈不够**的原因：一条轨迹里可能涉及多个 agent 的多条相互作用技能，**只有其中一部分对最终结果负责**。此外 critic 还会输出**agent 级残差信用**，捕捉无法归因到任何单条技能的效果 —— 这对**技能归纳**特别重要：**若某次失败无法由现有技能解释，agent 级批判就提示需要一个新技能**。",
       "evidence": [
         {"page": 5, "quote": "a centralized language critic evaluates how each invoked skill affected the team outcome relative to the counterfactual where that skill had not been used"},
@@ -155,15 +155,15 @@
       "category": "single",
       "role": "dev",
       "intent": "method_detail",
-      "question": "「稳定化语言梯度下降」分哪几步？层级聚合要聚合过哪几个维度？动量平滑在概念上把当前与历史编辑方向分别当作什么？",
+      "question": "MASkills 的「稳定化语言梯度下降」分哪几步？层级聚合要聚合过哪几个维度？动量平滑在概念上把当前与历史编辑方向分别当作什么？",
       "hint": "分三步：**① 轨迹级编辑方向** —— critic 先把文本信用信号转成结构化的语言编辑方向（含建议的精炼、行为调整、泛化或移除）；**② 层级聚合** —— 对一个 rollout 批次，沿**轨迹 → 技能 → agent → 交互拓扑**递归聚合；技能级用 `LLMAgg` 合并重复行为模式、**消解冲突的更新方向**、去冗余，并总结该技能的协作效用；**③ 动量平滑** —— 不把每个周期独立处理，而是**把持续的历史编辑方向与当前聚合反馈一起带下去**。概念上：**当前编辑方向 = 当前的梯度更新**，**历史编辑方向 = 动量项**，用来保留长期的行为改进；实际执行由四个具体算子（refinement / induction / consolidation / pruning）落地。",
       "evidence": [
         {"page": 5, "quote": "LLMAgg(·) is an LLM-based operator that merges recurring behavioral patterns, resolves conflicting update directions, removes redundancy, and summarizes the coordination utility of the skill"},
         {"page": 6, "quote": "Instead of treating each cycle independently, MASkills carries forward persistent historical edit directions together with the current aggregated feedback."},
         {"page": 6, "quote": "Conceptually, the current edit direction plays the role of the current gradient update, while the historical edit direction acts as a momentum term"}
       ],
-      "must_all": ["动量", "聚合"],
-      "must_any": ["拓扑", "topology"],
+      "must_all": ["momentum", "aggregation"],
+      "must_any": ["拓扑", "topology", "topologies"],
       "must_not": [],
       "expect": ["L3"],
       "route_min": "L3"
@@ -173,7 +173,7 @@
       "category": "single",
       "role": "dev",
       "intent": "baseline_compare",
-      "question": "三种协调拓扑（集中式 / 层级式 / 去中心化对等）下性能如何？哪种拓扑在哪些任务上最优，作者怎么解释？",
+      "question": "MASkills 在三种协调拓扑（集中式 / 层级式 / 去中心化对等）下性能如何？哪种拓扑在哪些任务上最优，作者怎么解释？",
       "hint": "**最优拓扑高度依赖任务**：**HotpotQA 与 GAIA 上去中心化对等（decentralized peer）最强**（这两类任务受益于多样化探索、独立的工具/检索轨迹）；**LoCoMo 上集中式（centralized）最好**，尤其是多跳记忆检索 —— 因为 LoCoMo 需要维护**全局一致的长上下文记忆表示**、消解时序依赖并跨多个会话整合信息，而**集中式提供共享全局状态，减少记忆碎片与不一致**；**层级式（hierarchical）一般居中**，在结构化信息聚合与部分去中心化之间折中。总体说明该框架**不与特定编排结构强耦合**。",
       "evidence": [
         {"page": 10, "quote": "Interestingly, the optimal topology is highly task-dependent."},
@@ -192,14 +192,14 @@
       "category": "single",
       "role": "dev",
       "intent": "limitation",
-      "question": "作者自陈的局限有哪些？",
+      "question": "MASkills 自陈的局限有哪些？",
       "hint": "两条：**① 实验主要集中在「协作式、agent 角色与通信拓扑相对固定」的设置**，更动态、对抗性以及开放世界环境仍未被充分探索；作者提出未来可扩展到**自适应组织结构、竞争性多智能体博弈、大规模去中心化协调**。**② 技能库持续扩张带来的可扩展性问题** —— 随着优化进行，技能检索、固化（consolidation）与协调效率上可能出现瓶颈；未来可研究**层级化技能组织、检索压缩、终身学习机制**以支撑大规模的长期技能演化。",
       "evidence": [
         {"page": 11, "quote": "First, our current experiments mainly focus on cooperative settings with relatively fixed agent roles and communication topologies, leaving more dynamic, adversarial, and open-world environments underexplored."},
         {"page": 11, "quote": "Second, as the skill library continually expands during optimization, scalability challenges may emerge in skill retrieval, consolidation, and coordination efficiency."}
       ],
       "must_all": ["topology"],
-      "must_any": ["协作", "技能库"],
+      "must_any": ["协作", "技能库", "承认", "不足", "边界"],
       "must_not": [],
       "expect": ["L3"],
       "route_min": "L3"

@@ -1,377 +1,1030 @@
 {
-  "_note": "组级（语料级）gold 题集 —— 与 <stem>.questions.json（单篇层）互补，唯一真源。语料固定为 corpus 里的 5 篇，顺序即「篇 1..篇 5」（components/focus.py 的编号指代依据）。三类：M0 多篇·免检索（答案须能从**真实合并总览**得到 —— 即 `report_l0` 对 5 篇的实际产出：一段拼接的中文 overview + 20 条 core_points，**不含 limitations**（实测 0 条，2026-09-23）；--l0 下 judge_l0 应判「够」）；M1 跨篇·需检索（必须下钻检索，且 --l0 下 judge_l0 应判「不够」—— 这是 M1 的负向对照，防 L0 直答幻觉）；X5 语料级拒答（correct answer = 五篇都没有，不许编造）。字段口径与单篇层一致：must_all 必现锚点（跨语言：专名/数字）、must_any 备选措辞（任一命中）、must_not 出现即错。M1 的 must_all 必须能在语料某篇的检索视图里逐字命中（不越界），且 evidence 至少来自 2 篇不同论文。",
-  "group": "group1",
-  "corpus": [
-    "2608.29179v1",
-    "2608.29290v1",
-    "2608.30333v1",
-    "2609.01316v1",
-    "2609.01456v1"
-  ],
-  "questions": [
+ "_note": "组级（语料级）gold 题集 —— 与 <stem>.questions.json（单篇层）互补，唯一真源。语料固定为 corpus 里的 5 篇，顺序即「篇 1..篇 5」（components/focus.py 的编号指代依据）。三类：M0 多篇·免检索（答案须能从**真实合并总览**得到 —— 即 `report_l0` 对 5 篇的实际产出：一段拼接的中文 overview + 20 条 core_points，**不含 limitations**（实测 0 条，2026-09-23）；--l0 下 judge_l0 应判「够」）；M1 跨篇·需检索（必须下钻检索，且 --l0 下 judge_l0 应判「不够」—— 这是 M1 的负向对照，防 L0 直答幻觉）；X5 语料级拒答（correct answer = 五篇都没有，不许编造）。字段口径与单篇层一致：must_all 必现锚点（跨语言：专名/数字）、must_any 备选措辞（任一命中）、must_not 出现即错。M1 的 must_all 必须能在语料某篇的检索视图里逐字命中（不越界），且 evidence 至少来自 2 篇不同论文。",
+ "group": "group1",
+ "corpus": [
+  "2608.29179v1",
+  "2608.29290v1",
+  "2608.30333v1",
+  "2609.01316v1",
+  "2609.01456v1"
+ ],
+ "questions": [
+  {
+   "qid": "G1-M0-1",
+   "kind": "M0",
+   "role": "dev",
+   "intent": "multi_overview",
+   "question": "这五篇里，哪几篇明确声称自己的方法是「无需训练 / training-free」的？其余几篇为什么不算？",
+   "hint": "两篇：**MIDR**（01316）是 training-free 的富化索引框架，**AutoConcept**（01456）是 training-free 的概念引导重排序器。其余三篇都有训练/监督组件：**TAAL**（29179）靠联合训练（消融里 α>0 带来主要增益）、**30333** 用监督排序器（XGBoost / VNN）、**29290** 的 RAG 流程虽不训练检索器，但论文并未把它作为「免训练」主张。",
+   "evidence": [
     {
-      "qid": "G1-M0-1",
-      "kind": "M0",
-      "role": "dev",
-      "intent": "multi_overview",
-      "question": "这五篇里，哪几篇明确声称自己的方法是「无需训练 / training-free」的？其余几篇为什么不算？",
-      "hint": "两篇：**MIDR**（01316）是 training-free 的富化索引框架，**AutoConcept**（01456）是 training-free 的概念引导重排序器。其余三篇都有训练/监督组件：**TAAL**（29179）靠联合训练（消融里 α>0 带来主要增益）、**30333** 用监督排序器（XGBoost / VNN）、**29290** 的 RAG 流程虽不训练检索器，但论文并未把它作为「免训练」主张。",
-      "evidence": [
-        {"paper": "2609.01316v1", "page": 2, "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."},
-        {"paper": "2609.01456v1", "page": 2, "quote": "We propose AutoConcept, a training-free concept-guided reranker."}
-      ],
-      "must_all": ["MIDR", "AutoConcept"],
-      "must_any": ["免训练", "无需训练", "training-free", "不加训练", "不训练"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "两篇的自称均取自原文逐字（01316 p2 摘要段 / 01456 p2 摘要段）；L0 锚点在 5 篇 report 的 core_points 里逐字存在（01316「免训练」、01456「无需训练」）→ 由 _validate_group_questions.py 的 M0-reach 检查把关。"
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."
     },
     {
-      "qid": "G1-M0-2",
-      "kind": "M0",
-      "role": "dev",
-      "intent": "multi_overview",
-      "question": "这五篇里，哪几篇给自己的方法起了专名？分别叫什么？另外两篇是怎么称呼自己方法的？",
-      "hint": "**三篇有专名**：**TAAL**（29179，Temporal Autoregressive Alignment，用于生成式推荐的早期剪枝对齐）、**MIDR**（01316，Multimodal Indexing for Document Retrieval，免训练的富化索引）、**AutoConcept**（01456，概念引导重排序器）。**另两篇没有专名**，用描述式称呼：29290 叫「数据库增强的 RAG（database-augmented RAG）」、30333 提的是「受限混合设计」（监督模型排序 + 特征级评估 + LLM 写理由）。",
-      "evidence": [
-        {"paper": "2608.29179v1", "page": 1, "quote": "We therefore propose Temporal Autoregressive Alignment (TAAL)."},
-        {"paper": "2609.01316v1", "page": 2, "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."},
-        {"paper": "2609.01456v1", "page": 2, "quote": "We propose AutoConcept, a training-free concept-guided reranker."}
-      ],
-      "must_all": ["TAAL", "MIDR", "AutoConcept"],
-      "must_any": ["方法", "命名", "名称", "专名"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "三个锚点都在**真实合并总览**的 20 条 core_points 里逐字存在（校对口径已改为 report_l0 实际产出）。原 M0-2（问「局限」）实测合并总览 limitations 为 0 条、答不出 → 已下移为 G1-M1-9。"
-    },
-    {
-      "qid": "G1-M0-3",
-      "kind": "M0",
-      "role": "dev",
-      "intent": "multi_overview",
-      "question": "这五篇里，哪些篇报告了 NDCG@10 / nDCG@10 这类排序指标？分别在什么基准上？",
-      "hint": "两篇：**TAAL**（29179）用 **NDCG@10**，在 Amazon Beauty、Instruments、Yelp 上分别提升 39.5% / 6.7% / 28.6%；**MIDR**（01316）用 **nDCG@10**，在 ViDoRe V3 的五个英文文档域上平均 0.6219（相对 BM25 提升 23.0%）。另三篇的主指标不是 nDCG：29290 用**修复率**、30333 用**归因/排序两轴的评估**、AutoConcept（01456）主指标是 **Recall@10 / MRR**。",
-      "evidence": [
-        {"paper": "2608.29179v1", "page": 1, "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."},
-        {"paper": "2609.01316v1", "page": 2, "quote": "On ViDoRe V3 (Loison et al., 2026), MIDR Hybrid reaches 0.6219 average nDCG@10 across the five English-document domains"}
-      ],
-      "must_all": ["Yelp", "ViDoRe V3"],
-      "must_any": ["NDCG", "nDCG", "排序指标"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "「Yelp」在 29179 的 L0 材料（core_points「Amazon Beauty、Instruments和Yelp」）里逐字存在；「ViDoRe V3」在 01316 的 core_points 里逐字存在 → M0-reach 可过。"
-    },
-    {
-      "qid": "G1-M0-4",
-      "kind": "M0",
-      "role": "user",
-      "intent": "multi_overview",
-      "question": "用大白话说：这五篇里，哪些篇干的是「把东西找出来 / 排好序」的活，哪一篇干的是「自动改代码」？",
-      "hint": "四篇是检索/排序类：**TAAL**（生成式推荐里把物品检索出来）、**30333**（下一篮复购推荐里给商品排序并解释）、**MIDR**（把文档页面检索出来）、**AutoConcept**（给时尚图库候选池重排）。**29290** 是另一类：自动修复 **REST API** 客户端程序里的误用（把代码改对），不是检索。",
-      "evidence": [
-        {"paper": "2608.29290v1", "page": 1, "quote": "the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%."},
-        {"paper": "2609.01316v1", "page": 2, "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."}
-      ],
-      "must_all": ["MIDR", "REST"],
-      "must_any": ["检索", "排序", "修复", "重排"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "M0-4 是 user 视角的「概览型聚合」，只要求结构性区分（检索/排序 vs 修复），不涉具体数字；两个锚点都在 L0 材料里逐字存在。"
-    },
-    {
-      "qid": "G1-M0-5",
-      "kind": "M0",
-      "role": "dev",
-      "intent": "multi_overview",
-      "question": "这五篇里，哪一篇报告了「索引更小 / 查询更快」这类效率数字？它报告的是哪两个倍数？",
-      "hint": "**MIDR**（01316）：在全部七个域上相对复现的 ColQwen2.5，**索引内存约小 9 倍、查询延迟约低 2 倍**（同时它在四个域上领先）。其余四篇不报告索引/延迟这类部署侧倍数：TAAL 只报效果与存活率，29290 只报修复率，30333 只报排序/归因两轴，AutoConcept 的成本讨论是定性的（未缓存的文本编码器设置）。",
-      "evidence": [
-        {"paper": "2609.01316v1", "page": 1, "quote": "Across all seven domains, MIDR leads ColQwen2.5 on four while using ∼9× smaller index memory and approximately 2× lower query latency."}
-      ],
-      "must_all": ["MIDR"],
-      "must_any": ["9", "2", "索引内存", "查询延迟", "内存", "延迟"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "锚点只放「MIDR」（唯一答案），倍数放 must_any（原文用「∼9×」「2×」，「9/2」为兼容写法）。原句在原文里跨折行连字符（approxi- mately），由校验器的第三种归一化口径命中。"
-    },
-    {
-      "qid": "G1-M1-1",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，哪两篇各自在「三个数据集」上做评估？请把六个数据集的名称列出来。",
-      "hint": "**TAAL**（29179）：Amazon **Beauty** / **Instruments** / **Yelp** 三个中等规模公开数据集。**30333**：**Instacart** / **DC**（由 dunnhumby Carbo-Loading 派生的公开杂货数据）/ 一片**从大规模内部杂货平台随机采样的自有零售数据**（生产域）。其余：MIDR 只在一个基准 ViDoRe V3 上（含 7 个域），AutoConcept 用 FashionIQ + Fashion200K，29290 用两个 API 服务（SwitchBot / Fitbit）的 21 个误用案例。",
-      "evidence": [
-        {"paper": "2608.29179v1", "page": 1, "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."},
-        {"paper": "2608.30333v1", "page": 5, "quote": "We evaluate on three repurchase recommendation datasets: two public grocery datasets and one proprietary retail dataset. Instacart is a public online grocery dataset for market-basket prediction"},
-        {"paper": "2608.30333v1", "page": 5, "quote": "The proprietary dataset is randomly sampled from a large-scale internal grocery platform and serves as an additional production-domain evaluation setting."}
-      ],
-      "must_all": ["Instacart", "Yelp"],
-      "must_any": ["Beauty", "DC", "三个"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "跨篇聚合：必须同时召回 29179 的数据集句与 30333 的数据集句（两篇各一段）。跨语言锚点 Instacart / Yelp 均为专名。"
-    },
-    {
-      "qid": "G1-M1-2",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，哪一篇做了真人参与者研究？哪一篇明确把「评估解释是否有用、是否被信任、决策速度、线上业务影响」留作未来工作？",
-      "hint": "**AutoConcept**（01456）做了真人研究：参与者通过独立收集界面给 FashionIQ 商品打**自愿的 item 级概念标签**，用来检验记忆接口能否消费人类提供的证据。**30333** 明确**没做**用户评估：作者在局限里说未评估顾客是否觉得解释清楚/有用/有说服力/可信，并把 **user trust / decision speed / online business impact** 列进未来工作。",
-      "evidence": [
-        {"paper": "2609.01456v1", "page": 14, "quote": "The real-human study uses a separate collection interface. Participants label FashionIQ items and select optional tags from a fixed vocabulary covering color, pattern, sleeve, neckline, length, f"},
-        {"paper": "2608.30333v1", "page": 9, "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"}
-      ],
-      "must_all": ["AutoConcept", "Gemini"],
-      "must_any": ["真人", "参与者", "用户研究", "未来工作", "人工评估"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "两半各取一篇：01456 p14（真人研究）/ 30333 p9（未来工作）。锚点 Gemini 在 30333 p5「We evaluate Gemini 2.5 Pro, GPT-4o」里逐字存在，用作「指到 30333」的可判定锚。"
-    },
-    {
-      "qid": "G1-M1-3",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，哪一篇报告的相对提升幅度最大？给出了哪两个数字？",
-      "hint": "**29290**：不用 RAG 的基线修复率 **54.3%**，四库 RAG 最高 **88.6%**（相对提升约 63%），是五篇里相对幅度最大的。对照：TAAL（29179）NDCG@10 提升 39.5% / 6.7% / 28.6%；MIDR（01316）相对 BM25 提升 23.0%；AutoConcept（01456）FashionIQ 上 Recall@10 从 0.1125 → 0.1379。注意 29290 的作者自己提醒：**88.6% 不应被当成真实世界 REST API 场景的性能估计**（样本只有 21 个误用案例）。",
-      "evidence": [
-        {"paper": "2608.29290v1", "page": 1, "quote": "the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%."},
-        {"paper": "2608.29179v1", "page": 1, "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."},
-        {"paper": "2609.01316v1", "page": 2, "quote": "On ViDoRe V3 (Loison et al., 2026), MIDR Hybrid reaches 0.6219 average nDCG@10 across the five English-document domains"}
-      ],
-      "must_all": ["88.6"],
-      "must_any": ["54.3", "修复率", "29290", "数据库"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "跨篇比较题：要答对必须至少读到 29290 与另两篇的数字（evidence 给了三篇）。must_all 只放「88.6」——它是 29290 的专有数字，可唯一定位。"
-    },
-    {
-      "qid": "G1-M1-4",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "MIDR 与 AutoConcept 都声称「无需训练」，但「不训练」的机制并不一样。两者各把力气花在哪一步？",
-      "hint": "**MIDR**（01316）：把多模态理解挪到**索引时** —— 摄取阶段用**多模态 LLM** 把渲染页转成经校验的文本字段，用 **BM25F**（可融合 dense）建索引，查询时只做文本检索，因此**不需要训练任何检索器**；代价是索引构建成本要重新承担。**AutoConcept**（01456）：**固定第一级 CIR 模型**，只在它的 **top-K 候选池**上做概念引导重排（正概念约束 + 负惩罚 + 查询相关性门控 + 闭式推理时校准），**不训练额外参数**。一个改「索引侧表示」，一个改「候选池打分」。",
-      "evidence": [
-        {"paper": "2609.01316v1", "page": 1, "quote": "indexed with BM25F and optionally fused with dense retrieval"},
-        {"paper": "2609.01456v1", "page": 2, "quote": "AutoConcept keeps the first-stage CIR model fixed and operates on its top-K candidate pool."}
-      ],
-      "must_all": ["BM25F", "AutoConcept"],
-      "must_any": ["索引时", "查询时", "概念", "重排", "固定第一级"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "01456 的引文含「AutoCon- cept」折行连字符，靠校验器第三种口径还原为 AutoConcept 命中；01316 的引文避开折行处。"
-    },
-    {
-      "qid": "G1-M1-5",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "TAAL 与 AutoConcept 都用「不改动第一级系统」的后处理思路，但挂的位置不同。各自挂在哪、改的是什么？",
-      "hint": "**AutoConcept**（01456）：挂在一个**固定的第一级 CIR 模型**之后，吃它的 **top-K 候选池**，做概念引导重排（可插到不同 CIR 候选生成器上）。**TAAL**（29179）：把 **PMI（pointwise mutual information）** 校准挂在**推理侧已完成 beam 的候选分数**上，压低全局高频前缀的影响，不改 tokenizer / backbone / beam search。两者都不训练、也不改上游模型，但一个作用在「候选池排序」，一个作用在「beam 候选的分数校准」。",
-      "evidence": [
-        {"paper": "2609.01456v1", "page": 2, "quote": "AutoConcept keeps the first-stage CIR model fixed and operates on its top-K candidate pool."},
-        {"paper": "2608.29179v1", "page": 1, "quote": "it calibrates candidate scores with pointwise mutual information (PMI) to reduce the influence of globally frequent prefixes."}
-      ],
-      "must_all": ["top-K", "PMI"],
-      "must_any": ["第一级", "重排", "校准", "候选"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "01316/01456 的折行已避开；29179 的引文从「it calibrates」起（前面是 Dur- ing 折行伪影，不取）。"
-    },
-    {
-      "qid": "G1-M1-6",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，哪几篇把 LLM / 多模态 LLM 当成核心组件？各自让 LLM 干什么？",
-      "hint": "三篇：**30333** 用 **GPT-4o / Gemini** 当「特征理由生成器与评分器」（并发现它们的引用与跨家族归因基线不一致）；**29290** 用 **GPT-4o** 依三阶段提示生成修正后的代码；**MIDR**（01316）在索引时用**多模态 LLM** 把渲染页转成检索就绪的文本字段。另外两篇不把 LLM 当核心：TAAL（29179）靠 PMI 校准（无 LLM），AutoConcept（01456）只用文本编码器 + CLIP 系视觉嵌入做概念打分。",
-      "evidence": [
-        {"paper": "2608.30333v1", "page": 5, "quote": "We evaluate Gemini 2.5 Pro, GPT-4o, and the validation-selected GPT-4o norm-prompt variant described in Section 3."},
-        {"paper": "2608.29290v1", "page": 8, "quote": "This prompt is then input into GPT-4o to generate the final correction."},
-        {"paper": "2609.01316v1", "page": 1, "quote": "During ingestion, a multimodal LLM converts"}
-      ],
-      "must_all": ["GPT-4o", "MIDR"],
-      "must_any": ["LLM", "MLLM", "大模型", "多模态", "GPT"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "01316 引文止于 converts（后接 ren- dered 折行），避开伪影；「MIDR」锚在 01316 正文频繁出现。"
-    },
-    {
-      "qid": "G1-M1-7",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，哪一篇的评测跨了「语言」（文档不是英语）？哪一篇的评测跨了「模型家族」（同时对比树模型与神经网络两族）？各自的关键证据/数字是什么？",
-      "hint": "跨**语言**的是 **MIDR**（01316）：两个**法文文档**域（energy / physics）上，**原始 BM25 塌到 0.1532 nDCG@10**，而 **MIDR Hybrid 达到 0.5448**，两个域上都超过复现的 ColQwen2.5；机制是索引时用英文生成富集字段，把查询变成单语匹配。跨**模型家族**的是 **30333**：它在 tree-based 与 neural 两族之间做对比，并报告 **GPT-4o 与 Gemini 都不能稳定匹配跨家族归因基线（cross-family attribution baseline）**。注意区分：一个跨的是数据类型（语言），一个跨的是模型类别（家族）。",
-      "evidence": [
-        {"paper": "2609.01316v1", "page": 2, "quote": "On the two French-document domains, the same pipeline acts as a cross-lingual bridge: raw BM25 collapses to 0.1532 nDCG@10"},
-        {"paper": "2608.30333v1", "page": 8, "quote": "Base GPT-4o and Gemini do not reliably match the cross-family attribution baseline, indicating that plausible feature citations are not necessarily outcome-grounded."}
-      ],
-      "must_all": ["0.1532", "cross-family"],
-      "must_any": ["法文", "跨语言", "跨家族", "French"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "真跨篇（evidence 来自 01316 与 30333 两篇）：两种「跨」的对照，各自有可判定的专有锚（0.1532 / cross-family）。"
-    },
-    {
-      "qid": "G1-M1-8",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，哪一篇的评测只覆盖一个基准？哪几篇覆盖了三个数据集？",
-      "hint": "只覆盖一个基准的是 **MIDR**（01316）：全部结果都在 **ViDoRe V3**（五个英文域 + 两个法文域），作者也把这一点列为局限。覆盖三个数据集的是 **TAAL**（29179：Amazon Beauty / Instruments / **Yelp**）与 **30333**（Instacart / DC / 自有零售数据）。AutoConcept（01456）两个（FashionIQ + Fashion200K），29290 两个 API 服务下 21 个案例。",
-      "evidence": [
-        {"paper": "2609.01316v1", "page": 5, "quote": "We additionally evaluate two French-document domains—energy and physics—as a cross-lingual stress test, with 610 English queries over 3,899 pages from 83 documents."},
-        {"paper": "2608.29179v1", "page": 1, "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."}
-      ],
-      "must_all": ["ViDoRe V3", "Yelp"],
-      "must_any": ["一个基准", "三个数据集", "单一"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "两道极值的对照（最窄 vs 最宽），两个锚点分别唯一定位 01316 与 29179。"
-    },
-    {
-      "qid": "G1-M1-9",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，有哪几篇在局限或未来工作里明确承认「评估规模有限、结论还不能直接搬到更大或更真实的场景」？",
-      "hint": "至少四篇明确点到：**TAAL**（29179）主结果只在三个中等规模公开数据集上取得，「推广到超大规模工业目录**需进一步研究**」，且只用固定种子 42；**29290** 评估只覆盖两个 API 服务（SwitchBot / Fitbit）与 21 个误用案例，并强调 **88.6% 不应被解释为真实世界设置的性能估计**；**MIDR**（01316）评估仅覆盖 ViDoRe V3、跨语言结论只覆盖一个语言对的一个方向；**30333** 把扩大模型与领域覆盖、评估解释有用性/用户信任/线上业务影响列为未来工作；**AutoConcept**（01456）把元数据缺失或不一致视为实际边界、更广领域属自然扩展。",
-      "evidence": [
-        {"paper": "2608.29179v1", "page": 11, "quote": "three medium-scale public datasets, and generalization to very large industrial catalogs requires further study."},
-        {"paper": "2608.29290v1", "page": 12, "quote": "the evaluation covers only two API services, SwitchBot and Fitbit, and 21 misuse cases."},
-        {"paper": "2608.30333v1", "page": 9, "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"},
-        {"paper": "2609.01456v1", "page": 10, "quote": "missing or inconsistent metadata remains a practical boundary."}
-      ],
-      "must_all": ["TAAL", "MIDR", "AutoConcept"],
-      "must_any": ["局限", "未来工作", "真实世界", "更广", "规模", "扩大", "推广"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "由原 M0-2 改写：合并总览（report_l0）实测**不含 limitations**，无法免检索答出 → 归 M1（需下钻）。evidence 来自 4 篇不同论文（真跨篇）；三个锚点要求答案至少点到三篇以证明是聚合回答。"
-    },
-    {
-      "qid": "G1-M1-10",
-      "kind": "M1",
-      "role": "dev",
-      "intent": "cross_paper",
-      "question": "这五篇里，哪些篇的检索对象是「物品/商品」，哪些篇是「文档/页面」或「代码/规范」？",
-      "hint": "**物品/商品**：TAAL（29179，推荐里的物品）、30333（复购推荐的商品）、AutoConcept（01456，时尚图库候选）。**文档/页面**：MIDR（01316，渲染页 → 检索就绪字段）。**代码/规范**：29290（REST API 规范与客户端代码）。这个区分决定了它们的检索瓶颈不同：前者的难点在**候选池排序/前缀剪枝**，MIDR 的难点在**视觉/布局证据的文本化**，29290 的难点在**规范该按版本还是内容类型入库**。",
-      "evidence": [
-        {"paper": "2609.01456v1", "page": 2, "quote": "AutoConcept keeps the first-stage CIR model fixed and operates on its top-K candidate pool."},
-        {"paper": "2609.01316v1", "page": 2, "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."},
-        {"paper": "2608.29290v1", "page": 1, "quote": "the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%."}
-      ],
-      "must_all": ["AutoConcept", "MIDR"],
-      "must_any": ["物品", "商品", "文档", "页面", "代码", "规范"],
-      "must_not": [],
-      "expect": ["L3"],
-      "route_min": "L3",
-      "_verify": "聚合分类题：两个锚点要求答案同时点到「物品侧」与「文档侧」各一篇，避免只答一半。"
-    },
-    {
-      "qid": "G1-X5-1",
-      "kind": "X5",
-      "role": "dev",
-      "intent": "refusal",
-      "question": "这五篇里，有没有哪一篇把方法部署到生产环境、或报告了真实产品流量下的在线 A/B 实验结果？",
-      "hint": "**都没有**。全语料检索 `online A/B` / `A/B test` / `online experiment` / `production traffic` / `deployed in production` / `real-world deployment` **零命中**；最接近的是 30333 把 **online business impact** 写进未来工作（说明未做），以及 29179 明确说推广到超大规模工业目录「需进一步研究」。正确回答是**五篇都没做在线 A/B / 生产部署实验**，而不是拿离线数字冒充。",
-      "evidence": [
-        {"paper": "2608.29179v1", "page": 11, "quote": "three medium-scale public datasets, and generalization to very large industrial catalogs requires further study."},
-        {"paper": "2608.30333v1", "page": 9, "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"}
-      ],
-      "must_all": [],
-      "must_any": ["没有", "未", "都没有", "五篇都", "均未", "没有一篇", "未做", "未开展"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "缺席性核对：对 5 篇 txt 全量 grep `online A/B|A/B test|online experiment|production traffic|deployed in production|real-world deployment` = 0 命中；evidence 给的是最接近的两处（都表明「未做」），不是答案原文。"
-    },
-    {
-      "qid": "G1-X5-2",
-      "kind": "X5",
-      "role": "dev",
-      "intent": "refusal",
-      "question": "这五篇里，有没有哪一篇报告了训练的碳排放、能耗或用电量的具体数字？",
-      "hint": "**都没有**。全语料 `carbon` / `electricity` / `energy consumption` **零命中**；注意 01316 里出现 15 次的 `energy` 是它评测用的**法文文档域名称**（energy and physics），**不是能耗**——把那个当成能耗数字就答错了。正确回答是五篇都没报告碳排放/能耗。",
-      "evidence": [
-        {"paper": "2609.01316v1", "page": 5, "quote": "We additionally evaluate two French-document domains—energy and physics—as a cross-lingual stress test, with 610 English queries over 3,899 pages from 83 documents."}
-      ],
-      "must_all": [],
-      "must_any": ["没有", "未", "都没有", "均未", "没有一篇", "未报告", "未提供"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "缺席性核对：`carbon`=0、`electricity`=0、`energy consumption`=0；`energy` 的命中全部出自 01316 的域名称（p5 起）。evidence 记录的就是那个易混来源。"
-    },
-    {
-      "qid": "G1-X5-3",
-      "kind": "X5",
-      "role": "dev",
-      "intent": "refusal",
-      "question": "这五篇里，有没有哪一篇报告了线上业务指标的实测结果，例如点击率、转化率或收入？",
-      "hint": "**都没有**。`revenue` / `click-through` 等在全语料零命中；30333 只把 **online business impact** 列为**未来工作**（需要受控实验或 A/B），其余四篇（推荐、代码修复、文档检索、CIR 重排）也都没有线上业务指标。正确回答是五篇都没报告线上业务指标。",
-      "evidence": [
-        {"paper": "2608.30333v1", "page": 9, "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"}
-      ],
-      "must_all": [],
-      "must_any": ["没有", "未", "都没有", "均未", "没有一篇", "未来工作", "未报告"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "缺席性核对：`revenue|click-through|business metric` 在 30333 零命中，全语料亦无线上业务指标数值；唯一相关表述是 30333 p9 的未来工作句。"
-    },
-    {
-      "qid": "G1-X5-4",
-      "kind": "X5",
-      "role": "user",
-      "intent": "refusal",
-      "question": "这五篇里，有没有哪一篇报告了用户对结果的满意度或可接受性评分（比如让用户打分）？",
-      "hint": "**都没有**。**01456 的真人研究是「给商品打概念标签」的标注研究，不是满意度/可接受性评分**——这里最容易答错成「有，AutoConcept 做了真人研究」。**30333** 则明确说未评估顾客是否觉得解释有用、可信，并把它列为未来工作。其余三篇没有人类主观评分。正确回答是：五篇都没有用户满意度/可接受性评分。",
-      "evidence": [
-        {"paper": "2609.01456v1", "page": 14, "quote": "The real-human study uses a separate collection interface. Participants label FashionIQ items and select optional tags from a fixed vocabulary covering color, pattern, sleeve, neckline, length, f"},
-        {"paper": "2608.30333v1", "page": 9, "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"}
-      ],
-      "must_all": [],
-      "must_any": ["没有", "未", "都不是", "不是满意度", "均未", "没有一篇", "标注", "未来工作"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "这是本组**最难的一道拒答题**（有强干扰源：01456 确有真人研究）。判据是「满意度/可接受性评分」这一具体产物在五篇里都不存在；01456 的真人研究产物是 item 级概念标签（p14 逐字）。"
-    },
-    {
-      "qid": "G1-X5-5",
-      "kind": "X5",
-      "role": "dev",
-      "intent": "refusal",
-      "question": "这五篇里，有没有哪一篇报告了训练所需的 GPU 小时数、算力成本或 token 费用？",
-      "hint": "**都没有**。全语料 `GPU` 只出现在**参考文献标题**里（01316 的两条引用、01456 的一条引用），`carbon` / `token cost` / `API cost` 零命中；正文没有任何训练算力（GPU 小时、FLOPs、费用）的实测数字——30333 只定性说“推理成本高”因此每个数据集仅评 100 名顾客，01316 只定性说索引构建成本会随语料规模增长。正确回答是五篇都没报告训练算力/费用数字。",
-      "evidence": [
-        {"paper": "2608.30333v1", "page": 5, "quote": "We evaluate on three repurchase recommendation datasets: two public grocery datasets and one proprietary retail dataset. Instacart is a public online grocery dataset for market-basket prediction"},
-        {"paper": "2609.01456v1", "page": 10, "quote": "missing or inconsistent metadata remains a practical boundary."}
-      ],
-      "must_all": [],
-      "must_any": ["没有", "未", "都没有", "均未", "没有一篇", "未报告", "未给出", "只在参考文献"],
-      "must_not": [],
-      "expect": ["L0", "L3"],
-      "route_min": "L0",
-      "_verify": "缺席性核对：`GPU` 命中 3 处**全在参考文献标题**（01316 p11 两条、01456 p15 一条）；`token cost`=0、`API cost`=0、`carbon`=0。evidence 给的是「成本只被定性提及」的代表性上下文，不是答案原文。"
+     "paper": "2609.01456v1",
+     "page": 2,
+     "quote": "We propose AutoConcept, a training-free concept-guided reranker."
     }
-  ]
+   ],
+   "must_all": [
+    "MIDR",
+    "AutoConcept"
+   ],
+   "must_any": [
+    "免训练",
+    "无需训练",
+    "training-free",
+    "不加训练",
+    "不训练"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "两篇的自称均取自原文逐字（01316 p2 摘要段 / 01456 p2 摘要段）；L0 锚点在 5 篇 report 的 core_points 里逐字存在（01316「免训练」、01456「无需训练」）→ 由 _validate_group_questions.py 的 M0-reach 检查把关。"
+  },
+  {
+   "qid": "G1-M0-2",
+   "kind": "M0",
+   "role": "dev",
+   "intent": "multi_overview",
+   "question": "这五篇里，哪几篇给自己的方法起了专名？分别叫什么？另外两篇是怎么称呼自己方法的？",
+   "hint": "**三篇有专名**：**TAAL**（29179，Temporal Autoregressive Alignment，用于生成式推荐的早期剪枝对齐）、**MIDR**（01316，Multimodal Indexing for Document Retrieval，免训练的富化索引）、**AutoConcept**（01456，概念引导重排序器）。**另两篇没有专名**，用描述式称呼：29290 叫「数据库增强的 RAG（database-augmented RAG）」、30333 提的是「受限混合设计」（监督模型排序 + 特征级评估 + LLM 写理由）。",
+   "evidence": [
+    {
+     "paper": "2608.29179v1",
+     "page": 1,
+     "quote": "We therefore propose Temporal Autoregressive Alignment (TAAL)."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."
+    },
+    {
+     "paper": "2609.01456v1",
+     "page": 2,
+     "quote": "We propose AutoConcept, a training-free concept-guided reranker."
+    }
+   ],
+   "must_all": [
+    "TAAL",
+    "MIDR",
+    "AutoConcept"
+   ],
+   "must_any": [
+    "方法",
+    "命名",
+    "名称",
+    "专名"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "三个锚点都在**真实合并总览**的 20 条 core_points 里逐字存在（校对口径已改为 report_l0 实际产出）。原 M0-2（问「局限」）实测合并总览 limitations 为 0 条、答不出 → 已下移为 G1-M1-9。"
+  },
+  {
+   "qid": "G1-M0-3",
+   "kind": "M0",
+   "role": "dev",
+   "intent": "multi_overview",
+   "question": "这五篇里，哪些篇报告了 NDCG@10 / nDCG@10 这类排序指标？分别在什么基准上？",
+   "hint": "两篇：**TAAL**（29179）用 **NDCG@10**，在 Amazon Beauty、Instruments、Yelp 上分别提升 39.5% / 6.7% / 28.6%；**MIDR**（01316）用 **nDCG@10**，在 ViDoRe V3 的五个英文文档域上平均 0.6219（相对 BM25 提升 23.0%）。另三篇的主指标不是 nDCG：29290 用**修复率**、30333 用**归因/排序两轴的评估**、AutoConcept（01456）主指标是 **Recall@10 / MRR**。",
+   "evidence": [
+    {
+     "paper": "2608.29179v1",
+     "page": 1,
+     "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "On ViDoRe V3 (Loison et al., 2026), MIDR Hybrid reaches 0.6219 average nDCG@10 across the five English-document domains"
+    }
+   ],
+   "must_all": [
+    "Yelp",
+    "ViDoRe V3"
+   ],
+   "must_any": [
+    "NDCG",
+    "nDCG",
+    "排序指标"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "「Yelp」在 29179 的 L0 材料（core_points「Amazon Beauty、Instruments和Yelp」）里逐字存在；「ViDoRe V3」在 01316 的 core_points 里逐字存在 → M0-reach 可过。"
+  },
+  {
+   "qid": "G1-M0-4",
+   "kind": "M0",
+   "role": "user",
+   "intent": "multi_overview",
+   "question": "用大白话说：这五篇里，哪些篇干的是「把东西找出来 / 排好序」的活，哪一篇干的是「自动改代码」？",
+   "hint": "四篇是检索/排序类：**TAAL**（生成式推荐里把物品检索出来）、**30333**（下一篮复购推荐里给商品排序并解释）、**MIDR**（把文档页面检索出来）、**AutoConcept**（给时尚图库候选池重排）。**29290** 是另一类：自动修复 **REST API** 客户端程序里的误用（把代码改对），不是检索。",
+   "evidence": [
+    {
+     "paper": "2608.29290v1",
+     "page": 1,
+     "quote": "the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."
+    }
+   ],
+   "must_all": [
+    "MIDR",
+    "REST"
+   ],
+   "must_any": [
+    "检索",
+    "排序",
+    "修复",
+    "重排"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "M0-4 是 user 视角的「概览型聚合」，只要求结构性区分（检索/排序 vs 修复），不涉具体数字；两个锚点都在 L0 材料里逐字存在。"
+  },
+  {
+   "qid": "G1-M0-5",
+   "kind": "M0",
+   "role": "dev",
+   "intent": "multi_overview",
+   "question": "这五篇里，哪一篇报告了「索引更小 / 查询更快」这类效率数字？它报告的是哪两个倍数？",
+   "hint": "**MIDR**（01316）：在全部七个域上相对复现的 ColQwen2.5，**索引内存约小 9 倍、查询延迟约低 2 倍**（同时它在四个域上领先）。其余四篇不报告索引/延迟这类部署侧倍数：TAAL 只报效果与存活率，29290 只报修复率，30333 只报排序/归因两轴，AutoConcept 的成本讨论是定性的（未缓存的文本编码器设置）。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 1,
+     "quote": "Across all seven domains, MIDR leads ColQwen2.5 on four while using ∼9× smaller index memory and approximately 2× lower query latency."
+    }
+   ],
+   "must_all": [
+    "MIDR"
+   ],
+   "must_any": [
+    "9",
+    "2",
+    "索引内存",
+    "查询延迟",
+    "内存",
+    "延迟"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "锚点只放「MIDR」（唯一答案），倍数放 must_any（原文用「∼9×」「2×」，「9/2」为兼容写法）。原句在原文里跨折行连字符（approxi- mately），由校验器的第三种归一化口径命中。"
+  },
+  {
+   "qid": "G1-M1-1",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪两篇各自在「三个数据集」上做评估？请把六个数据集的名称列出来。",
+   "hint": "**TAAL**（29179）：Amazon **Beauty** / **Instruments** / **Yelp** 三个中等规模公开数据集。**30333**：**Instacart** / **DC**（由 dunnhumby Carbo-Loading 派生的公开杂货数据）/ 一片**从大规模内部杂货平台随机采样的自有零售数据**（生产域）。其余：MIDR 只在一个基准 ViDoRe V3 上（含 7 个域），AutoConcept 用 FashionIQ + Fashion200K，29290 用两个 API 服务（SwitchBot / Fitbit）的 21 个误用案例。",
+   "evidence": [
+    {
+     "paper": "2608.29179v1",
+     "page": 1,
+     "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 5,
+     "quote": "We evaluate on three repurchase recommendation datasets: two public grocery datasets and one proprietary retail dataset. Instacart is a public online grocery dataset for market-basket prediction"
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 5,
+     "quote": "The proprietary dataset is randomly sampled from a large-scale internal grocery platform and serves as an additional production-domain evaluation setting."
+    }
+   ],
+   "must_all": [
+    "Instacart",
+    "Yelp"
+   ],
+   "must_any": [
+    "Beauty",
+    "DC",
+    "三个"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "跨篇聚合：必须同时召回 29179 的数据集句与 30333 的数据集句（两篇各一段）。跨语言锚点 Instacart / Yelp 均为专名。"
+  },
+  {
+   "qid": "G1-M1-2",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪一篇做了真人参与者研究？哪一篇明确把「评估解释是否有用、是否被信任、决策速度、线上业务影响」留作未来工作？",
+   "hint": "**AutoConcept**（01456）做了真人研究：参与者通过独立收集界面给 FashionIQ 商品打**自愿的 item 级概念标签**，用来检验记忆接口能否消费人类提供的证据。**30333** 明确**没做**用户评估：作者在局限里说未评估顾客是否觉得解释清楚/有用/有说服力/可信，并把 **user trust / decision speed / online business impact** 列进未来工作。",
+   "evidence": [
+    {
+     "paper": "2609.01456v1",
+     "page": 14,
+     "quote": "The real-human study uses a separate collection interface. Participants label FashionIQ items and select optional tags from a fixed vocabulary covering color, pattern, sleeve, neckline, length, f"
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 9,
+     "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"
+    }
+   ],
+   "must_all": [
+    "AutoConcept",
+    "Gemini"
+   ],
+   "must_any": [
+    "真人",
+    "参与者",
+    "用户研究",
+    "未来工作",
+    "人工评估"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "两半各取一篇：01456 p14（真人研究）/ 30333 p9（未来工作）。锚点 Gemini 在 30333 p5「We evaluate Gemini 2.5 Pro, GPT-4o」里逐字存在，用作「指到 30333」的可判定锚。"
+  },
+  {
+   "qid": "G1-M1-3",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪一篇报告的相对提升幅度最大？给出了哪两个数字？",
+   "hint": "**29290**：不用 RAG 的基线修复率 **54.3%**，四库 RAG 最高 **88.6%**（相对提升约 63%），是五篇里相对幅度最大的。对照：TAAL（29179）NDCG@10 提升 39.5% / 6.7% / 28.6%；MIDR（01316）相对 BM25 提升 23.0%；AutoConcept（01456）FashionIQ 上 Recall@10 从 0.1125 → 0.1379。注意 29290 的作者自己提醒：**88.6% 不应被当成真实世界 REST API 场景的性能估计**（样本只有 21 个误用案例）。",
+   "evidence": [
+    {
+     "paper": "2608.29290v1",
+     "page": 1,
+     "quote": "the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%."
+    },
+    {
+     "paper": "2608.29179v1",
+     "page": 1,
+     "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "On ViDoRe V3 (Loison et al., 2026), MIDR Hybrid reaches 0.6219 average nDCG@10 across the five English-document domains"
+    }
+   ],
+   "must_all": [
+    "88.6"
+   ],
+   "must_any": [
+    "54.3",
+    "修复率",
+    "29290",
+    "数据库"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "跨篇比较题：要答对必须至少读到 29290 与另两篇的数字（evidence 给了三篇）。must_all 只放「88.6」——它是 29290 的专有数字，可唯一定位。"
+  },
+  {
+   "qid": "G1-M1-4",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "MIDR 与 AutoConcept 都声称「无需训练」，但「不训练」的机制并不一样。两者各把力气花在哪一步？",
+   "hint": "**MIDR**（01316）：把多模态理解挪到**索引时** —— 摄取阶段用**多模态 LLM** 把渲染页转成经校验的文本字段，用 **BM25F**（可融合 dense）建索引，查询时只做文本检索，因此**不需要训练任何检索器**；代价是索引构建成本要重新承担。**AutoConcept**（01456）：**固定第一级 CIR 模型**，只在它的 **top-K 候选池**上做概念引导重排（正概念约束 + 负惩罚 + 查询相关性门控 + 闭式推理时校准），**不训练额外参数**。一个改「索引侧表示」，一个改「候选池打分」。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 1,
+     "quote": "indexed with BM25F and optionally fused with dense retrieval"
+    },
+    {
+     "paper": "2609.01456v1",
+     "page": 2,
+     "quote": "AutoConcept keeps the first-stage CIR model fixed and operates on its top-K candidate pool."
+    }
+   ],
+   "must_all": [
+    "BM25F",
+    "AutoConcept"
+   ],
+   "must_any": [
+    "索引时",
+    "查询时",
+    "概念",
+    "重排",
+    "固定第一级"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "01456 的引文含「AutoCon- cept」折行连字符，靠校验器第三种口径还原为 AutoConcept 命中；01316 的引文避开折行处。"
+  },
+  {
+   "qid": "G1-M1-5",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "TAAL 与 AutoConcept 都用「不改动第一级系统」的后处理思路，但挂的位置不同。各自挂在哪、改的是什么？",
+   "hint": "**AutoConcept**（01456）：挂在一个**固定的第一级 CIR 模型**之后，吃它的 **top-K 候选池**，做概念引导重排（可插到不同 CIR 候选生成器上）。**TAAL**（29179）：把 **PMI（pointwise mutual information）** 校准挂在**推理侧已完成 beam 的候选分数**上，压低全局高频前缀的影响，不改 tokenizer / backbone / beam search。两者都不训练、也不改上游模型，但一个作用在「候选池排序」，一个作用在「beam 候选的分数校准」。",
+   "evidence": [
+    {
+     "paper": "2609.01456v1",
+     "page": 2,
+     "quote": "AutoConcept keeps the first-stage CIR model fixed and operates on its top-K candidate pool."
+    },
+    {
+     "paper": "2608.29179v1",
+     "page": 1,
+     "quote": "it calibrates candidate scores with pointwise mutual information (PMI) to reduce the influence of globally frequent prefixes."
+    }
+   ],
+   "must_all": [
+    "top-K",
+    "PMI"
+   ],
+   "must_any": [
+    "第一级",
+    "重排",
+    "校准",
+    "候选"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "01316/01456 的折行已避开；29179 的引文从「it calibrates」起（前面是 Dur- ing 折行伪影，不取）。"
+  },
+  {
+   "qid": "G1-M1-6",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇把 LLM / 多模态 LLM 当成核心组件？各自让 LLM 干什么？",
+   "hint": "三篇：**30333** 用 **GPT-4o / Gemini** 当「特征理由生成器与评分器」（并发现它们的引用与跨家族归因基线不一致）；**29290** 用 **GPT-4o** 依三阶段提示生成修正后的代码；**MIDR**（01316）在索引时用**多模态 LLM** 把渲染页转成检索就绪的文本字段。另外两篇不把 LLM 当核心：TAAL（29179）靠 PMI 校准（无 LLM），AutoConcept（01456）只用文本编码器 + CLIP 系视觉嵌入做概念打分。",
+   "evidence": [
+    {
+     "paper": "2608.30333v1",
+     "page": 5,
+     "quote": "We evaluate Gemini 2.5 Pro, GPT-4o, and the validation-selected GPT-4o norm-prompt variant described in Section 3."
+    },
+    {
+     "paper": "2608.29290v1",
+     "page": 8,
+     "quote": "This prompt is then input into GPT-4o to generate the final correction."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 1,
+     "quote": "During ingestion, a multimodal LLM converts"
+    }
+   ],
+   "must_all": [
+    "GPT-4o",
+    "MIDR"
+   ],
+   "must_any": [
+    "LLM",
+    "MLLM",
+    "大模型",
+    "多模态",
+    "GPT"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "01316 引文止于 converts（后接 ren- dered 折行），避开伪影；「MIDR」锚在 01316 正文频繁出现。"
+  },
+  {
+   "qid": "G1-M1-7",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪一篇的评测跨了「语言」（文档不是英语）？哪一篇的评测跨了「模型家族」（同时对比树模型与神经网络两族）？各自的关键证据/数字是什么？",
+   "hint": "跨**语言**的是 **MIDR**（01316）：两个**法文文档**域（energy / physics）上，**原始 BM25 塌到 0.1532 nDCG@10**，而 **MIDR Hybrid 达到 0.5448**，两个域上都超过复现的 ColQwen2.5；机制是索引时用英文生成富集字段，把查询变成单语匹配。跨**模型家族**的是 **30333**：它在 tree-based 与 neural 两族之间做对比，并报告 **GPT-4o 与 Gemini 都不能稳定匹配跨家族归因基线（cross-family attribution baseline）**。注意区分：一个跨的是数据类型（语言），一个跨的是模型类别（家族）。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "On the two French-document domains, the same pipeline acts as a cross-lingual bridge: raw BM25 collapses to 0.1532 nDCG@10"
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 8,
+     "quote": "Base GPT-4o and Gemini do not reliably match the cross-family attribution baseline, indicating that plausible feature citations are not necessarily outcome-grounded."
+    }
+   ],
+   "must_all": [
+    "0.1532",
+    "cross-family"
+   ],
+   "must_any": [
+    "法文",
+    "跨语言",
+    "跨家族",
+    "French"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "真跨篇（evidence 来自 01316 与 30333 两篇）：两种「跨」的对照，各自有可判定的专有锚（0.1532 / cross-family）。"
+  },
+  {
+   "qid": "G1-M1-8",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪一篇的评测只覆盖一个基准？哪几篇覆盖了三个数据集？",
+   "hint": "只覆盖一个基准的是 **MIDR**（01316）：全部结果都在 **ViDoRe V3**（五个英文域 + 两个法文域），作者也把这一点列为局限。覆盖三个数据集的是 **TAAL**（29179：Amazon Beauty / Instruments / **Yelp**）与 **30333**（Instacart / DC / 自有零售数据）。AutoConcept（01456）两个（FashionIQ + Fashion200K），29290 两个 API 服务下 21 个案例。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 5,
+     "quote": "We additionally evaluate two French-document domains—energy and physics—as a cross-lingual stress test, with 610 English queries over 3,899 pages from 83 documents."
+    },
+    {
+     "paper": "2608.29179v1",
+     "page": 1,
+     "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%–16.6%."
+    }
+   ],
+   "must_all": [
+    "ViDoRe V3",
+    "Yelp"
+   ],
+   "must_any": [
+    "一个基准",
+    "三个数据集",
+    "单一"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "两道极值的对照（最窄 vs 最宽），两个锚点分别唯一定位 01316 与 29179。"
+  },
+  {
+   "qid": "G1-M1-9",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，有哪几篇在局限或未来工作里明确承认「评估规模有限、结论还不能直接搬到更大或更真实的场景」？",
+   "hint": "至少四篇明确点到：**TAAL**（29179）主结果只在三个中等规模公开数据集上取得，「推广到超大规模工业目录**需进一步研究**」，且只用固定种子 42；**29290** 评估只覆盖两个 API 服务（SwitchBot / Fitbit）与 21 个误用案例，并强调 **88.6% 不应被解释为真实世界设置的性能估计**；**MIDR**（01316）评估仅覆盖 ViDoRe V3、跨语言结论只覆盖一个语言对的一个方向；**30333** 把扩大模型与领域覆盖、评估解释有用性/用户信任/线上业务影响列为未来工作；**AutoConcept**（01456）把元数据缺失或不一致视为实际边界、更广领域属自然扩展。",
+   "evidence": [
+    {
+     "paper": "2608.29179v1",
+     "page": 11,
+     "quote": "three medium-scale public datasets, and generalization to very large industrial catalogs requires further study."
+    },
+    {
+     "paper": "2608.29290v1",
+     "page": 12,
+     "quote": "the evaluation covers only two API services, SwitchBot and Fitbit, and 21 misuse cases."
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 9,
+     "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"
+    },
+    {
+     "paper": "2609.01456v1",
+     "page": 10,
+     "quote": "missing or inconsistent metadata remains a practical boundary."
+    }
+   ],
+   "must_all": [
+    "TAAL",
+    "MIDR",
+    "AutoConcept"
+   ],
+   "must_any": [
+    "局限",
+    "未来工作",
+    "真实世界",
+    "更广",
+    "规模",
+    "扩大",
+    "推广"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "由原 M0-2 改写：合并总览（report_l0）实测**不含 limitations**，无法免检索答出 → 归 M1（需下钻）。evidence 来自 4 篇不同论文（真跨篇）；三个锚点要求答案至少点到三篇以证明是聚合回答。"
+  },
+  {
+   "qid": "G1-M1-10",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪些篇的检索对象是「物品/商品」，哪些篇是「文档/页面」或「代码/规范」？",
+   "hint": "**物品/商品**：TAAL（29179，推荐里的物品）、30333（复购推荐的商品）、AutoConcept（01456，时尚图库候选）。**文档/页面**：MIDR（01316，渲染页 → 检索就绪字段）。**代码/规范**：29290（REST API 规范与客户端代码）。这个区分决定了它们的检索瓶颈不同：前者的难点在**候选池排序/前缀剪枝**，MIDR 的难点在**视觉/布局证据的文本化**，29290 的难点在**规范该按版本还是内容类型入库**。",
+   "evidence": [
+    {
+     "paper": "2609.01456v1",
+     "page": 2,
+     "quote": "AutoConcept keeps the first-stage CIR model fixed and operates on its top-K candidate pool."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "We introduce MIDR (Multimodal Indexing for Document Retrieval), a training-free framework for enrichment-augmented indexing."
+    },
+    {
+     "paper": "2608.29290v1",
+     "page": 1,
+     "quote": "the baseline method achieved a repair rate of 54.3%, whereas a RAG-based method using four databases achieved a maximum repair rate of 88.6%."
+    }
+   ],
+   "must_all": [
+    "AutoConcept",
+    "MIDR"
+   ],
+   "must_any": [
+    "物品",
+    "商品",
+    "文档",
+    "页面",
+    "代码",
+    "规范"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "聚合分类题：两个锚点要求答案同时点到「物品侧」与「文档侧」各一篇，避免只答一半。"
+  },
+  {
+   "qid": "G1-M1-11",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇做了消融/组件对照实验？各自关掉哪个部件、指标掉到多少？请给出至少两个具体数字。",
+   "hint": "三篇：**TAAL**（29179）的消融隔离出「联合前缀训练」与「PMI 校准」两个部件，去掉推理重排后 NDCG@10 只有 0.0477/0.0874/0.0286；**MIDR**（01316）的消融结论是「它靠暴露不同类型的检索证据起作用，而不是靠无差别地加生成文本」；**AutoConcept**（01456）在 FashionIQ 上做消融（完整版 vs 只用正概念 vs 加强负惩罚）。另两篇（29290 API 修复、30333 复购推荐）没有组件消融。",
+   "evidence": [
+    {
+     "paper": "2608.29179v1",
+     "page": 6,
+     "quote": "Ablations isolate joint-prefix training and PMI calibration."
+    },
+    {
+     "paper": "2608.29179v1",
+     "page": 6,
+     "quote": "Without inference reranking, joint c1c2 training reaches NDCG@10 values of 0.0477/0.0874/0.0286 on Beauty/Instruments/Yelp."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "e ablations indicate that MIDR works by ex- posing distinct types of retrieval evidence rather than by adding undifferentiated generated text:"
+    }
+   ],
+   "must_all": [
+    "PMI calibration",
+    "0.0477"
+   ],
+   "must_any": [
+    "消融",
+    "对照实验",
+    "去掉",
+    "关掉"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `PMI calibration`（29179 p6 正文）与 `0.0477`（同篇 p6 正文句里的 NDCG@10）均已 probe 双绿（MinerU 视图 + 原文）。"
+  },
+  {
+   "qid": "G1-M1-12",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇做了超参数或配置的敏感度分析？各自扫的是哪个旋钮、给出哪些具体取值？",
+   "hint": "三篇：**TAAL**（29179）扫对齐权重 α ∈ {0.1, 0.2, 0.4}，并在 Beauty 上固定 B = 20、seed 42 做超参扫描；**MIDR**（01316）做「富化用哪个多模态 LLM」的敏感度分析（主结果用 GPT-5.1），还量化了一次性摄取开销；**AutoConcept**（01456）在门控阈值 τ = 0.35 附近做敏感性分析，并做了候选池大小敏感性。",
+   "evidence": [
+    {
+     "paper": "2608.29179v1",
+     "page": 8,
+     "quote": "We sweep α ∈{0.1, 0.2, 0.4} independently."
+    },
+    {
+     "paper": "2608.29179v1",
+     "page": 9,
+     "quote": "Structure-specific controls and hyperparameter sweeps on Beauty with B = 20 and seed 42."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 17,
+     "quote": "Our main results use GPT-5.1 as the enrichment MLLM."
+    },
+    {
+     "paper": "2609.01456v1",
+     "page": 11,
+     "quote": "Table 9 reports a gate-sensitivity analysis around τ = 0.35."
+    }
+   ],
+   "must_all": [
+    "seed 42",
+    "GPT-5.1"
+   ],
+   "must_any": [
+    "敏感度",
+    "超参数",
+    "扫描",
+    "阈值"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `seed 42`（29179 p9 正文）与 `GPT-5.1`（01316 p17 正文）跨 2 篇，均为 probe 双绿。τ = 0.35 取自 01456 Appendix A.1 正文句。"
+  },
+  {
+   "qid": "G1-M1-13",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇报告了推理/查询开销的具体数字（延迟、内存或成本）？各自的口径是什么？",
+   "hint": "三篇，口径各不相同：**MIDR**（01316）用「相对 BM25 的倍数」报告延迟与索引内存（富化 BM25F 3.4× 延迟 / 2.5× 内存；MIDR Hybrid 14.0× / 7.5×；ColQwen2.5 27.9× / 65.0×），并把这种取舍称为「摊销式权衡」；**AutoConcept**（01456）用**毫秒/查询**报告第二阶段开销（FashionIQ 0.3199 ms、Fashion200K 0.1928 ms，占一阶段延迟 5.58% / 6.18%）；**30333** 用**抽样规模**控制 LLM 成本（每个数据集只抽 100 名留出用户）。**TAAL**（29179）与**29290** 没有报推理开销。",
+   "evidence": [
+    {
+     "paper": "2609.01456v1",
+     "page": 12,
+     "quote": "In the cached setting, AutoConcept adds 0.3199 ms/query on FashionIQ and 0.1928 ms/query on Fashion200K, corresponding to 5.58% and 6.18% of first-stage retrieval latency."
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 5,
+     "quote": "Because of LLM inference cost, we sample 100 held-out customers per dataset."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 7,
+     "quote": "This is the intended amortization tradeoff: MIDR shifts multimodal computation into offline ingestion, whereas visual multi-vector retrieval keeps image-derived indexes"
+    }
+   ],
+   "must_all": [
+    "0.3199",
+    "100 held-out customers"
+   ],
+   "must_any": [
+    "延迟",
+    "内存",
+    "成本",
+    "开销"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `0.3199`（01456 p12 正文）与 `100 held-out customers`（30333 p5 正文）跨 2 篇，probe 双绿。01316 的倍数取自 p7 正文句（`3.4× / 2.5×` 含 U+00D7，已逐字），不另设锚点。"
+  },
+  {
+   "qid": "G1-M1-14",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇报告了评测数据或评测域的具体规模？数字分别是多少？",
+   "hint": "三篇：**MIDR**（01316）在 ViDoRe V3 的**五个英文文档域**上平均 0.6219 nDCG@10（相对 BM25 +23.0%），并称方法在**七个域**上都领先 ColQwen2.5 中的四个；**TAAL**（29179）在**三个数据集**（Amazon Beauty / Instruments / Yelp）上评测；**30333** 用**两个公开数据集 + 一个自有生产域**，并明确每个数据集抽 100 名留出用户。另两篇口径不同：29290 是自建 API 误用修复数据集，01456 用 FashionIQ / Fashion200K。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 1,
+     "quote": "i- DoRe V3, MIDR Hybrid achieves 0.6219 av- erage nDCG@10 across five English domains, a 23.0% relative gain over BM25, remaining competitive with ColQwen2.5."
+    },
+    {
+     "paper": "2608.29179v1",
+     "page": 1,
+     "quote": "On Amazon Beauty, Instruments, and Yelp, TAAL improves NDCG@10 over the standard baseline by 39.5%, 6.7%, and 28.6%, respectively, while increasing full-SID survival by 3.9%-16.6%."
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 5,
+     "quote": "Table 1 summarizes the scale of the two public datasets and their resulting LLM scoring sets."
+    }
+   ],
+   "must_all": [
+    "Amazon Beauty",
+    "five English domains"
+   ],
+   "must_any": [
+    "规模",
+    "多少个",
+    "数据集",
+    "几篇"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `Amazon Beauty`（29179 p1 正文）与 `five English domains`（01316 p1 正文）跨 2 篇，probe 双绿（`five English domains` 含大写 E，不属脆弱锚点）。"
+  },
+  {
+   "qid": "G1-M1-15",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇显式把目标定成「精度与部署成本的权衡」而不是峰值精度？哪几篇靠「离线/一次性开销」换「查询期轻量」？各自证据是什么？",
+   "hint": "**MIDR**（01316）最直接：论文自述「我们的主张关乎精度—部署权衡，而不是峰值精度」，并把多模态计算**摊到离线摄取期**（术语上自称 amortization tradeoff）；**AutoConcept**（01456）同族思路，但它把校准放在**推理期**，用闭式解让打分系数随查询变化而**不训练额外参数**；**30333** 也把 LLM 限制在「只读行为证据卡、不接触模型参数/梯度/树结构」的查询期轻量角色。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 9,
+     "quote": "r claim there- fore concerns the accuracy-deployment tradeoff rather than peak accuracy, and a sweep of the full leaderboard would characterize that tradeoff more completely than the subset of systems we were able to run."
+    },
+    {
+     "paper": "2609.01316v1",
+     "page": 2,
+     "quote": "We additionally quantify the one-time ingestion cost and evaluate sensitivity to the enrich- ment MLL"
+    },
+    {
+     "paper": "2609.01456v1",
+     "page": 6,
+     "quote": "This closed-form inference-time calibration makes the scoring coeffi- cients query-dependent without training additional parameter"
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 3,
+     "quote": "The LLM selects feature rationales directly from a structured behavioral evidence card without access to model parameters, gradients, tree structures, or attribution values."
+    }
+   ],
+   "must_all": [
+    "deployment tradeoff",
+    "closed-form inference-time calibration"
+   ],
+   "must_any": [
+    "权衡",
+    "部署",
+    "离线",
+    "轻量"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "两条锚点 probe 双绿；⚠️ 均为「纯小写无数字」的**脆弱锚点**（`anchor_fragile` 会警告，不阻塞）：答案多为中文，靠引用证据通道兜底。⚠️ 01316 p9 原文里是 `accuracy–deployment`（U+2013 en dash），引文按原文写，**别再改成 ASCII 横线**（reach 查的是检索视图原始串）。"
+  },
+  {
+   "qid": "G1-M1-16",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇把重活放在离线或摄取期，只在查询期做轻量操作？哪一篇把「训练信号」集中在训练期而不是推理期？各自的关键证据是什么？",
+   "hint": "**MIDR**（01316）：多模态推理「只在摄取期做一次」，查询期只查 BM25F / 稠密文本索引；**30333**：查询期让 LLM 只读结构化的行为证据卡；**TAAL**（29179）方向相反——它把对齐信号放在**训练期**（联合前缀训练），推理期只加 PMI 校准；**AutoConcept**（01456）把概念激活放在推理期但不需要训练。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 5,
+     "quote": "us, multimodal reasoning is performed once during in- gestion, while query-time retrieval operates over BM25F and dense text indexes containing multi- modally grounded eviden"
+    },
+    {
+     "paper": "2608.29179v1",
+     "page": 6,
+     "quote": "Ablations isolate joint-prefix training and PMI calibration."
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 3,
+     "quote": "The LLM selects feature rationales directly from a structured behavioral evidence card without access to model parameters, gradients, tree structures, or attribution values."
+    }
+   ],
+   "must_all": [
+    "once during ingestion",
+    "joint-prefix training"
+   ],
+   "must_any": [
+    "离线",
+    "摄取期",
+    "训练期",
+    "查询期"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `once during ingestion`（01316 p5 正文）与 `joint-prefix training`（29179 p6 正文）跨 2 篇，probe 双绿；⚠️ 均为脆弱形状（纯小写）。"
+  },
+  {
+   "qid": "G1-X5-1",
+   "kind": "X5",
+   "role": "dev",
+   "intent": "refusal",
+   "question": "这五篇里，有没有哪一篇把方法部署到生产环境、或报告了真实产品流量下的在线 A/B 实验结果？",
+   "hint": "**都没有**。全语料检索 `online A/B` / `A/B test` / `online experiment` / `production traffic` / `deployed in production` / `real-world deployment` **零命中**；最接近的是 30333 把 **online business impact** 写进未来工作（说明未做），以及 29179 明确说推广到超大规模工业目录「需进一步研究」。正确回答是**五篇都没做在线 A/B / 生产部署实验**，而不是拿离线数字冒充。",
+   "evidence": [
+    {
+     "paper": "2608.29179v1",
+     "page": 11,
+     "quote": "three medium-scale public datasets, and generalization to very large industrial catalogs requires further study."
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 9,
+     "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"
+    }
+   ],
+   "must_all": [],
+   "must_any": [
+    "没有",
+    "未",
+    "都没有",
+    "五篇都",
+    "均未",
+    "没有一篇",
+    "未做",
+    "未开展"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "缺席性核对：对 5 篇 txt 全量 grep `online A/B|A/B test|online experiment|production traffic|deployed in production|real-world deployment` = 0 命中；evidence 给的是最接近的两处（都表明「未做」），不是答案原文。"
+  },
+  {
+   "qid": "G1-X5-2",
+   "kind": "X5",
+   "role": "dev",
+   "intent": "refusal",
+   "question": "这五篇里，有没有哪一篇报告了训练的碳排放、能耗或用电量的具体数字？",
+   "hint": "**都没有**。全语料 `carbon` / `electricity` / `energy consumption` **零命中**；注意 01316 里出现 15 次的 `energy` 是它评测用的**法文文档域名称**（energy and physics），**不是能耗**——把那个当成能耗数字就答错了。正确回答是五篇都没报告碳排放/能耗。",
+   "evidence": [
+    {
+     "paper": "2609.01316v1",
+     "page": 5,
+     "quote": "We additionally evaluate two French-document domains—energy and physics—as a cross-lingual stress test, with 610 English queries over 3,899 pages from 83 documents."
+    }
+   ],
+   "must_all": [],
+   "must_any": [
+    "没有",
+    "未",
+    "都没有",
+    "均未",
+    "没有一篇",
+    "未报告",
+    "未提供"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "缺席性核对：`carbon`=0、`electricity`=0、`energy consumption`=0；`energy` 的命中全部出自 01316 的域名称（p5 起）。evidence 记录的就是那个易混来源。"
+  },
+  {
+   "qid": "G1-X5-3",
+   "kind": "X5",
+   "role": "dev",
+   "intent": "refusal",
+   "question": "这五篇里，有没有哪一篇报告了线上业务指标的实测结果，例如点击率、转化率或收入？",
+   "hint": "**都没有**。`revenue` / `click-through` 等在全语料零命中；30333 只把 **online business impact** 列为**未来工作**（需要受控实验或 A/B），其余四篇（推荐、代码修复、文档检索、CIR 重排）也都没有线上业务指标。正确回答是五篇都没报告线上业务指标。",
+   "evidence": [
+    {
+     "paper": "2608.30333v1",
+     "page": 9,
+     "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"
+    }
+   ],
+   "must_all": [],
+   "must_any": [
+    "没有",
+    "未",
+    "都没有",
+    "均未",
+    "没有一篇",
+    "未来工作",
+    "未报告"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "缺席性核对：`revenue|click-through|business metric` 在 30333 零命中，全语料亦无线上业务指标数值；唯一相关表述是 30333 p9 的未来工作句。"
+  },
+  {
+   "qid": "G1-X5-4",
+   "kind": "X5",
+   "role": "user",
+   "intent": "refusal",
+   "question": "这五篇里，有没有哪一篇报告了用户对结果的满意度或可接受性评分（比如让用户打分）？",
+   "hint": "**都没有**。**01456 的真人研究是「给商品打概念标签」的标注研究，不是满意度/可接受性评分**——这里最容易答错成「有，AutoConcept 做了真人研究」。**30333** 则明确说未评估顾客是否觉得解释有用、可信，并把它列为未来工作。其余三篇没有人类主观评分。正确回答是：五篇都没有用户满意度/可接受性评分。",
+   "evidence": [
+    {
+     "paper": "2609.01456v1",
+     "page": 14,
+     "quote": "The real-human study uses a separate collection interface. Participants label FashionIQ items and select optional tags from a fixed vocabulary covering color, pattern, sleeve, neckline, length, f"
+    },
+    {
+     "paper": "2608.30333v1",
+     "page": 9,
+     "quote": "Future work should expand model and domain coverage and evaluate explanation usefulness, user trust, decision speed, and online business impact through"
+    }
+   ],
+   "must_all": [],
+   "must_any": [
+    "没有",
+    "未",
+    "都不是",
+    "不是满意度",
+    "均未",
+    "没有一篇",
+    "标注",
+    "未来工作"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "这是本组**最难的一道拒答题**（有强干扰源：01456 确有真人研究）。判据是「满意度/可接受性评分」这一具体产物在五篇里都不存在；01456 的真人研究产物是 item 级概念标签（p14 逐字）。"
+  },
+  {
+   "qid": "G1-X5-5",
+   "kind": "X5",
+   "role": "dev",
+   "intent": "refusal",
+   "question": "这五篇里，有没有哪一篇报告了训练所需的 GPU 小时数、算力成本或 token 费用？",
+   "hint": "**都没有**。全语料 `GPU` 只出现在**参考文献标题**里（01316 的两条引用、01456 的一条引用），`carbon` / `token cost` / `API cost` 零命中；正文没有任何训练算力（GPU 小时、FLOPs、费用）的实测数字——30333 只定性说“推理成本高”因此每个数据集仅评 100 名顾客，01316 只定性说索引构建成本会随语料规模增长。正确回答是五篇都没报告训练算力/费用数字。",
+   "evidence": [
+    {
+     "paper": "2608.30333v1",
+     "page": 5,
+     "quote": "We evaluate on three repurchase recommendation datasets: two public grocery datasets and one proprietary retail dataset. Instacart is a public online grocery dataset for market-basket prediction"
+    },
+    {
+     "paper": "2609.01456v1",
+     "page": 10,
+     "quote": "missing or inconsistent metadata remains a practical boundary."
+    }
+   ],
+   "must_all": [],
+   "must_any": [
+    "没有",
+    "未",
+    "都没有",
+    "均未",
+    "没有一篇",
+    "未报告",
+    "未给出",
+    "只在参考文献"
+   ],
+   "must_not": [],
+   "expect": [
+    "L0",
+    "L3"
+   ],
+   "route_min": "L0",
+   "_verify": "缺席性核对：`GPU` 命中 3 处**全在参考文献标题**（01316 p11 两条、01456 p15 一条）；`token cost`=0、`API cost`=0、`carbon`=0。evidence 给的是「成本只被定性提及」的代表性上下文，不是答案原文。"
+  }
+ ]
 }

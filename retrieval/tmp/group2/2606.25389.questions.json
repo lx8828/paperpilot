@@ -1,0 +1,280 @@
+{
+  "_note": [
+    "出题来源：仅用 pymupdf 抽取的 PDF 原文（retrieval/tmp/group2/2606.25389.txt）+ 表格页渲染图。",
+    "**刻意不用任何项目产物**出题（不读 report.json / overview / core_points / out_mineru）。",
+    "判定锚点：must_all=必现（数字/英文专名，全中才算过）；must_any=备选措辞（任一即可）；must_not=出现即判错。",
+    "evidence.quote 为原文逐字片段（英文），page 为 PDF 页码（见 txt 里的 [[pN]] 标记）。"
+  ],
+  "paper": "2606.25389.pdf",
+  "questions": [
+    {
+      "qid": "5389-L0-1",
+      "category": "L0",
+      "role": "dev",
+      "intent": "overview",
+      "question": "COMAD 要解决什么问题、把问题形式化成什么？它的做法（技能划分 + 复用）是什么？",
+      "hint": "提出 **COMAD** —— 一个**持续离线多智能体技能发现（Continual Offline Multi-agent Skill Discovery）**框架，做法是**技能划分（skill partition）+ 技能复用（skill reuse）**。要解决的问题：任务**顺序到来**且技能空间**指数增长**时，既有「启发式设计的固定规模技能库」难以应对**分布漂移与干扰**，会出现**灾难性遗忘与可塑性丧失**。论文把问题形式化为**从无限多智能体任务流中学习**，建模为**一系列 Dec-POMDP**；目标是**在当前任务上尽量最优，同时让旧任务性能不低于设定阈值**。",
+      "evidence": [
+        {"page": 1, "quote": "we propose COMAD, a principled framework for Continual Offline Multi-agent Skill Discovery via Skill Partition and Reuse"},
+        {"page": 1, "quote": "existing approaches that rely on heuristically designed and fixed-sized skill libraries struggle to resolve the problem of distributional shift and interference, facing catastrophic forgetting and plasticity loss"},
+        {"page": 2, "quote": "We first formalize the problem as learning from an infinite stream of multi-agent tasks, modeled as a series of decentralized partially observable Markov decision processes (Dec-POMDPs)."}
+      ],
+      "must_all": ["COMAD"],
+      "must_any": ["技能划分", "复用", "灾难性遗忘", "Dec-POMDP"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "5389-L0-2",
+      "category": "L0",
+      "role": "dev",
+      "intent": "overview",
+      "question": "COMAD 的总体性能如何？「复用旧技能 / 技能增强」带来了什么可量化的效果？",
+      "hint": "在 **9 个任务流**上，COMAD 的**平均性能达 64.34**，显著优于所有基线。技能复用方面：在 Marines-expert 上，**复用 5m_vs_6m 的输出头**使 **7m_vs_8m 的胜率提升到接近 0.3**（**零样本泛化**）；**阶段 2 的技能增强**进一步把该胜率推到**超过 0.4**（**前向迁移**）。同时学 7m_vs_8m 时，**5m_vs_6m 的胜率从 0.6 提升到约 0.8**，体现**后向迁移**。",
+      "evidence": [
+        {"page": 7, "quote": "COMAD achieves superior overall performance (64.34), significantly outperforming all baselines across diverse scenarios."},
+        {"page": 8, "quote": "the output head of 5m_vs_6m is reused with a high confidence score for the evaluation of 7m_vs_8m, which improves the win rate to near 0.3 on task 7m_vs_8m, showcasing zero-shot generalization"},
+        {"page": 8, "quote": "during stage 2, the skill-augmented objective effectively integrates skills acquired from earlier tasks and improves the win rate to exceed 0.4"}
+      ],
+      "must_all": ["64.34"],
+      "must_any": ["5m_vs_6m", "7m_vs_8m", "0.3", "0.4", "9 个任务流", "前向迁移", "后向迁移"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "5389-L0-3",
+      "category": "L0",
+      "role": "dev",
+      "intent": "limitation",
+      "question": "COMAD 自陈的局限与未来方向是什么？",
+      "hint": "两条主线：**①技能门控机制的近似不够** —— COMAD **依赖「状态密度」来近似技能门控机制**，这在复杂真实场景中可能不足；技能本应按**细粒度语义可复用性**来复用。**②缺乏显式划分的后果** —— 论文在数值实验里指出：若不做显式划分，策略被迫把**不同行为模态压成单一单模态表示**，无法区分**异构协调模式**。未来工作：**结合大语言模型（LLM）或人类反馈改进该门控机制**。",
+      "evidence": [
+        {"page": 9, "quote": "However, relying on state density to approximate the skill gating mechanism may be insufficient for complex real-world scenarios, where skills should be reused based on fine-grained semantic reusability."},
+        {"page": 9, "quote": "Future work could explore improving this gating mechanism by integrating Large Language Models (LLMs) or human feedback."},
+        {"page": 7, "quote": "Without such explicit partitioning, the policy is forced to compress the disparate behavioral modes into a single unimodal representation, leading to a failure in distinguishing between heterogeneous coordination patterns."}
+      ],
+      "must_all": ["技能门控"],
+      "must_any": ["状态密度", "语义", "LLM", "单模态", "人类反馈"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L0"
+    },
+    {
+      "qid": "5389-S1",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "COMAD 的持续学习被形式化成什么？「task-bounded」假设是什么？优化目标里对旧任务加了什么约束？",
+      "hint": "形式化：从**无限任务流**的离线数据集 **D1, ···, Dm, ···** 中抽取技能，任务流由**一系列 Dec-POMDP** 描述。采用 **task-bounded 设定**：agent i 在任务 m 中的技能是**有限集合 Zm 中的离散变量**，编码不同的个体策略；技能集 **Zm 会随任务变化**（新技能出现、旧技能因**动作分布与状态分布漂移**而失效）。目标：既要**最大化当前任务 m 的性能**，又要**让旧任务 k 的性能不低于阈值**（Jk(πm) ≥ Lk）；论文进一步给出带行为正则的**约束优化**形式与该问题的**闭式最优解（Theorem 4.1）**。",
+      "evidence": [
+        {"page": 3, "quote": "In continual offline MARL setting, we should extract skills from datasets D1, · · · , Dm, · · · of an infinite stream of multi-agent tasks described by a series of Dec-POMDPs"},
+        {"page": 3, "quote": "Skill set Zm varies among tasks as new skills emerge and old skills become inefficient due to the shift of action distribution and state distribution"},
+        {"page": 3, "quote": "to maximize the performance Jm(πm) on current task m while maintaining the performance on old tasks above certain thresholds"},
+        {"page": 3, "quote": "the agent must construct an expandable skill library to flexibly learn new skills while covering and reusing all performant skills for all seen tasks"}
+      ],
+      "must_all": ["Dec-POMDP"],
+      "must_any": ["无限", "task-bounded", "阈值", "技能集"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-S2",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "COMAD 的第一阶段如何从离线数据里发现技能？用了什么结构、有哪几个编码器/解码器？为什么要额外引入「局部编码器」？",
+      "hint": "用**自编码器（VAE）**端到端学技能：**全局编码器 qm** 按**状态-动作对表达的全局协调模式**为每个 agent 输出**技能嵌入**；**动作解码器 πm**（即技能条件策略）把技能嵌入解码成动作。因为 agent **执行时只能拿到局部信息**，所以再引入**局部编码器 pm**（只用个体历史轨迹 τi 推断协调技能），并用 **KL 损失**把全局编码器的知识**蒸馏**给局部编码器（DKL(qm ‖ pm)）。所有相关网络都建立在**population-invariant（transformer + 自注意力）**结构上，以处理**随任务变化的 agent 数量**导致的变长输入输出。",
+      "evidence": [
+        {"page": 2, "quote": "we utilize a variational auto-encoder (VAE) (Kingma & Welling, 2013) to encode global state-action pairs into skill representations and decode them via an action decoder, while a local encoder infers skills using only local information"},
+        {"page": 4, "quote": "we leverage a global encoder qm"},
+        {"page": 4, "quote": "since agents can only access local information during execution, we further introduce a local encoder"},
+        {"page": 3, "quote": "we adopt the widely used population-invariant networks (Hu et al., 2021; Zhang et al., 2023) based on the transformer architecture"},
+        {"page": 4, "quote": "we utilize the following KL loss to distill knowledge to help agents to infer"}
+      ],
+      "must_all": ["VAE"],
+      "must_any": ["局部编码器", "KL", "技能嵌入", "变长", "蒸馏"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-S3",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "论文为什么必须用多头（multi-head）结构？它用了一个什么样的数值实验来说明？结论是什么？",
+      "hint": "因为**持续任务的联合动作分布是多模态的**，只用一个技能编码器在跨任务迁移时会**模态坍缩（modal collapse）**。数值实验：数据是**两个高斯模态的混合**，模型也是两个高斯、参数为 µ1 与 µ2，目标是 DKL(pdata ‖ pmodel)。结果：**①只给一个自由度（µ1 = µ2）时，模型收敛到对角线上的鞍点**，对应会把两个模态**几何混合**起来的「耦合解」；**②µ1、µ2 都自由时**，由于凸性可以轻松收敛到**最优解 (−2, 2) 或 (2, −2)**。结论：**具备足够表示能力的技能条件策略，是从顺序到达的多智能体数据集中划分技能的关键**；没有显式划分，策略被迫把不同行为模态压成单模态表示，**无法区分异构协调模式**（等价于 Theorem 4.1 里技能没被 ∆k,∗m(s) 门控的情形）。",
+      "evidence": [
+        {"page": 4, "quote": "As the continual tasks have multi-modal action distribution, designing only one skill encoder would suffer from modal collapse when transferring among tasks."},
+        {"page": 7, "quote": "To show the necessity of the multi-head architecture to handle the multi-modal action data, we conduct a simple numerical experiment"},
+        {"page": 7, "quote": "the model converges to the saddle point on the diagonal that corresponds to the coupled solution"},
+        {"page": 7, "quote": "Without such explicit partitioning, the policy is forced to compress the disparate behavioral modes into a single unimodal representation, leading to a failure in distinguishing between heterogeneous coordination patterns."}
+      ],
+      "must_all": ["modal collapse"],
+      "must_any": ["鞍点", "saddle", "耦合解", "多模态", "(−2, 2)"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-S4",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "COMAD 的「复用性分数」怎么定义、怎么估计？它在技能增强的优势函数里起什么作用？系统如何用它决定「复用旧头」还是「扩张新头」？",
+      "hint": "定义：**复用性分数**是对各旧任务 k 的**加权系数**，由**任务 k 数据集中估计出的经验状态分布 dk(s)** 归一化而来（与 βk 加权）；直觉上表示「agent 对技能在**当前状态下可复用**的相对置信度」。估计：用**噪声对比估计（NCE）**训练**多头状态密度估计器**去逼近**密度比 dk(s)/p(s−)**（s− 是对状态加高斯噪声的扰动状态），并加 L2 正则防遗忘。作用：把各技能条件下的**动作 logit 加权求和**加到优势函数上（技能增强的优势函数），从而**用旧技能的行为去引导当前任务的学习**；梯度不通过该项回传。决策：面对新任务 m 时，看**期望状态密度** —— 若某旧头 k 的期望值**超过预设阈值 d0**（说明这些状态以前见过），就**复用该头**；否则**置信度低、需要扩张新头**。",
+      "evidence": [
+        {"page": 4, "quote": "To estimate dk(s), we consider noise contrastive estimation (NCE)"},
+        {"page": 4, "quote": "represents the relative confidence of the agent on whether skill"},
+        {"page": 4, "quote": "To reuse the skills acquired previously to guide the discovery of current task, we propose to augment the advantage function with the weighted sum of action logits"},
+        {"page": 5, "quote": "When facing a new task m, we identify if some head k ∈{1, · · · , m} can be reused based on the expected state density"},
+        {"page": 5, "quote": "If the expectation is above a prespecified threshold d0, indicating a high probability that the states have been seen before, then head k can be reused for task m."},
+        {"page": 5, "quote": "Otherwise, the confidence of current heads is low and expansion is needed."}
+      ],
+      "must_all": ["NCE"],
+      "must_any": ["复用性", "状态密度", "阈值", "优势函数", "扩张"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-S5",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "COMAD 的策略损失分几个阶段、各自用哪个损失？第一个任务和后续任务的差异在哪里？L2 正则用在哪、拿什么做锚点？",
+      "hint": "后续任务（m ≥ 2）的**策略损失分两个阶段**：**stage 1** 用**原始（vanilla）策略损失**（式 5）；**stage 2** 用**技能增强后的策略损失**（式 11），以有效复用旧技能。**第一个任务（m = 1）**只有一个阶段，直接用原始损失。**L2 正则**加在**特征提取器 F（以及状态特征提取器 FE）**上，**锚点是「任务 1 训练结束后保存的参数 checkpoint θF,1」**（之后每个任务 m ≥ 2 都向它靠拢），用来防止场景漂移带来的遗忘；该 L2 项在**两个阶段都被加进策略损失**。",
+      "evidence": [
+        {"page": 5, "quote": "In stage 1, the policy is trained via minimizing the vanilla policy loss"},
+        {"page": 5, "quote": "In stage 2, the policy is trained via minimizing the augmented policy loss in Equation (11) to effectively reuse old skills."},
+        {"page": 4, "quote": "Besides, forgetting may occur as the scenario shifts, thus we enforce the following L2 loss on the feature extractor F for task m ≥2"},
+        {"page": 5, "quote": "the L2 loss of the feature extractor F is added to the policy loss in both stages"}
+      ],
+      "must_all": ["stage 1", "stage 2"],
+      "must_any": ["vanilla", "augmented", "L2", "checkpoint", "遗忘"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-S6",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "评测用了哪五个环境？对比了哪三类方法、分别是哪些？「task-bounded 协议」在执行时允许用任务身份做什么、不允许做什么？",
+      "hint": "**五个环境**：**LBF（Level-based Foraging）**、**CN（Cooperative Navigation）**、**SMAC（含 Marines 与 Stalker-Zealot 两个场景）**、**SMACv2（含 Protoss / Zerg / Terran）**、**Multiagent MuJoCo（Reward / Dynamics 两类）**。**三类对比方法**：①**离线技能发现** —— **ODIS**（VAE 抽技能）与 **HiSSD**（分层 VAE + 对比学习，分离通用与任务专用技能），二者都依赖**固定规模技能库**；②**持续学习** —— **EWC**（Fisher 信息参数正则）与 **OWL**（多头参数隔离）；③**单头 vanilla** —— **MT**（在所有数据上联合训练，软上界）、**FT**（顺序微调，软下界）、**FS**（每任务重初始化，可塑性参照）。**task-bounded 协议**：任务身份**只用于输出头路由与参数保存**，训练与评测都如此。",
+      "evidence": [
+        {"page": 6, "quote": "We evaluate on five diverse environments"},
+        {"page": 6, "quote": "We compare against three categories of methods adapted for offline multi-agent continual cooperation."},
+        {"page": 6, "quote": "Both of them rely on fixed-size skill libraries."},
+        {"page": 6, "quote": "we use a task-bounded protocol at both continual training and evaluation, where task identities are only used for output head routing and parameter saving."}
+      ],
+      "must_all": ["SMACv2", "MAMuJoCo"],
+      "must_any": ["ODIS", "HiSSD", "OWL", "EWC", "LBF"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-S7",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "技能迁移案例分析（Marines-expert，5m_vs_6m 与 7m_vs_8m）说明了什么？前向迁移与后向迁移各自的机制是什么？",
+      "hint": "5m_vs_6m 的 **stage 1** 学到 **Focus Fire** 技能（协调单位集火），胜率约 **0.6**；同时 **5m_vs_6m 的输出头被高置信度复用到 7m_vs_8m 评测**，把该任务胜率提到**接近 0.3**（**零样本泛化**）。随后 **stage 2 的技能增强目标整合早期技能**，把胜率推到**超过 0.4**，给出更高起点 —— 这是**前向迁移**。另外，学 7m_vs_8m 时 5m_vs_6m 的胜率**从 0.6 提到约 0.8**：机制是学新 **Positioning** 技能时，agent 通过**共享特征提取器**顺带**微调了 5m_vs_6m 的 Disperse 技能** —— 这是**后向迁移**。",
+      "evidence": [
+        {"page": 8, "quote": "the agent acquires the Focus Fire skill to coordinate units to target specific enemies, achieving a win rate about 0.6"},
+        {"page": 8, "quote": "the output head of 5m_vs_6m is reused with a high confidence score for the evaluation of 7m_vs_8m, which improves the win rate to near 0.3 on task 7m_vs_8m, showcasing zero-shot generalization"},
+        {"page": 8, "quote": "when learning 7m_vs_8m, the win rate of 5m_vs_6m improves from 0.6 to roughly 0.8"},
+        {"page": 8, "quote": "while learning the novel Positioning skill for 7m_vs_8m, the agent also finetunes its Disperse skill for 5m_vs_6m through the shared feature extractor"},
+        {"page": 8, "quote": "remarkable phenomenon showcases the backward transfer ability of COMAD through skill partitioning."}
+      ],
+      "must_all": ["Focus Fire", "Disperse"],
+      "must_any": ["前向迁移", "后向迁移", "零样本", "Positioning", "共享特征提取器"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-S8",
+      "category": "single",
+      "role": "dev",
+      "intent": "method_detail",
+      "question": "消融实验（CN-expert 与 Marines-expert）分别去掉哪些组件、各自结论是什么？σs 与 d0 的敏感度结论是什么？",
+      "hint": "**CN-expert**：去掉**技能编码器（w/o Skill）影响最大**（学习与双向迁移都掉），说明**从数据中划分技能必要**；**关闭技能库扩张（w/o Expand）**与**统一复用性估计（w/o Delta）**也会掉，尤其伤**后向迁移**。**Marines-expert**（任务异质性更强）：**固定规模技能库（w/o Expand）**无法容纳新团队配置所需的演化技能，**迁移性差、整体性能差**；而去掉技能编码器（w/o Skill）**只轻微退化**（作者推测单任务数据集较简单，单体策略已够）；**去掉复用性估计（w/o Delta）显著损害前向迁移**（不加区分地复用旧技能带来干扰），它反而略微提高后向迁移，但作者认为这是**误导性信号**（起点差 → 后续恢复空间大，而非知识保留更好）。**敏感度**：σs 与 d0 取**中等值**时性能与迁移最好；σs 过大估计器会**被噪声带偏**、σs = 0 无法识别任务（BwT 最低），d0 过低等于**不过滤地复用**、过高则**过严**，都会拉低 P 与 BwT。",
+      "evidence": [
+        {"page": 8, "quote": "removing the skill encoders (w/o Skill) affects both learning and bidirectional transfer the most, emphasizing the necessity of partitioning skills from data"},
+        {"page": 8, "quote": "disabling skill library expansion (w/o Expand) and uniform reusability estimation (w/o Delta) also downgrade the performance and transfer, especially the backward transfer"},
+        {"page": 8, "quote": "We also analyze the sensitivity of the noise scale σs and the confidence threshold d0, showcasing that moderate choices of σs and d0 maximize performance and transfer"},
+        {"page": 24, "quote": "a fixed-size skill library (w/o Expand) fails to accommodate the evolving coordination skills required for new team configuration, leading to transferability loss and poor overall performance"},
+        {"page": 24, "quote": "the absence of reusability estimation (w/o Delta) significantly impairs forward transfer due to indiscriminative skill reuse and the resulting interference"}
+      ],
+      "must_all": ["w/o Skill", "w/o Expand"],
+      "must_any": ["w/o Delta", "前向迁移", "后向迁移", "σs", "d0"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3"
+    },
+    {
+      "qid": "5389-T1",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 Table 1 的 Overall 行，各算法的平均性能分别是多少？在 LBF-Expert 与 Marines-Expert 上，COMAD 与最强基线各是多少？",
+      "hint": "**Overall（9 个任务流平均）**：**COMAD 64.34** / MT 47.67 / FS 30.10 / FT 25.26 / EWC 28.44 / **OWL 59.84** / Rehearsal 36.93 / ODIS-FT 18.46 / HiSSD-FT 19.37 —— COMAD 比第二名 OWL 高 4.50。**LBF-Expert**：**COMAD 99.26 ± 0.08** vs **OWL 98.65 ± 0.35**（Rehearsal 97.07，MT 仅 79.26）。**Marines-Expert**：**COMAD 94.05 ± 0.83** vs **OWL 92.52 ± 0.97**（其余基线 ≤ 58.84）。",
+      "evidence": [
+        {"page": 8, "quote": "Table 1. Average performance ± std of different algorithms on task streams from LBF, CN, SMAC, SMACv2 and MAMuJoCo environments."},
+        {"page": 8, "quote": "Overall 64.34 47.67 30.10 25.26 28.44 59.84 36.93 18.46 19.37"},
+        {"page": 8, "quote": "LBF Expert 99.26 ± 0.08 79.26 ± 0.14 20.00 ± 0.00 7.83 ± 6.72 13.30 ± 0.53 98.65 ± 0.35 97.07 ± 0.66 16.48 ± 2.86 19.17 ± 1.70"},
+        {"page": 8, "quote": "Marines Expert 94.05 ± 0.83 48.63 ± 0.49 53.84 ± 4.81 53.66 ± 4.91 58.84 ± 5.08 92.52 ± 0.97 42.45 ± 28.24 17.83 ± 0.70 14.51 ± 0.20"}
+      ],
+      "must_all": ["64.34", "59.84"],
+      "must_any": ["99.26", "94.05", "98.65", "92.52"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2606.25389_p8.png 上核对 Table 1 的 Overall 行与 LBF-Expert / Marines-Expert 行"
+    },
+    {
+      "qid": "5389-T2",
+      "category": "table",
+      "role": "dev",
+      "intent": "table_number",
+      "question": "按 COMAD 论文 Table 1 的 Overall 行，属于「离线技能发现」与「持续学习」两类的基线分别是哪几个、Overall 各是多少？论文怎么解释这两类各自的短板？",
+      "hint": "**离线技能发现**：**ODIS-FT 18.46**、**HiSSD-FT 19.37** —— 两者 Overall 是全场最低，原因是**固定规模技能库**导致**可塑性丧失**（学不出可行策略）。**持续学习**：**EWC 28.44**（Fisher 信息的参数正则，但对数据集质量敏感）、**OWL 59.84**（多头参数隔离，是**最强基线**，能缓解任务冲突，但**缺少利用共享结构的迁移能力**）。对照单头 vanilla：**MT 47.67**（软上界）、**FS 30.10**（可塑性参照）、**FT 25.26**（软下界），另有 Rehearsal 36.93。",
+      "evidence": [
+        {"page": 8, "quote": "Table 1. Average performance ± std of different algorithms on task streams from LBF, CN, SMAC, SMACv2 and MAMuJoCo environments."},
+        {"page": 8, "quote": "Overall 64.34 47.67 30.10 25.26 28.44 59.84 36.93 18.46 19.37"},
+        {"page": 6, "quote": "Both of them rely on fixed-size skill libraries."},
+        {"page": 6, "quote": "Although OWL mitigates task conflicts through isolation, it lacks the transfer capability to exploit shared structures."}
+      ],
+      "must_all": ["18.46", "19.37"],
+      "must_any": ["ODIS", "HiSSD", "EWC", "59.84", "28.44"],
+      "must_not": [],
+      "expect": ["L3"],
+      "route_min": "L3",
+      "_verify": "已在渲染图 2606.25389_p8.png 上核对 Table 1 的 Overall 行（列序：COMAD / MT / FS / FT / EWC / OWL / Rehearsal / ODIS-FT / HiSSD-FT）"
+    },
+    {
+      "qid": "5389-N1",
+      "category": "negative",
+      "role": "dev",
+      "intent": "negative_check",
+      "question": "论文声称 COMAD 在所有环境与任务流上都优于多任务联合训练（MT，软上界）。这个说法对吗？",
+      "hint": "**不对。** 论文自己在 MAMuJoCo **Dynamics** 任务流上报告 MT **55.28** 高于 COMAD 的 **46.66**（Expert）/ 44.54 vs 53.14（Medium），并解释「极端物理变化使多数持续学习方法相对 MT 处于次优」；此外 **CN-Medium** 上 FT（60.67）与 FS（59.51）也高于 COMAD（47.05）。正确回答应指出 COMAD 并非在所有任务流上超过 MT，只在**多数**任务流上取得最好或接近最好的成绩。",
+      "evidence": [
+        {"page": 8, "quote": "in Dynamics tasks, extreme physical changes render most continual methods sub-optimal compared to MT"},
+        {"page": 8, "quote": "Dynamics Expert 46.66 ± 0.96 55.28 ± 4.27 23.24 ± 1.53 19.48 ± 0.53 15.65 ± 1.23 46.94 ± 4.31 14.77 ± 1.37 14.56 ± 1.52 16.86 ± 1.30"},
+        {"page": 8, "quote": "Medium 47.05 ± 2.03 32.33 ± 3.38 59.51 ± 0.60 60.67 ± 1.04 55.18 ± 1.43 33.33 ± 2.21 39.81 ± 1.35 10.48 ± 1.25 12.06 ± 2.01"}
+      ],
+      "must_all": [],
+      "must_any": ["不对", "并非", "不是", "Dynamics", "例外", "55.28", "低于"],
+      "must_not": [],
+      "expect": ["L0", "L3"],
+      "route_min": "L3"
+    }
+  ]
+}

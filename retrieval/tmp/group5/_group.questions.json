@@ -1,0 +1,611 @@
+{
+ "_note": "group5（测试时验证与扩展）组级题集 —— **只出 M1**（专测跨篇检索召回）。素材与引文口径同 group3/4。",
+ "group": "group5",
+ "corpus": [
+  "2408.15240",
+  "2504.00891",
+  "2504.16828",
+  "2509.23152",
+  "2609.19515"
+ ],
+ "questions": [
+  {
+   "qid": "G5-M1-1",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，验证器各自是什么**形态**（判别式打分 / 生成式 next-token 判定 / 显式 CoT 推理 / RL 训练的批评式验证器）？哪几篇是把「生成能力」引进验证器的？",
+   "hint": "**GenRM**（2408.15240）：把奖励建模当作 **next-token prediction** 训练（jointly on verification and solution generation），明确批评 LLM-based verifiers are typically trained as **discriminative classifiers**；**GenPRM**（2504.00891）：generative process reward model，做显式 **Chain-of-Thought (CoT)** 推理 + **code verification** 再给判断；**ThinkPRM**（2504.16828）：**verbalized step-wise** 长 CoT 验证器（生成 verification chain-of-thought）；**Mirror-Critique**（2509.23152）：用**RL 训练** + 生成多条 **critique**（不只说错、还说为什么）聚合成 verify score；**VRR / LLM-as-an-Improver**（2609.19515）：沿用现有验证器，但把反馈用于**改进候选**而非只排序。",
+   "must_all": [
+    "next-token prediction",
+    "Chain-of-Thought"
+   ],
+   "must_any": [
+    "判别式",
+    "生成式",
+    "CoT",
+    "RL",
+    "验证器"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2408.15240",
+     "quote": "To overcome this limitation, we instead propose training verifiers using the ubiquitous next-token prediction objective, jointly on verification and solution generation.",
+     "page": 1
+    },
+    {
+     "paper": "2408.15240",
+     "quote": "While LLM-based verifiers are typically trained as discriminative classifiers to score solutions, they do not utilize the text generation capabilities of pretrained LLMs.",
+     "page": 1
+    },
+    {
+     "paper": "2504.00891",
+     "quote": "In this work, we introduce GenPRM, a generative process reward model that performs explicit Chain-of-Thought (CoT) reasoning with code verification before providing judgm",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "This work aims to build data-efficient PRMs as verbalized step-wise reward models that verify every step in the solution by generating a verification chain-of-thought (Co",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "To bridge this gap, we introduce Mirror-Critique, a framework that trains a verifier with in- formative critiques.",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-2",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，监督信号是落在**过程（每一步）**还是**结果（整解）**？哪些篇明确反对只看标量分数？",
+   "hint": "**GenPRM**（2504.00891）最明确反对标量：点名当前 PRM 的三个问题，其中 (2) 是 dependence on **scalar value prediction** without leveraging the generative abilities of LLMs（另外两个是过程监督/泛化不足、以及第三项）；**ThinkPRM**（2504.16828）以 process labels 为监督，但强调只有 orders of magnitude fewer 就够；**GenRM**（2408.15240）用 next-token 目标联合训练验证与生成，摆脱纯判别打分；**Mirror-Critique**（2509.23152）用 critique（错在哪 + 为什么）替代单一分数，并称其局限源于 a lack of informative critique signals during verifier training；**VRR**（2609.19515）指出 selection-only inference 会把反馈压缩掉（A verifier may identify violated requirements ... yet selection-only inference compresses this informati）。",
+   "must_all": [
+    "scalar value",
+    "process labels"
+   ],
+   "must_any": [
+    "过程监督",
+    "结果",
+    "步级",
+    "标量",
+    "critique"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2504.00891",
+     "quote": "(1) limited process supervision and generalization capabilities, (2) dependence on scalar value prediction without leveraging the generative abilities of LLMs, and (3) in",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "We propose THINKPRM, a long CoT verifier fine-tuned on orders of magnitude fewer process labels than those required by discriminative PRMs.",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "While reward model selection is commonly employed in this approach, it often fails to identify minority-yet-correct answers, which limits its effective- ness beyond that",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "We argue that this limitation stems from a lack of informative critique signals during verifier training.",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "A verifier may iden- tify violated requirements, unsupported reasoning steps, failing cases, and unresolved claims, yet selection-only inference compresses this informati",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-3",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，**过程监督标签/批评数据**是从哪来的？哪几篇把「标签要得少」或「自动合成」当作卖点？",
+   "hint": "**ThinkPRM**（2504.16828）：最强调标签效率 —— 只用 **1% of the process**（PRM800K 的 1%）就超过用全量标签训练的判别式验证器；**GenPRM**（2504.00891）：提出 **Relative Progress Estimation (RPE)** + rationale synthesis 框架自动获取高质量过程监督标签与理由；**Mirror-Critique**（2509.23152）：用小的 instruction-tuned 模型 + **rejection sampling** 合成高质量 critique 数据；**GenRM**（2408.15240）：用 next-token 目标联合训练，天然复用已有解数据；**VRR**（2609.19515）：只用**推理期信息**过滤无效/重复候选（It filters invalid and duplicate candidates using only inference- time information）。",
+   "must_all": [
+    "1% of the process",
+    "Relative Progress Estimation"
+   ],
+   "must_any": [
+    "标签",
+    "合成",
+    "拒绝采样",
+    "自动",
+    "监督数据"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2504.16828",
+     "quote": "Our approach capitalizes on the inherent reasoning abilities of long CoT models, and outperforms LLM-as-a-Judge and discriminative verifiers-using only 1% of the process",
+     "page": 1
+    },
+    {
+     "paper": "2504.00891",
+     "quote": "To obtain high-quality process supervision labels and rationale data, we propose Relative Progress Estimation (RPE) and a rationale synthesis framework that incorporates",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "We deploy a small instruction-tuned model to synthesize high-quality critique data with re- jection sampling that teaches the verifier not only what is wrong, but also wh",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "It filters invalid and duplicate candidates using only inference- time information and then reselects the final answer under the original evaluation criteria.",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-4",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，验证的反馈**只用来排序**，还是还能**改候选**？哪一篇的框架名字就写了这件事？",
+   "hint": "**VRR / LLM-as-an-Improver**（2609.19515）最直接：**Verify-Repair-Reselect**，用验证反馈生成并重选改进候选（uses verification feedback to generate and reselect improved candidates），并保留初始 winner、条件生成三个补充候选（winner/runner-up 的 repaired 版本 + 第三个）；**Mirror-Critique**（2509.23152）把多条 critique 聚合成 **verify score** 用于 weighted selection（仍是选择，但比单一分数信息更丰富）；**GenRM**（2408.15240）/ **GenPRM**（2504.00891）/ **ThinkPRM**（2504.16828）主要把验证器用于 **Best-of-N / reward-guided search** 的排序与搜索引导（排序型）。",
+   "must_all": [
+    "VRR",
+    "verify score"
+   ],
+   "must_any": [
+    "排序",
+    "改进",
+    "修复",
+    "重选",
+    "加权"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2609.19515",
+     "quote": "To this end, we in- troduce LLM-as-an-Improver and propose Verify-Repair-Reselect (VRR), which uses verification feedback to generate and reselect improved candidates.",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "VRR retains the initial winner while conditionally generating three complementary al- ternatives: repaired versions of the winner and runner-up, and a solution based on a",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "The resulting Mirror-Verifier is deployed to eval- uate candidate solutions by generating multiple critiques per solution, aggregating them into a verify score used for w",
+     "page": 1
+    },
+    {
+     "paper": "2408.15240",
+     "quote": "A common approach is the Best-of-N method, where N candidate solutions generated by the LLM are ranked by a verifier, and the best one is selected.",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "Specifically, THINKPRM beats the baselines on ProcessBench, MATH-500, and AIME '24 under best-of-N selection and reward-guided search.",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-5",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里的候选**聚合/搜索方式**分别是什么（Best-of-N / 多数投票 / 加权选择 / beam 搜索 / 修复重选）？哪几篇明确拿**多数投票**当对照基线？",
+   "hint": "**GenRM**（2408.15240）：Best-of-N（N 个候选由验证器排序）；**ThinkPRM**（2504.16828）：best-of-N selection 与 **reward-guided search**（beam，图中横轴为 Number of beams）；**Mirror-Critique**（2509.23152）：把 majority voting 当对照，自述 significantly outperforms ma- jority voting in terms of solution accuracy；**VRR**（2609.19515）：先用初始池选出 winner，再**修复/重选**（并对比 fixed-pool verifier-based selection）；**GenPRM**（2504.00891）：同时给出 Pass@1 与 Maj@8 口径。",
+   "must_all": [
+    "majority voting",
+    "reward-guided search"
+   ],
+   "must_any": [
+    "Best-of-N",
+    "投票",
+    "beam",
+    "重选",
+    "加权"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2509.23152",
+     "quote": "The experimental results show that our Mirror-Verifier significantly outperforms ma- jority voting in terms of solution accuracy and also improves the solver's honesty to",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "Specifically, THINKPRM beats the baselines on ProcessBench, MATH-500, and AIME '24 under best-of-N selection and reward-guided search.",
+     "page": 1
+    },
+    {
+     "paper": "2408.15240",
+     "quote": "A common approach is the Best-of-N method, where N candidate solutions generated by the LLM are ranked by a verifier, and the best one is selected.",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "Across diverse models and code-generation and reasoning benchmarks, VRR improves over fixed-pool verifier-based selection in many settings and can recover correct solutio",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-6",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇报告了哪些**关键数字**（提升幅度 / 标签用量）？请给出至少两个不同论文的数字并说明口径。",
+   "hint": "**GenRM**（2408.15240）：Best-of-N 在 algorithmic reasoning 上 **5% → 45.3%**（Best-of-32 口径）、GSM8K 上 73.0 等；**ThinkPRM**（2504.16828）：只用 **1% of the process**（PRM800K）标签，且在 out-of-domain 的 GPQA-Diamond / LiveCodeBench 上比用全量标签训练的判别式验证器高 **8%** 与 **4.5%**；**GenPRM**（2504.00891）：在多个 PRM 基线上做对比（含 Pass@1 / Maj@8）；**Mirror-Critique**（2509.23152）：solution accuracy 与 honesty 双升；**VRR**（2609.19515）：多种模型 + code/推理基准上优于 fixed-pool selection。",
+   "must_all": [
+    "5%",
+    "4.5%"
+   ],
+   "must_any": [
+    "5%",
+    "1% of the process",
+    "8%",
+    "73.0",
+    "提升"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2408.15240",
+     "quote": "We demonstrate that GenRM outperforms discriminative, DPO verifiers, and LLM-as-a-Judge, resulting in large performance gains with Best-of-N, namely 5% →45.3% on algorith",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "In an out-of- domain evaluation over subsets of GPQA-Diamond and LiveCodeBench, our PRM surpasses discriminative verifiers trained with the full PRM800K by 8% and 4.5%, r",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "Our approach capitalizes on the inherent reasoning abilities of long CoT models, and outperforms LLM-as-a-Judge and discriminative verifiers-using only 1% of the process",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-7",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇分别在**哪些基准**上评测？哪几篇做了**领域外（OOD）**评测？",
+   "hint": "**ThinkPRM**（2504.16828）：**ProcessBench、MATH-500、AIME '24**（in-domain）+ **GPQA-Diamond、LiveCodeBench** 子集（out-of-domain）；**GenRM**（2408.15240）：algorithmic reasoning（2 tasks）与 **GSM8K**（grade-school math）；**GenPRM**（2504.00891）：数学/代码并给出 Pass@1 与 Maj@8，对照 Skywork-PRM、Qwen2.5-Math-PRM 系列；**Mirror-Critique**（2509.23152）：解准确率 + solver honesty；**VRR**（2609.19515）：**code-generation 与 reasoning** 多基准、多模型。",
+   "must_all": [
+    "ProcessBench",
+    "LiveCodeBench"
+   ],
+   "must_any": [
+    "GSM8K",
+    "MATH-500",
+    "AIME",
+    "GPQA",
+    "基准"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2504.16828",
+     "quote": "Specifically, THINKPRM beats the baselines on ProcessBench, MATH-500, and AIME '24 under best-of-N selection and reward-guided search.",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "In an out-of- domain evaluation over subsets of GPQA-Diamond and LiveCodeBench, our PRM surpasses discriminative verifiers trained with the full PRM800K by 8% and 4.5%, r",
+     "page": 1
+    },
+    {
+     "paper": "2408.15240",
+     "quote": "We demonstrate that GenRM outperforms discriminative, DPO verifiers, and LLM-as-a-Judge, resulting in large performance gains with Best-of-N, namely 5% →45.3% on algorith",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "Across diverse models and code-generation and reasoning benchmarks, VRR improves over fixed-pool verifier-based selection in many settings and can recover correct solutio",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-8",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，谁把「**诚实性**」或「**少数派但正确的答案**」当优化目标？各自怎么做？",
+   "hint": "**Mirror-Critique**（2509.23152）最直接：指出 reward model selection often fails to identify **minority-yet-correct** answers，其 Mirror-Verifier 不但提升 solution accuracy，**also improves the solver's honesty**；**ThinkPRM**（2504.16828）用长 CoT 逐句验证（生成验证链）→ 更可解释/更不易被单点分数误导；**VRR**（2609.19515）指出排序无法修复搜索空间 —— if every candidate in the initial pool is incorrect, even an **oracle selector** must fail（即「诚实」地承认选择器的能力边界）；**GenPRM**（2504.00891）用显式 CoT + code verification 让判断有据；**GenRM**（2408.15240）用生成式验证使判定可解释、并对齐指令微调。",
+   "must_all": [
+    "minority-yet-correct",
+    "honesty"
+   ],
+   "must_any": [
+    "诚实",
+    "校准",
+    "少数派",
+    "可解释",
+    "边界"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2509.23152",
+     "quote": "While reward model selection is commonly employed in this approach, it often fails to identify minority-yet-correct answers, which limits its effective- ness beyond that",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "The experimental results show that our Mirror-Verifier significantly outperforms ma- jority voting in terms of solution accuracy and also improves the solver's honesty to",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "Moreover, ranking cannot repair the search space: if every candidate in the initial pool is incorrect, even an oracle selector must fail.",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-9",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇各自指出的**现有验证方案根本缺陷**是什么？（至少说出三篇的不同缺陷）",
+   "hint": "**GenRM**（2408.15240）：判别式验证器**不利用生成能力**（trained as discriminative classifiers，they do not utilize the text generation capabilities）；**GenPRM**（2504.00891）：PRM 三问题 —— 过程监督与泛化受限、只做 **scalar value prediction**、以及第三项；**ThinkPRM**（2504.16828）：过程标签**昂贵**（PRMs require step-level supervision, making them expensive to train）；**Mirror-Critique**（2509.23152）：缺**informative critique** 信号 → 抓不到 minority-yet-correct；**VRR**（2609.19515）：selection-only 会压缩反馈、且**排序无法修复搜索空间**（if every candidate ... is incorrect, even an oracle selector must fail）。",
+   "must_all": [
+    "discriminative classifiers",
+    "oracle selector"
+   ],
+   "must_any": [
+    "标量",
+    "昂贵",
+    "反馈",
+    "少数派",
+    "搜索空间"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2408.15240",
+     "quote": "While LLM-based verifiers are typically trained as discriminative classifiers to score solutions, they do not utilize the text generation capabilities of pretrained LLMs.",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "Moreover, ranking cannot repair the search space: if every candidate in the initial pool is incorrect, even an oracle selector must fail.",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "We argue that this limitation stems from a lack of informative critique signals during verifier training.",
+     "page": 1
+    },
+    {
+     "paper": "2504.00891",
+     "quote": "(1) limited process supervision and generalization capabilities, (2) dependence on scalar value prediction without leveraging the generative abilities of LLMs, and (3) in",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "but training them requires expensive step-level supervision",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-10",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇各自把**什么当对照基线**？哪几篇拿 LLM 直接当裁判（LLM-as-a-Judge）做比较？",
+   "hint": "**GenRM**（2408.15240）明确对照三类：**discriminative、DPO verifiers、LLM-as-a-Judge**，并自称全面优于它们；**ThinkPRM**（2504.16828）对照 **LLM-as-a-Judge 与判别式验证器**（并用全量 PRM800K 训练者做参照）；**GenPRM**（2504.00891）对照 Skywork-PRM、Qwen2.5-Math-PRM（含 1.5B/7B/72B 与 PRM800K 变体）；**Mirror-Critique**（2509.23152）对照 **majority voting**（以及 RM selection）；**VRR**（2609.19515）对照 **fixed-pool verifier-based selection** 与「oracle selector」这种理论上界。",
+   "must_all": [
+    "LLM-as-a-Judge",
+    "DPO verifiers"
+   ],
+   "must_any": [
+    "基线",
+    "对照",
+    "判别式",
+    "多数投票",
+    "上界"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "evidence": [
+    {
+     "paper": "2408.15240",
+     "quote": "We demonstrate that GenRM outperforms discriminative, DPO verifiers, and LLM-as-a-Judge, resulting in large performance gains with Best-of-N, namely 5% →45.3% on algorith",
+     "page": 1
+    },
+    {
+     "paper": "2504.16828",
+     "quote": "Our approach capitalizes on the inherent reasoning abilities of long CoT models, and outperforms LLM-as-a-Judge and discriminative verifiers-using only 1% of the process",
+     "page": 1
+    },
+    {
+     "paper": "2509.23152",
+     "quote": "The experimental results show that our Mirror-Verifier significantly outperforms ma- jority voting in terms of solution accuracy and also improves the solver's honesty to",
+     "page": 1
+    },
+    {
+     "paper": "2609.19515",
+     "quote": "Across diverse models and code-generation and reasoning benchmarks, VRR improves over fixed-pool verifier-based selection in many settings and can recover correct solutio",
+     "page": 1
+    }
+   ]
+  },
+  {
+   "qid": "G5-M1-11",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇以「同一计算预算下的受控比较」为判据来论证验证器的优势？各自的采样与聚合方式是什么？",
+   "hint": "三篇：**ThinkPRM**（2504.16828）明确在**同一计算预算**下优于自一致性（self-consistency），高采样区间尤其明显；**GenPRM**（2504.00891）把测试时计算量扩展描述为「从策略模型采样多条响应，再用 GenPRM 选出最终答案」；**GenRM**（2408.15240）用**多数投票**（采样多条 CoT、取平均分）进一步提升 CoT 验证器的准确率。另两篇没有以同预算受控比较为主判据。",
+   "evidence": [
+    {
+     "paper": "2504.16828",
+     "page": 2,
+     "quote": "THINKPRM outperforms self-consistency (Wang et al., 2022) when using the same compute budget, especially under high sampling regimes"
+    },
+    {
+     "paper": "2504.00891",
+     "page": 5,
+     "quote": "To scale the test-time compute of policy models, we can sampling multiple responses from policy models and then use GenPRM as a verifier to select the final answer"
+    },
+    {
+     "paper": "2408.15240",
+     "page": 2,
+     "quote": "We can further boost verification accuracy of CoT verifiers using majority-voting"
+    }
+   ],
+   "must_all": [
+    "same compute budget",
+    "test-time scaling"
+   ],
+   "must_any": [
+    "计算预算",
+    "采样",
+    "受控",
+    "聚合"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `same compute budget`（16828 p2 正文）与 `test-time scaling`（00891 正文，probe 多篇视图✓）跨 2 篇；⚠️ 均为脆弱形状（纯小写）。"
+  },
+  {
+   "qid": "G5-M1-12",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇报告了训练数据的配比、规模或标签量？数字与口径分别是什么？",
+   "hint": "三篇给了可核对的数字/口径：**GenRM**（2408.15240）用一个超参 λ 控制**验证数据与生成数据的混比**；**ThinkPRM**（2504.16828）的采样一直做到拿到 **1K 条验证 CoT**，对应 **8K 条步骤标签**；**GenPRM**（2504.00891）在构造过程标签时，若**采样 2048 条**响应后仍找不到正确/错误的路径就丢弃该题。",
+   "evidence": [
+    {
+     "paper": "2408.15240",
+     "page": 5,
+     "quote": "is a hyperparameter that controls the mixture ratio between verification (Dverify) and gener- ating correct"
+    },
+    {
+     "paper": "2504.16828",
+     "page": 4,
+     "quote": "The sampling process continues until we obtain 1K verification CoTs which coreepond to 8K step labels in total."
+    },
+    {
+     "paper": "2504.00891",
+     "page": 6,
+     "quote": "If no correct or incorrect paths are found after sampling 2048 responses, we discard the corresponding problems."
+    }
+   ],
+   "must_all": [
+    "mixture ratio",
+    "8K step labels"
+   ],
+   "must_any": [
+    "配比",
+    "规模",
+    "标签量",
+    "数字"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `mixture ratio`（2408 p5 正文）与 `8K step labels`（16828 p4 正文）跨 2 篇，probe 双绿。⚠️ 16828 原文该句有拼写 `coreepond`，引文按原文（snap 会校正逐字）。"
+  },
+  {
+   "qid": "G5-M1-13",
+   "kind": "M1",
+   "role": "dev",
+   "intent": "cross_paper",
+   "question": "这五篇里，哪几篇针对「高质量批评/过程标签很贵」提出了低成本替代？各自怎么做？",
+   "hint": "三篇用了同一族手段（**拒绝采样 / 自采样**）但动机不同：**Mirror-Critique**（2509.23152）指出高质量批评数据常需向**闭源模型**采样、成本过高，于是改在**开源指令微调模型**上做拒绝采样合成批评数据；**ThinkPRM**（2504.16828）的路线本身就是**拒绝采样微调**（rejection sampling finetuning）；**GenPRM**（2504.00891）用**基于补全的采样**估计每一步的正确概率，并对采不到路径的题直接丢弃。",
+   "evidence": [
+    {
+     "paper": "2509.23152",
+     "page": 1,
+     "quote": "obtaining high-quality critique data often requires sampling from closed- source models, making this approach prohibitively expensive"
+    },
+    {
+     "paper": "2509.23152",
+     "page": 2,
+     "quote": "We generate high-quality critique data via rejection sampling on an open-source, instruction-tuned model."
+    },
+    {
+     "paper": "2504.16828",
+     "page": 4,
+     "quote": "also known as rejection sampling finetuning"
+    },
+    {
+     "paper": "2504.00891",
+     "page": 6,
+     "quote": "If no correct or incorrect paths are found after sampling 2048 responses, we discard the corresponding problems."
+    }
+   ],
+   "must_all": [
+    "rejection sampling finetuning",
+    "2048 responses"
+   ],
+   "must_any": [
+    "拒绝采样",
+    "低成本",
+    "合成",
+    "贵"
+   ],
+   "must_not": [],
+   "expect": [
+    "L3"
+   ],
+   "route_min": "L3",
+   "_verify": "锚点 `rejection sampling finetuning`（16828 p4 正文）与 `2048 responses`（00891 p6 正文）跨 2 篇，probe 双绿。"
+  }
+ ]
+}

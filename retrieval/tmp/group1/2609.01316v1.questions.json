@@ -172,7 +172,7 @@
         {"page": 9, "quote": "Chart summaries are net-neutral to negative on aggregate and clearly harmful on some domains, and main-entity strings retain source-language forms that act as confounders on French"}
       ],
       "must_all": ["2.1", "8k"],
-      "must_any": ["ColEmbed", "0.038", "chart"],
+      "must_any": ["ColEmbed", "0.038", "chart", "字段", "schema"],
       "must_not": [],
       "expect": ["L3"],
       "route_min": "L3"
@@ -224,7 +224,7 @@
         {"page": 7, "quote": "Retrieval path\nLatency\nMemory\nlower is better\nBM25\n1.0×\n1.0×\nEnriched BM25F\n3.4×\n2.5×\nMIDR Hybrid\n14.0×\n7.5×\nColQwen2.5\n27.9×\n65.0×"}
       ],
       "must_all": ["14.0", "7.5", "27.9", "65.0"],
-      "must_any": ["Latency", "Memory"],
+      "must_any": ["Latency", "Memory", "延迟", "内存"],
       "must_not": [],
       "expect": ["L3"],
       "route_min": "L3",
@@ -259,7 +259,7 @@
         {"page": 9, "quote": "Our evaluation covers ViDoRe V3, with detailed analysis on five English-document domains and a targeted cross-lingual study on two French-document domains."}
       ],
       "must_all": [],
-      "must_any": ["未报告", "未给出", "未提供", "没有报告", "没有给出", "没有提供", "未涉及", "只到检索"],
+      "must_any": ["未报告", "未给出", "未提供", "没有报告", "没有给出", "没有提供", "未涉及", "只到检索", "而非", "没有任何"],
       "must_not": [],
       "expect": ["L0", "L3"],
       "route_min": "L0",
