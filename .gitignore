@@ -117,6 +117,25 @@ retrieval/results/*.jsonl
 retrieval/results/*.npy
 retrieval/results/*.csv
 retrieval/_scratch/
+
+# ── 评测/跑批的**产物与临时文件**（可再生）—— 2026-10-05 补 ────────
+# ⚠️ 报告 `retrieval/results/*.md` **仍入库**（现 85 份）—— 这里是产出物本身。
+#    挡之前已逐个核对：这些模式下的**已入库文件数为 0**（避免"一刀切挡住真东西"）。
+retrieval/results/*/
+retrieval/tmp/_sbx/
+retrieval/tmp/_rerank/
+retrieval/tmp/__pycache__/
+retrieval/tmp/*.err
+retrieval/tmp/*.pid
+retrieval/tmp/*.log
+retrieval/tmp/*.out
+retrieval/tmp/*.png
+# ⚠️ `retrieval/tmp/*.py`（约 294 个）**故意不挡**：其中混着**被 import 的库**
+#    （`_r2_std_metrics.py` 被 37 个文件引用、`_sandbox.py` 被 16 个），不是一次性垃圾。
+#    要先把「库」与「一次性实验」分开（阶段 5），在此之前**保持可见**，不藏。
+qa/multi/_runs/
+!qa/multi/_runs/cross_20260923.json
+# ↑ 单独放行：这个文件其实是**题集**（qid/kind/question/hint），误放在 `_runs/` 里。
 # ── 出题工作区 retrieval/tmp/<group>/ ─────────────────────
 # **题集真源在 `retrieval/tmp/<group>/*.questions.json`**（含 gold `evidence` 引文）
 # → **必须入库**（`qa/questions/` 下的是 `_export_questions.py` 导出的衍生副本）。
