@@ -245,7 +245,79 @@ def main() -> int:
         Path(args.out).write_text(json.dumps(recs, ensure_ascii=False, indent=1),
                                   encoding="utf-8")
         print(f"\n→ 落盘 {args.out}")
+
+    _emit_report(args.group, recs)
     return 0
+
+
+def _emit_report(group: str, recs: list[dict]) -> None:
+    """把**汇总指标**落进统一记录格式（`evals/report.py`）—— 让各层数字可比。
+
+    为什么单独做这一步：上面所有汇总**只 print 到 stdout，跑完就没了** →
+    无法与历史比、也无法与 L1/L2 放在一张表里（要翻日志考古）。
+
+    ⚠️ **失败绝不影响评测**：报告只是记录，跑批本身已经完成；这里 try 住并告警。
+    """
+    try:
+        sys.path.insert(0, str(ROOT))
+        from evals import report as R  # noqa: PLC0415
+
+        n = len(recs)
+        if not n:
+            return
+        ev = f"qa/multi/_runs/{group}_graph.json"
+        common = dict(layer="L3", name=f"{group}_graph", evidence_path=ev)
+
+        def rate(key: str, ok_key: str, subset: list[dict], note: str) -> dict:
+            k = sum(1 for r in subset if r.get(ok_key))
+            return dict(metric=key, value=(k / len(subset)) if subset else 0.0,
+                        n=len(subset) or 1, note=note, **common)
+
+        A = [r for r in recs if r["group"] == "A"]
+        B = [r for r in recs if r["group"] == "B"]
+        out = [
+            rate("qa.ok", "ok", recs, "锚点命中率（含引用通道）／全部 A+B 题"),
+            rate("qa.ok_strict", "ok_strict", recs,
+                 "**仅答案判分**（不含引用通道）／全部题"),
+            rate("qa.ok_a", "ok", A, "A 组：指向某一篇的题@多篇语料（单篇层）"),
+            rate("qa.ok_b", "ok", B, "B 组：跨篇问题（新能力）"),
+        ]
+        for kind, desc in (("M0", "多篇·免检索（答案须落在 5 篇 L0 材料里）"),
+                           ("M1", "跨篇·需下钻检索"),
+                           ("X5", "语料级拒答（5 篇都没有）")):
+            ks = [r for r in recs if str(r.get("kind")) == kind]
+            if ks:
+                out.append(rate(f"qa.kind_{kind.lower()}", "ok", ks, f"B 组 {kind}：{desc}"))
+
+        # 健康度：这几项**应为 0**，非 0 就是链路出了问题（比准确率更该先看）
+        off = sum(1 for r in recs if r["l3_path"] and r["l3_path"] not in (
+            "fullctx", "layered_quota", "layered_quota+xling"))
+        out += [
+            dict(metric="qa.reader_offlabel", value=off, n=n,
+                 note="走了**非生产**读取路径的题数（白名单 fullctx/layered_quota"
+                      "/layered_quota+xling）；**应为 0**", **common),
+            dict(metric="qa.validator_rewritten",
+                 value=sum(1 for r in recs if (r.get("validator_action") or "pass") != "pass"),
+                 n=n, note="答案被闸门**改写/拦下**过的题数（pass 之外都算）", **common),
+            dict(metric="qa.parse_degraded",
+                 value=sum(1 for r in recs if r["parse_degraded"]), n=n,
+                 note="解析降级（MinerU→pymupdf）的题数", **common),
+        ]
+        if any(r.get("prompt_tokens") for r in recs):
+            pt = sum(int(r.get("prompt_tokens") or 0) for r in recs)
+            ct = sum(int(r.get("completion_tokens") or 0) for r in recs)
+            out += [
+                dict(metric="qa.avg_prompt_tokens", value=pt / n, n=n,
+                     note="平均输入 token／题（含 fullctx 直灌的整篇上下文）", **common),
+                dict(metric="qa.cost_cny", value=(pt * 1 + ct * 2) / 1e6, n=n,
+                     note="按 deepseek-chat 参考价 ¥1/¥2 每百万 token 估算", **common),
+            ]
+        p = R.emit(*out)
+        print(f"→ 汇总记录已落 {p.relative_to(ROOT)}（{len(out)} 条；"
+              f"`python evals/report.py --table` 可看全层对比）")
+    except Exception as e:  # noqa: BLE001  报告失败不能弄挂评测
+        print(f"⚠️ 汇总记录落盘失败（不影响本次评测结果）：{type(e).__name__}: {e}",
+              file=sys.stderr)
 
 
 if __name__ == "__main__":

@@ -160,6 +160,11 @@ retrieval/tmp/**/*.txt
 # 归档到 `_gold_history/<group>/`：保留可追溯性，但不再进 git status、不再误导。
 retrieval/tmp/_gold_history/
 
+# ── 评测结果的统一记录（evals/report.py）──────────────────
+# 可再生成（每次跑批追加）。要入库的是**汇总摘要**（`evals/report.py --md`
+# 的输出，落到某个 .md），与「报告入库、产物不入库」一致。
+evals/reports/
+
 # ── 系统杂项 ────────────────────────────────────────────
 Thumbs.db
 # ↑ 测试临时目录：本身带权限问题（Windows），每次 `git status` 都会吐

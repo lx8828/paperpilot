@@ -44,13 +44,16 @@
 evals/
   README.md                  本文件：分层、触发、现状、归属
   baselines/                 ① 基线（棘轮）：只进不退
-    path_liveness.json         已知悬空引用（78 条，历史债）
-  checks/                    ② L0 不变量
+    path_liveness.json         已知悬空引用（66 条，历史债）
+    tmp_scripts.json           retrieval/tmp 脚本分类（库/入口/归档判定）
+  checks/                    ② L0 不变量（只读工具）
     path_liveness.py           路径存活棘轮（--update 收缩基线）
+    tmp_scripts_audit.py       retrieval/tmp 脚本分类器（analyze() 纯分析）
+  report.py                  ③ **统一记录格式** —— 让各层数字能放一张表里比
+  reports/                     落盘（**gitignore**：可再生成；入库的是 .md 摘要）
   (待建)
-  datasets/                  ③ 题集与真值（**只放指针**，实体仍在原处）
-  runners/                   ④ 一层一个入口（统一 CLI + 统一报告 schema）
-  report/                    ⑤ 结果落盘与对比
+  datasets/                  题集与真值（**只放指针**，实体仍在原处）
+  runners/                   一层一个入口（**L3 已接 `report.emit`**，L1/L2 待接）
 ```
 
 ### 三条硬约定
@@ -72,7 +75,9 @@ evals/
 | gold 是否全部入库 | `tests/test_eval_assets.py` | 磁盘上**每个** gold 都已在 git（曾 15 个只入库 7 个） |
 | r2dev 真值是否入库 | 同上 | 现役真值 + 题集 + 子查询在库；大件/可再生件**不**在库 |
 | gold ↔ 导出是否同步 | 同上 + `_check_export_sync.py` | 不同步 = 跑批**静默测另一份题** |
-| 悬空路径引用 | `evals/checks/path_liveness.py` + `tests/test_path_liveness.py` | 无**新增**悬空引用（棘轮） |
+| 悬空路径引用 | `evals/checks/path_liveness.py` + `tests/test_path_liveness.py` | 无**新增**悬空引用（棘轮，66 条历史债不阻塞） |
+| `retrieval/tmp` 脚本归属 | `evals/checks/tmp_scripts_audit.py` + `tests/test_tmp_scripts_audit.py` | 保留脚本**已入库**；归档**不造断 import** |
+| 统一记录格式 | `evals/report.py` + `tests/test_evals_report.py` | 缺 `n`/`note` 的记录**写不进去**；round-trip 可读 |
 | 草稿/备份是否混在 gold 旁 | `tests/test_eval_assets.py` | 无（同前缀会让人改错文件） |
 | CLI 入口能否跑 | 同上（`@pytest.mark.local`） | `cli/eval/*.py --help` 退出码 0（验证 `parents[2]`） |
 
@@ -94,6 +99,13 @@ evals/
    **要拆 `lib/` + `runners/`，前提是先改成包导入**（`import evals.lib.x`），
    那是独立的一次重构，不该混在"归档清理"里做。
 
-2. **统一报告 schema**：现在每层各写各的 JSON，无法横向对比。定一个
-   `{layer, name, metric, value, n, baseline, delta, evidence_path}` 的最小 schema。
-3. **L4 重跑能力**：QAMPARI / LoFT 目前只有历史记录；要做成"一条命令重跑并出官方口径数"。
+2. **把 L1 / L2 也接上 `report.emit`**（L3 已接，见 `cli/eval/run_group_qa.py`
+   的 `_emit_report`）。现在 L1 落**纯文本**、L2 落 **CSV**，两者的**汇总指标
+   都只 print**。接上后 `python evals/report.py --table` 才能一次看到三层。
+   ⚠️ 接的时候**别顺手改各自的判分口径** —— 那是另一件事。
+
+3. **指标棘轮**（schema 就位后才可能）：把 `evals/baselines/metrics.json` 存成
+   每个指标的**基线值 + 容差**，跑批后自动比 —— "这次比上次掉了几个点"变成一条
+   断言。★ **必须带容差**：M1 噪声底 ≈ ±16pt，硬比会天天误报。
+
+4. **L4 重跑能力**：QAMPARI / LoFT 目前只有历史记录；要做成"一条命令重跑并出官方口径数"。
