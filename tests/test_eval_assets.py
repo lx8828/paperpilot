@@ -172,7 +172,38 @@ def test_no_draft_or_backup_next_to_gold():
                         + "\n  ".join(decoys))
 
 
-# ─────────────────────── ⑤ 入口真能跑（慢，默认跳过）───────────────────────
+# ─────────────────── ⑤ gold ↔ runner 产物 同步（防"测了另一份题"）───────────────────
+
+def _groups() -> list[str]:
+    return sorted(p.name for p in (ROOT / "retrieval" / "tmp").glob("group*")
+                  if p.is_dir())
+
+
+@pytest.mark.parametrize("group", _groups())
+def test_export_products_match_gold(group: str):
+    """两层导出产物必须与 gold 逐字段同步。
+
+    这是**最值钱**的一条：不同步时跑批**不报错**，只是静默地漏跑新增题、
+    或用旧锚点判分 —— 报出来的数字看着正常，其实测的是另一份题。
+
+    曾发生（2026-10-05 实测）：5 个组**全部不同步** —— group1 的 gold 已扩到 26 题
+    而导出还停在 20 题，另有多组导出**从未入库**。根因都是「改了 gold 没重导出」。
+
+    复用仓库自带的 `_check_export_sync.py`（**不重写一份比对逻辑** ——
+    判据分两处必漂移，这正是当初发现假测试的原因）。
+    """
+    r = subprocess.run(
+        [sys.executable, "retrieval/scripts/_check_export_sync.py",
+         "--group", group],
+        cwd=ROOT, capture_output=True, encoding="utf-8", errors="replace",
+        timeout=180)
+    assert r.returncode == 0, (
+        f"{group} 的导出产物与 gold **不同步** —— 跑批会静默漏题或按旧锚点判分：\n"
+        f"{r.stdout[-1500:]}\n"
+        f"修：python retrieval/scripts/_export_questions.py --group {group}")
+
+
+# ─────────────────────── ⑥ 入口真能跑（慢，默认跳过）───────────────────────
 
 @pytest.mark.local
 @pytest.mark.parametrize("rel", [
