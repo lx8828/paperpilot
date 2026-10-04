@@ -133,6 +133,10 @@ retrieval/tmp/*.png
 # ⚠️ `retrieval/tmp/*.py`（约 294 个）**故意不挡**：其中混着**被 import 的库**
 #    （`_r2_std_metrics.py` 被 37 个文件引用、`_sandbox.py` 被 16 个），不是一次性垃圾。
 #    要先把「库」与「一次性实验」分开（阶段 5），在此之前**保持可见**，不藏。
+# ↓ 一次性实验脚本的归档（2026-10-05）。**移动而非删除**：判定依据
+#   （是否被引用 / 是否被报告引用过）全在 `evals/baselines/tmp_scripts.json`，
+#   可复核、可搬回。分类器：`evals/checks/tmp_scripts_audit.py`（只读，可重跑）。
+retrieval/tmp/_archive/
 qa/multi/_runs/
 !qa/multi/_runs/cross_20260923.json
 # ↑ 单独放行：这个文件其实是**题集**（qid/kind/question/hint），误放在 `_runs/` 里。

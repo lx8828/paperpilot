@@ -1,0 +1,1051 @@
+{
+ "note": "retrieval/tmp/*.py 分类（库/入口/一次性）+ 保留/归档判定。生成器：retrieval/tmp/_dep_graph.py（只读，可重跑复核）",
+ "counts": {
+  "scratch": 37,
+  "entrypoint": 86,
+  "library": 12
+ },
+ "decision": {
+  "_ab_xlingk_report": "archive",
+  "_align_check": "keep",
+  "_anchor_bridge": "archive",
+  "_anchor_context": "archive",
+  "_anchor_depth": "archive",
+  "_anchor_echo_scan": "archive",
+  "_anchor_lang": "archive",
+  "_anchor_probe": "archive",
+  "_arm_compare": "archive",
+  "_arm_report": "archive",
+  "_arxiv200_deliver": "keep",
+  "_arxiv_route_probe": "archive",
+  "_arxiv_slow_probe": "archive",
+  "_audit_ascii": "keep",
+  "_audit_diff": "archive",
+  "_audit_eval": "archive",
+  "_audit_final": "archive",
+  "_audit_final_v2": "keep",
+  "_audit_means": "archive",
+  "_audit_misc": "archive",
+  "_audit_official_runs": "keep",
+  "_audit_precision_all": "keep",
+  "_audit_reconcile": "archive",
+  "_audit_v2": "archive",
+  "_author_kit": "archive",
+  "_bge_m3": "keep",
+  "_bm_gate_probe": "archive",
+  "_check_l0_lim": "archive",
+  "_check_registry": "archive",
+  "_clean_numbers": "keep",
+  "_contam_check": "keep",
+  "_corpus_probe": "archive",
+  "_corpus_probe2": "archive",
+  "_corpus_route_probe": "archive",
+  "_cost_report": "keep",
+  "_count_m1": "archive",
+  "_cover_rerank": "keep",
+  "_ctx_limit": "keep",
+  "_ctx_limit_probe": "keep",
+  "_dbg_arxiv_pool": "archive",
+  "_dbg_corpus_state": "archive",
+  "_dbg_expand_view": "archive",
+  "_dbg_keys": "archive",
+  "_deliver5": "archive",
+  "_design_probe": "archive",
+  "_diag_ground": "archive",
+  "_diff_arms": "archive",
+  "_dir_relevance": "keep",
+  "_discrim": "archive",
+  "_env_probe": "archive",
+  "_ev_probe": "archive",
+  "_exp_density": "archive",
+  "_f1_crossrun": "keep",
+  "_f1_selfcheck": "keep",
+  "_f1_why": "archive",
+  "_f1_why2": "archive",
+  "_fullctx_review": "archive",
+  "_fullctx_trial": "archive",
+  "_fullctx_vs_retrieval": "archive",
+  "_funnel": "archive",
+  "_funnel50": "archive",
+  "_fuse_sweep": "archive",
+  "_hf_probe": "archive",
+  "_hn_disc": "archive",
+  "_inspect_fail": "archive",
+  "_inter_ab": "archive",
+  "_judge_quota_all": "archive",
+  "_judge_repeat": "archive",
+  "_k_deliver_litsearch": "keep",
+  "_k_sweep_deliver": "archive",
+  "_kind_pass": "archive",
+  "_l0_direct_probe": "archive",
+  "_lang_effect": "keep",
+  "_layer_pass": "archive",
+  "_leak_audit": "keep",
+  "_len_check": "archive",
+  "_lim_compare": "archive",
+  "_limitation_dump": "archive",
+  "_list_kinds": "archive",
+  "_list_m0_x5": "archive",
+  "_litsearch_probe": "archive",
+  "_litsearch_struct_probe": "keep",
+  "_llm_cost": "keep",
+  "_llm_probe": "archive",
+  "_loft_dl": "keep",
+  "_loft_fetch2": "archive",
+  "_loft_fetch3": "archive",
+  "_loft_fetch4": "archive",
+  "_loft_fetch_code": "keep",
+  "_loft_official_eval": "keep",
+  "_loft_probe": "keep",
+  "_m1_attrib": "archive",
+  "_m1_audit": "archive",
+  "_m1_baseline": "archive",
+  "_m1_cmp": "archive",
+  "_m1_cover": "archive",
+  "_m1_detail": "archive",
+  "_m1_diag": "archive",
+  "_m1_list": "archive",
+  "_m1_pick": "archive",
+  "_m1_review": "archive",
+  "_m1_schema": "archive",
+  "_m1_set_ab": "keep",
+  "_m1_set_diag": "keep",
+  "_m1_set_diag2": "keep",
+  "_m1_taxonomy": "archive",
+  "_merge_m1": "archive",
+  "_mineru_check": "keep",
+  "_mineru_inject_check": "archive",
+  "_mineru_inject_verify": "archive",
+  "_miss_diagnosis": "archive",
+  "_model_names": "keep",
+  "_n8_vs_allretr": "archive",
+  "_new_papers_overview": "archive",
+  "_nli_curl": "keep",
+  "_nli_download": "archive",
+  "_nli_probe": "archive",
+  "_nli_route": "keep",
+  "_nli_smoke": "keep",
+  "_norm_split": "archive",
+  "_organize_cli": "archive",
+  "_orphan_pdfs": "archive",
+  "_poll_ab_xlingk": "archive",
+  "_poll_ingest": "archive",
+  "_poll_m1base": "archive",
+  "_premature_probe": "archive",
+  "_probe_check": "archive",
+  "_probe_cite_consistency": "archive",
+  "_probe_cites": "archive",
+  "_probe_cites_collision": "archive",
+  "_probe_ctx_window": "archive",
+  "_probe_ctxsize": "archive",
+  "_probe_dir_index_skip": "archive",
+  "_probe_direction": "archive",
+  "_probe_http": "archive",
+  "_probe_lazy_index": "archive",
+  "_probe_models": "archive",
+  "_probe_search": "archive",
+  "_probe_two_phase": "archive",
+  "_prod_corpus_probe": "archive",
+  "_prod_leak_audit": "keep",
+  "_prod_leak_inspect": "archive",
+  "_prod_set_e2e": "archive",
+  "_qa_inventory": "archive",
+  "_qampari_mapreduce": "keep",
+  "_qampari_merge": "keep",
+  "_qampari_norm_diag": "keep",
+  "_qampari_probe": "keep",
+  "_qampari_rerank": "keep",
+  "_qampari_run": "keep",
+  "_qampari_tier1m": "keep",
+  "_qampari_tier_retrieval": "keep",
+  "_questions_summary": "archive",
+  "_r2_adjudge": "keep",
+  "_r2_arxiv_map": "archive",
+  "_r2_arxiv_map2": "archive",
+  "_r2_arxiv_map3": "keep",
+  "_r2_audit50": "archive",
+  "_r2_breakeven": "keep",
+  "_r2_budget_model": "keep",
+  "_r2_budget_small": "keep",
+  "_r2_build_corpus": "keep",
+  "_r2_c3_cascade": "keep",
+  "_r2_c3_ksweep": "keep",
+  "_r2_c3_offline": "keep",
+  "_r2_c3_w1_v2": "keep",
+  "_r2_c3_window": "keep",
+  "_r2_calib2": "keep",
+  "_r2_calib2_report": "keep",
+  "_r2_calib_inspect": "keep",
+  "_r2_calib_llm": "keep",
+  "_r2_corpus_expand": "keep",
+  "_r2_cr_diag": "keep",
+  "_r2_demo2": "keep",
+  "_r2_dispute_view": "keep",
+  "_r2_ev_sweep": "keep",
+  "_r2_extract_regress": "keep",
+  "_r2_facet_audit": "keep",
+  "_r2_facets_v2": "keep",
+  "_r2_fetch_arxiv50": "keep",
+  "_r2_fetch_finish": "keep",
+  "_r2_fetch_oapdf": "archive",
+  "_r2_final_pipeline": "keep",
+  "_r2_final_summary": "keep",
+  "_r2_fullread": "keep",
+  "_r2_fusion_report": "archive",
+  "_r2_fusion_sweep": "keep",
+  "_r2_gold_adjudicate": "keep",
+  "_r2_gold_consensus": "keep",
+  "_r2_gold_diag": "keep",
+  "_r2_gold_dispute": "keep",
+  "_r2_gold_extend": "keep",
+  "_r2_gold_finalize": "keep",
+  "_r2_gold_metrics": "keep",
+  "_r2_gold_recalib": "keep",
+  "_r2_gold_recalib2": "keep",
+  "_r2_gold_spotcheck": "keep",
+  "_r2_gold_strata": "archive",
+  "_r2_judge2": "keep",
+  "_r2_judge3": "keep",
+  "_r2_judge_cost": "keep",
+  "_r2_judge_default_check": "archive",
+  "_r2_k_curve": "archive",
+  "_r2_l3_nli": "keep",
+  "_r2_l3_report": "keep",
+  "_r2_make_ids": "archive",
+  "_r2_metrics_card": "archive",
+  "_r2_mineru_run": "keep",
+  "_r2_nli_audit": "keep",
+  "_r2_nli_calib": "keep",
+  "_r2_nli_lang_final": "keep",
+  "_r2_nli_sep": "keep",
+  "_r2_oapdf_check": "archive",
+  "_r2_parse50": "keep",
+  "_r2_parse_pdfs": "keep",
+  "_r2_phase1": "keep",
+  "_r2_phase1_clean": "keep",
+  "_r2_probe": "keep",
+  "_r2_prod_chunk": "archive",
+  "_r2_prod_eval": "keep",
+  "_r2_proto_cmp": "keep",
+  "_r2_rank_power": "archive",
+  "_r2_rd2_report": "keep",
+  "_r2_rd_report": "keep",
+  "_r2_reader": "keep",
+  "_r2_reader_cmp": "keep",
+  "_r2_recall_ceiling": "keep",
+  "_r2_recall_design": "keep",
+  "_r2_recall_design2": "keep",
+  "_r2_rerank_diag": "keep",
+  "_r2_retr_eval": "keep",
+  "_r2_retr_report": "keep",
+  "_r2_scale_budget": "archive",
+  "_r2_scale_report": "keep",
+  "_r2_score": "keep",
+  "_r2_score2": "keep",
+  "_r2_score_vs_rank": "keep",
+  "_r2_setsel": "keep",
+  "_r2_std_metrics": "keep",
+  "_r2_std_metrics_v2": "keep",
+  "_r2_subq_diag": "keep",
+  "_r2_subq_fix": "keep",
+  "_r2_subq_static": "keep",
+  "_r2_verify_step2": "archive",
+  "_r2_volume": "keep",
+  "_r2_volume50": "archive",
+  "_rag2_corpus_stat": "keep",
+  "_regress_cmp": "keep",
+  "_rerank_dump": "archive",
+  "_rerank_env": "archive",
+  "_rerank_eval": "archive",
+  "_rerank_len": "archive",
+  "_rerank_score_gpu": "archive",
+  "_rerun_report": "archive",
+  "_rescore": "archive",
+  "_run_ab_xlingk": "archive",
+  "_run_m1_baseline": "archive",
+  "_run_precheck": "archive",
+  "_salvage_demo": "keep",
+  "_sandbox": "keep",
+  "_sc_ladder": "archive",
+  "_sc_verdict": "keep",
+  "_scan_l0_judge": "archive",
+  "_scan_l0_quota": "archive",
+  "_scan_quota": "keep",
+  "_scope_classify": "archive",
+  "_sec_audit": "archive",
+  "_set_extract_eval": "keep",
+  "_set_ready": "archive",
+  "_set_smoke_real": "archive",
+  "_single_corpus": "archive",
+  "_single_vs5": "archive",
+  "_single_vs_vote": "keep",
+  "_stability": "archive",
+  "_stage0_paths": "archive",
+  "_stage_bench": "archive",
+  "_stat_points": "archive",
+  "_sweep": "keep",
+  "_thinking_off": "archive",
+  "_tier_audit": "archive",
+  "_token_ratio": "keep",
+  "_trace_retrieval": "archive",
+  "_trust_probe": "archive",
+  "_two_sets_stat": "keep",
+  "_two_track_summary": "keep",
+  "_verify_default8": "archive",
+  "_verify_encode_sort": "keep",
+  "_verify_fixes": "archive",
+  "_verify_new_corpus": "archive",
+  "_verify_padding_peak": "keep",
+  "_verify_report_refs": "archive",
+  "_verify_set_wiring": "archive",
+  "_xling_ab": "keep",
+  "_xling_fill": "archive"
+ },
+ "class": {
+  "_align_check": "scratch",
+  "_arxiv200_deliver": "entrypoint",
+  "_audit_ascii": "scratch",
+  "_audit_final_v2": "scratch",
+  "_audit_official_runs": "scratch",
+  "_audit_precision_all": "scratch",
+  "_bge_m3": "library",
+  "_clean_numbers": "scratch",
+  "_contam_check": "entrypoint",
+  "_cost_report": "entrypoint",
+  "_cover_rerank": "entrypoint",
+  "_ctx_limit": "scratch",
+  "_ctx_limit_probe": "scratch",
+  "_dir_relevance": "entrypoint",
+  "_f1_crossrun": "scratch",
+  "_f1_selfcheck": "entrypoint",
+  "_hn_disc": "entrypoint",
+  "_k_deliver_litsearch": "entrypoint",
+  "_lang_effect": "entrypoint",
+  "_leak_audit": "scratch",
+  "_litsearch_struct_probe": "scratch",
+  "_llm_cost": "entrypoint",
+  "_loft_dl": "entrypoint",
+  "_loft_fetch_code": "scratch",
+  "_loft_official_eval": "scratch",
+  "_loft_probe": "entrypoint",
+  "_m1_set_ab": "entrypoint",
+  "_m1_set_diag": "scratch",
+  "_m1_set_diag2": "entrypoint",
+  "_mineru_check": "scratch",
+  "_model_names": "scratch",
+  "_nli_curl": "entrypoint",
+  "_nli_route": "entrypoint",
+  "_nli_smoke": "entrypoint",
+  "_prod_leak_audit": "scratch",
+  "_qampari_mapreduce": "entrypoint",
+  "_qampari_merge": "entrypoint",
+  "_qampari_norm_diag": "scratch",
+  "_qampari_probe": "entrypoint",
+  "_qampari_rerank": "entrypoint",
+  "_qampari_run": "library",
+  "_qampari_tier1m": "entrypoint",
+  "_qampari_tier_retrieval": "entrypoint",
+  "_r2_adjudge": "scratch",
+  "_r2_arxiv_map3": "entrypoint",
+  "_r2_breakeven": "entrypoint",
+  "_r2_budget_model": "library",
+  "_r2_budget_small": "entrypoint",
+  "_r2_build_corpus": "entrypoint",
+  "_r2_c3_cascade": "entrypoint",
+  "_r2_c3_ksweep": "entrypoint",
+  "_r2_c3_offline": "entrypoint",
+  "_r2_c3_w1_v2": "entrypoint",
+  "_r2_c3_window": "entrypoint",
+  "_r2_calib2": "entrypoint",
+  "_r2_calib2_report": "scratch",
+  "_r2_calib_inspect": "scratch",
+  "_r2_calib_llm": "library",
+  "_r2_corpus_expand": "entrypoint",
+  "_r2_cr_diag": "entrypoint",
+  "_r2_demo2": "entrypoint",
+  "_r2_dispute_view": "entrypoint",
+  "_r2_ev_sweep": "entrypoint",
+  "_r2_extract_regress": "scratch",
+  "_r2_facet_audit": "entrypoint",
+  "_r2_facets_v2": "library",
+  "_r2_fetch_arxiv50": "entrypoint",
+  "_r2_fetch_finish": "scratch",
+  "_r2_final_pipeline": "entrypoint",
+  "_r2_final_summary": "entrypoint",
+  "_r2_fullread": "entrypoint",
+  "_r2_fusion_sweep": "entrypoint",
+  "_r2_gold_adjudicate": "entrypoint",
+  "_r2_gold_consensus": "entrypoint",
+  "_r2_gold_diag": "scratch",
+  "_r2_gold_dispute": "entrypoint",
+  "_r2_gold_extend": "entrypoint",
+  "_r2_gold_finalize": "scratch",
+  "_r2_gold_metrics": "scratch",
+  "_r2_gold_recalib": "library",
+  "_r2_gold_recalib2": "entrypoint",
+  "_r2_gold_spotcheck": "entrypoint",
+  "_r2_judge2": "entrypoint",
+  "_r2_judge3": "entrypoint",
+  "_r2_judge_cost": "entrypoint",
+  "_r2_l3_nli": "entrypoint",
+  "_r2_l3_report": "scratch",
+  "_r2_mineru_run": "entrypoint",
+  "_r2_nli_audit": "entrypoint",
+  "_r2_nli_calib": "entrypoint",
+  "_r2_nli_lang_final": "entrypoint",
+  "_r2_nli_sep": "scratch",
+  "_r2_parse50": "entrypoint",
+  "_r2_parse_pdfs": "entrypoint",
+  "_r2_phase1": "entrypoint",
+  "_r2_phase1_clean": "scratch",
+  "_r2_probe": "entrypoint",
+  "_r2_prod_eval": "library",
+  "_r2_proto_cmp": "scratch",
+  "_r2_rd2_report": "entrypoint",
+  "_r2_rd_report": "entrypoint",
+  "_r2_reader": "library",
+  "_r2_reader_cmp": "scratch",
+  "_r2_recall_ceiling": "entrypoint",
+  "_r2_recall_design": "entrypoint",
+  "_r2_recall_design2": "entrypoint",
+  "_r2_rerank_diag": "entrypoint",
+  "_r2_retr_eval": "entrypoint",
+  "_r2_retr_report": "entrypoint",
+  "_r2_scale_report": "entrypoint",
+  "_r2_score": "entrypoint",
+  "_r2_score2": "entrypoint",
+  "_r2_score_vs_rank": "entrypoint",
+  "_r2_setsel": "entrypoint",
+  "_r2_std_metrics": "library",
+  "_r2_std_metrics_v2": "entrypoint",
+  "_r2_subq_diag": "entrypoint",
+  "_r2_subq_fix": "entrypoint",
+  "_r2_subq_static": "entrypoint",
+  "_r2_volume": "entrypoint",
+  "_rag2_corpus_stat": "scratch",
+  "_regress_cmp": "scratch",
+  "_salvage_demo": "entrypoint",
+  "_sandbox": "library",
+  "_sc_verdict": "scratch",
+  "_scan_quota": "library",
+  "_set_extract_eval": "entrypoint",
+  "_single_vs_vote": "entrypoint",
+  "_sweep": "entrypoint",
+  "_token_ratio": "scratch",
+  "_two_sets_stat": "scratch",
+  "_two_track_summary": "scratch",
+  "_verify_encode_sort": "entrypoint",
+  "_verify_padding_peak": "entrypoint",
+  "_xling_ab": "library"
+ },
+ "imported_by": {
+  "_bge_m3": [
+   "_r2_recall_ceiling",
+   "_r2_volume"
+  ],
+  "_qampari_run": [
+   "_contam_check",
+   "_ctx_limit_probe",
+   "_qampari_mapreduce",
+   "_qampari_merge",
+   "_qampari_norm_diag",
+   "_qampari_tier1m"
+  ],
+  "_r2_budget_model": [
+   "_r2_breakeven",
+   "_r2_budget_small"
+  ],
+  "_r2_calib_llm": [
+   "_r2_calib2",
+   "_r2_judge2",
+   "_r2_judge3"
+  ],
+  "_r2_facets_v2": [
+   "_r2_c3_cascade",
+   "_r2_c3_w1_v2",
+   "_r2_c3_window",
+   "_r2_cr_diag",
+   "_r2_demo2",
+   "_r2_final_pipeline",
+   "_r2_fusion_sweep",
+   "_r2_gold_consensus",
+   "_r2_nli_calib",
+   "_r2_prod_eval",
+   "_r2_reader",
+   "_r2_recall_ceiling",
+   "_r2_recall_design",
+   "_r2_recall_design2",
+   "_r2_rerank_diag",
+   "_r2_retr_eval",
+   "_r2_std_metrics_v2",
+   "_r2_subq_diag",
+   "_r2_subq_fix",
+   "_r2_subq_static",
+   "_r2_volume"
+  ],
+  "_r2_gold_recalib": [
+   "_r2_c3_cascade",
+   "_r2_c3_w1_v2",
+   "_r2_c3_window",
+   "_r2_gold_adjudicate",
+   "_r2_gold_dispute",
+   "_r2_gold_recalib2",
+   "_r2_gold_spotcheck",
+   "_r2_reader"
+  ],
+  "_r2_prod_eval": [
+   "_r2_demo2"
+  ],
+  "_r2_reader": [
+   "_r2_extract_regress",
+   "_r2_fullread"
+  ],
+  "_r2_std_metrics": [
+   "_leak_audit",
+   "_nli_route",
+   "_r2_c3_cascade",
+   "_r2_c3_w1_v2",
+   "_r2_c3_window",
+   "_r2_calib2",
+   "_r2_dispute_view",
+   "_r2_facet_audit",
+   "_r2_final_pipeline",
+   "_r2_fusion_sweep",
+   "_r2_gold_metrics",
+   "_r2_gold_recalib",
+   "_r2_l3_nli",
+   "_r2_nli_calib",
+   "_r2_nli_lang_final",
+   "_r2_phase1",
+   "_r2_phase1_clean",
+   "_r2_reader",
+   "_r2_recall_ceiling",
+   "_r2_recall_design",
+   "_r2_recall_design2",
+   "_r2_rerank_diag",
+   "_r2_retr_eval",
+   "_r2_std_metrics_v2",
+   "_r2_subq_diag",
+   "_r2_volume",
+   "_rag2_corpus_stat",
+   "_two_sets_stat",
+   "_two_track_summary"
+  ],
+  "_sandbox": [
+   "_hn_disc",
+   "_sweep"
+  ],
+  "_scan_quota": [
+   "_lang_effect",
+   "_sandbox",
+   "_xling_ab"
+  ],
+  "_xling_ab": [
+   "_lang_effect",
+   "_sandbox"
+  ]
+ },
+ "external_downstream": {},
+ "mentioned_in_docs": {
+  "_align_check": [
+   "retrieval/results/LITSEARCH_DELIVER_N_20260927.md"
+  ],
+  "_arxiv200_deliver": [
+   "retrieval/results/LITSEARCH_DELIVER_N_20260927.md"
+  ],
+  "_audit_ascii": [
+   "retrieval/results/R2_QAMPARI_RESULT_20260929.md"
+  ],
+  "_audit_final_v2": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
+   "retrieval/results/R2_QAMPARI_AUDIT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_audit_official_runs": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
+   "retrieval/results/R2_QAMPARI_AUDIT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_audit_precision_all": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
+   "retrieval/results/R2_QAMPARI_AUDIT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_bge_m3": [
+   "retrieval/results/R2_C2A_AND_PIVOT_20260930.md"
+  ],
+  "_clean_numbers": [
+   "retrieval/results/R2_CLEAN_NUMBERS_20260929.md"
+  ],
+  "_contam_check": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
+   "retrieval/results/R2_CONTAM_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_cost_report": [
+   "retrieval/results/R2_LLM_COST_20260929.md"
+  ],
+  "_cover_rerank": [
+   "retrieval/results/LITSEARCH_DELIVER_N_20260927.md"
+  ],
+  "_ctx_limit": [
+   "retrieval/results/R2_SCALEUP_MEASURE_20260930.md",
+   "retrieval/results/R2_SC_VERDICT_20260929.md"
+  ],
+  "_ctx_limit_probe": [
+   "retrieval/results/R2_QAMPARI_TIER1M_20260929.md"
+  ],
+  "_dir_relevance": [
+   "retrieval/results/LITSEARCH_DELIVER_N_20260927.md"
+  ],
+  "_f1_crossrun": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md"
+  ],
+  "_f1_selfcheck": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md"
+  ],
+  "_k_deliver_litsearch": [
+   "retrieval/results/LITSEARCH_DELIVER_N_20260927.md"
+  ],
+  "_lang_effect": [
+   "retrieval/results/R2_C2A_AND_PIVOT_20260930.md"
+  ],
+  "_leak_audit": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
+   "retrieval/results/R2_CLEAN_NUMBERS_20260929.md",
+   "retrieval/results/R2_LEAK_AUDIT_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_litsearch_struct_probe": [
+   "retrieval/results/R2_CHUNK_SWITCH_20260929.md"
+  ],
+  "_llm_cost": [
+   "retrieval/results/R2_BUDGET_MODEL_20261001.md",
+   "retrieval/results/R2_LLM_COST_20260929.md"
+  ],
+  "_loft_dl": [
+   "retrieval/results/R2_QAMPARI_SETUP_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_loft_fetch_code": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_loft_official_eval": [
+   "retrieval/results/R2_QAMPARI_RESULT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_loft_probe": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_m1_set_ab": [
+   "retrieval/results/R2_SC_VERDICT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_m1_set_diag": [
+   "retrieval/results/R2_SC_VERDICT_20260929.md"
+  ],
+  "_m1_set_diag2": [
+   "retrieval/results/R2_SC_VERDICT_20260929.md"
+  ],
+  "_mineru_check": [
+   "qa/recall/ARCHIVED.md"
+  ],
+  "_model_names": [
+   "retrieval/results/R2_LLM_COST_20260929.md"
+  ],
+  "_nli_curl": [
+   "retrieval/results/R2_NLI_CALIB_20260930.md"
+  ],
+  "_nli_route": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/R2_NLI_LANG_20260928.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_nli_smoke": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_prod_leak_audit": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
+   "retrieval/results/R2_CLEAN_NUMBERS_20260929.md"
+  ],
+  "_qampari_mapreduce": [
+   "retrieval/results/R2_QAMPARI_MAPREDUCE_20260929.md",
+   "retrieval/results/R2_SET_READER_PROD_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_qampari_merge": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_qampari_norm_diag": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_qampari_probe": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_qampari_rerank": [
+   "retrieval/results/R2_QAMPARI_RERANK_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_qampari_run": [
+   "retrieval/results/QAMPARI_AUDIT_REPORT_20260929.md",
+   "retrieval/results/R2_LEAK_AUDIT_20260929.md",
+   "retrieval/results/R2_QAMPARI_RESULT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_qampari_tier1m": [
+   "retrieval/results/R2_QAMPARI_RERANK_20260929.md",
+   "retrieval/results/R2_QAMPARI_TIER1M_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_qampari_tier_retrieval": [
+   "retrieval/results/R2_QAMPARI_TIER1M_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_adjudge": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_arxiv_map3": [
+   "retrieval/results/R2_CHUNK_SWITCH_20260929.md"
+  ],
+  "_r2_breakeven": [
+   "retrieval/results/R2_BUDGET_MODEL_20261001.md"
+  ],
+  "_r2_budget_model": [
+   "retrieval/results/R2_BUDGET_MODEL_20261001.md"
+  ],
+  "_r2_budget_small": [
+   "retrieval/results/R2_BUDGET_MODEL_20261001.md"
+  ],
+  "_r2_build_corpus": [
+   "retrieval/results/R2_CHUNK_SWITCH_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_c3_cascade": [
+   "retrieval/results/R2_C3_CASCADE_20260930.md"
+  ],
+  "_r2_c3_ksweep": [
+   "retrieval/results/R2_C3_WINDOW_20260930.md",
+   "retrieval/results/R2_FINAL_SPEC_20260930.md"
+  ],
+  "_r2_c3_offline": [
+   "retrieval/results/R2_C3_CASCADE_20260930.md"
+  ],
+  "_r2_c3_w1_v2": [
+   "retrieval/results/R2_C3_W1_V2_20260930.md"
+  ],
+  "_r2_c3_window": [
+   "retrieval/results/R2_C3_WINDOW_20260930.md",
+   "retrieval/results/R2_FINAL_SPEC_20260930.md",
+   "retrieval/results/R2_PROD_EVAL_20260930.md"
+  ],
+  "_r2_calib2": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_calib2_report": [
+   "retrieval/results/R2_CALIB_20260928.md"
+  ],
+  "_r2_calib_inspect": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_calib_llm": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_corpus_expand": [
+   "retrieval/results/R2_CORPUS_50_20260930.md"
+  ],
+  "_r2_cr_diag": [
+   "retrieval/results/R2_FIX1_EVIDENCE_20260930.md"
+  ],
+  "_r2_demo2": [
+   "retrieval/results/R2_JUDGE_PROTO_20261001.md"
+  ],
+  "_r2_dispute_view": [
+   "retrieval/results/R2_FACET_REBUILD_20260929.md"
+  ],
+  "_r2_ev_sweep": [
+   "retrieval/results/R2_FIX1_EVIDENCE_20260930.md"
+  ],
+  "_r2_extract_regress": [
+   "retrieval/results/R2_SC_VERDICT_20260929.md"
+  ],
+  "_r2_facet_audit": [
+   "retrieval/results/R2_FACET_REBUILD_20260929.md"
+  ],
+  "_r2_facets_v2": [
+   "retrieval/results/R2_FACET_REBUILD_20260929.md"
+  ],
+  "_r2_fetch_arxiv50": [
+   "retrieval/results/R2_CORPUS_50_20260930.md"
+  ],
+  "_r2_fetch_finish": [
+   "retrieval/results/R2_CHUNK_SWITCH_20260929.md"
+  ],
+  "_r2_final_pipeline": [
+   "retrieval/results/R2_FINAL_PIPELINE_20260930.md",
+   "retrieval/results/R2_FINAL_SPEC_20260930.md"
+  ],
+  "_r2_final_summary": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/R2_FINAL_SPEC_20260930.md"
+  ],
+  "_r2_fullread": [
+   "retrieval/results/R2_SCALEUP_MEASURE_20260930.md",
+   "retrieval/results/R2_SC_VERDICT_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_fusion_sweep": [
+   "retrieval/results/R2_SCORE_VS_RANK_20260930.md"
+  ],
+  "_r2_gold_adjudicate": [
+   "retrieval/results/R2_FACET_REBUILD_20260929.md"
+  ],
+  "_r2_gold_consensus": [
+   "retrieval/results/R2_FACET_REBUILD_20260929.md"
+  ],
+  "_r2_gold_diag": [
+   "retrieval/results/R2_GOLD_RECALIB2_20260929.md"
+  ],
+  "_r2_gold_dispute": [
+   "retrieval/results/R2_CHUNK_SWITCH_TODO_20260929.md",
+   "retrieval/results/R2_GOLD_RECALIB_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_gold_extend": [
+   "retrieval/results/R2_CORPUS_50_20260930.md"
+  ],
+  "_r2_gold_finalize": [
+   "retrieval/results/R2_GOLD_RECALIB2_20260929.md"
+  ],
+  "_r2_gold_metrics": [
+   "retrieval/results/R2_GOLD_RECALIB_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_gold_recalib": [
+   "retrieval/results/R2_C3_WINDOW_20260930.md",
+   "retrieval/results/R2_CHUNK_SWITCH_TODO_20260929.md",
+   "retrieval/results/R2_FINAL_SPEC_20260930.md",
+   "retrieval/results/R2_FIX1_EVIDENCE_20260930.md",
+   "retrieval/results/R2_GOLD_RECALIB2_20260929.md",
+   "retrieval/results/R2_GOLD_RECALIB_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_gold_recalib2": [
+   "retrieval/results/R2_CORPUS_50_20260930.md",
+   "retrieval/results/R2_FACET_REBUILD_20260929.md",
+   "retrieval/results/R2_GOLD_RECALIB2_20260929.md"
+  ],
+  "_r2_gold_spotcheck": [
+   "retrieval/results/R2_GOLD_RECALIB2_20260929.md"
+  ],
+  "_r2_judge2": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_judge3": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_judge_cost": [
+   "retrieval/results/R2_JUDGE_PROTO_20261001.md"
+  ],
+  "_r2_l3_nli": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/R2_L3_NLI_20260928.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_l3_report": [
+   "retrieval/results/R2_L3_NLI_20260928.md"
+  ],
+  "_r2_mineru_run": [
+   "retrieval/results/R2_CHUNK_SWITCH_20260929.md",
+   "retrieval/results/R2_CORPUS_50_20260930.md"
+  ],
+  "_r2_nli_audit": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_nli_calib": [
+   "retrieval/results/R2_FINAL_SPEC_20260930.md",
+   "retrieval/results/R2_NLI_CALIB_20260930.md"
+  ],
+  "_r2_nli_lang_final": [
+   "retrieval/results/R2_CALIB_20260928.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_nli_sep": [
+   "retrieval/results/R2_NLI_CALIB_20260930.md"
+  ],
+  "_r2_parse50": [
+   "retrieval/results/R2_CORPUS_50_20260930.md"
+  ],
+  "_r2_parse_pdfs": [
+   "retrieval/results/R2_CHUNK_SWITCH_20260929.md"
+  ],
+  "_r2_phase1": [
+   "retrieval/results/R2_BM25_AND_MULTIQ_20260930.md",
+   "retrieval/results/R2_LEAK_AUDIT_20260929.md",
+   "retrieval/results/R2_PHASE1_20260929.md",
+   "retrieval/results/R2_PHASE1_CLEAN_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_phase1_clean": [
+   "retrieval/results/R2_PHASE1_CLEAN_20260929.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_probe": [
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_prod_eval": [
+   "retrieval/results/R2_PROD_EVAL_20260930.md",
+   "retrieval/results/R2_PROD_FINAL_20261001.md",
+   "retrieval/results/R2_PROD_K_20261001.md"
+  ],
+  "_r2_proto_cmp": [
+   "retrieval/results/R2_RETR_METRICS_20260929.md"
+  ],
+  "_r2_rd2_report": [
+   "retrieval/results/R2_RECALL_PERCLASS_D_20260930.md"
+  ],
+  "_r2_rd_report": [
+   "retrieval/results/R2_RECALL_DESIGN_20260930.md"
+  ],
+  "_r2_reader": [
+   "retrieval/results/R2_C2A_AND_PIVOT_20260930.md",
+   "retrieval/results/R2_FACET_REBUILD_20260929.md",
+   "retrieval/results/R2_FIX1_EVIDENCE_20260930.md",
+   "retrieval/results/R2_READER_20260929.md",
+   "retrieval/results/R2_RETR_METRICS_20260929.md",
+   "retrieval/results/R2_SCALEUP_MEASURE_20260930.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_reader_cmp": [
+   "retrieval/results/R2_FACET_REBUILD_20260929.md"
+  ],
+  "_r2_recall_ceiling": [
+   "retrieval/results/R2_RECALL_CEILING_20260930.md",
+   "retrieval/results/R2_RECALL_CEILING_50_20260930.md"
+  ],
+  "_r2_recall_design": [
+   "retrieval/results/R2_RECALL_DESIGN_20260930.md"
+  ],
+  "_r2_recall_design2": [
+   "retrieval/results/R2_RECALL_PERCLASS_D_20260930.md"
+  ],
+  "_r2_rerank_diag": [
+   "retrieval/results/R2_BM25_AND_MULTIQ_20260930.md"
+  ],
+  "_r2_retr_eval": [
+   "retrieval/results/R2_CHUNK_SWITCH_20260929.md",
+   "retrieval/results/R2_CHUNK_SWITCH_TODO_20260929.md",
+   "retrieval/results/R2_RETR_METRICS_20260929.md",
+   "retrieval/results/R2_STAGE1_A3A4_20260930.md"
+  ],
+  "_r2_retr_report": [
+   "retrieval/results/R2_RETR_METRICS_20260929.md"
+  ],
+  "_r2_scale_report": [
+   "retrieval/results/R2_CORPUS_50_20260930.md"
+  ],
+  "_r2_score": [
+   "retrieval/results/R2_SCORING_20260927.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_score2": [
+   "retrieval/results/R2_CHUNK_SWITCH_TODO_20260929.md",
+   "retrieval/results/R2_SCORING_20260927.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_score_vs_rank": [
+   "retrieval/results/R2_SCORE_VS_RANK_20260930.md"
+  ],
+  "_r2_setsel": [
+   "retrieval/results/R2_SETSEL_20260927.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_std_metrics": [
+   "evals/README.md",
+   "retrieval/results/R2_FIX1_EVIDENCE_20260930.md",
+   "retrieval/results/R2_LEAK_AUDIT_20260929.md",
+   "retrieval/results/R2_STAGE1_A3A4_20260930.md",
+   "retrieval/results/R2_STD_METRICS_20260928.md",
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_r2_std_metrics_v2": [
+   "retrieval/results/R2_STAGE1_A3A4_20260930.md"
+  ],
+  "_r2_subq_diag": [
+   "retrieval/results/R2_SUBQ_FACET_DIAG_20260930.md"
+  ],
+  "_r2_subq_fix": [
+   "retrieval/results/R2_RECALL_PERCLASS_D_20260930.md"
+  ],
+  "_r2_subq_static": [
+   "retrieval/results/R2_SUBQ_FACET_DIAG_20260930.md"
+  ],
+  "_r2_volume": [
+   "retrieval/results/R2_RECALL_CEILING_20260930.md",
+   "retrieval/results/R2_SCALEUP_MEASURE_20260930.md"
+  ],
+  "_rag2_corpus_stat": [
+   "retrieval/results/RAG2_DATAFLOW_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_regress_cmp": [
+   "retrieval/results/R2_SC_VERDICT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_sandbox": [
+   "retrieval/results/R2_C2A_AND_PIVOT_20260930.md"
+  ],
+  "_sc_verdict": [
+   "retrieval/results/R2_SC_VERDICT_20260929.md"
+  ],
+  "_set_extract_eval": [
+   "retrieval/results/R2_SC_VERDICT_20260929.md",
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_single_vs_vote": [
+   "retrieval/results/R2_SCALEUP_MEASURE_20260930.md"
+  ],
+  "_sweep": [
+   "qa/recall/ARCHIVED.md",
+   "qa/recall/TABLE_LINE_STATUS_20260912.md",
+   "qa/recall/UNION_AND_CONTEXT_20260911.md",
+   "retrieval/results/R2_FIX1_EVIDENCE_20260930.md",
+   "retrieval/results/R2_SCORE_VS_RANK_20260930.md"
+  ],
+  "_token_ratio": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_two_sets_stat": [
+   "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
+  ],
+  "_two_track_summary": [
+   "retrieval/results/RAG2_DATAFLOW_20260929.md"
+  ],
+  "_verify_encode_sort": [
+   "retrieval/results/R2_PROD_EVAL_20260930.md"
+  ],
+  "_verify_padding_peak": [
+   "retrieval/results/R2_PROD_EVAL_20260930.md"
+  ]
+ }
+}
