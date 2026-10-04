@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 from datetime import datetime, timezone
@@ -94,6 +95,14 @@ def validate(rec: dict[str, Any]) -> None:
     for k in ("value", "n"):
         if isinstance(rec[k], bool) or not isinstance(rec[k], (int, float)):
             raise ReportError(f"{k} 必须是数值，收到 {rec[k]!r}")
+    # ★ 必须是**有限**数：`nan`/`inf` 是 float，能骗过上面的类型检查，
+    #   然后在表里变成"NaN"、比大小永远为假 —— 静默失效的典型。
+    #   （实测踩过：L2 的 `ev_recall` 在无命中时写 `float("nan")`。）
+    #   算不出来就**别 emit 这条**，不要写 NaN。
+    if not math.isfinite(float(rec["value"])):
+        raise ReportError(
+            f"value 必须是有限数（收到 {rec['value']!r}）—— "
+            f"算不出来就别 emit 这条，不要写 NaN/inf")
     if rec["n"] <= 0:
         raise ReportError(f"n 必须 > 0（没有样本量的率不可比），收到 {rec['n']!r}")
     if not METRIC_RE.match(str(rec["metric"])):
@@ -153,14 +162,26 @@ def table(recs: list[dict[str, Any]], *, latest: bool = True) -> str:
     if not rows:
         return "（还没有任何记录 —— 先让 runner 调用 `evals.report.emit`）"
     rows.sort(key=lambda r: (str(r.get("layer")), str(r.get("metric")), str(r.get("name"))))
-    w = (10, 22, 20, 10, 6)
-    head = f"{'层':<{w[0]}}{'指标':<{w[2]}}{'运行/项':<{w[1]}}{'值':>{w[3]}}{'n':>{w[4]}}"
+
+    def val_s(r: dict[str, Any]) -> str:
+        v = r.get("value")
+        return f"{v:.4f}" if isinstance(v, float) else str(v)
+
+    # 列宽**按内容自适应**。写死宽度会出事：`retrieval.gold_map_failed`（25 字符）
+    # 超出预期宽度 → 与"运行/项"列**粘连**成一串，读起来直接读错。
+    wl = max([10] + [len(str(r.get("layer", ""))) for r in rows])
+    wm = max([20] + [len(str(r.get("metric", ""))) for r in rows])
+    wn = max([16] + [len(str(r.get("name", ""))) for r in rows])
+    wv = max([8] + [len(val_s(r)) for r in rows])
+    wn2 = max([4] + [len(str(r.get("n", ""))) for r in rows])
+    head = (f"{'层':<{wl}}  {'指标':<{wm}}  {'运行/项':<{wn}}  "
+            f"{'值':>{wv}}  {'n':>{wn2}}")
     lines = [head, "-" * len(head)]
     for r in rows:
-        v = r.get("value")
-        vs = f"{v:.4f}" if isinstance(v, float) else str(v)
-        lines.append(f"{str(r.get('layer')):<{w[0]}}{str(r.get('metric')):<{w[2]}}"
-                     f"{str(r.get('name')):<{w[1]}}{vs:>{w[3]}}{str(r.get('n')):>{w[4]}}")
+        lines.append(
+            f"{str(r.get('layer')):<{wl}}  {str(r.get('metric')):<{wm}}  "
+            f"{str(r.get('name')):<{wn}}  {val_s(r):>{wv}}  "
+            f"{str(r.get('n')):>{wn2}}")
     lines.append("")
     lines.append("口径（note）—— ★ 比数字前先读这里：")
     for r in rows:

@@ -71,6 +71,11 @@ def test_missing_field_is_rejected_with_reason(drop: str, why: str):
     dict(metric="okstrict"),     # 没有点分隔
     dict(metric="qa ok"),        # 空格
     dict(layer="L9"),            # 不存在的层
+    # ★ 最阴的一类：NaN/inf 是 float，**能骗过类型检查**，然后在表里变成
+    #   "NaN"、比大小永远为假 —— 静默失效。（实测：L2 的 ev_recall 无命中时写 NaN。）
+    dict(value=float("nan")),
+    dict(value=float("inf")),
+    dict(value=float("-inf")),
 ])
 def test_bad_values_are_rejected(over: dict):
     with pytest.raises(R.ReportError):
@@ -115,6 +120,27 @@ def test_table_keeps_latest_and_shows_note(tmp_path: Path):
     assert "0.5100" in out and "0.1000" not in out, "应只显示最新值"
     assert "口径" in out and "严格锚点全命中" in out, "表格必须带口径"
     assert "qa/multi/_runs/group2_graph.json" in out, "表格必须带证据路径"
+
+
+def test_table_columns_stay_aligned_with_long_values(tmp_path: Path):
+    """★ 列宽必须**随内容自适应**。
+
+    写死列宽会出事：`retrieval.gold_map_failed`（25 字符）会溢出，把"指标"和
+    "运行/项"两列**粘连**成一串（`…gold_map_failedlitsearch`），读起来直接读错。
+    实测踩过（三层同表的演示里当场看到）。
+
+    判据：表头 + 分隔线 + 所有数据行**长度一致** —— 字段溢出必然让某行变长。
+    """
+    R.emit(_ok(metric="retrieval.gold_map_failed", name="litsearch"),
+           _ok(metric="qa.ok", name="g2"),
+           path=tmp_path / "L3.jsonl")
+    lines = [ln for ln in R.table(R.load_all(tmp_path)).splitlines()
+             if ln and not ln.startswith("口径") and not ln.startswith("  ")]
+    assert len(lines) >= 4, f"应至少有表头+分隔+2 行数据，得到 {len(lines)}"
+    widths = {len(ln) for ln in lines}
+    assert len(widths) == 1, (
+        f"表格未对齐（行长不一致 {widths}）—— 多半是某列写死了宽度、被长字段撑破：\n"
+        + "\n".join(lines))
 
 
 def test_table_handles_empty(tmp_path: Path):

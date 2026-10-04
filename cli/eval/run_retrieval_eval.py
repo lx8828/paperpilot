@@ -230,7 +230,58 @@ def main() -> int:
         L.append("")
     Path(args.out).write_text("\n".join(L), encoding="utf-8")
     print("已写", args.out, f"| mapped/all={sum(denom.values())//2} α={args.alphas}")
+    _emit_report(args, data, kk, cols, hit, mrr, denom,
+                 len(map_fail), stat["fallback"])
     return 0
+
+
+def _emit_report(args, data, kk, cols, hit, mrr, denom,
+                 n_map_fail: int, n_fallback: int) -> None:
+    """把汇总落进统一记录格式（`evals/report.py`）—— 让 L1 的数字能与 L2/L3 比。
+
+    为什么单独做这一步：本脚本原先只写一份 **Markdown 表**，指标**无法与
+    L2/L3 放一起比**，也无法与历史比（要翻 `.md` 考古）。
+
+    ⚠️ **失败绝不影响评测**：跑批已完成，记录只是副产品。
+    """
+    try:
+        sys.path.insert(0, str(ROOT))
+        from evals import report as R  # noqa: PLC0415
+
+        d = denom["all"]
+        if not d:
+            return
+        gold_note = ("仅 `evidence[0]`（旧）" if args.gold_single
+                     else "**全部 evidence 段并集**（官方）")
+        # ★ 口径必须写全：换一个 gold 口径 / 换一个兜底比例，数字就不可比。
+        base = (f"LitSearch 篇级（group=all，分母 {d}）｜ 样本 `{data.get('version')}`"
+                f" ｜ gold 口径：{gold_note}"
+                f" ｜ gold 定位失败 {n_map_fail} 条，其中 {n_fallback} 条走 evidence-BM25"
+                f" 兜底（兜底略偏乐观，已单列）")
+        ev = str(args.out)
+        recs: list[dict] = []
+        for c in cols:
+            for k in kk:
+                recs.append(dict(layer="L1", name=f"litsearch_{c}",
+                                 metric=f"retrieval.recall@{k}",
+                                 value=hit["all"][c][k] / d, n=d,
+                                 note=base, evidence_path=ev))
+            recs.append(dict(layer="L1", name=f"litsearch_{c}",
+                             metric=f"retrieval.mrr@{args.mrr_k}",
+                             value=mrr["all"][c] / d, n=d,
+                             note=base, evidence_path=ev))
+        # 健康度：这几项非 0 说明**有题被静默排除**，比准确率更该先看
+        recs.append(dict(layer="L1", name="litsearch",
+                         metric="retrieval.gold_map_failed",
+                         value=n_map_fail, n=d,
+                         note="gold 定位失败条数（**应为 0**；非 0 则该部分题被静默排除在分母外）",
+                         evidence_path=ev))
+        p = R.emit(*recs)
+        print(f"→ 汇总记录已落 {p.relative_to(ROOT)}（{len(recs)} 条；"
+              f"`python evals/report.py --table` 可看全层对比）")
+    except Exception as e:  # noqa: BLE001  报告失败不能弄挂评测
+        print(f"⚠️ 汇总记录落盘失败（不影响本次评测结果）：{type(e).__name__}: {e}",
+              file=sys.stderr)
 
 
 if __name__ == "__main__":

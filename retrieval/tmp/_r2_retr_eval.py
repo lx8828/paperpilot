@@ -348,7 +348,54 @@ def main() -> int:
                   f" ｜ 均 gold {s['n_gold'].mean():>5.2f}"
                   f" ｜ facet 数 {s.groupby(['cluster', 'facet']).ngroups}")
     print(f"\n已写 {outp}")
+    _emit_report(arms, m, keep, KDIR, GOLDF, outp)
     return 0
+
+
+def _emit_report(arms, m, keep, KDIR, GOLDF, outp) -> None:
+    """把**主表**（`sorter == "B mq_max"`）的汇总落进统一记录格式。
+
+    为什么：本脚本原先只写**逐簇 CSV**，汇总只 print —— 无法与 L1/L3 比、
+    也无法与历史比（要翻 stdout 考古）。
+
+    ⚠️ **失败绝不影响评测**；且**算不出（NaN）就不 emit 那条**，不写 NaN
+    （`evals/report.py` 会拒收 NaN —— 那类值在表里会变成"NaN"，比大小永远为假）。
+    """
+    try:
+        sys.path.insert(0, str(HERE.parent))
+        from evals import report as R  # noqa: PLC0415
+
+        # ★ 口径必须写全：换真值文件 / 换切块 / 换题集，数字都不可比。
+        note = (f"R2 证据召回（主表口径 sorter=`B mq_max`）｜ 语料 **{args.corpus}**"
+                f"＝{len(keep)} 篇 ｜ 真值 `{GOLDF.name}` ｜ 切块 "
+                f"`{KDIR.parent.name}/{KDIR.name}` ｜ 题集 combos={args.combos}"
+                f" ｜ ★ 块口径**不公平**（块越大越占便宜）→ 以 "
+                f"`ev_recall_c12k`（等字符预算）为准")
+        # 指标 -> 列名。`MRecall/StRecall/aNDCG` 来自 `_r2_std_metrics`（文献口径）。
+        COLS = (("MRecall@10", "r2.mrecall@10"), ("StRecall@10", "r2.strecall@10"),
+                ("setF1@10", "r2.setf1@10"), ("aNDCG@10", "r2.andcg@10"),
+                ("ev_recall@12", "r2.ev_recall@12"),
+                ("ev_recall_c12k", "r2.ev_recall_c12k"))
+        recs: list[dict] = []
+        for arm in arms:
+            s = m[m.arm == arm]
+            if not len(s):
+                continue
+            for col, metric in COLS:
+                if col not in s.columns:
+                    continue
+                v = float(s[col].mean())
+                if not np.isfinite(v):
+                    continue      # ★ 算不出来就别 emit（不要写 NaN）
+                recs.append(dict(layer="L2", name=f"r2_{arm}", metric=metric,
+                                 value=v, n=int(len(s)), note=note,
+                                 evidence_path=str(outp)))
+        if recs:
+            p = R.emit(*recs)
+            print(f"→ 汇总记录已落 {p.relative_to(HERE.parent)}（{len(recs)} 条）")
+    except Exception as e:  # noqa: BLE001  报告失败不能弄挂评测
+        print(f"⚠️ 汇总记录落盘失败（不影响本次评测结果）：{type(e).__name__}: {e}",
+              file=sys.stderr)
 
 
 if __name__ == "__main__":

@@ -53,7 +53,7 @@ evals/
   reports/                     落盘（**gitignore**：可再生成；入库的是 .md 摘要）
   (待建)
   datasets/                  题集与真值（**只放指针**，实体仍在原处）
-  runners/                   一层一个入口（**L3 已接 `report.emit`**，L1/L2 待接）
+  runners/                   一层一个入口（**L1/L2/L3 均已接 `report.emit`**）
 ```
 
 ### 三条硬约定
