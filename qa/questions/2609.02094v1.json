@@ -1,217 +1,376 @@
 [
   {
     "pdf": "2609.02094v1.pdf",
-    "qid": "02094-01",
+    "qid": "2094-L0-1",
     "role": "dev",
     "intent": "overview",
-    "question": "这篇论文研究什么问题？核心主张是什么？",
+    "question": "MASkills 解决什么麻烦？它的核心做法（技能条件信用分配 + 进化）是什么、在哪些基准上评估？",
     "expect": [
       "L0",
-      "L1"
+      "L3"
     ],
     "route_min": "L0",
-    "hint": "问题：LLM 多智能体系统难以从交互经验中持续改进，现有 self-reflection 式经验记忆难调用、难精炼、难扩展。主张：把策略改进直接放在『技能空间』而非参数空间——将可复用结构化技能视为策略的可学习组件，通过技能级信用分配+分层聚合+动量平滑+四算子演化做语言空间持续优化，在 HotpotQA/LoCoMo/GAIA 上验证。",
+    "hint": "研究**多智能体 LLM 系统的持续改进**：现有 self-reflection 建的「经验记忆」难被调用、精炼与扩展，而**技能（skill）**是更可操作的单元（结构化的程序性知识，规定何时调用、如何行动、用哪些资源/工具）。提出 **MASkills**：一个在**技能空间**而非参数空间做策略改进的持续学习框架，整合**技能条件信用分配 + 分层信用聚合 + 动量平滑优化**，让技能库通过**精炼、归纳、固化、剪枝**演化；在 **HotpotQA、LoCoMo、GAIA** 上评估。",
     "must_have": [
       "技能",
-      "多智能体",
-      "持续"
+      "skill"
+    ],
+    "must_any": [
+      "技能",
+      "skill"
+    ],
+    "must_all": [
+      "MASkills"
     ],
     "must_not": [],
     "chunk_kw": null
   },
   {
     "pdf": "2609.02094v1.pdf",
-    "qid": "02094-U1",
+    "qid": "2094-L0-2",
     "role": "user",
     "intent": "overview",
-    "question": "用大白话讲，MASkills 到底是在干嘛？它和让智能体自己记经验教训的做法有什么不一样？",
+    "question": "用大白话说，MASkills 想解决什么麻烦？它的办法和以前「攒经验记忆」的做法差在哪？",
     "expect": [
       "L0",
-      "L1"
+      "L3"
     ],
     "route_min": "L0",
-    "hint": "它不直接改模型参数，也不只把经验存成记忆文本，而是把经验沉淀成可复用的『技能』（结构化程序性知识），让多个智能体在协作中不断精化/新增/合并/删减这些技能，从而实现多智能体系统的持续改进；对比的是只记录发生过什么的经验记忆。",
+    "hint": "多智能体系统（多个 LLM 分工协作）跑久了应该越用越强，但**怎么持续变强**很难。以前的做法是让 agent 自我反思、把经验存成**记忆**——问题是这样攒下来的记录**说不清「该复用哪条动作」**、没有可靠的触发条件，越攒越乱（噪声、冗余、过时）。他们的做法是把经验沉淀成**技能**：一个有结构的「操作手册」（什么时候用、怎么做、配哪些工具/资源），像可调用的工具一样按需加载。然后让系统自己去**判断哪条技能在团队里真的有用**（信用分配），把这些判断**稳定下来**（分层聚合 + 动量），再据此**改技能**——精炼、新学、合并、删掉没用的，并且每次改动都要**过验证集，不行就回滚**。",
     "must_have": [
       "技能",
-      "记忆",
-      "经验"
+      "记忆"
     ],
-    "must_not": [],
-    "chunk_kw": null
-  },
-  {
-    "pdf": "2609.02094v1.pdf",
-    "qid": "02094-02",
-    "role": "dev",
-    "intent": "method_detail",
-    "question": "MASkills 的优化闭环整体怎么运转？分哪几步、各步做什么？",
-    "expect": [
-      "L1",
-      "L2"
+    "must_any": [
+      "技能",
+      "记忆"
     ],
-    "route_min": "L1",
-    "hint": "语言空间策略梯度类比的四步闭环：(1) 多智能体技能执行——decentralized rollout，技能作为可调用工具，轨迹带显式技能调用记录；(2) 细粒度技能信用分配——LLM critic 对每次技能调用做反事实比较，产出技能级 credit + agent 级残差；(3) 稳定化语言梯度下降——轨迹级编辑方向 → 跨轨迹/技能/智能体/拓扑分层聚合 → 跨周期动量平滑；(4) 技能演化——refinement/induction/consolidation/pruning 四算子 + held-out 验证与回滚决定接受或还原。",
     "must_all": [
-      "信用分配",
-      "聚合",
-      "动量"
+      "MASkills"
     ],
-    "must_have": [],
     "must_not": [],
     "chunk_kw": null
   },
   {
     "pdf": "2609.02094v1.pdf",
-    "qid": "02094-03",
+    "qid": "2094-L0-3",
+    "role": "dev",
+    "intent": "overview",
+    "question": "MASkills 把技能演化扩展到多智能体场景时，指出有哪三个具体挑战？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "三个：(1) **技能级信用分配（Skill-level credit assignment）**——团队奖励不只该归给正确的 agent，还要归给**正确的技能**；一个技能可能只在少数时间步被调用，其效果又与其他 agent 的行为/技能纠缠，所以团队级乃至 agent 级反馈都不足以判断该改进哪条技能。(2) **噪声且异质的交互**——从轨迹里抽出的语言反馈常常**噪声大、不一致、跨学习周期不稳定**；而且不同协调结构（集中式规划 vs 去中心化对等通信）会带来不同的依赖与信用传播模式。(3) **离散且高风险的技能更新**——技能是**离散的语言制品**（如 SKILL.md 文件、脚本、参考材料），演化需要**开放式结构修改**而非平滑的数值更新，错误编辑会直接改变 agent 的有效动作空间。",
+    "must_have": [
+      "离散",
+      "噪声"
+    ],
+    "must_any": [
+      "离散",
+      "噪声"
+    ],
+    "must_all": [
+      "信用分配"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-S1",
     "role": "dev",
     "intent": "method_detail",
-    "question": "论文里技能以什么形式存在？执行时是怎么被调用、实现『渐进式披露』的？",
+    "question": "MASkills 把「技能制品（skill artifact）」定义成什么结构？三个组成部分分别是什么、各举什么文件为例？技能库在优化里扮演什么角色？",
     "expect": [
-      "L1",
-      "L2"
+      "L3"
     ],
-    "route_min": "L1",
-    "hint": "技能是文件系统式结构化产物：skill.yaml（轻量元数据：技能名+短描述）、SKILL.md（详细指令与程序性知识）、resources/（辅助资源）。执行时只把 skill.yaml 元数据注入 agent prompt 暴露可用技能，agent 自主决定是否调用/调哪个/如何组合；选中后才把对应 SKILL.md 与 resources 动态加载进上下文——保持活跃上下文紧凑。",
+    "route_min": "L3",
+    "hint": "技能制品被建模为**基于文件系统的结构化表示**，三元组：**① 元数据文件 y**（如 `skill.yaml`）；**② 程序性指令文件 m**（如 `SKILL.md`）；**③ 一组辅助资源 R**（如脚本、参考材料、资产、配置文件）。实现上常对应一个**含程序性指令文件与可选资源目录的文件夹**，也有变体把元数据单独放 `skill.yaml`。每个 agent i 维护一个**不断演化的技能库 K_i = {k_i^(1), …, k_i^(M_i)}**，论文**把 K_i 当作 agent 策略中可学习的部分** —— 即 MASkills 优化的是**可复用的结构化技能制品**，而不是网络参数 θ。",
+    "must_have": [
+      "元数据",
+      "资源"
+    ],
+    "must_any": [
+      "元数据",
+      "资源"
+    ],
     "must_all": [
       "skill.yaml",
       "SKILL.md"
     ],
-    "must_have": [],
     "must_not": [],
     "chunk_kw": null
   },
   {
     "pdf": "2609.02094v1.pdf",
-    "qid": "02094-U2",
-    "role": "user",
+    "qid": "2094-S2",
+    "role": "dev",
     "intent": "method_detail",
-    "question": "论文里说技能库会『演化』，具体是通过哪几种方式？各自解决什么问题？",
+    "question": "MASkills 里执行时技能是怎么暴露给 agent 的？为什么不是把技能全文塞进提示？技能调用记录为什么可观测？",
     "expect": [
-      "L1",
-      "L2"
+      "L3"
     ],
-    "route_min": "L1",
-    "hint": "四个 credit-driven 算子：refinement 对有用但不完美的技能做局部 diff 式修补（保留已验证结构）；induction 在现有库无法覆盖持续失败/协调模式时从困难轨迹归纳全新技能；consolidation 把功能重叠的技能合并成更高层抽象、防碎片化；pruning 剪掉长期低效用/冗余/不稳定的技能、控制库规模。另有 held-out validation+rollback 把关。",
+    "route_min": "L3",
+    "hint": "rollout 时只把每个 `skill.yaml` 里的**轻量元数据**（如技能名与简短描述）注入 agent 提示，让模型看到当前可用技能；agent **自主决定是否调用、调用哪条、如何组合多条技能**。技能以**可调用工具**的形式暴露，而非**完全展开的提示**：一旦某技能被选中，其 `SKILL.md` 与辅助资源才**动态载入上下文** —— 这样能让活跃上下文保持紧凑，同时获得专门化的程序性行为。因为**技能调用是显式的工具调用**，产生的技能轨迹可直接**从执行日志观测**，从而支撑后续的技能级信用分配。",
     "must_have": [
-      "refinement",
-      "细化",
-      "induction",
-      "归纳",
-      "consolidation",
-      "合并",
-      "pruning",
+      "动态载入",
+      "上下文"
+    ],
+    "must_any": [
+      "动态载入",
+      "上下文"
+    ],
+    "must_all": [
+      "callable tools"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-S3",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "MASkills 的技能演化有哪四个算子？各自在什么条件下触发、做什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "四类信用驱动的编辑算子：**① Refinement（精炼）** —— 对「有用但不完善」的技能做**局部的 diff 式编辑**，只改被聚合反馈指向的区域，保留无关的程序结构与已验证行为；**② Induction（归纳）** —— 当持续失败或未解决的协作模式**无法被现有技能库处理**时，从**困难轨迹**归纳出**全新技能**（引入全新的程序性抽象）；**③ Consolidation（固化）** —— 为防技能空间失控增长与碎片化，**周期性**把功能重叠的技能合并成更高层的程序性抽象；**④ Pruning（剪枝）** —— **周期性**移除效用信号**持续偏弱**的技能（贡献长期为负、冗余、不稳定或可忽略）。",
+    "must_have": [
+      "精炼",
       "剪枝"
     ],
+    "must_any": [
+      "精炼",
+      "剪枝"
+    ],
+    "must_all": [
+      "refinement",
+      "induction",
+      "consolidation",
+      "pruning"
+    ],
     "must_not": [],
     "chunk_kw": null
   },
   {
     "pdf": "2609.02094v1.pdf",
-    "qid": "02094-04",
+    "qid": "2094-S4",
     "role": "dev",
-    "intent": "detail",
-    "question": "MASkills 在哪些基准上做评测？每个基准分别测什么能力？",
+    "intent": "method_detail",
+    "question": "MASkills 的技能更新为什么需要「验证与回滚」？候选更新被接受的条件是什么、δ 起什么作用？这套机制在概念上相当于什么？",
     "expect": [
-      "L1",
-      "L2"
-    ],
-    "route_min": "L1",
-    "hint": "三个：(1) HotpotQA——多文档问答，测多跳组合推理与证据整合；(2) LoCoMo——超长多会话对话基准，测持续对话记忆与时间推理；(3) GAIA——通用 AI 助手基准，测推理、多模态理解、网页浏览与工具使用。",
-    "must_all": [
-      "HotpotQA",
-      "LoCoMo",
-      "GAIA"
-    ],
-    "must_have": [],
-    "must_not": [],
-    "chunk_kw": null
-  },
-  {
-    "pdf": "2609.02094v1.pdf",
-    "qid": "02094-05",
-    "role": "dev",
-    "intent": "detail",
-    "question": "实验里优化器（optimizer）和负责执行任务的 actor 分别用了什么 backbone 模型？",
-    "expect": [
-      "L2",
       "L3"
     ],
-    "route_min": "L1",
-    "hint": "优化器 backbone 用 GPT-5.1（负责信用分配、轨迹聚合、技能 refinement/induction/consolidation/pruning）；actor backbone 用 GPT-4o-mini（HotpotQA 和 LoCoMo）与 Qwen2.5-7B（GAIA）。",
-    "must_all": [
-      "GPT-5.1",
-      "GPT-4o-mini",
-      "Qwen2.5-7B"
-    ],
-    "must_have": [],
-    "must_not": [],
-    "chunk_kw": "GPT-4o-mini"
-  },
-  {
-    "pdf": "2609.02094v1.pdf",
-    "qid": "02094-U3",
-    "role": "user",
-    "intent": "detail",
-    "question": "在不同协作拓扑（集中式/去中心化/层级式）下跑，结果有什么规律？哪种拓扑在哪些任务上最好？",
-    "expect": [
-      "L2",
-      "L3"
-    ],
-    "route_min": "L1",
-    "hint": "最优拓扑高度依赖任务：HotpotQA 和 GAIA 上 decentralized peer（去中心化平级）最强——利于多样化探索与独立工具/检索轨迹；LoCoMo（尤其 multi-hop 记忆）上 centralized（集中式）最好——共享全局状态减少记忆碎片与不一致；hierarchical（层级式）一般居中。",
+    "route_min": "L3",
+    "hint": "因为技能更新会**直接修改 agent 的技能空间**，错误编辑可能引入**行为退化**。做法：所有候选编辑在**提交进技能库之前**都要在**留出的验证集 D_val**（当前优化周期不使用）上评估；评估候选更新后的技能空间 K′_i 时**固定其他 agent 的技能不动**。**接受条件**：Ĵ_val(K′_i | K_−i) ≥ Ĵ_val(K_i | K_−i) − **δ**，其中 **δ ≥ 0 用来吸收 rollout 方差与评估噪声**；否则**丢弃该编辑并恢复原技能空间**。概念上，这套机制相当于技能空间里的**信赖域（trust-region）式约束**，防止噪声批判导致的不稳定更新或对近期轨迹的过拟合。（消融显示它是影响最大的组件。）",
     "must_have": [
-      "decentralized",
-      "去中心化",
-      "centralized",
-      "集中式",
-      "peer",
-      "层级"
+      "回滚",
+      "trust-region",
+      "验证集"
+    ],
+    "must_any": [
+      "回滚",
+      "trust-region",
+      "验证集"
+    ],
+    "must_all": [
+      "delta"
     ],
     "must_not": [],
-    "chunk_kw": "decentralized"
+    "chunk_kw": null
   },
   {
     "pdf": "2609.02094v1.pdf",
-    "qid": "02094-06",
+    "qid": "2094-S5",
     "role": "dev",
-    "intent": "concept",
-    "question": "论文里的『技能(skill)』和『经验记忆(memory)』有什么区别？为什么技能更适合做持续改进？",
+    "intent": "method_detail",
+    "question": "MASkills 的技能级信用分配具体怎么做？为什么 agent 级反馈不够？「agent 级残差信用」有什么特殊用途？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "由**中心化的语言 critic** 评估：每个被调用的技能 k 对团队结果的贡献，是**相对于「该技能没被使用」这一反事实（counterfactual）**而言的；critic 输出**结构化的自然语言信用**，说明该技能是帮助了协作、冗余、导致了失败，还是应当被泛化/专门化。**agent 级反馈不够**的原因：一条轨迹里可能涉及多个 agent 的多条相互作用技能，**只有其中一部分对最终结果负责**。此外 critic 还会输出**agent 级残差信用**，捕捉无法归因到任何单条技能的效果 —— 这对**技能归纳**特别重要：**若某次失败无法由现有技能解释，agent 级批判就提示需要一个新技能**。",
+    "must_have": [
+      "残差",
+      "critic"
+    ],
+    "must_any": [
+      "残差",
+      "critic"
+    ],
+    "must_all": [
+      "counterfactual"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-S6",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "MASkills 的「稳定化语言梯度下降」分哪几步？层级聚合要聚合过哪几个维度？动量平滑在概念上把当前与历史编辑方向分别当作什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "分三步：**① 轨迹级编辑方向** —— critic 先把文本信用信号转成结构化的语言编辑方向（含建议的精炼、行为调整、泛化或移除）；**② 层级聚合** —— 对一个 rollout 批次，沿**轨迹 → 技能 → agent → 交互拓扑**递归聚合；技能级用 `LLMAgg` 合并重复行为模式、**消解冲突的更新方向**、去冗余，并总结该技能的协作效用；**③ 动量平滑** —— 不把每个周期独立处理，而是**把持续的历史编辑方向与当前聚合反馈一起带下去**。概念上：**当前编辑方向 = 当前的梯度更新**，**历史编辑方向 = 动量项**，用来保留长期的行为改进；实际执行由四个具体算子（refinement / induction / consolidation / pruning）落地。",
+    "must_have": [
+      "拓扑",
+      "topology",
+      "topologies"
+    ],
+    "must_any": [
+      "拓扑",
+      "topology",
+      "topologies"
+    ],
+    "must_all": [
+      "momentum",
+      "aggregation"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-S7",
+    "role": "dev",
+    "intent": "baseline_compare",
+    "question": "MASkills 在三种协调拓扑（集中式 / 层级式 / 去中心化对等）下性能如何？哪种拓扑在哪些任务上最优，作者怎么解释？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**最优拓扑高度依赖任务**：**HotpotQA 与 GAIA 上去中心化对等（decentralized peer）最强**（这两类任务受益于多样化探索、独立的工具/检索轨迹）；**LoCoMo 上集中式（centralized）最好**，尤其是多跳记忆检索 —— 因为 LoCoMo 需要维护**全局一致的长上下文记忆表示**、消解时序依赖并跨多个会话整合信息，而**集中式提供共享全局状态，减少记忆碎片与不一致**；**层级式（hierarchical）一般居中**，在结构化信息聚合与部分去中心化之间折中。总体说明该框架**不与特定编排结构强耦合**。",
+    "must_have": [
+      "集中式",
+      "centralized"
+    ],
+    "must_any": [
+      "集中式",
+      "centralized"
+    ],
+    "must_all": [
+      "LoCoMo"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-S8",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "MASkills 自陈的局限有哪些？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "两条：**① 实验主要集中在「协作式、agent 角色与通信拓扑相对固定」的设置**，更动态、对抗性以及开放世界环境仍未被充分探索；作者提出未来可扩展到**自适应组织结构、竞争性多智能体博弈、大规模去中心化协调**。**② 技能库持续扩张带来的可扩展性问题** —— 随着优化进行，技能检索、固化（consolidation）与协调效率上可能出现瓶颈；未来可研究**层级化技能组织、检索压缩、终身学习机制**以支撑大规模的长期技能演化。",
+    "must_have": [
+      "协作",
+      "技能库",
+      "承认",
+      "不足",
+      "边界"
+    ],
+    "must_any": [
+      "协作",
+      "技能库",
+      "承认",
+      "不足",
+      "边界"
+    ],
+    "must_all": [
+      "topology"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-T1",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 1，MASkills 在 HotpotQA 上的 F1 是多少、最强基线是多少？在 GAIA 上的 Avg 与 L1/L2/L3 分别是多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**HotpotQA F1**：MASkills **76.3**，对比 IO 68.1 / CoT 67.9 / CoT-SC 68.9 / MedPrompt 68.3 / **MultiPersona 69.2（最强基线）** / Self-Refine 60.8 / ADAS 64.5。**GAIA**：MASkills **L1 35.3 / L2 22.6 / L3 0.0 / Avg 23.3**，对比 Base 12.8/3.8/0.0/6.8、Search-o1 23.1/17.3/0.0/17.5、Vanilla ReAct 28.2/15.3/0.0/18.4、**R1-Searcher 28.2/19.2/8.3/20.4**。",
+    "must_have": [
+      "69.2",
+      "35.3"
+    ],
+    "must_any": [
+      "69.2",
+      "35.3"
+    ],
+    "must_all": [
+      "76.3",
+      "23.3"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-T2",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 2 的消融，MASkills 完整版与去掉各组件后，在 LoCoMo-MH 与 GAIA 上的数值分别是多少？哪个组件去掉后掉得最狠？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**MASkills (Full)：LoCoMo-MH 17.2 / GAIA 23.3**；**w/o Skill Credit assignment：14.2 / 17.1**；**w/o Momentum Smoothing：16.4 / 21.9**；**w/o Validation Rollback：6.6 / 13.5**；**w/o Consolidation / Pruning：13.9 / 13.0**。**去掉验证回滚掉得最狠**（17.2 → 6.6；23.3 → 13.5），说明「回滚不稳定更新」对防止迭代优化中性能崩塌最关键；技能条件信用分配也重要。",
+    "must_have": [
+      "17.2",
+      "23.3"
+    ],
+    "must_any": [
+      "17.2",
+      "23.3"
+    ],
+    "must_all": [
+      "6.6",
+      "13.5"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2609.02094v1.pdf",
+    "qid": "2094-N1",
+    "role": "dev",
+    "intent": "negative_check",
+    "question": "论文报告 MASkills 在 GAIA Level 3 上相对最强基线取得了显著提升，具体提升了多少个百分点？",
     "expect": [
       "L0",
-      "L1"
-    ],
-    "route_min": "L0",
-    "hint": "记忆只记录过去轨迹发生了什么，不指明该复用哪个策略、缺乏可靠调用条件，且增长后噪音/冗余/陈旧记录混杂；技能是结构化程序性知识，指明何时调用、如何行动、用哪些资源/工具，靠『轻量描述可发现 + 按需加载细节』的渐进式披露，可复用、可精炼、可扩展。",
-    "must_have": [
-      "结构化",
-      "程序性",
-      "可复用",
-      "渐进",
-      "progressive"
-    ],
-    "must_not": [],
-    "chunk_kw": null
-  },
-  {
-    "pdf": "2609.02094v1.pdf",
-    "qid": "02094-07",
-    "role": "dev",
-    "intent": "detail",
-    "question": "论文在对抗性或竞争性多智能体环境（如 competitive games）上验证过 MASkills 吗？",
-    "expect": [
-      "L2",
       "L3"
     ],
-    "route_min": "L1",
-    "hint": "没有（缺席判断）。实验主要聚焦 cooperative、角色与通信拓扑相对固定的设定；Limitations 明确把 dynamic/adversarial/open-world 环境列为未探索，competitive multi-agent games 只作为 future work 提出，未做实验。",
+    "route_min": "L3",
+    "hint": "**没有这个提升 —— 前提是假的。** Table 1(c) 显示 **MASkills 的 GAIA L3 = 0.0**，与 Base / Search-o1 / Vanilla ReAct 一样为 0；唯一在 L3 上非零的是 **R1-Searcher（8.3）**。所以正确回答应当指出**论文并未报告 MASkills 在 L3 上的提升**（其 L3 为 0，而论文的 GAIA 增益来自 L1 与 L2），不应编造一个具体百分点。",
     "must_have": [
-      "对抗",
-      "竞争",
-      "未",
-      "future",
-      "局限"
+      "没有",
+      "未报告",
+      "0"
     ],
-    "must_not": [],
-    "chunk_kw": "competitive"
+    "must_any": [
+      "没有",
+      "未报告",
+      "0"
+    ],
+    "must_all": [],
+    "must_not": [
+      "提升 8.3",
+      "提升了 8.3"
+    ],
+    "chunk_kw": null
   }
 ]

@@ -1,0 +1,444 @@
+[
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-L0-1",
+    "role": "dev",
+    "intent": "overview",
+    "question": "Skill-MAS 想解决既有 automatic-MAS 路线的什么两难？它凭什么被称为「第三条路」？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "提出 **Skill-MAS** —— 论文称其为**第三条路（third path）**：把**高层编排能力概念化为可演化的 Meta-Skill**，从而**把「经验保留」与「参数更新」解耦**。既有两条路线构成两难：**inference-time MAS** 用冻结的前沿 LLM 但**不学经验**、反复做同样的搜索；**training-time MAS** 用梯度更新内化经验，但受**小模型能力上限**限制、且难以扩展到超大前沿模型。Skill-MAS 让**冻结的 Meta-agent 借持续演化的 Meta-Skill 变得更强**。",
+    "must_have": [
+      "Meta-Skill",
+      "third path",
+      "第三条路",
+      "解耦",
+      "两难"
+    ],
+    "must_any": [
+      "Meta-Skill",
+      "third path",
+      "第三条路",
+      "解耦",
+      "两难"
+    ],
+    "must_all": [
+      "Skill-MAS"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-L0-2",
+    "role": "dev",
+    "intent": "overview",
+    "question": "Skill-MAS 用什么闭合优化回路来演化 Meta-Skill？在多少个基准、多少个 LLM 上评估、主要结论是什么？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "两阶段闭合回路：**① Multi-Trajectory Rollout** —— 在当前 Meta-Skill 下对每个任务采多条轨迹，把「单次成败」变成**分布统计**，从而把真实能力与执行随机性分开；**② Selective Reflection** —— 挑出最易波动、最难的任务，做**层级对比分析**（先任务内、再跨任务），把系统性经验蒸馏成**可泛化的策略级原则**。评估规模：**4 个复杂基准 × 4 个不同 LLM**；结论是 Skill-MAS 既取得显著性能提升，又保持**更优的性价比权衡**，且演化出的 **Meta-Skill 具有高度可迁移性**。",
+    "must_have": [
+      "多轨迹",
+      "选择性反思",
+      "四个",
+      "迁移",
+      "性价比"
+    ],
+    "must_any": [
+      "多轨迹",
+      "选择性反思",
+      "四个",
+      "迁移",
+      "性价比"
+    ],
+    "must_all": [
+      "Meta-Skill"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-L0-3",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "Skill-MAS（把高层编排建模为 Meta-Skill 的那篇）自陈的局限与未来方向主要有哪些？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "四类：**①展开次数越高，演化阶段的计算开销必然越大** —— 该参数需在性能最大化与演化开销之间权衡；**②无标签设定下只能取得次优结果** —— 默认用真实标签算分数与优先级，去掉自适应选择后变体（Full-Validation / Half-Validation）都会掉分；**③未针对多任务学习显式优化** —— 缺跨域样本的自适应分析与隔离机制，多任务虽有潜力但需更系统化的算法；**④依赖真实标签**，弱监督/无监督下效果可能下降。未来方向：把**无标签组件（如 Meta-agent 的自信度分数）**纳入技能演化，或用 **LLM-as-a-judge** 设计自监督评估来指导选择性反思。",
+    "must_have": [
+      "无标签",
+      "标签",
+      "多任务",
+      "开销",
+      "弱监督"
+    ],
+    "must_any": [
+      "无标签",
+      "标签",
+      "多任务",
+      "开销",
+      "弱监督"
+    ],
+    "must_all": [
+      "Meta-agent"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S1",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Skill-MAS 一轮演化 Meta-Skill 的两个阶段分别做什么？为什么不能只做单次评测？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**① Multi-Trajectory Rollout**：在当前 Meta-Skill S(r) 下，对每个任务**独立采 K 条轨迹**，记录标准化轨迹 τ = (任务 id, 轨迹序号, 归一化分数, 当时的 Meta-Skill, 执行快照)；把单次成败转成**分布刻画**，用一个轮次的语料 D(r) 导出每条任务的**不确定性**（K 个分数的标准差）与**难度**（负平均分）。**② Selective Reflection**：把分布证据转成**有目标的技能修订** —— 先做优先级驱动的任务选择，再做层级轨迹反思，产出结构化证据包，最后由技能优化器写出 S(r+1)。论文强调：单次 pass/fail 无法把**系统性技能缺陷**与**一次性执行噪声**区分开，所以要先采样出行为分布。",
+    "must_have": [
+      "分布",
+      "标准差",
+      "难度",
+      "轨迹"
+    ],
+    "must_any": [
+      "分布",
+      "标准差",
+      "难度",
+      "轨迹"
+    ],
+    "must_all": [
+      "Multi-Trajectory Rollout",
+      "Selective Reflection"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S2",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Meta-Skill 被组织成哪三个模块？各管什么、为什么这种三分法有用？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "三个模块：**① Task Decomposition（the what）** —— 规定 Meta-agent 如何分析用户查询：识别宏观目标与范围、拆成离散且逻辑内聚的子任务、为每个子任务写**可评估的成功标准**；**② Agent Engineering（the who）** —— 规定**专用子 agent 的实例化**：每个子 agent 分配独立的角色画像，并给出它启动所需的上下文输入；**③ Workflow Orchestration（the how）** —— 规定挑选合适的**架构拓扑**（sequential / hierarchical / loop 等），定义 agent 之间精确的输入-输出映射，并产出可执行的 MAS。三分法的双重作用：**推理时**给 Meta-agent 一套有原则的 MAS 生成流程；**优化时**让每轮诊断能把失败**精确归因到某个模块**，从而让技能更新保持**局部、可解释**。",
+    "must_have": [
+      "the what",
+      "the who",
+      "the how",
+      "拓扑",
+      "归因"
+    ],
+    "must_any": [
+      "the what",
+      "the who",
+      "the how",
+      "拓扑",
+      "归因"
+    ],
+    "must_all": [
+      "Task Decomposition",
+      "Agent Engineering",
+      "Workflow Orchestration"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S3",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Skill-MAS 的优先级任务选择怎么算（演化 Meta-Skill 时挑哪几个任务来反思）？优先分数由哪两个统计量融合？怎么决定「选多少个任务」？为什么只分析一部分任务？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "两个统计量：**不确定性 ui = 该任务 K 条轨迹分数的标准差**（衡量技能对同一任务编排得有多不稳定，ui 大说明规则含糊或欠定义）；**难度 di = 负平均分**（越难值越大）。两者先在各任务间做 **min–max 归一化**，再加权融合成**统一优先分 pi = ½(ũi + d̃i)**，从而同时偏向「既波动又系统性困难」的任务。选多少：按 pi 降序得到优先曲线，用**有限差分**（离散版导数）检测曲线的**自然肘点（elbow）**——取**二阶差分绝对值最大**的位置 j*，选中前 j* 个任务。只分析子集的原因：**均匀分析全部 N 个任务会稀释诊断信号**。",
+    "must_have": [
+      "肘",
+      "elbow",
+      "标准差",
+      "归一化",
+      "优先"
+    ],
+    "must_any": [
+      "肘",
+      "elbow",
+      "标准差",
+      "归一化",
+      "优先"
+    ],
+    "must_all": [
+      "uncertainty"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S4",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Skill-MAS 演化 Meta-Skill 时的层级轨迹反思分哪两个阶段、各做什么？每个任务先产出什么？跨任务阶段又解决什么问题、最终产出什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**Phase 1（任务内对比分析）**：对每个被选中的任务，把它 K 条轨迹按中位数分成**高分集 H 与低分集 L**，用 LLM 反射器对比两组的执行快照：找出**分歧点**、提炼高分组的**成功因素**、归类低分组的**反复失败模式**并给出**根因**；产出该任务的**总结报告 R 与候选补丁 δ̂**（指向某个具体技能模块的修改）。**Phase 2（跨任务综合）**：把所有任务报告**联合分析**以避免过拟合，提取**超越单个任务**的规律 —— 系统性弱点、跨多任务复现的失败模式、以及应当保留的系统性优势；再把候选补丁聚合并按**预期影响与实现可行性**排序，形成结构化**证据包 E**。最后技能优化器用 E 审阅并改写技能，**保持三模块骨架**，每条修改都必须**扎根于反思证据**并抽象成**可泛化的编排原则**（而非任务专用补丁），改完还要过**结构有效性检查**才被接受。",
+    "must_have": [
+      "对比",
+      "根因",
+      "泛化",
+      "证据包",
+      "补丁"
+    ],
+    "must_any": [
+      "对比",
+      "根因",
+      "泛化",
+      "证据包",
+      "补丁"
+    ],
+    "must_all": [
+      "Phase 1",
+      "Phase 2"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S5",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Skill-MAS 演化 Meta-Skill 的实验设置：用了哪四个基准、四个 LLM？默认 LLM-judge 是谁？核心超参 R / K / temperature / max_tokens 各是多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "四个基准：**DeepResearchBench（DRB，深度研究）**、**Humanity's Last Exam-Math（HLE，专家级数学）**、**BrowseComp-Plus（BCP，多跳问答）**、**VitaBench（VITA，真实交互场景）**。四个 Meta-agent：**Gemini-3.1-Flash、GPT-5.4-Nano、Qwen3.5-Plus、DeepSeek-V4-Flash**。默认 **LLM-judge 是 Gemini-3.1-Flash**。核心超参：**演化轮数 R = 10、每任务展开数 K = 5（默认；消融用 3 与 7）、temperature = 1.0、max_tokens = 32768**。所有指标归一化到 [0, 100%]，报的是**测试集**上的平均性能与平均推理成本（USD）。",
+    "must_have": [
+      "VitaBench",
+      "BrowseComp-Plus",
+      "temperature",
+      "32768",
+      "10"
+    ],
+    "must_any": [
+      "VitaBench",
+      "BrowseComp-Plus",
+      "temperature",
+      "32768",
+      "10"
+    ],
+    "must_all": [
+      "Gemini-3.1-Flash"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S6",
+    "role": "dev",
+    "intent": "baseline_compare",
+    "question": "按 Table 1，Skill-MAS-optimized 在四个 LLM 上是否都拿第一？唯一的例外是哪个「基准 × LLM」组合、差多少？成本-性能分布上三类方法各是什么特征？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**唯一例外**是 **GPT-5.4-Nano × DeepResearchBench**：EvoAgent 以 **52.91** 领先，Skill-MAS-optimized 为 **48.90**；其余所有情况 Skill-MAS-optimized 都**大幅领先**并在所有 LLM 上取得**最高平均性能**（如 Gemini-3.1-Flash 上平均 **29.49** vs 最强基线 AFlow 的 21.29；Qwen3.5-Plus 上 **38.41**；DeepSeek-V4-Flash 上 **41.05**）。成本-性能分布：**Training-time MAS 成本最低但性能最差**（生成过于简单、泛化不足）；**Inference-time MAS 性能提升但推理成本最高**（每个样本都要重新迭代优化，代价过高）；**Skill-MAS 一次生成 MAS、不逐样本重优化，因而在中等成本下取得最佳性能**。",
+    "must_have": [
+      "DeepResearchBench",
+      "EvoAgent",
+      "29.49",
+      "成本"
+    ],
+    "must_any": [
+      "DeepResearchBench",
+      "EvoAgent",
+      "29.49",
+      "成本"
+    ],
+    "must_all": [
+      "48.90",
+      "52.91"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S7",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "Meta-Skill 的迁移性实验分哪几类设置（Panel A / B / C）？哪类增益最大、哪类最弱？为什么跨任务迁移也能有效？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "四类设置：**No Transfer（源与测试完全一致）**增益最大、**占据热力图对角线**；**Panel A（同任务、跨 LLM）**次之 —— 任务不变，分析与精炼出的 Meta-Skill 天然相似、可高度迁移；**Panel B（同 LLM、跨任务）**也很有竞争力 —— 说明**域外泛化**成立；**Panel C（跨 LLM 且跨任务）最弱**，因为要同时跨两种分布。跨任务迁移有效的原因：演化过程**显式要求 Meta-agent 避免领域专用技巧、专注通用模式**，于是优化后的 Meta-Skill 学到**任务无关的策略**，在未见数据集上仍有效。",
+    "must_have": [
+      "Panel A",
+      "跨任务",
+      "迁移",
+      "对角线",
+      "最弱"
+    ],
+    "must_any": [
+      "Panel A",
+      "跨任务",
+      "迁移",
+      "对角线",
+      "最弱"
+    ],
+    "must_all": [
+      "No Transfer",
+      "Panel C"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-S8",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "Skill-MAS 的 Meta-Skill 演化有什么核心局限？「无标签」变体掉了多少、作者怎么解释？多任务设置的结论是什么？展开数 K 的影响是什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**核心局限是依赖真实标签**：默认用 ground-truth 标签算轨迹分数与优先级，所以在**弱监督/无监督**下效果可能下降；未来可用 **LLM-as-a-judge** 做自监督评估来指导选择性反思。**无标签变体**：Full-Validation（全选）与 Half-Validation（随机选 50%）**都掉分但超过多数基线** —— 一方面凸显自适应优先级选择的关键作用，另一方面说明 **Skill-MAS 在无标签设定只能取得次优结果**。**多任务**：把 Meta-Skill 在四个数据集聚合池上演化后，**VitaBench 略有提升但 BrowseComp-Plus 下降** —— 因为 Skill-MAS **并非显式为多任务学习优化**，缺跨域样本的自适应分析与隔离。**展开数 K（默认 5，消融 3/7）**：性能随轨迹数增加而提升，但**收益递减**（3→5 的增益大于 5→7），且更高的展开数必然带来**更大的演化计算开销**，实际部署需在性能与开销间权衡。",
+    "must_have": [
+      "标签",
+      "LLM-as-a-judge",
+      "次优",
+      "多任务",
+      "递减",
+      "开销"
+    ],
+    "must_any": [
+      "标签",
+      "LLM-as-a-judge",
+      "次优",
+      "多任务",
+      "递减",
+      "开销"
+    ],
+    "must_all": [
+      "label-free"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-T1",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 1，Skill-MAS-init 与 Skill-MAS-optimized 在 Gemini-3.1-Flash 上的四基准分数与平均性能分别是多少？优化带来多大提升？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**Skill-MAS-init（S(1)）**：DRB **36.10** / HLE **14.88** / BCP **19.05** / VITA **16.67**，平均 **21.68**、平均成本 2.63；**Skill-MAS-optimized（S\\*）**：DRB **44.71** / HLE **21.43** / BCP **23.21** / VITA **28.60**，平均 **29.49**、平均成本 2.82。即**演化把平均性能从 21.68 提到 29.49（+7.81）**，其中 **VITA 提升最大（16.67 → 28.60）**。对照：该 LLM 上最强基线 AFlow 平均 21.29，Skill-MAS-init 仅略高（21.68 vs. 21.29）。",
+    "must_have": [
+      "21.68",
+      "28.60",
+      "36.10",
+      "16.67"
+    ],
+    "must_any": [
+      "21.68",
+      "28.60",
+      "36.10",
+      "16.67"
+    ],
+    "must_all": [
+      "44.71",
+      "29.49"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-T2",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 3 的设置消融，Ours 与 Full-Validation / Half-Validation / Multi-task Learning 四个变体在 BCP 与 VITA 上的分数各是多少（GPT-5.4-Nano 与 DeepSeek-V4-Flash）？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**Ours**：BCP 27.38（GPT-5.4-Nano）/ 22.62（DeepSeek）、VITA 15.48 / 63.10；**Full-Validation**：**22.02 / 19.64 / 13.10 / 59.52**；**Half-Validation**：**21.43 / 17.26 / 9.52 / 58.33**；**Multi-task Learning**：20.83 / 22.02 / 16.67 / 64.29。要点：去掉自适应优先级选择（Full-Validation 全选、Half-Validation 随机选 50%）后**每个格子都低于 Ours**，且 Half-Validation 掉得更多；多任务变体在 VITA 上略高（64.29 > 63.10）但在 BCP 上更低（20.83 < 27.38）。",
+    "must_have": [
+      "59.52",
+      "58.33",
+      "27.38",
+      "64.29"
+    ],
+    "must_any": [
+      "59.52",
+      "58.33",
+      "27.38",
+      "64.29"
+    ],
+    "must_all": [
+      "22.02",
+      "21.43"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2606.18837.pdf",
+    "qid": "8837-N1",
+    "role": "dev",
+    "intent": "negative_check",
+    "question": "Skill-MAS 论文声称：其 Meta-Skill 演化由于选择性反思不依赖标签，在没有任何 ground-truth 标签的设定下同样能达到与有监督时相同的最优性能。这个说法对吗？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**不对，前提是假的。** 论文明确说 Skill-MAS **默认用 ground-truth 标签**计算轨迹分数并做优先级选择；把自适应选择机制关掉后的两个 **label-free 变体**（Full-Validation 全选、Half-Validation 随机选 50%）**都会掉分**，论文自陈「**在无标签设定下只能取得次优结果（suboptimal）**」，并把「把无标签组件纳入技能演化」列为**未来工作**。所以正确回答应指出无标签时性能会下降，而不是声称能达到同样的最优。",
+    "must_have": [
+      "不对",
+      "不能",
+      "依赖",
+      "次优",
+      "下降",
+      "并非",
+      "会掉"
+    ],
+    "must_any": [
+      "不对",
+      "不能",
+      "依赖",
+      "次优",
+      "下降",
+      "并非",
+      "会掉"
+    ],
+    "must_all": [],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

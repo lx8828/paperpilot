@@ -1,0 +1,840 @@
+[
+  {
+    "qid": "G2-M0-1",
+    "kind": "M0",
+    "role": "dev",
+    "intent": "multi_overview",
+    "question": "这五篇里，每篇给自己的方法起了什么专名？请按篇列出名字，并一句话说明各是干什么的。",
+    "hint": "五篇各自有专名：**SkillLearnBench**（持续技能学习方法评测基准）、**SkillMAS**（把技能演化与 MAS 重构耦合的非参数框架）、**Skill-MAS**（把高层编排建模为可演化 Meta-Skill 的「第三条路」）、**COMAD**（持续离线多智能体技能发现与复用）、**MASkills**（面向多智能体 LLM 系统的持续技能优化）。注意 **SkillMAS**（篇 2）与 **Skill-MAS**（篇 3）名字高度相似、是两篇不同工作。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [
+      "SkillLearnBench",
+      "SkillMAS",
+      "Skill-MAS",
+      "COMAD",
+      "MASkills"
+    ],
+    "must_any": [
+      "专名",
+      "方法",
+      "名称",
+      "基准",
+      "框架"
+    ],
+    "must_not": [],
+    "must_have": [
+      "SkillLearnBench",
+      "SkillMAS",
+      "Skill-MAS",
+      "COMAD",
+      "MASkills"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M0-2",
+    "kind": "M0",
+    "role": "dev",
+    "intent": "multi_overview",
+    "question": "这五篇各自在什么基准 / 环境上做评测？请尽量把各自的主要评测对象说出来。",
+    "hint": "**SkillLearnBench**（2604.20087）：自建的 20 个「依赖技能」真实任务（跨 6 大类 / 15 子领域），另在 6 个生成 LLM 上受控比较四种持续学习方法。**SkillMAS**（2605.09341）：具身操作（**ALFWorld**）、命令行 OS 工作流（Lifelong Agent Bench OS Task）与零售工作流（**τ-Bench Retail**）。**Skill-MAS**（2606.18837）：**四个复杂基准**（深度研究 / 专家级数学 / 多跳问答 / 真实交互场景）× 四种 LLM。**COMAD**（2606.25389）：**多智能体强化学习（MARL）**任务流（LBF / CN / SMAC / SMACv2 / MAMuJoCo）。**MASkills**（2609.02094v1）：**HotpotQA、LoCoMo、GAIA** 三个智能体任务基准。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [
+      "HotpotQA",
+      "ALFWorld",
+      "四个复杂基准"
+    ],
+    "must_any": [
+      "MARL",
+      "LoCoMo",
+      "GAIA",
+      "任务流",
+      "基准"
+    ],
+    "must_not": [],
+    "must_have": [
+      "HotpotQA",
+      "ALFWorld",
+      "四个复杂基准"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M0-3",
+    "kind": "M0",
+    "role": "dev",
+    "intent": "multi_overview",
+    "question": "这五篇里，哪几篇报告了具体百分比 / 数值结果？请至少给出两个不同论文的关键数字。",
+    "hint": "**SkillMAS**（2605.09341）：ALFWorld 完整 unseen 划分 **94.0%**（与最强已发表参考分 **93.0%** 相当）。**COMAD**（2606.25389）：**9 个任务流平均性能 64.34**，复用 5m_vs_6m 输出头使 7m_vs_8m 胜率近 **0.3**、阶段 2 技能增强后超 **0.4**。**Skill-MAS**（2606.18837）：优化后平均性能如 Gemini-3.1-Flash 上 **29.49**（init 21.68）。**MASkills**（2609.02094v1）：GAIA 上 L1 35.3 / L2 22.6 / **Avg 23.3**。**SkillLearnBench**（2604.20087）：最好的方法只覆盖 no-skill → human-authored 差距的**约 45%**；Human-authored 准确率 **74.50**。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [
+      "94.0%",
+      "64.34"
+    ],
+    "must_any": [
+      "29.49",
+      "23.3",
+      "45%",
+      "74.50",
+      "0.3",
+      "0.4"
+    ],
+    "must_not": [],
+    "must_have": [
+      "94.0%",
+      "64.34"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M0-4",
+    "kind": "M0",
+    "role": "dev",
+    "intent": "multi_overview",
+    "question": "这五篇里，哪些篇在讲「把经验保留与参数更新解耦」？哪些篇在讲「技能库要能持续扩张」？",
+    "hint": "**解耦（经验/技能保留 vs 参数更新）**：与 2606.18837 直接相关 —— 它提出**第三条路**，把**经验保留与参数更新解耦**（冻结的 Meta-agent + 可演化 Meta-Skill）；2604.20087 也把技能生成称为**非参数的持续学习**（不改权重、避免灾难性遗忘）。**技能库持续扩张**：**COMAD**（2606.25389）靠**持续扩展技能库**来缓解干扰、记忆多样目标；**SkillMAS**（2605.09341）用**有界技能演化**改技能库（不接受每个局部补丁）；**MASkills**（2609.02094v1）让技能库通过**精炼/归纳/固化/剪枝**演化（且有界，防失控增长）。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [
+      "解耦",
+      "技能库"
+    ],
+    "must_any": [
+      "非参数",
+      "扩展",
+      "演化",
+      "Meta-Skill",
+      "迁移"
+    ],
+    "must_not": [],
+    "must_have": [
+      "解耦",
+      "技能库"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M0-5",
+    "kind": "M0",
+    "role": "user",
+    "intent": "multi_overview",
+    "question": "用大白话说：这五篇里，哪些篇强调「光靠自己反思不够、得有外部信息」？哪些篇把「反思/评估」做得更讲究（先采样再挑重点）？",
+    "hint": "**SkillLearnBench**（2604.20087）：多轮迭代**靠外部反馈**才有真实改进，**仅靠自反馈会导致递归漂移**。**Skill-MAS**（2606.18837）：先**多轨迹采样**、再**选择性反思**（挑最易波动与最难的任务做层级对比分析）。**SkillMAS**（2605.09341）：**Utility Learning 只从已验证执行轨迹**更新技能/执行器效用，不靠检索。**MASkills**（2609.02094v1）：由**中心化语言 critic** 相对「该技能未被使用」的反事实来评估每条技能的贡献。**COMAD**（2606.25389）则靠**状态密度 + 复用性估计**决定复用还是扩张（属于「复用性门控」而非反思）。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [
+      "自反馈",
+      "选择性反思"
+    ],
+    "must_any": [
+      "外部反馈",
+      "反射",
+      "反思",
+      "信用分配",
+      "轨迹",
+      "反馈"
+    ],
+    "must_not": [],
+    "must_have": [
+      "自反馈",
+      "选择性反思"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-1",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇把「技能」表示成人类可读的结构化文档 / 制品（含元数据、指令、资源）？哪一篇把技能表示成由自编码器学出的隐变量 / 嵌入？",
+    "hint": "**文档类**：**MASkills**（2609.02094v1）—— 技能制品 = 元数据文件（如 **skill.yaml**）+ 程序性指令文件（如 **SKILL.md**）+ 辅助资源，且是**可调用工具**；**Skill-MAS**（2606.18837）—— 技能抽象成结构化自然语言文档（如 **SKILL.md**），并特别指出既有工作只做**单 agent / 子 agent 层**的技能；**SkillLearnBench**（2604.20087）—— 技能定义为**结构化 Markdown 文档**（写明何时应用、步骤、所需知识），观测到生成技能几乎全是「只有指令」的 Pattern A。**隐变量类**：**COMAD**（2606.25389）—— 用 **VAE / 自编码器**把全局状态-动作对编码成**技能嵌入**、再用动作解码器解码成动作（技能是**隐变量**，靠多头 + 复用性估计来「划分」）。**SkillMAS**（2605.09341）介于两者之间：技能是**agent 原生包**（适用条件、步骤、失败护栏、验证检查），同时用**验证轨迹**做信用分配。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "SKILL.md",
+      "VAE"
+    ],
+    "must_any": [
+      "隐变量",
+      "Markdown",
+      "文档",
+      "嵌入",
+      "skill.yaml"
+    ],
+    "must_not": [],
+    "must_have": [
+      "SKILL.md",
+      "VAE"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-2",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇在评测或训练回路里用 LLM 当「评判者 / 批判者」？各自用哪个模型、评判什么？",
+    "hint": "至少三篇：**SkillLearnBench**（2604.20087）—— Level 1 / Level 2 需要打分的指标统一用 **GPT-5-mini** 当 **LLM judge**（技能质量三维、轨迹对齐、六个安全风险维度）；**Skill-MAS**（2606.18837）—— 默认 **LLM-judge 是 Gemini-3.1-Flash**（另有 rubric 评分），用于评测交互任务成功率等；**MASkills**（2609.02094v1）—— **中心化语言 critic** 输出结构化自然语言信用，判断每条被调用技能是「帮了协作 / 冗余 / 导致失败」，并给出 agent 级残差信用。**其余两篇主要用确定性/自动指标**：SkillMAS（2605.09341）靠**验证轨迹 + Executor Utility**；COMAD（2606.25389）靠**胜率 / 归一化回报 + NCE 状态密度**。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "GPT-5-mini",
+      "Gemini-3.1-Flash"
+    ],
+    "must_any": [
+      "judge",
+      "critic",
+      "批判",
+      "评判",
+      "rubric"
+    ],
+    "must_not": [],
+    "must_have": [
+      "GPT-5-mini",
+      "Gemini-3.1-Flash"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-3",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇专门做了「迁移 / 泛化」分析？各自跨什么（任务、模型、团队规模）、报告了什么可判定证据？",
+    "hint": "两篇做得最系统：**Skill-MAS**（2606.18837）—— 把 Meta-Skill 的迁移拆成 **No Transfer（源=测，增益最大、占对角线）/ Panel A（同任务跨 LLM）/ Panel B（同 LLM 跨任务）/ Panel C（跨两者，最弱）**；并解释跨任务仍有效是因为演化时**显式要求避免领域专用技巧、专注通用模式**。**COMAD**（2606.25389）—— **复用 5m_vs_6m 的输出头**让 **7m_vs_8m** 达到近 **0.3** 胜率（**零样本泛化**）、阶段 2 技能增强后**超过 0.4**（前向迁移）；学 7m_vs_8m 时 **5m_vs_6m 从 0.6 提到约 0.8**，机制是学新 Positioning 技能时经**共享特征提取器**顺带微调了 **Disperse** 技能（后向迁移）。**SkillMAS**（2605.09341）则报告了**单边**移植的脆弱性（92/134 vs 67/134）。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "No Transfer",
+      "Disperse"
+    ],
+    "must_any": [
+      "Panel",
+      "前向迁移",
+      "后向迁移",
+      "零样本",
+      "zero-shot"
+    ],
+    "must_not": [],
+    "must_have": [
+      "No Transfer",
+      "Disperse"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-4",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇显式设计了「给技能 / 执行器分配信用」或「估计技能可复用性」的机制？各自怎么算、有没有阈值或对照？",
+    "hint": "三篇：**MASkills**（2609.02094v1）—— 由**中心化语言 critic** 相对「该技能未被使用」的**反事实**评估贡献，并给 agent 级残差信用（残差用于提示「需要新技能」）。**COMAD**（2606.25389）—— 用**噪声对比估计（NCE）**学多头状态密度估计器去逼近密度比，得到**复用性分数**；再按**期望状态密度是否超过阈值 d0** 决定**复用旧头**还是**扩张新头**。**SkillMAS**（2605.09341）—— 用 **Skill Utility（技能在任务类型上的效用，用于技能选择）** 与 **Executor Utility（执行器效用，用于执行器排序）**，且**只给「被执行支撑」的技能正信用**（检索只提候选，不给信用）。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "counterfactual",
+      "NCE"
+    ],
+    "must_any": [
+      "信用",
+      "复用",
+      "Utility",
+      "密度",
+      "阈值"
+    ],
+    "must_not": [],
+    "must_have": [
+      "counterfactual",
+      "NCE"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-5",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇把方法定位成「不改参数 / 非参数」，哪些篇依赖（离线）训练或参数更新？",
+    "hint": "**非参数 / 不改参数**：**SkillMAS**（2605.09341）自称 **non-parametric** 框架，靠技能与执行器的效用表 + 有界技能编辑，不重训底层 LLM；**Skill-MAS**（2606.18837）把 **Meta-Skill 演化**当作「第三条路」，**把经验保留与参数更新解耦**，让**冻结的 Meta-agent** 变强；**SkillLearnBench**（2604.20087）明确把**技能生成称为非参数的持续学习**（对比传统「更新权重」的持续学习，且提到不冒灾难性遗忘的风险）；**MASkills**（2609.02094v1）同样是**在技能空间而非参数空间**做策略改进。**依赖训练**：**COMAD**（2606.25389）用**离线数据集**训练（基于 PyMARL/HARL 采集，QMIX / HATD3 策略），属于**离线训练 + 持续微调**范式。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "non-parametric",
+      "Meta-Skill"
+    ],
+    "must_any": [
+      "冻结",
+      "参数",
+      "离线",
+      "frozen",
+      "解耦"
+    ],
+    "must_not": [],
+    "must_have": [
+      "non-parametric",
+      "Meta-Skill"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-6",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇在「具身 / 机器人 / 控制」类环境上评测，哪些篇在「检索问答 / 记忆」类任务上评测？",
+    "hint": "**具身 / 控制类**：**COMAD**（2606.25389）在五个多智能体环境上评测，其中 **Multiagent MuJoCo** 是**连续多智能体机器人控制**基准，另有 LBF / CN / SMAC / SMACv2；**SkillMAS**（2605.09341）的 **ALFWorld** 是**具身家居操作**（另有命令行与零售）。**检索问答 / 记忆类**：**MASkills**（2609.02094v1）在 **HotpotQA / LoCoMo / GAIA**（多跳问答、长上下文记忆、智能体任务）；**Skill-MAS**（2606.18837）含**深度研究**与**多跳问答**（DeepResearchBench / BrowseComp-Plus）以及专家级数学（HLE）；**SkillLearnBench**（2604.20087）则以自建 20 个真实任务（含 Web 检索、文档系统等）为主。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "MAMuJoCo",
+      "HotpotQA"
+    ],
+    "must_any": [
+      "具身",
+      "机器人",
+      "控制",
+      "问答",
+      "记忆"
+    ],
+    "must_not": [],
+    "must_have": [
+      "MAMuJoCo",
+      "HotpotQA"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-7",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇显式设计了「技能库 / 输出头该增长还是复用、该合并还是剪掉」的机制？各自怎么做、有没有消融验证？",
+    "hint": "**COMAD**（2606.25389）：按**期望状态密度 vs 阈值 d0** 决定复用旧头或**扩张新头**；消融里**关掉扩张（w/o Expand）**与**统一复用性（w/o Delta）**都掉分（尤其伤后向迁移），且报告**头数是可控增长的**（CN 只分配 2 个头、Marines 3 次复用）。**MASkills**（2609.02094v1）：周期性地**固化（consolidation，合并功能重叠技能）**与**剪枝（pruning，删掉效用长期偏弱的技能）**，并用验证回滚防止技能库失控。**SkillMAS**（2605.09341）：**有界技能演化**的动作集是 {create, refine, prune, hold-in-pool, no-op}，**每轮每个受影响技能簇最多动一次**，新建/大改的技能先留在验证池 Pr。**SkillLearnBench**（2604.20087）则观察到生成技能平均只有约 2.6 条、几乎全是「只有指令」的 Pattern A —— 属**没有增长机制**的反面证据。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "w/o Expand",
+      "consolidation"
+    ],
+    "must_any": [
+      "剪枝",
+      "pruning",
+      "复用",
+      "扩张",
+      "技能库"
+    ],
+    "must_not": [],
+    "must_have": [
+      "w/o Expand",
+      "consolidation"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-8",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇把「确定性验证器 / 经验证的执行轨迹」当作反馈或信用的来源？各自怎么用？",
+    "hint": "至少三篇：**SkillMAS**（2605.09341）—— **Utility Learning 只从已验证执行轨迹**更新技能/执行器效用；技能是否「被用过」要由执行器显式调用其 id、或轨迹匹配其 **guard-and-step 模式并通过基准验证器** 才算数。**SkillLearnBench**（2604.20087）—— 每个任务都配**确定性验证器**（返回 pass/fail），因此正确性判定基于**确定性检查而非主观打分**。**MASkills**（2609.02094v1）—— 所有候选技能编辑都要在**留出验证集**上评估通过才提交（否则回滚）。**对比篇**：**COMAD**（2606.25389）与 **Skill-MAS**（2606.18837）更多依赖**离线数据集回报 / rubric 评分与验证集选检查点**，而非「执行轨迹级验证器」。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "verifier",
+      "Executor Utility"
+    ],
+    "must_any": [
+      "验证",
+      "确定性",
+      "trajectory",
+      "回滚"
+    ],
+    "must_not": [],
+    "must_have": [
+      "verifier",
+      "Executor Utility"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-9",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇显式报告了「成本 / 性价比」？各自口径是什么（token、USD、还是定性）？",
+    "hint": "**Skill-MAS**（2606.18837）：主打**成本-性能权衡**，报**平均推理成本（USD $）**并绘出三类方法的分布图（Training-time MAS 最便宜但最差、Inference-time MAS 性能提升但最贵、Skill-MAS 中等成本下最佳）；论文另说明**训练/演化成本未计入主表**。**SkillLearnBench**（2604.20087）：报 **#Tokens（求解 token 成本）**与准确率两轴，并给出 input/output 拆分（输入 token 占 >97%）。**SkillMAS**（2605.09341）：**没有**完整成本核算，作者自陈缺 **token / 延迟 / 成本** 的完整账。**COMAD** 与 **MASkills** 主表以性能/胜率/F1 为主，成本非主线。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "cost-performance",
+      "token"
+    ],
+    "must_any": [
+      "USD",
+      "Tokens",
+      "成本",
+      "性价比",
+      "推理成本"
+    ],
+    "must_not": [],
+    "must_have": [
+      "cost-performance",
+      "token"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-10",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些篇把「多智能体系统的组织 / 通信拓扑」本身当作可优化对象？各自怎么表示、怎么改？",
+    "hint": "三篇：**SkillMAS**（2605.09341）—— 用**证据门控的 MAS 重构**，算子 Gr 的四种结果是 **keep / add（加专家）/ merge-remove（合并或删除冗余执行器）/ modify（改职责边界与技能归属）**，**每轮最多一次**、且必须有证据支持结构性错配。**Skill-MAS**（2606.18837）—— 把**架构拓扑**写进 Meta-Skill 的第三个模块（**Workflow Orchestration / the how**：sequential、hierarchical、loop 等），由 Meta-agent 生成 MAS 时选择。**MASkills**（2609.02094v1）—— 比较了**三种协调拓扑**（集中式 / 层级式 / 去中心化对等），结论是**最优拓扑高度依赖任务**（HotpotQA & GAIA 上去中心化对等最强、LoCoMo 上集中式最好）。另两篇（SkillLearnBench、COMAD）不把拓扑作为可优化对象（COMAD 改的是**执行器划分与技能归属**、SkillLearnBench 只评技能本身）。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "topology",
+      "MAS restructuring"
+    ],
+    "must_any": [
+      "拓扑",
+      "重构",
+      "编排",
+      "topologies"
+    ],
+    "must_not": [],
+    "must_have": [
+      "topology",
+      "MAS restructuring"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-11",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇报告了组件消融/对照实验？各自去掉哪个部件、掉多少？请给出至少两个具体数字。",
+    "hint": "三篇：**COMAD**（25389）在 CN-expert 任务上做消融，去掉技能编码器（w/o Skill）对学习与双向迁移影响最大；**MASkills**（02094）做组件消融（w/o Skill Credit assignment / w/o Momentum Smoothing / w/o Validation Rollback），其中去掉验证回滚掉得最多；**Skill-MAS**（18837）对照的是「不做迭代演化」的初始版本（Skill-MAS-init），结果显示它仍有竞争力。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "COMAD",
+      "Skill-MAS-init"
+    ],
+    "must_any": [
+      "消融",
+      "对照实验",
+      "去掉",
+      "w/o"
+    ],
+    "must_not": [],
+    "must_have": [
+      "COMAD",
+      "Skill-MAS-init"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-12",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇报告了评测规模（任务数 / 子领域数 / 基准套数）？数字分别是多少？",
+    "hint": "三篇：**SkillLearnBench**（20087）自建基准含 **20 个**经验证、依赖技能的任务，横跨 **15 个子领域**；**SkillMAS**（09341）在 τ-Bench Retail 域上用官方 **74 任务**训练子集，主评测是 **114 任务**的 base set；**MASkills**（02094）在 **HotpotQA / LoCoMo / GAIA** 三套基准上评测。另两篇规模口径不同：18837 报告的是跨任务/跨 LLM 的迁移，25389 是 CN-expert 等离线协作任务。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "15 sub-domains",
+      "114 task"
+    ],
+    "must_any": [
+      "规模",
+      "任务数",
+      "基准",
+      "多少"
+    ],
+    "must_not": [],
+    "must_have": [
+      "15 sub-domains",
+      "114 task"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-13",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇报告了「反向迁移 / 向新任务的转移」这类保留能力？证据是什么？",
+    "hint": "三篇：**COMAD**（25389）明确把「通过技能划分获得的**反向迁移**能力」当作现象来展示；**MASkills**（02094）报告把学到的技能库**迁移到未见过的目标任务且无需额外优化**；**Skill-MAS**（18837）报告演化出的 **Meta-Skill** 在未见任务与不同 LLM 上都稳健、可迁移。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "backward transfer",
+      "Meta-Skills"
+    ],
+    "must_any": [
+      "反向迁移",
+      "迁移",
+      "转移",
+      "未见"
+    ],
+    "must_not": [],
+    "must_have": [
+      "backward transfer",
+      "Meta-Skills"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-M1-14",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇把「没有累积记忆 / 没有共享证据面」当成对照设定或失败模式，用来论证自己机制的必要性？证据是什么？",
+    "hint": "三篇：**Skill-MAS**（18837）两处点明对照——推理期的多智能体系统「不学过去的经验、重复相同搜索」，其 Meta-agent「没有累积记忆机制」；**SkillMAS**（09341）指出**没有共享证据面**，系统就无法判断下一步该改技能、改 MAS 结构、还是什么都不做；**SkillLearnBench**（20087）引用 Tessl 的 **with-versus-without** 协议来度量单个技能的影响。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "cumulative memory",
+      "shared evidence surface"
+    ],
+    "must_any": [
+      "对照",
+      "失败模式",
+      "必要性",
+      "没有"
+    ],
+    "must_not": [],
+    "must_have": [
+      "cumulative memory",
+      "shared evidence surface"
+    ],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-X5-1",
+    "kind": "X5",
+    "role": "dev",
+    "intent": "refusal",
+    "question": "这五篇里，有没有哪一篇把方法部署到生产环境、或报告了真实产品流量下的在线 A/B 实验结果？",
+    "hint": "**都没有。** 全语料检索 `A/B`、`online experiment`、`production traffic`、`live traffic` **零命中**；出现的只是「**real-world deployment**」这类**未验证的展望用语**（2606.18837 在成本分析里说推理成本才是部署瓶颈；2605.09341 讲「post-deployment specialization」指**部署后持续适应**，不是线上实验；2606.25389 说线上交互的样本复杂度阻碍真实部署）。正确回答是**五篇都没做在线 A/B / 生产流量实验**，而不是拿离线数字冒充线上结果。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [],
+    "must_any": [
+      "没有",
+      "未",
+      "都没有",
+      "五篇都",
+      "均未",
+      "没有一篇",
+      "未做",
+      "未开展"
+    ],
+    "must_not": [],
+    "must_have": [],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-X5-2",
+    "kind": "X5",
+    "role": "dev",
+    "intent": "refusal",
+    "question": "这五篇里，有没有哪一篇报告了训练的碳排放、能耗或用电量的具体数字？",
+    "hint": "**都没有。** 全语料 `carbon` / `electricity` / `energy consumption` / `kWh` / `power consumption` **零命中**。注意**别把「成本」当能耗**：2606.18837 的成本是**美元**（推理 USD $、演化成本单列 Table 6）；2604.20087 的成本是 **token 数**（输入 token 占 >97%）。这些都不是能耗/碳排数字。正确回答是五篇都没有报告碳排放或能耗。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [],
+    "must_any": [
+      "没有",
+      "未",
+      "都没有",
+      "均未",
+      "没有一篇",
+      "未报告",
+      "未提供"
+    ],
+    "must_not": [],
+    "must_have": [],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-X5-3",
+    "kind": "X5",
+    "role": "user",
+    "intent": "refusal",
+    "question": "这五篇里，有没有哪一篇报告了用户对结果的满意度或可接受性评分（比如让用户打分）？",
+    "hint": "**都没有。** 这里有一个**极强干扰源**：2606.18837 里出现多次 **Satisfaction**，但那是 **weighted constraint satisfaction（加权约束满足）** —— 一种**求解/判定协议**，与「用户满意度」完全无关；把它当满意度评分就答错了。5 篇的评测全部是**确定性验证器、胜率/回报、或 LLM judge / rubric 评分**（2604.20087 用 GPT-5-mini 当 judge 评技能质量与轨迹），**没有任何人类主观满意度 / 可接受性打分**。正确回答是：五篇都没有用户满意度或可接受性评分。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [],
+    "must_any": [
+      "没有",
+      "未",
+      "都不是",
+      "不是满意度",
+      "均未",
+      "没有一篇",
+      "约束满足",
+      "不是用户"
+    ],
+    "must_not": [],
+    "must_have": [],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-X5-4",
+    "kind": "X5",
+    "role": "dev",
+    "intent": "refusal",
+    "question": "这五篇里，有没有哪一篇报告了正式的统计显著性检验（例如 p 值、置信区间、显著性差异检验）来支撑性能提升？",
+    "hint": "**都没有。** 全语料 `p-value` / `significance test` / `confidence interval` / `t-test` **零命中**。最接近的是：**SkillMAS**（2605.09341）在局限里**自陈**尚未用统一多种子重跑、受控消融或**正式显著性检验**隔离组件贡献；**COMAD**（2606.25389）报的是 **5 个随机种子 + 每步 32 轮**的**均值 ± 标准差**（这不是显著性检验）；**SkillLearnBench**（2604.20087）做的是三次试验的均值±标准差稳健性检查。正确回答是五篇都没有正式显著性检验。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [],
+    "must_any": [
+      "没有",
+      "未",
+      "都没有",
+      "均未",
+      "没有一篇",
+      "未报告",
+      "未做",
+      "标准差"
+    ],
+    "must_not": [],
+    "must_have": [],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  },
+  {
+    "qid": "G2-X5-5",
+    "kind": "X5",
+    "role": "dev",
+    "intent": "refusal",
+    "question": "这五篇里，有没有哪一篇做了真人被试参与的研究、或众包人工标注（问卷、人工打分、人工评估）？",
+    "hint": "**都没有。** 全语料 `participants` / `annotators` / `crowdworkers` / `human subjects` / `human evaluation` / `questionnaire` **零命中**。5 篇的评测与反馈全部是**自动化**的：2604.20087 用 **LLM judge（GPT-5-mini）** 评技能质量与轨迹；2606.18837 用 **rubric-based evaluator** 与 **Gemini-3.1-Flash judge**；2609.02094v1 用**中心化语言 critic**；2606.25389 用**胜率/回报 + NCE 密度**；2605.09341 用**验证轨迹与效用表**。正确回答是五篇都没有真人被试或众包标注。",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "must_all": [],
+    "must_any": [
+      "没有",
+      "未",
+      "都没有",
+      "均未",
+      "没有一篇",
+      "没有真人",
+      "未做",
+      "自动化"
+    ],
+    "must_not": [],
+    "must_have": [],
+    "corpus": [
+      "2604.20087",
+      "2605.09341",
+      "2606.18837",
+      "2606.25389",
+      "2609.02094v1"
+    ]
+  }
+]

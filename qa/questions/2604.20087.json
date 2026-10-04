@@ -1,0 +1,432 @@
+[
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-L0-1",
+    "role": "dev",
+    "intent": "overview",
+    "question": "SkillLearnBench 这个基准主要评估什么对象？它覆盖多少任务、跨多少子领域、任务从哪来？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "提出 **SkillLearnBench** —— 论文称其为**首个评估「持续技能学习方法」的基准**（即评估「从 agent 工作经历中生成技能」的方法，而不是评估技能本身好不好用）。规模：**20 个经验证的、依赖技能的任务**，横跨 **15 个子领域 / 6 个大类**；任务分类取自**社区驱动的真实技能使用模式分类法**（Ling et al., 2026）。评测分三层：技能质量、执行轨迹、任务结果。",
+    "must_have": [
+      "基准",
+      "技能生成",
+      "持续学习"
+    ],
+    "must_any": [
+      "基准",
+      "技能生成",
+      "持续学习"
+    ],
+    "must_all": [
+      "SkillLearnBench"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-L0-2",
+    "role": "dev",
+    "intent": "overview",
+    "question": "与「无技能基线（No Skill）」和「人类撰写技能（Human-authored）」相比，论文给出的总体结论是什么？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "归结为：**①所有持续学习方法都优于 No Skill**，且多数方法的 token 成本还低于 Human-authored；**②但准确率仍远低于人类撰写技能** —— 即使最好的方法也只覆盖了 no-skill → human-authored 之间差距的**约 45%**；**③没有任何方法在所有任务和所有 LLM 上都领先**，换成更强的 LLM 也未必有帮助；**④任务类型决定收益**：清晰、可复用工作流的任务上有效，开放式任务上可能反而有害；**⑤反馈来源决定迭代质量**：多轮迭代靠**外部反馈**才有真实改进，仅靠**自反馈**会导致递归漂移。",
+    "must_have": [
+      "无技能",
+      "人类",
+      "45%",
+      "递归漂移",
+      "基线"
+    ],
+    "must_any": [
+      "无技能",
+      "人类",
+      "45%",
+      "递归漂移",
+      "基线"
+    ],
+    "must_all": [
+      "No Skill",
+      "Human-authored"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-L0-3",
+    "role": "user",
+    "intent": "overview",
+    "question": "用大白话说：SkillLearnBench 认为「让 agent 自己学技能」什么时候有用、什么时候反而添乱？为什么「多迭代几轮」不一定越好？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "**有用**：任务有清晰、可复用的工作流时（如软件工程、生产力工具类），技能能固化可靠步骤、减少反复试错。**添乱**：开放式或高度依赖具体实例的任务上，技能会「框死」agent —— 僵化的技能与学到的模板不匹配时反而有害。**多迭代**：只有**外部反馈**能带来真实改进；**自反馈**没有新信息，反复改写只是重排技能内容、既没解决根因也没提高覆盖度，对齐度还会逐步下滑，最终出现**递归漂移**（drift）。",
+    "must_have": [
+      "工作流",
+      "僵化",
+      "漂移",
+      "外部反馈"
+    ],
+    "must_any": [
+      "工作流",
+      "僵化",
+      "漂移",
+      "外部反馈"
+    ],
+    "must_all": [
+      "开放式任务"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S1",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillLearnBench 把「任务」定义成什么？一个任务由哪几个部分组成？「技能」是什么格式、必须写清什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "任务 = **多步、可验证的过程性问题**，有多个可解实例，在受控环境中运行且有明确目标状态。形式化为四元组 **ti = (xi, vi, Si, Qi)**：自然语言任务描述 **xi**、**确定性验证器 vi**（返回 pass/fail）、**人类撰写技能集 Si**、**查询实例集 Qi**。技能被定义为**结构化 Markdown 文档**，须说明**何时应用、按什么步骤、需要哪些知识**；Si 是「增强 agent 行为的任务专用人类撰写流程」。因为所有任务都可验证，正确性判定基于**确定性检查**而非主观打分。",
+    "must_have": [
+      "验证器",
+      "verifier",
+      "四元组",
+      "实例"
+    ],
+    "must_any": [
+      "验证器",
+      "verifier",
+      "四元组",
+      "实例"
+    ],
+    "must_all": [
+      "Markdown"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S2",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillLearnBench 里每个任务要通过哪两条「技能依赖性验证」？其中「无技能通过率」的上限是多少、每个实例重复跑几次？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "两条：**①不靠技能不该容易解出** —— 用同一个固定 agent 在每个实例上跑 **R 次**、且不给任何技能，要求平均通过率 ≤ **α**，其中 **R = 10、α = 0.5**；**②靠人类撰写技能必须可解** —— 用同一个或更强的 LLM 加上人类技能，确认**每个实例至少有一次成功完成**。两条一起保证任务「真的需要技能、且技能确实能解」。",
+    "must_have": [
+      "10",
+      "通过率",
+      "α",
+      "R "
+    ],
+    "must_any": [
+      "10",
+      "通过率",
+      "α",
+      "R "
+    ],
+    "must_all": [
+      "0.5"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S3",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillLearnBench 的三层评估框架 Level 1 / Level 2 / Level 3 各测什么？Level 1 内部的三个维度是什么、各看哪些子项？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**Level 1 技能质量**（把生成的技能当文本评、**不执行**）：**Coverage**（覆盖从人类技能 + 任务指令 + oracle 执行轨迹中抽出的参考要点比例）、**Executability**（完整性 / 确定性 / 一致性 / 可用性四方面）、**Safety**（六个风险维度，**分数越高风险越低**）。**Level 2 轨迹**：轨迹对齐（要点召回 / 执行顺序 / 完整性）+ 技能使用率。**Level 3 结果**：任务准确率 + 求解效率（token 消耗）。分层的目的：**诊断失败到底来自技能本身，还是来自执行偏离**。",
+    "must_have": [
+      "轨迹",
+      "对齐",
+      "使用率",
+      "token"
+    ],
+    "must_any": [
+      "轨迹",
+      "对齐",
+      "使用率",
+      "token"
+    ],
+    "must_all": [
+      "Coverage",
+      "Executability",
+      "Safety"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S4",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillLearnBench 比较的四种持续学习方法分别是什么？各自的学习策略是什么、带不带超参 K？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**①One-Shot**：单次生成一整套技能（沿用 SkillsBench 做法），无反馈、无递归优化的基线。**②Self Feedback**：自演化循环 —— 先生成初版技能并尝试任务，执行后复盘轨迹、找出问题、精炼技能，循环 **K 次（K = 2，即 1 轮自反思）**，**无任何外部监督**。**③Teacher Feedback**：引入可访问人类撰写技能的**专家教师**，每次失败后 agent 提问、教师只给**方向性指导、不泄露 ground-truth 技能**，技能生成最多 K 次（**K = 3，2 轮 QA**）。**④Skill Creator**：Anthropic 的 Skill Creator 流水线，**结构化多阶段**：分析任务意图 → 调查边界情况与依赖 → 撰写技能规范 → 用自动检查验证。",
+    "must_have": [
+      "One-Shot",
+      "Self Feedback",
+      "Teacher Feedback",
+      "单次",
+      "反馈"
+    ],
+    "must_any": [
+      "One-Shot",
+      "Self Feedback",
+      "Teacher Feedback",
+      "单次",
+      "反馈"
+    ],
+    "must_all": [
+      "Skill Creator"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S5",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "技能生成用了哪些 LLM？求解 agent（solver）是固定的吗、预算上限是多少？需要 judge 的指标用哪个模型？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "生成端用 **6 个 LLM、跨两家**：Claude **Haiku 4.5 / Sonnet 4.6 / Opus 4.6**，Gemini **3.1 Flash Lite / 3 Flash / 3.1 Pro**。solver **固定**为 **Claude Sonnet 4.6、temperature 0**，在每个任务带工具的**容器化沙箱**里最多跑 **100 轮** —— 固定 solver 是为了让差异主要反映技能而非求解者。需要 LLM judge 的 Level 1 / Level 2 指标统一用 **GPT-5-mini**。此外还有 **No Skill** 与 **Human-authored** 两个参照。",
+    "must_have": [
+      "100",
+      "六个",
+      "temperature",
+      "judge",
+      "Sonnet"
+    ],
+    "must_any": [
+      "100",
+      "六个",
+      "temperature",
+      "judge",
+      "Sonnet"
+    ],
+    "must_all": [
+      "GPT-5-mini"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S6",
+    "role": "dev",
+    "intent": "baseline_compare",
+    "question": "在 SkillLearnBench 的六个生成 LLM 上取平均，四种方法里哪种准确率最高、哪种总 token 最低？技能「使用率」最低和最高分别是哪种方法？这说明了什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "平均：**Self Feedback 准确率最高（31.08）且总 token 最低（390K）**；One-Shot 紧随（30.44，461K）；Teacher Feedback（27.47，528K）与 Skill Creator（27.33，406K）垫底。使用率：**Teacher Feedback 最低（60.20）**，说明其技能最常被 solver 忽略；**Skill Creator 最高（84.47）**，但准确率仍偏低 —— 说明**被采纳 ≠ 有助于解题**，技能内容没抓住任务逻辑时，调用得再勤也没用。参照：**No Skill 准确率 10.17（727K）**，**Human-authored 74.50（590K）**。",
+    "must_have": [
+      "Self Feedback",
+      "使用率",
+      "Teacher",
+      "84.47"
+    ],
+    "must_any": [
+      "Self Feedback",
+      "使用率",
+      "Teacher",
+      "84.47"
+    ],
+    "must_all": [
+      "31.08",
+      "390K"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S7",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "把 Self Feedback 与 Teacher Feedback 都扩展到四轮（Productivity Tools、Claude Sonnet 4.6），两者的 coverage / alignment / accuracy 各自怎么变？这说明什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**Self Feedback**：coverage **全程持平**，alignment **稳定下滑**，accuracy 第一轮小涨后**急剧下降**。原因：没有新的外部信息，反复自改只是**重排技能内容**、没触及根因，agent 逐步偏离正确执行路径。**Teacher Feedback**：第一轮外部反馈就**大幅重构技能并抬高 coverage**，之后**逐轮复合改进** —— alignment 保持稳定、accuracy 一路涨到第 4 轮。结论：**外部反馈给了模型「新东西可学」，而自反思没有外部信号时只会漂移、不会进步**。",
+    "must_have": [
+      "四轮",
+      "漂移",
+      "外部反馈",
+      "coverage",
+      "alignment"
+    ],
+    "must_any": [
+      "四轮",
+      "漂移",
+      "外部反馈",
+      "coverage",
+      "alignment"
+    ],
+    "must_all": [
+      "Self Feedback",
+      "Teacher Feedback"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-S8",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "SkillLearnBench 如何解释「更强的生成 LLM 不一定产出更好的技能」？用了什么案例、缺的结构性多样性又是什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "案例 **earthquake-plate-calculation**（Teacher Feedback）：**Opus** 的技能更精确但更「规定式」——把投影写死（**EPSG:4087**）、把板块列名与过滤条件写死（PlateName == 'Pacific'、Name.str.contains('PA')），甚至注明「ground truth 期望 EPSG:4087」；**Sonnet** 反过来遍历候选列名并动态回退、用通用等面积投影。结果：**Opus 的 coverage 更高，但实例一换就失败** —— 中档生成器在「覆盖足够任务逻辑」与「技能足够灵活、solver 能照做」之间更平衡。**结构性多样性**：几乎所有生成技能都是 **Pattern A（只有指令，无脚本）**，而人类撰写技能结构更多样（**64.3% A / 33.3% B / 2.4% C**）。",
+    "must_have": [
+      "硬编码",
+      "Sonnet",
+      "Pattern A",
+      "EPSG",
+      "灵活"
+    ],
+    "must_any": [
+      "硬编码",
+      "Sonnet",
+      "Pattern A",
+      "EPSG",
+      "灵活"
+    ],
+    "must_all": [
+      "Opus"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-T1",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 2（主结果），No Skill 与 Human-authored 的准确率、token 成本分别是多少？四种方法在六个 LLM 上的平均准确率各是多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**No Skill**：准确率 **10.17**、token **727K**；**Human-authored**：准确率 **74.50**、token **590K**；注意 Human-authored 比 No Skill **更贵**（更长但更产出的轨迹）。四方法平均准确率：**One-Shot 30.44 / Self Feedback 31.08 / Teacher Feedback 27.47 / Skill Creator 27.33**。Level 1 上人类技能 Coverage **92.77**，而生成方法里平均 Coverage 最高的 Skill Creator 也只有 **41.12**。",
+    "must_have": [
+      "727K",
+      "30.44",
+      "31.08",
+      "92.77"
+    ],
+    "must_any": [
+      "727K",
+      "30.44",
+      "31.08",
+      "92.77"
+    ],
+    "must_all": [
+      "10.17",
+      "74.50"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-T2",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 3（按类别的准确率，六个 LLM 平均），Human-authored 在 Software Engineering 与 Data & Analytics 上分别是多少？Productivity Tools 上表现最好的生成方法是哪个、多少分？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**Human-authored**：Software Engineering **81.33**、Data & Analytics **83.33**、Overall **74.50**；**No Skill** 在 Productivity Tools 与 Content 两类上都是 **0.00**。**Productivity Tools** 列上最好的生成方法是 **Self Feedback 53.52**（One-Shot 43.89 / Skill Creator 46.67 / Teacher Feedback 30.93）；**Data & Analytics** 列上生成方法最好也只有 Self Feedback **28.89**（Human-authored 83.33）。",
+    "must_have": [
+      "81.33",
+      "83.33",
+      "Data & Analytics",
+      "Self Feedback"
+    ],
+    "must_any": [
+      "81.33",
+      "83.33",
+      "Data & Analytics",
+      "Self Feedback"
+    ],
+    "must_all": [
+      "53.52"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2604.20087.pdf",
+    "qid": "0087-N1",
+    "role": "dev",
+    "intent": "negative_check",
+    "question": "论文报告说：生成技能的 LLM 越强（如 Claude Opus、Gemini 3.1 Pro），产出的技能就越精确，因此在 SkillLearnBench 上的准确率也单调更高。这个说法对吗？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**不对，前提是假的。** 论文明确说 **scaling 不会单调提升准确率**，并给出反例：中档模型（Claude Sonnet / Gemini Flash）在多数方法上**竞争力更强**；更强模型往往更精确但更「规定式」，把参数、库选择、字段名**写死**，一旦实例变化就失效（earthquake-plate-calculation 案例里 Opus 写死 EPSG:4087 与 'Pacific'）。所以不存在「越强越准、单调提升」的结论，正确回答应指出这一前提不成立。",
+    "must_have": [
+      "不对",
+      "并非",
+      "不是",
+      "未必",
+      "不单调",
+      "不一致",
+      "相反"
+    ],
+    "must_any": [
+      "不对",
+      "并非",
+      "不是",
+      "未必",
+      "不单调",
+      "不一致",
+      "相反"
+    ],
+    "must_all": [],
+    "must_not": [
+      "越强越准"
+    ],
+    "chunk_kw": null
+  }
+]

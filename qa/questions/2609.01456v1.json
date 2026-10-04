@@ -16,6 +16,11 @@
       "概念",
       "CIR"
     ],
+    "must_any": [
+      "AutoConcept",
+      "概念",
+      "CIR"
+    ],
     "must_all": [
       "0.1379",
       "0.3009"
@@ -36,6 +41,12 @@
     "route_min": "L3",
     "hint": "麻烦：CIR 是「给一张参考图 + 一句修改文字去找目标商品」；第一级模型（如 WeiMoCIR）已能给出一个 **top-K 候选池**，但**靠前名次的排序**还不够好。商品条目通常自带 **titles / attributes / tags / descriptions** 这类 metadata，本可当额外线索，但**只在候选池形成之后才可用**。他们的做法：把受控的概念证据做成一份**可检视的概念记忆** —— 过滤掉泛化名、极性冲突、grounding 差、强度弱的概念，只**激活与本次查询相关**的概念，再把「候选 metadata 与概念的对齐分数」与「第一级分数」按**推理时置信度**做闭式校准融合。与「直接比对」的差别：不是把整段查询文字或抽取属性直接怼到 metadata 上，而是**概念级的稀疏匹配（max pooling）+ 逐查询自适应权重**；**metadata-aware 对照**显示这种结构化概念记忆在 query-text→metadata、extracted-attribute→metadata 之外**还有增量**，且概念带 **name / polarity / strength / grounding / evidence count**，能被人检查和诊断。",
     "must_have": [
+      "概念",
+      "候选池",
+      "元数据",
+      "metadata"
+    ],
+    "must_any": [
       "概念",
       "候选池",
       "元数据",
@@ -66,6 +77,12 @@
       "元数据",
       "向量"
     ],
+    "must_any": [
+      "概念",
+      "候选池",
+      "元数据",
+      "向量"
+    ],
     "must_all": [
       "AutoConcept"
     ],
@@ -84,6 +101,11 @@
     "route_min": "L3",
     "hint": "**允许**（Table 1）：**reference image xr**（作第一级 CIR 查询）、**modification text tq**（查询编码 + 概念激活）、**training-side evidence item text**（受控概念证据构建）、**candidate metadata mi**（第二阶段 candidate–concept 对齐）。**排除**：**target image / target metadata、ground-truth target ID、candidate rank / relevance label**。概念证据**在 reranking 之前**构造好，且**不接触**候选排名或检索后相关性标签；候选 metadata **只在 reranking 时**用于给第一级已返回的条目打分。每条 concept 存五个字段：**normalized name、polarity、score、grounding score、evidence count**。",
     "must_have": [
+      "target metadata",
+      "evidence count",
+      "relevance labels"
+    ],
+    "must_any": [
       "target metadata",
       "evidence count",
       "relevance labels"
@@ -112,6 +134,11 @@
       "权重",
       "negative penalty"
     ],
+    "must_any": [
+      "calibrat",
+      "权重",
+      "negative penalty"
+    ],
     "must_all": [
       "max pooling",
       "interpolation"
@@ -131,6 +158,11 @@
     "route_min": "L3",
     "hint": "**概念名、查询、metadata 文本**用 **all-MiniLM-L6-v2** 编码；**图像嵌入与 CLIP-based grounding** 用 **CLIP ViT-B/32**。主实验候选池 **top-100**（K = 100；FashionIQ 表里 Mean K = 100.00，Fashion200K 为 62.00）。**relevance gate 分析在 τ = 0.35 附近**，0.30–0.40 区间增益相近、所有测试值都高于 WeiMoCIR。**质量过滤规则与校准边界在评测前固定**，跨种子、候选生成器、metadata-aware 对照**共用**；**不使用任何 query label、target rank 或 relevance label 调参**。复杂度 **O(K(|A+| + |A−|)d)**，靠 relevance gate 把激活概念集压小。",
     "must_have": [
+      "0.35",
+      "top-100",
+      "K = 100"
+    ],
+    "must_any": [
       "0.35",
       "top-100",
       "K = 100"
@@ -158,6 +190,11 @@
       "mean pooling",
       "negative penalty"
     ],
+    "must_any": [
+      "max pooling",
+      "mean pooling",
+      "negative penalty"
+    ],
     "must_all": [
       "0.1240",
       "0.1380"
@@ -177,6 +214,11 @@
     "route_min": "L3",
     "hint": "同一 top-100 WeiMoCIR 候选池（FashionIQ seed 1）下：**Query-only AutoConcept（0.1400 / 0.2630 / 0.0800 / 0.0893）在早期名次指标上优于 Query text→metadata（0.1318 / 0.2513 / 0.0731 / 0.0822）、Extracted attributes→metadata（0.1363 / 0.2591 / 0.0754 / 0.0850）与 Constraint matching（0.1383 / 0.2603 / 0.0763 / 0.0861）**。但 **Reference text + query→metadata（0.1430 / 0.2645 / 0.0811 / 0.0910）更高**，作者明确把它当作「更丰富文本信号下的 **text-only 上界参考**」、**不是同证据的概念记忆基线**；同表的 Controlled-evidence AutoConcept（0.1375 / 0.2435 / 0.0741 / 0.0845）属另一设定。**aligned vs shuffled**：Aligned 达 **0.1892 / 0.2715 / 0.1050 / 0.1213**，Shuffled 仅 **0.1388 / 0.2469 / 0.0738 / 0.0845**，Δ 为 **+0.0504 / +0.0246 / +0.0312 / +0.0368** —— 说明起作用的是**查询与证据的对齐关系**，而不只是类别先验分布。",
     "must_have": [
+      "aligned",
+      "0.1400",
+      "constraint matching"
+    ],
+    "must_any": [
       "aligned",
       "0.1400",
       "constraint matching"
@@ -204,6 +246,11 @@
       "denoising",
       "human"
     ],
+    "must_any": [
+      "metadata",
+      "denoising",
+      "human"
+    ],
     "must_all": [
       "0.1144",
       "top-100"
@@ -223,6 +270,10 @@
     "route_min": "L3",
     "hint": "**metadata-available protocol**：固定的第一级检索器先产出候选池，**gallery metadata 只在候选池形成之后**才可用，并**只在第二阶段**用于给已返回条目打分；概念证据构造与打分都排除 target image / target metadata、ground-truth target ID、candidate ranks、post-retrieval relevance labels。**query-only variant**：概念**只从 modification text tq 抽取**，用查询局部证据评估 concept-memory scorer。**controlled concept evidence**：从**同类别、训练侧 item text** 采样，经**固定的抽取 + 过滤管线**转成概念约束。**aligned 分析**用受控属性族（color、printed patterns、sleeve length、neckline、length、fit），同样排除 target 侧信息；**shuffled 控制**保持同一证据分布，但**在类别内打乱 query–evidence 映射**，用来检验是否只靠类别先验。",
     "must_have": [
+      "aligned",
+      "controlled"
+    ],
+    "must_any": [
       "aligned",
       "controlled"
     ],
@@ -250,6 +301,11 @@
       "editing",
       "显式"
     ],
+    "must_any": [
+      "inspection",
+      "editing",
+      "显式"
+    ],
     "must_all": [
       "named concepts",
       "opaque"
@@ -269,6 +325,10 @@
     "route_min": "L3",
     "hint": "**WeiMoCIR none：0.1125 / 0.2256 / 0.0604 / 0.0680**；**WeiMoCIR AutoConcept：0.1379 ± 0.0011 / 0.2452 ± 0.0018 / 0.0739 ± 0.0008 / 0.0844 ± 0.0009**；**LinCIR none：0.2605 / 0.4618 / 0.1449 / 0.1637**；**LinCIR AutoConcept：0.3009 ± 0.0018 / 0.4915 ± 0.0023 / 0.1677 ± 0.0010 / 0.1912 ± 0.0008**。两个候选生成器都表明增益**集中在早期名次指标**（R@10 / MRR / NDCG@10），**R@50 提升最小**；LinCIR 的四个 delta 在 query-level paired bootstrap 下 **p < 0.001**。",
     "must_have": [
+      "LinCIR",
+      "WeiMoCIR"
+    ],
+    "must_any": [
       "LinCIR",
       "WeiMoCIR"
     ],
@@ -296,6 +356,10 @@
       "ms/query",
       "latency"
     ],
+    "must_any": [
+      "ms/query",
+      "latency"
+    ],
     "must_all": [
       "0.3199",
       "0.1928",
@@ -318,6 +382,16 @@
     "route_min": "L0",
     "hint": "**没有**。论文的实验**只在时尚域**：FashionIQ（主实验）与 Fashion200K（次要检查）；作者把**更广领域（broader domains）**、更强视觉 grounding、更大规模人类偏好研究、更强 metadata 去噪、更重的学习式校验 reranker 明确列为**自然扩展**（未来工作），并说明方法**最适用于 metadata 可用且与外观对齐的 product-style 图库**。所以正确回答是**论文未给出非时尚/更广领域的实验**。",
     "must_have": [
+      "未给出",
+      "未报告",
+      "没有给出",
+      "没有报告",
+      "未涉及",
+      "未提供",
+      "未来工作",
+      "只限时尚"
+    ],
+    "must_any": [
       "未给出",
       "未报告",
       "没有给出",

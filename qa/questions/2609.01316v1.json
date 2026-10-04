@@ -15,6 +15,10 @@
       "索引时",
       "23.0"
     ],
+    "must_any": [
+      "索引时",
+      "23.0"
+    ],
     "must_all": [
       "0.6219",
       "ColQwen2.5"
@@ -35,6 +39,12 @@
     "route_min": "L3",
     "hint": "企业文档里的关键信息常藏在**表格、图表、版面关系**里，纯 OCR 会把它拉平、弄坏或漏掉。现在的解法是**直接拿页面截图去检索**（ColPali 系），效果强，但**每个查询都要重算一遍图像** —— 索引巨大、延迟高。MIDR 换了位置：**在「入库」那一步就把多模态理解做完** —— 用多模态大模型把每页读成一组**校验过的文字字段**（表格摘要、图表摘要、关键短语、粗/细粒度问答对等），之后检索只是**普通文本检索**（BM25F + 可选向量）。好处：贵的那步只做一次、可**摊销**；索引小得多（约小 **9×**）、查询快约 **2×**。而且字段是**英文**生成的，顺带成了**跨语言桥**：英文问题搜法文文档时 BM25 崩到 0.1532，MIDR 能到 0.5448。",
     "must_have": [
+      "索引时",
+      "索引阶段",
+      "入库",
+      "摄取"
+    ],
+    "must_any": [
       "索引时",
       "索引阶段",
       "入库",
@@ -65,6 +75,12 @@
       "摊销",
       "amortized"
     ],
+    "must_any": [
+      "索引时",
+      "BM25F",
+      "摊销",
+      "amortized"
+    ],
     "must_all": [
       "0.6219"
     ],
@@ -83,6 +99,10 @@
     "route_min": "L3",
     "hint": "分**文档级**与**页面级**。**文档级**：只用**前五页**，产出 `document_type`（genre/来源类型，属**路由/控制**）、`document_focus`（全局主题或目的，**索引字段**）、`main_entities`（显著的组织/产品/数据集/法规/药物/系统，**索引字段**）。**页面级**有**四个输入**：渲染页图、抽取文本、文档级 enrichments、页面元数据。页面级 **索引字段** = `topic_tags`、`keyphrases`、`table_summary`、`chart_summary`、`coarse_qa`、`fine_qa`；页面级 **路由/控制字段** = `layout`、`signal_quality`、`verification_issues`、`refinement_edits`。",
     "must_have": [
+      "first five pages",
+      "indexed field"
+    ],
+    "must_any": [
       "first five pages",
       "indexed field"
     ],
@@ -110,6 +130,10 @@
       "refiner",
       "flagged"
     ],
+    "must_any": [
+      "refiner",
+      "flagged"
+    ],
     "must_all": [
       "verifier",
       "grounding",
@@ -131,6 +155,10 @@
     "route_min": "L3",
     "hint": "校验后的页面 enrichments 与**原始页面文本**被索引为**相互独立的 BM25F 字段**；**文档级索引字段会在该文档的每一页上复制**，使每页同时暴露局部证据与全局上下文。**所有 BM25F 字段权重统一（均为 1.0）、不做调参** —— 因为 ViDoRe V3 **没有 dev split**，无法在不拟合评测查询的前提下调权重。Dense：用 **EmbeddingGemma** 分别嵌入原始页面文本与每个 enrichment 字段，再用 **mean pooling** 合并字段嵌入。Hybrid：用 **Reciprocal Rank Fusion (RRF)** 融合 BM25F 与 dense 排名。",
     "must_have": [
+      "mean pooling",
+      "uniform"
+    ],
+    "must_any": [
       "mean pooling",
       "uniform"
     ],
@@ -157,6 +185,10 @@
       "QA",
       "table summar"
     ],
+    "must_any": [
+      "QA",
+      "table summar"
+    ],
     "must_all": [
       "0.6200",
       "0.5788",
@@ -177,6 +209,10 @@
     "route_min": "L3",
     "hint": "**增益最大处正是 OCR 丢失结构最多的地方**：按**页面视觉内容** —— **Mixed visual +38.6%**、**Table +31.8%**、Infographic +30.4%、Chart +21.1%、**Text only 仅 +14.3%**（相对 nDCG@10）；按**查询类型** —— **Numerical +41.7%**、Open-ended +38.2%、Compare +23.8%、Extractive +21.0%、Multi-hop +14.3%、**Boolean 仅 +11.7%**。**增益最小**的是 Text-only 页与 Boolean 查询，因为那里**原始词法证据已经给 BM25 一个较好的起点**。这支持核心机制：**MIDR 在「检索依赖被 OCR 拉平的结构」时帮助最大**。",
     "must_have": [
+      "OCR",
+      "Mixed-visual"
+    ],
+    "must_any": [
       "OCR",
       "Mixed-visual"
     ],
@@ -203,7 +239,16 @@
     "must_have": [
       "ColEmbed",
       "0.038",
-      "chart"
+      "chart",
+      "字段",
+      "schema"
+    ],
+    "must_any": [
+      "ColEmbed",
+      "0.038",
+      "chart",
+      "字段",
+      "schema"
     ],
     "must_all": [
       "2.1",
@@ -224,6 +269,10 @@
     "route_min": "L3",
     "hint": "**enrichment-augmented indexing（论文自己的命名）**：**在索引时**用渲染页面做多模态推理，但**检索服务走词法、dense、hybrid 的文本检索基础设施** —— 也就是「需要多模态理解」**不等于**「必须在服务时检索渲染页面的图像表示」。**per-query oracle**：一个**上界分析** —— 对每个查询**选 MIDR 与（本地重现的）ColQwen2.5 中更好的那个**，达 **0.7042** nDCG@10，比 MIDR 高 **13.0%**、比重现的 ColQwen2.5 高 **11.8%**。这说明两者**编码的是互补而非冗余的证据**：在 1,489 个英文查询中约一半有决定性胜负，**MIDR 赢 351 个、ColQwen2.5 赢 362 个**；MIDR 赢在把财务/制药/法规的确切数量写进 QA 对与关键短语，ColQwen2.5 赢在**代码块、公式、图表、多个视觉相似表格**这类文本化会模糊的区分上。",
     "must_have": [
+      "oracle",
+      "13.0"
+    ],
+    "must_any": [
       "oracle",
       "13.0"
     ],
@@ -252,6 +301,11 @@
       "French",
       "跨语言"
     ],
+    "must_any": [
+      "cross-lingual",
+      "French",
+      "跨语言"
+    ],
     "must_all": [
       "0.1532",
       "0.5448"
@@ -272,7 +326,15 @@
     "hint": "归一化到 BM25：**BM25 = 1.0× 延迟 / 1.0× 内存**；**Enriched BM25F = 3.4× / 2.5×**；**MIDR Hybrid = 14.0× / 7.5×**；**ColQwen2.5 = 27.9× / 65.0×**。即相对 ColQwen2.5，MIDR Hybrid 查询**约快 2×、约小 9×**。",
     "must_have": [
       "Latency",
-      "Memory"
+      "Memory",
+      "延迟",
+      "内存"
+    ],
+    "must_any": [
+      "Latency",
+      "Memory",
+      "延迟",
+      "内存"
     ],
     "must_all": [
       "14.0",
@@ -295,6 +357,10 @@
     "route_min": "L3",
     "hint": "Table 2 的 Avg. 列：**BM25 over markdown 0.5057、Enriched BM25F 0.5592、Dense mean-pool 0.5898、ColQwen2.5 0.6300、MIDR Hybrid (ours) 0.6219**。即 **MIDR 比原始 BM25 高 23.0%（0.6219 vs 0.5057）、比 ColQwen2.5 低 0.0081**；per-domain 上 MIDR 在 HR（0.6043 vs 0.6018）与 pharmaceuticals（0.6424 vs 0.6382）领先，在 computer science（0.7170 vs 0.7623）落后最多。",
     "must_have": [
+      "Avg",
+      "平均"
+    ],
+    "must_any": [
       "Avg",
       "平均"
     ],
@@ -326,7 +392,21 @@
       "没有给出",
       "没有提供",
       "未涉及",
-      "只到检索"
+      "只到检索",
+      "而非",
+      "没有任何"
+    ],
+    "must_any": [
+      "未报告",
+      "未给出",
+      "未提供",
+      "没有报告",
+      "没有给出",
+      "没有提供",
+      "未涉及",
+      "只到检索",
+      "而非",
+      "没有任何"
     ],
     "must_all": [],
     "must_not": [],

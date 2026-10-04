@@ -1,0 +1,435 @@
+[
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-L0-1",
+    "role": "dev",
+    "intent": "overview",
+    "question": "SkillMAS 要耦合哪两个自适应目标？它的核心思路（靠什么证据面约束）是什么？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "提出 **SkillMAS** —— 一个**非参数（non-parametric）**框架，把**技能演化（skill evolution）**与**多智能体系统重构（MAS restructuring）**放进**同一个经验回路**。此前的做法把二者**解耦**优化，会带来组织瓶颈、上下文压力与「错误专精」；SkillMAS 的核心思路是让**技能演化与 MAS 重构受同一份「已验证执行轨迹」证据面约束** —— 论文强调贡献不在于哪个更新目标本身新，而在于**两者共用一个证据面**。",
+    "must_have": [
+      "非参数",
+      "耦合",
+      "技能演化",
+      "MAS"
+    ],
+    "must_any": [
+      "非参数",
+      "耦合",
+      "技能演化",
+      "MAS"
+    ],
+    "must_all": [
+      "SkillMAS"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-L0-2",
+    "role": "dev",
+    "intent": "overview",
+    "question": "SkillMAS 在三个基准上分别取得多少成功率？和最强基线相比如何？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "**ALFWorld（完整 unseen 划分）94.0%**，与最强已发表参考分 **Traj-Bootstrap 的 93.0%** 相当；**Lifelong Agent Bench OS Task 76.7%**，高于 **Traj-Bootstrap 重跑的 70.0%** 与 **CDMem 的 68.0%**；**τ-Bench Retail 官方 base set 上所 selected checkpoint 达 70.2%**。三个基准上 SkillMAS 都是 Table 1 所列方法中成功率最高的；论文同时强调 Table 1 属**情境性对比**、而非协议匹配的排行榜。",
+    "must_have": [
+      "76.7%",
+      "70.2%",
+      "τ-Bench",
+      "93.0%"
+    ],
+    "must_any": [
+      "76.7%",
+      "70.2%",
+      "τ-Bench",
+      "93.0%"
+    ],
+    "must_all": [
+      "ALFWorld",
+      "94.0%"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-L0-3",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "SkillMAS 自陈的局限主要有哪些？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L0",
+    "hint": "四类：**①证据是基准局部、协议依赖的** —— 收益与特定 harness、提示、模型 API、检查点选择流程绑定，还不能读成领域无关的估计；**②未隔离各组件的因果贡献** —— 没有统一多种子重跑、受控冻结目标消融或正式显著性检验，ALFWorld 的移植压力测试只探测「不匹配与过载」，不是协议匹配的因果分解；**③缺少完整的 token / 延迟 / 成本核算**，实际效率与长期稳定性刻画不足；**④以代表性过程摘要替代大量底层轨迹记录**，长时程稳定性与失败模式审计只被部分刻画。",
+    "must_have": [
+      "消融",
+      "协议",
+      "成本",
+      "因果",
+      "审计",
+      "稳定性"
+    ],
+    "must_any": [
+      "消融",
+      "协议",
+      "成本",
+      "因果",
+      "审计",
+      "稳定性"
+    ],
+    "must_all": [
+      "ALFWorld"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S1",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillMAS 用「adaptation decoupling」指什么问题？它会造成哪三种反复出现的失败模式？论文据此提出哪三条设计要求？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**adaptation decoupling** = 系统级错配：**技能演化与 MAS 重构被分开优化**，尽管二者各自都会改变对方的运行条件。三种失败模式：①复用已验证执行轨迹会给技能演化引入**冗余或低价值证据**；②技能演化会让 **MAS 组织更难路由与维护**；③**固定的 MAS 组织**跟不上任务结构或运行时复杂度的变化。三条设计要求：①信用必须来自**已验证执行轨迹**、而非只靠检索；②技能演化**不能压垮 MAS 组织**；③技能演化必须能与 MAS 重构**在同一份经验证据下比较**。",
+    "must_have": [
+      "解耦",
+      "瓶颈",
+      "证据",
+      "路由"
+    ],
+    "must_any": [
+      "解耦",
+      "瓶颈",
+      "证据",
+      "路由"
+    ],
+    "must_all": [
+      "MAS restructuring"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S2",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillMAS 的 Utility Learning 学的是哪两个效用表？各自用于什么决策？更新规则是什么、未见过的条目 α 取多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "两个效用表：**Skill Utility**（技能 s 在任务类型 τ 上的效用，用于**任务条件下的技能选择**）与 **Executor Utility**（执行器 a 在任务类型 τ 下的效用，用于**给候选执行器排序**）。二者都**只从已验证执行轨迹**学，取值是**经验成功率估计**（ALFWorld 成功是二值的，R(ξ) ∈ {0,1}）。更新是**蒙特卡洛式**计数规则：Q ← Q + α(R(ξ) − Q)，**α = 1/(1+N)** —— **未见过的条目 α = 1**，重复证据自动衰减更新率，不引入第二个优化器或基准专用动量项。关键约束：**检索只负责提出候选，只有「被执行支撑」的技能才拿到正信用**。",
+    "must_have": [
+      "蒙特卡洛",
+      "Monte Carlo",
+      "α",
+      "成功率"
+    ],
+    "must_any": [
+      "蒙特卡洛",
+      "Monte Carlo",
+      "α",
+      "成功率"
+    ],
+    "must_all": [
+      "Skill Utility",
+      "Executor Utility"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S3",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillMAS 把「技能」看成什么？失败轨迹什么情况下才进入 patch pool？诊断标签里「handoff-to-structure」做什么？合并阶段 SkillEvolve 的动作集有哪些？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "技能 = **agent 原生的包**，含**适用条件、过程步骤、失败护栏（failure guards）、验证检查**。成功轨迹可提炼**可复用 motif**；**失败轨迹只有在有界分析能定位到单一主导可编辑原因时**才进 patch pool（如缺前置条件、动作顺序错、检索误导匹配、技能冲突、执行器分配不当）。有界诊断给出标签集 **{add-guard, reorder-step, tighten-retrieval, split-skill, handoff-to-structure, ∅}**，其中 **handoff-to-structure 把轨迹交给结构分析**、而不是直接修技能。合并阶段 **SkillEvolve** 的动作集是 **{create, refine, prune, hold-in-pool, no-op}**，**每轮每个受影响的技能簇最多动一次**；新建或大改的技能先留在**验证池**，等后续轮次给出足够使用证据。",
+    "must_have": [
+      "SkillEvolve",
+      "add-guard",
+      "split-skill",
+      "护栏",
+      "验证池"
+    ],
+    "must_any": [
+      "SkillEvolve",
+      "add-guard",
+      "split-skill",
+      "护栏",
+      "验证池"
+    ],
+    "must_all": [
+      "handoff-to-structure"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S4",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "SkillMAS 的「证据门控 MAS 重构」什么时候触发？重构算子有哪四种结果、每轮最多施加多少？触发时系统会做什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "触发条件：**只有当保留证据与 Executor Utility 显示「剩下的问题是过载或划分不清的 MAS 组织」时才改执行器集合**。典型结构性证据：相似执行器之间的高不确定性、技能修复后失败仍集中在某个任务族、某个宽职责执行器同时拥有互相干扰的技能簇。重构算子返回四种结果之一：**keep（保持现状）/ add（加一个专家）/ merge/remove（合并或删除冗余执行器）/ modify（改职责边界与技能归属）**；**除非证据支持结构性错配否则不编辑**，且**每轮最多施加一次重构**。触发时会**转移已验证技能、合并冗余的技能归属、或收窄执行器提示词**，让每个执行器覆盖更清晰的任务区域。",
+    "must_have": [
+      "keep",
+      "merge",
+      "specialist",
+      "边界",
+      "过载"
+    ],
+    "must_any": [
+      "keep",
+      "merge",
+      "specialist",
+      "边界",
+      "过载"
+    ],
+    "must_all": [
+      "Executor Utility",
+      "MAS restructuring"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S5",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "三个基准各自的 adaptation 子集与评测集怎么划？τ-Bench Retail 固定了哪两个模型角色？ALFWorld 的 94.0% 是在哪个集合上算的？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**ALFWorld unseen**：适应在**固定 70 题训练子集**（从 134 题 evolution pool 按任务族比例一次抽样）上跑，**完整 134 题 unseen split** 只在评测选中检查点时使用，best checkpoint = **126/134 = 94.0%**。**Lifelong Agent Bench OS Task**：固定 **100 题训练子集**做逐轮过程跟踪，**完整 150 题**评测集上由 best checkpoint 得到 76.7%。**τ-Bench Retail**：适应与开发用官方 **74 题训练子集**，主评测是 **114 题 base set（74 训练 + 40 测试）**。τ-Bench 固定两个模型角色：**GPT-4.1-mini 执行器** + **GPT-4.1-2025-04-14 用户模拟器**；其余基准尽量用 **GPT-4o-mini**。",
+    "must_have": [
+      "70",
+      "100",
+      "114",
+      "GPT-4o-mini",
+      "134"
+    ],
+    "must_any": [
+      "70",
+      "100",
+      "114",
+      "GPT-4o-mini",
+      "134"
+    ],
+    "must_all": [
+      "GPT-4.1-mini"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S6",
+    "role": "dev",
+    "intent": "baseline_compare",
+    "question": "按 Table 3，ALFWorld 的总体增益主要来自哪个任务族？它的 seed→best 数字是多少？其余任务族大致什么水平？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "增益**主要来自 examine**：从 **5/18（27.8%）升到 17/18（94.4%）**，**+12** —— 对应引入了搜索/检查导向的专精。其余任务族起点较强、增益较小：**pick_and_place 28/34→33/34（+5）**、**pick_two_obj_and_place 13/17→16/17（+3）**、**pick_cool_then_place 18/21→20/21（+2）**、**pick_clean_then_place 27/31→28/31（+1）**、**pick_heat_then_place 11/13→12/13（+1）**。论文把任务族成功率当作**外部可解释证据**，把原始 Executor Utility 值当作**内部适应状态**。",
+    "must_have": [
+      "5/18",
+      "examine",
+      "27.8%",
+      "+12"
+    ],
+    "must_any": [
+      "5/18",
+      "examine",
+      "27.8%",
+      "+12"
+    ],
+    "must_all": [
+      "17/18"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S7",
+    "role": "dev",
+    "intent": "method_detail",
+    "question": "过程证据：ALFWorld、Lifelong OS Task、τ-Bench 三条适应轨迹的技能数/执行器数与训练成功率各怎么变？哪条轨迹出现「加执行器反而更差」？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**ALFWorld**：技能 **5→13**、执行器 **2→4**，训练成功率 **54/70（77.1%）→ 66/70（94.3%）**，所选第 5 轮检查点迁移到 126/134。**Lifelong OS Task**：技能到第 3 轮达 **10**、成功率峰值 **78/100（78.0%）**，第 4 轮技能数不变但掉到 **75/100** —— 说明技能数只是**可解释性信号、不是主张本身**。**τ-Bench Retail**：所选检查点保持**单执行器**，从 43/74（58.1%）提到 **51/74（68.9%）**；把它扩成再加一个 **preflight 执行器**后训练掉到 **32/74（43.2%）** —— 该基准的收益来自**稳定单智能体执行下更好的技能使用**，而非扩张 MAS。",
+    "must_have": [
+      "66/70",
+      "75/100",
+      "32/74",
+      "13"
+    ],
+    "must_any": [
+      "66/70",
+      "75/100",
+      "32/74",
+      "13"
+    ],
+    "must_all": [
+      "51/74"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-S8",
+    "role": "dev",
+    "intent": "limitation",
+    "question": "SkillMAS 在「Limitation and Future Work」里列了哪几类局限？各自对应什么未完成的分析？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "四类：**①证据是基准局部、协议依赖的** —— 收益绑定特定 harness、提示、模型 API 与检查点选择流程，还不能当作领域无关的估计；**②没有隔离各组件的因果贡献** —— 缺统一多种子重跑、受控冻结目标消融与正式显著性检验；**③缺少完整的 token、延迟与成本核算** —— 实际效率与长期稳定性刻画不足；**④抽象掉了大量底层轨迹记录**（改用代表性过程摘要）—— 长时程稳定性与失败模式审计只被部分刻画。未来工作：协议匹配消融、长时程稳定性与成本分析、更丰富的 trace 级审计。",
+    "must_have": [
+      "消融",
+      "协议",
+      "成本",
+      "因果",
+      "审计",
+      "稳定性"
+    ],
+    "must_any": [
+      "消融",
+      "协议",
+      "成本",
+      "因果",
+      "审计",
+      "稳定性"
+    ],
+    "must_all": [
+      "token"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-T1",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 1，五个方法在三个基准上的成功率分别是多少？SkillMAS 相对最强已发表参考分高多少？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "Table 1（列序：ALFWorld unseen / Lifelong Agent Bench OS Task / τ-Bench Retail）：**Direct LLM** 43.3(Ref.)、59.3、61.4；**ReAct** 53.0(Ref.)、62.0、62.3；**CDMem** 85.8(Ref.)、68.0、68.4；**Traj-Bootstrap** 93.0(Ref.)、70.0、68.4；**SkillMAS** **94.0**、**76.7**、**70.2**。ALFWorld 上带 Ref. 的跨论文条目因协议漂移只作情境参考，**SkillMAS 的 94.0% 与最强参考分 93.0% 相当（仅高 1.0 个点）**；Lifelong OS Task 上比自家 Traj-Bootstrap 重跑高 6.7 个点，τ-Bench Retail 达 70.2%。",
+    "must_have": [
+      "94.0",
+      "76.7",
+      "70.2",
+      "Ref."
+    ],
+    "must_any": [
+      "94.0",
+      "76.7",
+      "70.2",
+      "Ref."
+    ],
+    "must_all": [
+      "85.8",
+      "93.0"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-T2",
+    "role": "dev",
+    "intent": "table_number",
+    "question": "按 Table 2 的 ALFWorld 移植压力测试，四个变体的成功率分别是多少？这说明了什么？",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**Full SkillMAS：126/134（94.0%）**；**只保留最终技能库 + seed MAS 组织：92/134（68.7%）**；**只保留专业化 MAS 组织 + seed 技能：67/134（50.0%）**；**Seed baseline：102/134（76.1%）**。要点：把最终技能库注入 seed 组织**反而低于** seed 基线（92 < 102），暗示**选择与应用过载**；只留专业化组织、回退 seed 技能掉得更狠（67），说明**没有配套技能演化的 MAS 重构同样脆弱**。论文提醒这只是 ALFWorld 特定的压力测试，**不是协议匹配的因果分解**。",
+    "must_have": [
+      "102/134",
+      "126/134",
+      "过载",
+      "50.0%"
+    ],
+    "must_any": [
+      "102/134",
+      "126/134",
+      "过载",
+      "50.0%"
+    ],
+    "must_all": [
+      "92/134",
+      "67/134"
+    ],
+    "must_not": [],
+    "chunk_kw": null
+  },
+  {
+    "pdf": "2605.09341.pdf",
+    "qid": "0934-N1",
+    "role": "dev",
+    "intent": "negative_check",
+    "question": "SkillMAS 论文通过统一多种子重跑与受控冻结目标消融，已经定量隔离了 Utility Learning、技能演化、MAS 重构三个组件各自的因果贡献。这个说法对吗？",
+    "expect": [
+      "L0",
+      "L3"
+    ],
+    "route_min": "L3",
+    "hint": "**不对，前提是假的。** 论文明确说**当前存档不含**针对 ALFWorld 的受控冻结目标重训练消融（Table 2 只是**移植压力测试**，并自陈「不是协议匹配的因果分解」）；局限部分也写明**尚未**通过统一多种子重跑、受控冻结目标消融或正式显著性检验**隔离各组件的因果贡献**。正确回答应指出「这种隔离还没做」，而不是把 Table 2 当成因果分解来引用。",
+    "must_have": [
+      "没有",
+      "尚未",
+      "未",
+      "不对",
+      "不是因果",
+      "未隔离",
+      "不能说"
+    ],
+    "must_any": [
+      "没有",
+      "尚未",
+      "未",
+      "不对",
+      "不是因果",
+      "未隔离",
+      "不能说"
+    ],
+    "must_all": [],
+    "must_not": [],
+    "chunk_kw": null
+  }
+]

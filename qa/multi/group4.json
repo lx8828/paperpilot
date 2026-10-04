@@ -1,0 +1,488 @@
+[
+  {
+    "qid": "G4-M1-1",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，工具是**怎么表示的**（生成式专有 token / 结构化 schema / 依赖关系 / 合成描述 / 统一的动作-观察格式）？哪一篇把工具知识**直接写进模型参数**？",
+    "hint": "**ToolGen**（2410.03439）：把每个工具表示成 **unique token**，扩展 LLM 词表加入 **tool-specific virtual tokens**，把工具知识直接集成进模型参数（integrates tool knowledge directly into the LLM's parameters）→ 唯一「写进参数」的一篇；**UniToolCall**（2604.11557）：把 7 个公开基准统一成 **Query-Action-Observation-Answer（QAOA）** 表示，并加 **Anchor Linkage** 机制保证跨轮状态继承；**DTDR**（2512.17052）：从 function calling demonstrations 里建模**工具依赖**（不表示工具本身，而表示依赖）；**SEER**（2508.15214）：把经验表示成**可检索的轨迹条目**（task similarity + tool-chain coverage + intent alignment 三信号）；**ToolDreamer**（2510.19791）：用 LLM 生成的 **hypothetical (synthetic) 工具描述**作为检索表示。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "unique token",
+      "QAOA"
+    ],
+    "must_any": [
+      "虚拟 token",
+      "参数",
+      "依赖",
+      "假设描述",
+      "统一表示"
+    ],
+    "must_not": [],
+    "must_have": [
+      "unique token",
+      "QAOA"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-2",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，检索工具**依据什么信号**（只看 query 与工具描述相似度 / 演化中的调用计划 / 逐步经验 / 合成的假设描述）？哪一篇主张**不需要独立的检索步骤**？",
+    "hint": "**ToolGen**（2410.03439）主张**取消独立检索**：Our framework allows the LLM to access and utilize a vast amount of tools with **no additional retrieval step**；**DTDR**（2512.17052）条件于 **the evolving tool calling plan**（随计划展开自适应检索）；**SEER**（2508.15214）做**逐步（stepwise）**细粒度经验回放，并批评前作只看 task similarity 而忽略 **tool-chain alignment**；**ToolDreamer**（2510.19791）用**合成的假设工具描述**替代 query-描述相似度（因为 user requests are often poorly aligned with the language of TD）；**UniToolCall**（2604.11557）不提出新检索器，而是把整链标准化（工具集构造→数据生成→评测）。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "no additional retrieval step",
+      "evolving tool calling plan"
+    ],
+    "must_any": [
+      "相似度",
+      "逐步",
+      "假设",
+      "计划",
+      "对齐"
+    ],
+    "must_not": [],
+    "must_have": [
+      "no additional retrieval step",
+      "evolving tool calling plan"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-3",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪些**需要训练/微调**、哪些**免额外训练**？需要训练的那几篇分别用什么监督信号、分几个阶段？",
+    "hint": "**ToolGen**（2410.03439）：需要训练，且是**三阶段** —— **tool memorization → retrieval training → agent training**（先扩词表并把工具「记」进参数，再训检索、最后训 agent）；**UniToolCall**（2604.11557）：需要微调（fine-tuning Qwen3-8B on our dataset），靠**公开数据集合成的 390k+ 实例**做监督；**SEER**（2508.15214）**免额外训练**（without additional training，靠经验回放 + in-context 示例）；**ToolDreamer**（2510.19791）**两种都报**（with and without training）；**DTDR**（2512.17052）是轻量检索方法（从 demonstrations 建依赖 + 计划条件），不依赖大规模微调。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "tool memorization",
+      "without additional training"
+    ],
+    "must_any": [
+      "三阶段",
+      "微调",
+      "监督",
+      "免训练",
+      "经验回放"
+    ],
+    "must_not": [],
+    "must_have": [
+      "tool memorization",
+      "without additional training"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-4",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，谁显式处理**多步工具链**（工具间依赖、链级覆盖、跨轮状态继承）？各自的机制叫什么？",
+    "hint": "**DTDR**（2512.17052）：显式建模**工具依赖**并随调用计划展开自适应检索（conditions on ... the evolving tool calling plan）、且要满足 on-device 约束；**SEER**（2508.15214）：联合 **task similarity + tool-chain coverage + intent alignment** 选轨迹（专门补上「链级对齐」这一被忽略的维度）；**UniToolCall**（2604.11557）：提出 **Anchor Linkage** 机制 + deterministic fallbacks 保证**严格跨轮状态继承**（strict cross-turn state inheritance）；**ToolGen**（2410.03439）：把「检索 + 调用」合成生成式一体，agent training 阶段覆盖多轮；**ToolDreamer**（2510.19791）：把推理卸给检索器以支撑大工具集下的多步使用。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "Anchor Linkage",
+      "function calling demonstrations"
+    ],
+    "must_any": [
+      "依赖",
+      "跨轮",
+      "多步",
+      "链",
+      "状态继承"
+    ],
+    "must_not": [],
+    "must_have": [
+      "Anchor Linkage",
+      "function calling demonstrations"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-5",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇分别在**什么基准/规模**上评测？哪几篇是在**上万工具**的规模上做的？",
+    "hint": "**ToolGen**（2410.03439）：**47,000+ 工具**规模（Experimental results with over 47,000 tools）；**UniToolCall**（2604.11557）：**22k+ 工具池 + 390k+ 训练实例**，并把 **7 个公开基准**转成 QAOA 统一表示；**ToolDreamer**（2510.19791）：**ToolRet** 数据集（稀疏与稠密检索器各测）；**DTDR**（2512.17052）：多个数据集 + 多个 LLM backbone，评 retrieval precision / downstream accuracy / computational cost；**SEER**（2508.15214）：Qwen2.5-7B 与 Qwen2.5-72B 两个 backbone 上的工具使用任务。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "ToolRet",
+      "22k+ tools"
+    ],
+    "must_any": [
+      "基准",
+      "数据集",
+      "backbone",
+      "规模",
+      "工具池"
+    ],
+    "must_not": [],
+    "must_have": [
+      "ToolRet",
+      "22k+ tools"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-6",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里报告了哪些**关键数字**（工具规模 / 准确率提升 / 数据量）？请给出至少两个不同论文的数字并说明口径。",
+    "hint": "**ToolGen**（2410.03439）：在 **over 47,000 tools** 规模上评测工具检索与自主任务完成；**UniToolCall**（2604.11557）：**22k+ 工具池**、**390k+ 训练实例**（10 个公开数据集合成）；**SEER**（2508.15214）：Qwen2.5-7B 提升 **7.44%**、Qwen2.5-72B 提升 **23.38%**（准确率增益）；**ToolDreamer**（2510.19791）：在 ToolRet 上同时提升稀疏与稠密检索器（有/无训练两种设定）；**DTDR**（2512.17052）：报 retrieval precision / 下游准确率 / 计算开销三类指标。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "47,000",
+      "23.38%"
+    ],
+    "must_any": [
+      "7.44",
+      "390k",
+      "22k",
+      "提升",
+      "规模"
+    ],
+    "must_not": [],
+    "must_have": [
+      "47,000",
+      "23.38%"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-7",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇的**训练/检索数据是怎么构造**的？哪几篇用「自动合成 + 对齐」而不是人工构造？",
+    "hint": "**ToolDreamer**（2510.19791）最典型：因为 **(i) data scarcity**（找不到现成的 question-hypothetical-gold 三元组数据集），改用 LLM 生成假设工具描述、再用 **bipartite graph matching** 把它对齐到 gold 工具来构造训练目标；**UniToolCall**（2604.11557）：把 **10 个公开数据集**标准化合成为 **390k+ 实例**；**DTDR**（2512.17052）：从 **function calling demonstrations** 里自动建模依赖；**SEER**（2508.15214）：从**持续更新的经验库**做逐步回放（自我改进，无人工标注）；**ToolGen**（2410.03439）：需要构造工具记忆数据（tool memorization 阶段）把工具 id 变成可生成 token。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "bipartite graph matching",
+      "390k+ instances"
+    ],
+    "must_any": [
+      "合成",
+      "对齐",
+      "演示",
+      "经验库",
+      "公开数据集"
+    ],
+    "must_not": [],
+    "must_have": [
+      "bipartite graph matching",
+      "390k+ instances"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-8",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，谁把**端上部署 / 轻量**或**上下文长度**当作硬约束来设计？各自的手段是什么？",
+    "hint": "**DTDR**（2512.17052）明确以 **on-device** 为约束：An effective tool retriever must adapt to both the current task and the ongoing trajectory, while remaining **lightweight enough to satisfy on-device constraints**，且批评现有检索「improving performance and reducing context length」仍不足；**ToolGen**（2410.03439）针对 **context length** 约束（把工具描述当上下文受长度限制、还需独立检索）→ 用生成式 token 替代；**ToolDreamer**（2510.19791）针对「工具集大到超上下文窗口」（the resulting tokens would exceed the LLM's context window limit）；**UniToolCall**（2604.11557）通过统一表示 + 结构化约束降低跨轮状态开销；**SEER**（2508.15214）批评人工示例/prompt 工程随工具与任务规模增长而低效。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "on-device",
+      "context length"
+    ],
+    "must_any": [
+      "轻量",
+      "上下文窗口",
+      "开销",
+      "约束",
+      "token"
+    ],
+    "must_not": [],
+    "must_have": [
+      "on-device",
+      "context length"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-9",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇各自指出的**现有方案具体缺陷**是什么？（至少说出三篇的不同缺陷）",
+    "hint": "**ToolGen**（2410.03439）：把工具描述塞进上下文 → 受上下文长度限制 + 需独立检索机制，且工具数上万时检索与执行难以扩展；**DTDR**（2512.17052）：现有检索依赖 **static and limited inputs**，抓不到多步依赖与演化上下文，会引入无关工具误导 agent；**SEER**（2508.15214）：只重 task similarity、忽略 tool-chain alignment，且依赖人工设计示例或 curated library；**ToolDreamer**（2510.19791）：query 与工具描述的语言不对齐（poorly aligned with the language of TD）→ 相似度检索次优；**UniToolCall**（2604.11557）：**representation inconsistency**（各数据集 schema 不兼容）+ 协议与指标不可比，阻碍规模化训练与系统评测。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "static and limited inputs",
+      "representation inconsistency"
+    ],
+    "must_any": [
+      "上下文",
+      "对齐",
+      "人工",
+      "不一致",
+      "扩展"
+    ],
+    "must_not": [],
+    "must_have": [
+      "static and limited inputs",
+      "representation inconsistency"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-10",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，谁明确要**摆脱人工设计/人工标注**？各自用什么替代？哪几篇反而依赖人工或大规模标注数据？",
+    "hint": "**SEER**（2508.15214）最明确反对人工：批评现有方法 **rely on manually designing task-specific demonstrations**，改用自动更新的经验库 + 逐步回放；**ToolDreamer**（2510.19791）用 LLM 合成假设工具描述 + 二分图匹配自动对齐，绕过人工标注（正因 data scarcity）；**DTDR**（2512.17052）从已有 function calling demonstrations 自动建模依赖；**UniToolCall**（2604.11557）用 10 个公开数据集合成 390k+ 实例（用现成数据而非新标注）；**ToolGen**（2410.03439）反而需要专门构造监督（tool memorization + 检索训练 + agent 训练三段）。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "manually designing task-specific demonstrations",
+      "data scarcity"
+    ],
+    "must_any": [
+      "人工标注",
+      "合成",
+      "自动",
+      "经验库",
+      "公开数据集"
+    ],
+    "must_not": [],
+    "must_have": [
+      "manually designing task-specific demonstrations",
+      "data scarcity"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-11",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇做了超参数或组件的消融/敏感性分析？各自扫或去掉的是什么？",
+    "hint": "三篇：**DTDR**（2512.17052）的消融明确列出三项——历史长度、**k-means 聚类数**、演示条数；**SEER**（2508.15214）对核心组件做消融，并给出多维度打分的超参 λ1/λ2/λ3 取值（各 1/3）；**UniToolCall**（2604.11557）把**候选池规模**与未见工具泛化的敏感性放在附录 C。另两篇（ToolGen、ToolDreamer）没有明确的超参消融。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "k-means clusters",
+      "Candidate-pool size"
+    ],
+    "must_any": [
+      "消融",
+      "超参数",
+      "敏感性",
+      "扫"
+    ],
+    "must_not": [],
+    "must_have": [
+      "k-means clusters",
+      "Candidate-pool size"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-12",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇显式做了「未见工具 / 跨模型族」的泛化评测？证据是什么？",
+    "hint": "三篇：**UniToolCall**（2604.11557）既做**跨模型族**泛化（同一配方在 Qwen3-8B 之外、20K Balanced 子集上复验），又把**未见工具泛化**作为单独分析（附录 C）；**ToolDreamer**（2510.19791）在测试期用**未见问题**生成一组**假设工具**（hypothetical tools）来检验泛化；**DTDR**（2512.17052）对标的是**零样本**检索方法这一类设定。另两篇没有专门做未见工具/跨族评测。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "unseen-tool generalization",
+      "hypothetical tools"
+    ],
+    "must_any": [
+      "泛化",
+      "未见",
+      "跨",
+      "零样本"
+    ],
+    "must_not": [],
+    "must_have": [
+      "unseen-tool generalization",
+      "hypothetical tools"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-13",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇靠「自我改进 / 经验库持续更新 / 按需新建工具」让系统随时间变强？各自的机制是什么？",
+    "hint": "两篇主线一致、机制不同：**SEER**（2508.15214）用**自我改进**（self-improvement）随时间稳定涨点，机制是**自引导地持续更新「轨迹经验库」**，让模型从新遇到的情形中获益；**ToolDreamer**（2510.19791）走的是**按需创建工具**（on-demand tool creation），不必事先确定完整工具集。另三篇没有这种随时间自更新的机制。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "self-improvement",
+      "on-demand tool creation"
+    ],
+    "must_any": [
+      "自我改进",
+      "经验库",
+      "按需",
+      "持续"
+    ],
+    "must_not": [],
+    "must_have": [
+      "self-improvement",
+      "on-demand tool creation"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  },
+  {
+    "qid": "G4-M1-14",
+    "kind": "M1",
+    "role": "dev",
+    "intent": "cross_paper",
+    "question": "这五篇里，哪几篇把「工具检索/选择」与「实际执行」**解耦**（无执行 / 离线设定）？哪一篇反而主张把检索与执行**统一进模型**？",
+    "hint": "两类取向相反：**DTDR**（2512.17052）明确在**无执行、离线**（execution-free, offline）设定下改进工具选择，认为这能直接强化规划阶段；**UniToolCall**（2604.11557）与**SEER**（2508.15214）也以「选择/回放」为主、不依赖真实执行。反面是 **ToolGen**（2410.03439）——它把**工具知识直接写进 LLM 参数**（每个工具一个 **unique token**），主张把检索与执行**统一**到生成式范式里。",
+    "expect": [
+      "L3"
+    ],
+    "route_min": "L3",
+    "must_all": [
+      "execution-free",
+      "unique token"
+    ],
+    "must_any": [
+      "解耦",
+      "执行",
+      "统一",
+      "离线"
+    ],
+    "must_not": [],
+    "must_have": [
+      "execution-free",
+      "unique token"
+    ],
+    "corpus": [
+      "2410.03439",
+      "2512.17052",
+      "2508.15214",
+      "2510.19791",
+      "2604.11557"
+    ]
+  }
+]

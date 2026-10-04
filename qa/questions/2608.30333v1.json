@@ -16,6 +16,11 @@
       "特征级",
       "XGBoost"
     ],
+    "must_any": [
+      "监督",
+      "特征级",
+      "XGBoost"
+    ],
     "must_all": [
       "XGBoost",
       "VNN"
@@ -36,6 +41,11 @@
     "route_min": "L3",
     "hint": "复购推荐通常当「排序题」做，但顾客看到推荐时还想知道**凭什么**（多久没买了、平时多久买一次）。大模型能把行为特征写成一句人话理由，可**说得顺不等于说得对**——它可能引用「听着合理、其实跟这次会不会买无关」的特征。所以他们问两件事：① 直接让大模型拿这些行为特征打分，能打过正经的排序模型吗？② 大模型引用的那三个特征，是不是**对不同种类的排序模型都真的重要**（用「抹掉它们看排序掉多少」来测）。结论：**打分打不过**（别拿它当主力推荐器）；但**理由**这块有一点价值——换提问方式和证据表示有时能让引用的特征更「有依据」，可**看数据集**、**并不稳定**。定位是「经校验的解释组件」。",
     "must_have": [
+      "看似合理",
+      "理由",
+      "排序"
+    ],
+    "must_any": [
       "看似合理",
       "理由",
       "排序"
@@ -63,6 +73,11 @@
       "归因基线",
       "理由"
     ],
+    "must_any": [
+      "看似合理",
+      "归因基线",
+      "理由"
+    ],
     "must_all": [
       "GPT-4o",
       "Gemini"
@@ -86,6 +101,11 @@
       "evidence card",
       "feature names"
     ],
+    "must_any": [
+      "cadence",
+      "evidence card",
+      "feature names"
+    ],
     "must_all": [
       "28",
       "exactly three"
@@ -105,6 +125,11 @@
     "route_min": "L3",
     "hint": "对每个顾客-商品对，特征选择器 A 给出 **3 个**特征；**选 3 个是因为 LLM 被要求恰好引用 3 个，以保证各方法的掩码预算相同**。把每个被选特征**替换为训练集中位数**得到扰动向量，再用**目标模型重新打分**；**masking gap** = 原排序指标 M(f(x)) − 掩码后 M(f(x̃))，M 为 Precision@k / Recall@k / NDCG@k。**gap 越大 ⇒ 被选特征对该目标模型携带的排序信号越多。** 对照方法：**TreeSHAP**（针对 XGBoost 目标）、**integrated gradients**（针对 VNN 目标）、**跨家族归因**（对 XGBoost 目标用 IG、对 VNN 目标用 TreeSHAP）、以及**随机 top-3**。两个目标模型都要评，用来检验所选特征是否**跨模型家族**都重要。",
     "must_have": [
+      "masking",
+      "integrated-gradient",
+      "归因"
+    ],
+    "must_any": [
       "masking",
       "integrated-gradient",
       "归因"
@@ -133,6 +158,11 @@
       "attribution baseline",
       "8 of 18"
     ],
+    "must_any": [
+      "norm-prompt",
+      "attribution baseline",
+      "8 of 18"
+    ],
     "must_all": [
       "7 of 18",
       "10 of 18",
@@ -157,6 +187,11 @@
       "norm-prompt",
       "监督"
     ],
+    "must_any": [
+      "supervised",
+      "norm-prompt",
+      "监督"
+    ],
     "must_all": [
       "XGBoost",
       "personal-frequency"
@@ -176,6 +211,11 @@
     "route_min": "L3",
     "hint": "作为互补分析，在 **Instacart** 上评估 **3,599 条**解释（LLM 在 RQ1 里信号最清晰的数据集）：把解释文本表达的**行为组**与「引用特征所隐含的组」比较，并核对提到的**数值**是否与底层证据一致。结果：**Group Prec. 0.951、Group Rec. 0.740、Group F1 0.805、Numeric Cons. 0.996**。解读：**精确率高（0.951）** 说明很少引入额外理由组；**数值一致率极高（0.996）**；**召回偏低（0.740）** 说明**部分被引用的证据没有被写进文本**。因此：**一旦特征被选中，LLM 一般能准确转述**；**更难的仍然是「选出 outcome-grounded 的特征」**。",
     "must_have": [
+      "3,599",
+      "groundedness",
+      "reason-group"
+    ],
+    "must_any": [
       "3,599",
       "groundedness",
       "reason-group"
@@ -204,6 +244,11 @@
       "limitation",
       "局限"
     ],
+    "must_any": [
+      "Instacart",
+      "limitation",
+      "局限"
+    ],
     "must_all": [
       "causal",
       "100 customers"
@@ -223,6 +268,11 @@
     "route_min": "L3",
     "hint": "**outcome-grounded（操作化定义）**：**当掩码某特征后，在「对未来复购标签评估的排序指标」上造成更大下降时**，就认为被引用特征更 outcome-grounded；该判据衡量的是 **outcome-relevant 排序信号**，而**不是因果相关性，也不是完整的解释忠实性**。证据卡两变体：**base** 只给**原始可解释特征值**，要求 LLM 指出最强的支持/削弱证据；**norm-prompt** **保留这些值**，并**额外提供百分位视图**——对**顾客级与顾客-商品级**特征，百分位在**同一顾客的候选项之间**计算；对**全局商品级**特征，百分位在**全局商品总体**上计算；两者都**不使用未来标签**。",
     "must_have": [
+      "masking",
+      "掩码",
+      "ranking metrics"
+    ],
+    "must_any": [
       "masking",
       "掩码",
       "ranking metrics"
@@ -250,6 +300,11 @@
       "supervised",
       "解释"
     ],
+    "must_any": [
+      "feature-level",
+      "supervised",
+      "解释"
+    ],
     "must_all": [
       "constrained hybrid design"
     ],
@@ -268,6 +323,11 @@
     "route_min": "L3",
     "hint": "**Instacart：100,000 唯一 CID / 49,071 唯一商品 / 平均历史 64.6 件 / LLM 打分 pair 3,599**；**DC：283,047 / 910 / 9.8 / 1,214**。（因 LLM 推理成本，每个数据集只抽取 **100 个 held-out 顾客**。）",
     "must_have": [
+      "283,047",
+      "held-out",
+      "DC"
+    ],
+    "must_any": [
       "283,047",
       "held-out",
       "DC"
@@ -295,6 +355,10 @@
       "3,599",
       "Numeric"
     ],
+    "must_any": [
+      "3,599",
+      "Numeric"
+    ],
     "must_all": [
       "0.951",
       "0.805",
@@ -316,6 +380,17 @@
     "route_min": "L0",
     "hint": "**没有**。论文的文本-证据分析是**自动的且只限 Instacart**，作者在局限里明确说它**不评估顾客是否觉得解释清楚、有用、有说服力或可信**；解释的**有用性、用户信任、决策速度与线上业务影响**被列为**未来工作**（需受控用户研究或 A/B 实验）。所以正确回答是**论文未做人工/用户评估**，而不是给出一个人工评分。",
     "must_have": [
+      "未做",
+      "没有做",
+      "未进行",
+      "没有进行",
+      "未评估",
+      "没有评估",
+      "未来工作",
+      "未报告",
+      "未给出"
+    ],
+    "must_any": [
       "未做",
       "没有做",
       "未进行",
