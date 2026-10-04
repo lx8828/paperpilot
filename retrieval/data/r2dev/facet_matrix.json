@@ -1,0 +1,236 @@
+{
+ "topic": "retrieval augmented generation for knowledge-intensive question answering",
+ "corpus": "litsearch corpus_clean.full_paper（开发期；后续迁生产语料）",
+ "docs": [
+  {
+   "docid": "P1",
+   "corpusid": 220280819,
+   "title": "Adaptive Procedural Task Generation for Hard-Exploration Problems",
+   "n_chars": 67529
+  },
+  {
+   "docid": "P2",
+   "corpusid": 264288947,
+   "title": "SELF-RAG: LEARNING TO RETRIEVE, GENERATE, AND CRITIQUE THROUGH SELF-REFLECTION",
+   "n_chars": 98526
+  },
+  {
+   "docid": "P3",
+   "corpusid": 263608822,
+   "title": "MAKING RETRIEVAL-AUGMENTED LANGUAGE MODELS ROBUST TO IRRELEVANT CONTEXT",
+   "n_chars": 57648
+  },
+  {
+   "docid": "P4",
+   "corpusid": 252596087,
+   "title": "RE-IMAGEN: RETRIEVAL-AUGMENTED TEXT-TO-IMAGE GENERATOR",
+   "n_chars": 61593
+  },
+  {
+   "docid": "P5",
+   "corpusid": 199577786,
+   "title": "Reinforcement Learning Based Graph-to-Sequence Model for Natural Question Generation",
+   "n_chars": 43896
+  },
+  {
+   "docid": "P6",
+   "corpusid": 252692968,
+   "title": "RECITATION-AUGMENTED LANGUAGE MODELS",
+   "n_chars": 79891
+  },
+  {
+   "docid": "P7",
+   "corpusid": 13764176,
+   "title": "EVIDENCE AGGREGATION FOR ANSWER RE-RANKING IN OPEN-DOMAIN QUESTION ANSWERING",
+   "n_chars": 49661
+  },
+  {
+   "docid": "P8",
+   "corpusid": 227746078,
+   "title": "DISTILLING KNOWLEDGE FROM READER TO RETRIEVER FOR QUESTION ANSWERING",
+   "n_chars": 49223
+  },
+  {
+   "docid": "P9",
+   "corpusid": 252408513,
+   "title": "Published as a conference paper at ICLR 2023 GENERATE RATHER THAN RETRIEVE: LARGE LANGU- AGE MODELS ARE STRONG CONTEXT G",
+   "n_chars": 107114
+  },
+  {
+   "docid": "P10",
+   "corpusid": 253080510,
+   "title": "Published as a conference paper at ICLR 2023 AUGMENTATION WITH PROJECTION: TOWARDS AN EFFECTIVE AND EFFICIENT DATA AUGME",
+   "n_chars": 68054
+  },
+  {
+   "docid": "P11",
+   "corpusid": 239009856,
+   "title": "HINDSIGHT: POSTERIOR-GUIDED TRAINING OF RE- TRIEVERS FOR IMPROVED OPEN-ENDED GENERATION",
+   "n_chars": 65493
+  },
+  {
+   "docid": "P12",
+   "corpusid": 208267807,
+   "title": "Published as a conference paper at ICLR 2020 LEARNING TO RETRIEVE REASONING PATHS OVER WIKIPEDIA GRAPH FOR QUESTION ANSW",
+   "n_chars": 85007
+  },
+  {
+   "docid": "P13",
+   "corpusid": 219686921,
+   "title": "OPEN-DOMAIN QUESTION ANSWERING WITH PRE-CONSTRUCTED QUESTION SPACES",
+   "n_chars": 28643
+  },
+  {
+   "docid": "P14",
+   "corpusid": 258762869,
+   "title": "BERM: Training the Balanced and Extractable Representation for Matching to Improve Generalization Ability of Dense Retri",
+   "n_chars": 66406
+  },
+  {
+   "docid": "P15",
+   "corpusid": 219182207,
+   "title": "",
+   "n_chars": 8032
+  },
+  {
+   "docid": "P16",
+   "corpusid": 31892462,
+   "title": "Incremental Knowledge Acquisition Approach for Information Extraction on both Semi-structured and Unstructured Text from",
+   "n_chars": 39745
+  },
+  {
+   "docid": "P17",
+   "corpusid": 236486300,
+   "title": "",
+   "n_chars": 22856
+  },
+  {
+   "docid": "P18",
+   "corpusid": 8842519,
+   "title": "Linguistic Knowledge Generator",
+   "n_chars": 31584
+  },
+  {
+   "docid": "P19",
+   "corpusid": 233189614,
+   "title": "Retrieval, Re-ranking and Multi-task Learning for Knowledge-Base Question Answering",
+   "n_chars": 60047
+  },
+  {
+   "docid": "P20",
+   "corpusid": 209315202,
+   "title": "",
+   "n_chars": 29510
+  }
+ ],
+ "facets": {
+  "ablation": {
+   "zh": "做了消融实验（把方法拆掉一部分看效果）",
+   "pat": "\\bablation",
+   "pos": [
+    "P1",
+    "P2",
+    "P3",
+    "P5",
+    "P8",
+    "P9",
+    "P10",
+    "P12",
+    "P14",
+    "P20"
+   ]
+  },
+  "code_release": {
+   "zh": "公开了代码或数据（给了可获取的开源链接）",
+   "pat": "github\\.com|code (?:is|will be) (?:publicly )?available|we (?:release|open[- ]source)",
+   "pos": [
+    "P1",
+    "P2",
+    "P3",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10",
+    "P12",
+    "P14",
+    "P20"
+   ]
+  },
+  "human_eval": {
+   "zh": "做了人工评估或人工标注",
+   "pat": "human (?:evaluation|study|annotation|rating)|annotators|human judges",
+   "pos": [
+    "P2",
+    "P4",
+    "P8",
+    "P9",
+    "P12",
+    "P14",
+    "P17",
+    "P19",
+    "P20"
+   ]
+  },
+  "llm_as_model": {
+   "zh": "把 GPT-4 这类商用大模型当作被评测或使用的模型",
+   "pat": "\\bGPT-4\\b|ChatGPT|InstructGPT",
+   "pos": []
+  },
+  "multilingual": {
+   "zh": "做了多语言或跨语言的实验",
+   "pat": "multilingual|cross-lingual",
+   "pos": [
+    "P6",
+    "P9"
+   ]
+  },
+  "efficiency": {
+   "zh": "报告了推理效率指标（时间 / 延迟 / 吞吐）",
+   "pat": "inference (?:time|cost|speed|latency)|\\blatency\\b|\\bthroughput\\b|FLOPs",
+   "pos": [
+    "P2",
+    "P3",
+    "P4",
+    "P9",
+    "P12",
+    "P19"
+   ]
+  },
+  "significance": {
+   "zh": "报告了多次运行的方差或统计显著性",
+   "pat": "significance (?:test|level)|p\\s*<\\s*0\\.0|multiple (?:runs|seeds)|standard deviation",
+   "pos": [
+    "P3",
+    "P6"
+   ]
+  },
+  "new_dataset": {
+   "zh": "自己提出或发布了新的数据集 / 基准",
+   "pat": "we (?:introduce|present|construct|release|collect) (?:a )?(?:new )?(?:dataset|benchmark|corpus)",
+   "pos": [
+    "P4",
+    "P17"
+   ]
+  },
+  "case_study": {
+   "zh": "给出了案例分析",
+   "pat": "case stud",
+   "pos": [
+    "P5",
+    "P9",
+    "P13",
+    "P20"
+   ]
+  },
+  "error_analysis": {
+   "zh": "做了错误分析或失败案例分析",
+   "pat": "error analysis|failure (?:case|analysis|mode)",
+   "pos": [
+    "P4",
+    "P6",
+    "P9"
+   ]
+  }
+ }
+}

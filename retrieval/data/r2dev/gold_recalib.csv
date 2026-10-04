@@ -1,0 +1,720 @@
+﻿cluster,facet,docid,anchor_gold,agent_A,A_label,A_conf,A_quote,agent_B,B_label,B_conf,B_quote,agree,need_third,third,new_gold,A_err,B_err,evidence_chars
+1,ablation,C1P1,True,deepseek-chat,entail,0.95,Ablation studies are mostly shown on the NQ dataset to understand the drawbacks of GAR,glm-4-flash,entail,1.0,Ablation studies are mostly shown on the NQ dataset to understand the drawbacks of GAR since it achieves better performance on Trivia.,1,0,,yes,,,4015
+1,ablation,C1P10,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P11,True,deepseek-chat,entail,0.9,Table 11: Ablation study on the strategy of sampling documents as in-context demonstrations.,glm-4-flash,entail,1.0,Table 11: Ablation study on the strategy of sampling documents as in-context demonstrations.,1,0,,yes,,,4015
+1,ablation,C1P12,False,deepseek-chat,entail,0.95,our ablated LI-RAGE w/o joint training & relevance tokens attaining 42.19 EM,glm-4-flash,entail,1.0,"This setting achieves 41.04 EM on NQ-TABLES, which is even lower than our ablated LI-RAGE w/o joint training & relevance tokens attaining 42.19 EM (see Table  1",1,0,,yes,,,3010
+1,ablation,C1P13,True,deepseek-chat,entail,0.98,Here we ablate the properties of MuRAG to better understand our experimental results.,glm-4-flash,entail,1.0,"Two-Stage Fine-tuning In order to study the necessity of the two-stage fine-tuning, we perform an ablation study to see the impact of the two stages...",1,0,,yes,,,4015
+1,ablation,C1P14,True,deepseek-chat,entail,0.98,Ablation studies.We conduct a set of ablations of our framework to identify which factors play key roles.,glm-4-flash,entail,1.0,Ablation studies.We conduct a set of ablations of our framework to identify which factors play key roles.,1,0,,yes,,,4015
+1,ablation,C1P15,False,deepseek-chat,neutral,0.85,We investigate whether training towards one type of change induces generalization bias,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P16,True,deepseek-chat,entail,0.95,A detailed ablation study on input features is presented in Table 2.,glm-4-flash,entail,1.0,"A detailed ablation study on input features is presented in Table 2. As shown, the T5 model fine-tuned on OK-VQA achieves a 28.05 VQA Score. The VQA Score incre",1,0,,yes,,,4015
+1,ablation,C1P17,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,2056
+1,ablation,C1P18,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P19,True,deepseek-chat,entail,0.98,We perform ablation experiments to study the effects of each feature incorporated into the model.,glm-4-flash,entail,1.0,We perform ablation experiments to study the effects of each feature incorporated into the model.,1,0,,yes,,,4015
+1,ablation,C1P2,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P5,True,deepseek-chat,entail,0.97,We further discuss the effects of these modules in Ablation Studty.,glm-4-flash,entail,1.0,"We further discuss the effects of these modules in Ablation Studty.
+Ablation Study
+The ablation experimental results on the HotpotQA dataset are listed in Table",1,0,,yes,,,4015
+1,ablation,C1P6,True,deepseek-chat,entail,0.95,we also report ablation study results,glm-4-flash,entail,1.0,"To find out how the explicit modeling of the analogical relations (semantic relatedness) between the demonstration and the current instance helps, we also repor",1,0,,yes,,,4015
+1,ablation,C1P7,True,deepseek-chat,entail,0.98,we also conduct an ablation study: (1) We first test our model with only one layer of reasoning,glm-4-flash,entail,1.0,"To investigate the effect of the reasoning procedure and fine-tuning in our model design, we also conduct an ablation study: (1) We first test our model with on",1,0,,yes,,,3010
+1,ablation,C1P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,ablation,C1P9,False,deepseek-chat,neutral,0.9,We analyze how the number of passages recited would affect the performance,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P1,False,deepseek-chat,entail,0.9,without external supervision or time-consuming downstream feedback,glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+1,annotation_cost,C1P10,False,deepseek-chat,neutral,0.9,we utilized the synthetic question-answer pairs and their relevant passages,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P11,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P12,True,deepseek-chat,neutral,0.95,"Did you use human annotators (e.g., crowdworkers) or research with human participants?Left blank.",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,annotation_cost,C1P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P14,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P15,False,deepseek-chat,neutral,0.9,using counterfactual data in lieu of collecting additional training data is especially useful in the low-resource setting,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P16,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P17,False,deepseek-chat,neutral,0.9,we synthetically generated confounders based on a publicly available conversation dataset,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P19,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P20,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P4,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,annotation_cost,C1P6,True,deepseek-chat,entail,0.9,"motivated by the need to reduce annotation cost, we assume that there is only a fixed budget for annotating K examples' arguments for training",glm-4-flash,partial,,"In the few-shot setting, motivated by the need to reduce annotation cost, we assume that there is only a fixed budget for annotating K examples' arguments for t",0,1,YES,yes,,,3010
+1,annotation_cost,C1P7,True,deepseek-chat,neutral,0.9,"manually creating such datasets is quite costly, e.g., CoQA spent 3.6 USD per passage on crowdsourcing",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,annotation_cost,C1P8,True,deepseek-chat,neutral,0.9,"it relies on finely annotated retrieval training data as well as knowledge-grounded conversations, making it costly to apply and transfer",glm-4-flash,neutral,,Our annotations are few and simple. Three authors of this paper performed the annotation.,1,0,,no,,,4015
+1,annotation_cost,C1P9,False,deepseek-chat,partial,0.7,we assume that we have top-retrieved Wikipedia pages for the unannotated queries ... use the rule to annotate the hints of these passages,glm-4-flash,neutral,,"In Natural Questions (Kwiatkowski et al., 2019) benchmark, since the questions are from queries issued to the Google search engine by multiple users, and thus c",0,0,,no,,,3010
+1,case_study,C1P1,True,deepseek-chat,entail,0.95,"Case Studies. In Table 2, we show several examples of the generated query contexts and their ground-truth references.",glm-4-flash,entail,1.0,"In Table 2, we show several examples of the generated query contexts and their ground-truth references. In the first example, the correct album release date app",1,0,,yes,,,3205
+1,case_study,C1P10,False,deepseek-chat,neutral,0.9,Table 2: Examples of reconstructed statements.,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P11,True,deepseek-chat,entail,0.95,We also provide some case studies in Tables 16-19.,glm-4-flash,entail,1.0,"We also provide some case studies in Tables 16-19. For example, in Table 18, the question is ""What city was Zeus the patron god of?"". The first document retriev",1,0,,yes,,,4015
+1,case_study,C1P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P13,False,deepseek-chat,entail,0.9,We demonstrate some correct and typical error cases in Figure 5 including miscounting and misrecognizing objects.,glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+1,case_study,C1P14,False,deepseek-chat,neutral,0.0,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P15,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P16,True,deepseek-chat,entail,0.95,"E Case Study
+
+We present a case study in Fig. 6 to compare RA-VQA-FrDPR and our proposed RA-VQA framework.",glm-4-flash,entail,1.0,We present a case study in Fig. 6 to compare RA-VQA-FrDPR and our proposed RA-VQA framework. Conclusions are provided to each case in the figure.,1,0,,yes,,,4015
+1,case_study,C1P17,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,2056
+1,case_study,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P19,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,0.0,,1,0,,no,,,2395
+1,case_study,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P3,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P5,True,deepseek-chat,entail,0.98,"Case Study
+
+In this section, we present examples generated by our model and SGGDQ model for comparison in Figure 3.",glm-4-flash,entail,1.0,"In this section, we present examples generated by our model and SGGDQ model for comparison in Figure 3.",1,0,,yes,,,4015
+1,case_study,C1P6,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P7,True,deepseek-chat,entail,0.95,"Case Study
+
+In Figure 3, we show the output questions of our ReDR and NQG on an example from CoQA dataset.",glm-4-flash,entail,1.0,"In Figure 3, we show the output questions of our ReDR and NQG on an example from CoQA dataset.",1,0,,yes,,,4015
+1,case_study,C1P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,case_study,C1P9,False,deepseek-chat,neutral,0.9,We perform an error analysis on the 1024 evaluation examples,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,code_release,C1P1,True,deepseek-chat,entail,0.95,Our code is available at https://github.com/ morningmoni/GAR.,glm-4-flash,entail,1.0,Our code is available at https://github.com/morningmoni/GAR.,1,0,,yes,,,4015
+1,code_release,C1P10,True,deepseek-chat,entail,0.95,we open-source the implementation of RAG-end2end with the HuggingFace Transformers,glm-4-flash,entail,1.0,"In addition, we open-source the implementation of RAG-end2end with the HuggingFace Transformers (Wolf et al., 2019) Library, 1 providing the oppo",1,0,,yes,,,4015
+1,code_release,C1P11,True,deepseek-chat,entail,0.95,Our code and generated documents can be found at https://github.com/wyu97/GenRead.,glm-4-flash,entail,1.0,Our code and generated documents can be found at https://github.com/wyu97/GenRead.,1,0,,yes,,,3029
+1,code_release,C1P12,True,deepseek-chat,entail,0.95,We make our code available at: https://github.com/ amazon-science/robust-tableqa,glm-4-flash,entail,1.0,We make our code available at: https://github.com/amazon-science/robust-tableqa,1,0,,yes,,,4015
+1,code_release,C1P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,code_release,C1P14,True,deepseek-chat,neutral,0.9,https://github.com/princeton-nlp/ALCE,glm-4-flash,entail,1.0,https://github.com/princeton-nlp/ALCE,0,1,NO,no,,,4015
+1,code_release,C1P15,True,deepseek-chat,entail,0.95,1 Code at https://github.com/ google-research/language/tree/master/ language/qa_counterfactuals,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+1,code_release,C1P16,True,deepseek-chat,entail,0.95,The code for this paper will be released at https://github.com/LinWeizheDragon/Retrieval-Augmented-Visual-Question-Answering.,glm-4-flash,entail,1.0,The code for this paper will be released at https://github.com/LinWeizheDragon/Retrieval-Augmented-Visual-Question-Answering.,1,0,,yes,,,4015
+1,code_release,C1P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,code_release,C1P18,True,deepseek-chat,neutral,0.9,https://github.com/facebookresearch/ FiD,glm-4-flash,neutral,,https://github.com/facebookresearch/FiD,1,0,,no,,,4015
+1,code_release,C1P19,True,deepseek-chat,neutral,0.95,1 pytorch.org 2 github.com/OpenNMT/OpenNMT-py,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,code_release,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,code_release,C1P20,True,deepseek-chat,entail,0.9,All the tutorial materials will be released at https://github.com/danqi/acl2020-openqa-tutorial.,glm-4-flash,partial,,All the tutorial materials will be released at https://github.com/danqi/acl2020-openqa-tutorial.,0,1,YES,yes,,,3010
+1,code_release,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,code_release,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,code_release,C1P5,True,deepseek-chat,neutral,0.9,https://github.com/OpenNMT/OpenNMT 2 https://github.com/magic282/NQG,glm-4-flash,neutral,,,1,0,,no,,,3018
+1,code_release,C1P6,True,deepseek-chat,entail,0.95,The implementations will be released at https:// github.com/xinyadu/RGQA.,glm-4-flash,entail,1.0,The implementations will be released at https://github.com/xinyadu/RGQA.,1,0,,yes,,,4015
+1,code_release,C1P7,True,deepseek-chat,entail,0.98,Code is available at https: //github.com/ZJULearning/ReDR.,glm-4-flash,entail,1.0,Code is available at https: //github.com/ZJULearning/ReDR.,1,0,,yes,,,4015
+1,code_release,C1P8,True,deepseek-chat,entail,0.98,We have released the code and data at https://github.com/ DevoAllen/KiDG.,glm-4-flash,entail,1.0,We have released the code and data at https://github.com/DevoAllen/KiDG.,1,0,,yes,,,4015
+1,code_release,C1P9,True,deepseek-chat,entail,0.98,Our code is available at https://github.com/Edward-Sun/RECITE.,glm-4-flash,entail,1.0,Our code is available at https://github.com/Edward-Sun/RECITE.,1,0,,yes,,,4015
+1,deployment,C1P1,True,deepseek-chat,neutral,0.9,Open-domain question answering (OpenQA) aims to answer factoid questions without a pre-specified domain and has numerous real-world applications.,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,deployment,C1P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P11,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2024
+1,deployment,C1P12,True,deepseek-chat,neutral,0.9,"This suggests that when deployed as real applications, LI-RAGE does not bring significant increase in computation.",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,deployment,C1P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P14,True,deepseek-chat,neutral,0.95,"perplexity.ai, an InstructGPT-based production search system",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,deployment,C1P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P16,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P17,False,deepseek-chat,neutral,0.9,State of the art open domain conversational voice assistants can help users accomplish a wide range of tasks,glm-4-flash,neutral,,,1,0,,no,,,2056
+1,deployment,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P2,False,deepseek-chat,neutral,0.95,"This is a thesis proposal paper presented at the student research workshop (SRW) at NAACL 2022 in Seattle, USA.",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P3,False,deepseek-chat,neutral,0.9,in the data base of radiology reports we are currently,glm-4-flash,neutral,,,1,0,,no,,,2694
+1,deployment,C1P4,True,deepseek-chat,neutral,0.9,"NLG has been applied in many real-world applications, including dialogue systems, biography generation",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,deployment,C1P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P6,False,deepseek-chat,neutral,0.9,Based on our observations in the real circumstances,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,deployment,C1P9,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P1,False,deepseek-chat,neutral,0.95,Comparison of computational cost between DPR and GAR at different stages.,glm-4-flash,partial,,The training time of GAR is for one generation target but different generators can be trained in parallel.,0,0,,no,,,3010
+1,efficiency,C1P10,False,deepseek-chat,neutral,0.95,"We use the Exact Match (EM), F1 score, and Top-k retrieval accuracy as evaluation metrics.",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P11,True,deepseek-chat,neutral,0.95,"FLOPs are not a direct measure of real-world computing costs, as latency, power consumption, and other costs can vary widely",glm-4-flash,neutral,,"We now compare the costs of using DPR and InstructGPT to retrieve or generate contextual documents. We consider DPR using the BERT-base (Devlin et al., 2019) ve",1,0,,no,,,4015
+1,efficiency,C1P12,True,deepseek-chat,entail,0.95,"However, the inference speed is not affected much (from 1.22 sec/iteration to 1.40).",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+1,efficiency,C1P13,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,efficiency,C1P14,True,deepseek-chat,neutral,0.9,"Efficiency and accuracy trade-off.Using our framework, practitioners can adjust how often retrieval occurs",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,efficiency,C1P15,False,deepseek-chat,neutral,0.95,Total compute time is approximately 96 TPU-hours and 192 GPUhours,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P16,False,deepseek-chat,neutral,0.95,"In practice, K train has the greater effect on GPU usage, since a large K train requires at least K train forward passes",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P17,False,deepseek-chat,neutral,0.95,we evaluate the performance using Mean Reciprocal Rank (MRR),glm-4-flash,neutral,,"Evaluation Metric: As the task is to rank the valid follow-up question higher than a set of invalid confounders, we evaluate the performance using Mean Reciproc",1,0,,no,,,3010
+1,efficiency,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P19,False,deepseek-chat,neutral,0.95,"We use BLEU score (Papineni et al., 2002) as an automatic evaluation metric",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P20,True,deepseek-chat,neutral,0.95,How to trade off the efficiency (computational time and memory requirements) and accuracy,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,efficiency,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,"In previous work, BLEU (Papineni et al., 2002), ROUGE (Lavie and Agarwal, 2007) and METEOR (Lin, 2004) have been widely used to evaluate the overall performance",1,0,,no,,,3010
+1,efficiency,C1P6,True,deepseek-chat,entail,0.95,the inference time (about 2 examples/s) is slightly longer,glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+1,efficiency,C1P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,efficiency,C1P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P10,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P11,True,deepseek-chat,entail,0.95,A.7 ERROR ANALYSIS AND CASE STUDIES ON THE NQ DATASET ... We did case studies of 100 examples from the NQ dataset.,glm-4-flash,entail,1.0,"We did case studies of 100 examples from the NQ dataset. The results are shown in Table 12. Among these 100 examples, we found that 29 examples have data collec",1,0,,yes,,,3029
+1,error_analysis,C1P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P13,False,deepseek-chat,entail,0.95,we manually study 200 model outputs and classify them into three categories ... We further categorize the image-query errors manually ... We demonstrate some co,glm-4-flash,entail,1.0,We manually study 200 model outputs and classify them into three categories and show our manual analysis results in Table 8. We further categorize the image-que,1,0,,yes,,,3010
+1,error_analysis,C1P14,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P15,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P17,True,deepseek-chat,entail,0.95,"Error Analysis Analysing the fine-tuned models' predicted scores for different confounder types, we have found that the models can identify most of the confound",glm-4-flash,entail,1.0,"Analysing the fine-tuned models' predicted scores for different confounder types, we have found that the models can identify most of the confounder types easily",1,0,,yes,,,2056
+1,error_analysis,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P19,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P3,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P5,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P6,False,deepseek-chat,neutral,0.9,"Lack of contextual understanding. For example, ""Earlier documents in the case have included embarrassing details about perks [W elch] P erson received",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,error_analysis,C1P9,True,deepseek-chat,entail,0.98,"ERROR ANALYSIS
+
+We perform an error analysis on the 1024 evaluation examples in the TriviaQA dataset.",glm-4-flash,entail,1.0,"We perform an error analysis on the 1024 evaluation examples in the TriviaQA dataset. We classify the errors into three categories: 1) Not Recit., i.e., the cor",1,0,,yes,,,4015
+1,fine_tuning,C1P1,False,deepseek-chat,neutral,0.85,"we propose Generation-Augmented Retrieval (GAR), which augments a query through text generation of a pre-trained language model (PLM)",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,fine_tuning,C1P10,True,deepseek-chat,entail,0.95,we first propose a method to finetune the RAG model with its neural retriever and update its knowledge encodings asynchronously during training,glm-4-flash,entail,0.9,we first propose a method to finetune the RAG model with its neural retriever and update its knowledge encodings asynchronously during training,1,0,,yes,,,4015
+1,fine_tuning,C1P11,True,deepseek-chat,entail,0.9,"a small one (e.g., FiD (Izacard & Grave, 2021)) fine-tuned with generated documents on the training split of the target dataset",glm-4-flash,partial,,"The reader can still be a large model (e.g., InstructGPT (Ouyang et al., 2022)) used under a zero-shot setting, or a small one (e.g., FiD (Izacard & Grave, 2021",0,1,YES,yes,,,4015
+1,fine_tuning,C1P12,True,deepseek-chat,entail,0.95,We first fine-tune the official pretrained DPR or ColBERTv2 model on each dataset before using them in the joint retrieverreader training.,glm-4-flash,entail,0.9,We first fine-tune the official pretrained DPR or ColBERTv2 model on each dataset before using them in the joint retriever-reader training.,1,0,,yes,,,4015
+1,fine_tuning,C1P13,True,deepseek-chat,entail,0.98,We fine-tune MuRAG on the downstream datasets with a contrastive and generative loss similar to pre-training.,glm-4-flash,entail,1.0,We finetune MuRAG to align with the expected inputs of the downstream datasets which require answering text questions by retrieving image-caption pairs or text ,1,0,,yes,,,4015
+1,fine_tuning,C1P14,True,deepseek-chat,entail,0.95,We introduce a method to train an arbitrary LM to learn to use retrieval on-demand,glm-4-flash,partial,,"Empirical results on six tasks, including reasoning and long-form generation, demonstrate that SELF-RAG significantly outperforms pre-trained and instruction-tu",0,1,YES,yes,,,4015
+1,fine_tuning,C1P15,True,deepseek-chat,entail,0.9,we fine-tune a T5-based model on the QED dataset to perform explanation generation,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+1,fine_tuning,C1P16,True,deepseek-chat,entail,0.95,Our RA-VQA framework trains the answer generator and the retriever jointly under Equation 6.,glm-4-flash,entail,0.9,Our RA-VQA framework trains the answer generator and the retriever jointly under Equation 6.,1,0,,yes,,,4015
+1,fine_tuning,C1P17,True,deepseek-chat,entail,0.97,"For the supervised experiments, we fine-tune a pre-trained language model by translating the problem as a binary classification task.",glm-4-flash,entail,1.0,"For the supervised experiments, we fine-tune a pre-trained language model by translating the problem as a binary classification task.",1,0,,yes,,,4015
+1,fine_tuning,C1P18,False,deepseek-chat,entail,0.95,"Our model is initialized with a pre-trained T5-base model, and trained using AdamW ... with a learning rate of 10 −4 , linear scheduling with 15k total steps",glm-4-flash,entail,0.8,"Our model is initialized with a pre-trained T5-base model, and trained using AdamW (Loshchilov and Hutter, 2017) algorithm with a learning rate of 10 −4 , linea",1,0,,yes,,,3010
+1,fine_tuning,C1P19,False,deepseek-chat,entail,0.9,The model parameters are optimized using Stochastic Gradient Descent with mini-batches of size 64.,glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+1,fine_tuning,C1P2,True,deepseek-chat,neutral,0.9,The way of fine-tuning PLMs using only input-output pairs of target data is often referred to as close-book setting,glm-4-flash,neutral,,"The way of fine-tuning PLMs using only input-output pairs of target data is often referred to as close-book setting (Petroni et al., 2019).",1,0,,no,,,3010
+1,fine_tuning,C1P20,True,deepseek-chat,neutral,0.9,"These pretrained models will be used directly to answer questions, in a zero-shot manner ... or fine-tuned using questionanswer pairs.",glm-4-flash,neutral,,"These pretrained models will be used directly to answer questions, in a zero-shot manner (Radford et al., 2019;Raffel et al., 2019) or fine-tuned using question",1,0,,no,,,4015
+1,fine_tuning,C1P3,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,fine_tuning,C1P4,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,fine_tuning,C1P5,True,deepseek-chat,entail,0.95,reinforcement learning is applied to provide feedback to fine-tune the question generator,glm-4-flash,entail,1.0,"Moreover, reinforcement learning is applied to provide feedback to fine-tune the question generator.",1,0,,yes,,,4015
+1,fine_tuning,C1P6,False,deepseek-chat,entail,0.9,we use the entire training set (1) to train the models,glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+1,fine_tuning,C1P7,True,deepseek-chat,entail,0.95,use its answer quality ... as rewards to fine-tune our model based on a reinforcement learning mechanism,glm-4-flash,entail,1.0,"To encourage producing meaningful questions, we leverage a popular question answering (QA) model to provide feedback and fine-tune the question generator using ",1,0,,yes,,,4015
+1,fine_tuning,C1P8,True,deepseek-chat,entail,0.9,the retriever and PDMs are jointly fine-tuned on KdConv's training set,glm-4-flash,entail,0.8,Then the model is fine-tuned with knowledge-grounded dialogues for adaption.,1,0,,yes,,,4015
+1,fine_tuning,C1P9,True,deepseek-chat,entail,0.9,fine-tuning the pre-trained LLMs on synthetic generated question-passage pairs can further improve the recitation performance,glm-4-flash,entail,1.0,"We also show that, in addition to improving the few-shot in-context learning performance of RECITE-enhanced LLM, fine-tuning the pre-trained LLMs on synthetic g",1,0,,yes,,,4015
+1,human_eval,C1P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,human_eval,C1P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,human_eval,C1P11,True,deepseek-chat,entail,0.9,we ask human annotators to provide different prompts,glm-4-flash,partial,,we ask human annotators to provide different prompts,0,1,YES,yes,,,4015
+1,human_eval,C1P12,True,deepseek-chat,contradict,0.9,"Did you use human annotators (e.g., crowdworkers) or research with human participants?Left blank.",glm-4-flash,neutral,,,0,0,,no,,,4015
+1,human_eval,C1P13,True,deepseek-chat,entail,0.9,The human evaluation results on WebQA dataset separately for image/text queries.,glm-4-flash,neutral,,"Table 8 : The human evaluation results on WebQA dataset separately for image/text queries.
+Table 9 : Error categorization and their ratios on sampled WebQA-dev ",0,1,YES,yes,,,3010
+1,human_eval,C1P14,True,deepseek-chat,entail,0.95,"We conduct small human evaluations on SELF-RAG outputs, as well as the reliability of predicted reflection tokens.",glm-4-flash,entail,1.0,"Human evaluations.We conduct small human evaluations on SELF-RAG outputs, as well as the reliability of predicted reflection tokens.",1,0,,yes,,,4015
+1,human_eval,C1P15,False,deepseek-chat,entail,0.85,"The authors sampled 300 examples of generated questions. To annotate for fluency, authors use the following rubric",glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+1,human_eval,C1P16,True,deepseek-chat,neutral,0.9,There are 5 annotators for each OKVQA question.,glm-4-flash,neutral,,VQA Score: We follow Marino et al. (2019) to compute VQA Scores using pre-processed human annotations S:,1,0,,no,,,4015
+1,human_eval,C1P17,True,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,2056
+1,human_eval,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,human_eval,C1P19,True,deepseek-chat,entail,0.98,We perform human evaluation using crowd workers on Amazon Mechanical Turk,glm-4-flash,entail,1.0,We perform human evaluation using crowd workers on Amazon Mechanical Turk 3. The Turkers rate a pool of questions constructed by randomly selecting questions an,1,0,,yes,,,4015
+1,human_eval,C1P2,True,deepseek-chat,neutral,0.95,"it could be provided by human annotations (Dinan et al., 2019)",glm-4-flash,neutral,,,1,0,,no,,,3400
+1,human_eval,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,human_eval,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,human_eval,C1P4,True,deepseek-chat,neutral,0.9,"developing effective automatic evaluation metrics, and rigorous and efficient human evaluation procedures",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,human_eval,C1P5,True,deepseek-chat,entail,0.98,we also conducted a manual evaluation to check the quality of the question generated by the model,glm-4-flash,entail,0.8,Human evaluation further verifies the high quality of the generated questions.,1,0,,yes,,,4015
+1,human_eval,C1P6,False,deepseek-chat,neutral,0.9,The inter-annotator agreement for ACE05/WikiEvent is limited (under 85%),glm-4-flash,neutral,,,1,0,,no,,,3010
+1,human_eval,C1P7,True,deepseek-chat,entail,0.98,We conduct human evaluation to measure the quality of generated questions.,glm-4-flash,entail,1.0,We conduct human evaluation to measure the quality of generated questions...,1,0,,yes,,,4015
+1,human_eval,C1P8,True,deepseek-chat,entail,0.95,Three annotators evaluated dialogues based on the above two metrics to determine which one is better.,glm-4-flash,entail,1.0,"We randomly select 100 dialogue history and response pairs for evaluation. Following Zhou et al. (2020), we evaluate the generation results from 2 different per",1,0,,yes,,,4015
+1,human_eval,C1P9,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P11,True,deepseek-chat,neutral,0.9,Leveraging knowledge in multilingual commonsense reasoning,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,multilingual,C1P12,False,deepseek-chat,neutral,0.95,"We evaluate our system on two benchmarks, i.e. NQ-TABLES ... and E2E-WTQ",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P14,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2436
+1,multilingual,C1P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P16,True,deepseek-chat,neutral,0.95,Conceptnet 5.5: An open multilingual graph of general knowledge,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,multilingual,C1P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2956
+1,multilingual,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P4,True,deepseek-chat,neutral,0.9,We will cover a broad diversity of methods and applications in many languages and domains.,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,multilingual,C1P5,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,multilingual,C1P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P8,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,multilingual,C1P9,True,deepseek-chat,neutral,0.95,"It has strong capabilities in in-context few-shot learning, multilingual, as well as reasoning tasks.",glm-4-flash,neutral,,,1,0,,no,,,4015
+1,rl_training,C1P1,True,deepseek-chat,contradict,0.95,GAR does not require external resources or downstream feedback via RL as supervision,glm-4-flash,neutral,,"Also, some rely on time-consuming training process like reinforcement learning (RL) (Nogueira and Cho, 2017; that is not efficient enough for OpenQA (more discu",0,0,,no,,,4015
+1,rl_training,C1P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,"The authors mainly explore the ability to train neural retrievers in an end-to-end way using retrieval augment models. Similarly, another related work extended ",1,0,,no,,,3010
+1,rl_training,C1P11,False,deepseek-chat,neutral,0.95,"Training language models to follow instructions with human feedback. arXiv preprint arXiv:2203.02155, 2022.",glm-4-flash,neutral,,,1,0,,no,,,2024
+1,rl_training,C1P12,False,deepseek-chat,neutral,0.95,"We train both modules jointly using a compositional loss (Lin and Byrne, 2022, RAGE)",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P13,False,deepseek-chat,neutral,0.95,We train the model with a joint loss L = L gen + L con,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P14,True,deepseek-chat,contradict,0.9,"we train our target LM on task examples augmented with reflection tokens from a critic model offline, with a far lower training cost compared to RLHF",glm-4-flash,partial,,"Training LLMs with reinforcement learning (e.g., Proximal Policy Optimization or PPO; Schulman et al., 2017) from human feedback (RLHF) has proven effective in ",0,0,,no,,,4015
+1,rl_training,C1P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P17,False,deepseek-chat,neutral,0.95,we experiment with different unsupervised and supervised approaches,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P19,True,deepseek-chat,neutral,0.95,Yuan et al. (2017) developed a Recurrent Neural Network (RNN) sequence-to-sequence model that generates questions from an input sentence. Their model is trained,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,rl_training,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P5,True,deepseek-chat,entail,0.97,reinforcement learning is applied to integrate both syntactic and semantic metrics as the reward to enhance the training of the ADDQG,glm-4-flash,entail,1.0,"Moreover, reinforcement learning is applied to integrate both syntactic and semantic metrics as the reward to enhance the training of the ADDQG.",1,0,,yes,,,4015
+1,rl_training,C1P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P7,True,deepseek-chat,entail,0.97,we leverage a popular question answering (QA) model to provide feedback and fine-tune the question generator using a reinforcement learning mechanism,glm-4-flash,entail,1.0,"To encourage producing meaningful questions, we leverage a popular question answering (QA) model to provide feedback and fine-tune the question generator using ",1,0,,yes,,,4015
+1,rl_training,C1P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,rl_training,C1P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P11,True,deepseek-chat,entail,0.95,"The importance of addressing these societal harms is acknowledged by OpenAI themselves... issues of bias, fairness, and representation within models like GPT-3.",glm-4-flash,entail,0.8,The goal of this paper is to utilize knowledge stored in the parameters of large language models to answer open-domain questions and solve knowledge-intensive t,1,0,,yes,,,4015
+1,safety_bias,C1P12,False,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P13,False,deepseek-chat,entail,0.95,"we anticipate our model to contain some biases (racial, gender, etc.). During our manual inspection, we saw some such biases",glm-4-flash,entail,0.8,"However, it is not possible to fully remove all of the potential risks from the data given its tremendous size. Being trained on this dataset, we anticipate our",1,0,,yes,,,3010
+1,safety_bias,C1P14,True,deepseek-chat,neutral,0.95,Use an unbiased and journalistic tone.,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,safety_bias,C1P15,True,deepseek-chat,neutral,0.95,Figure 5 indicates that counterfactual data exacerbates question-type bias.,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,safety_bias,C1P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2056
+1,safety_bias,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P4,False,deepseek-chat,neutral,0.95,Diversity Considerations,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P5,True,deepseek-chat,neutral,0.97,,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,safety_bias,C1P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,safety_bias,C1P8,True,deepseek-chat,neutral,0.9,The documents we used in this paper and the generated dialogues have been carefully filtered to make sure there is no offensive and toxic information.,glm-4-flash,neutral,,The documents we used in this paper and the generated dialogues have been carefully filtered to make sure there is no offensive and toxic information.,1,0,,no,,,3010
+1,safety_bias,C1P9,True,deepseek-chat,entail,0.95,RECITE may further enhance the existing biases in the LLMs' model weights compared to RAG.,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+1,significance,C1P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P10,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P11,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2024
+1,significance,C1P12,False,deepseek-chat,neutral,0.9,"C3. Did you report descriptive statistics about your results (e.g., error bars around results, summary statistics from sets of experiments)",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,"ults indicated on leaderboard 3 as of May 2022. Retr denotes the retrieval-F1 score. FL refers to fluency metric BARTSCcore, and Accuracy refers to keyword matc",1,0,,no,,,3010
+1,significance,C1P14,False,deepseek-chat,neutral,0.95,,glm-4-flash,partial,,"Figure 3c shows that the model's retrieval frequencies dramatically change on both datasets.as δ varies.On one hand, performance deterioration by retrieving les",0,0,,no,,,3010
+1,significance,C1P15,False,deepseek-chat,entail,0.95,"we used the six RC models discussed in Section 3.4 to estimate cross-run variation. Using the procedure and code of Sellam et al. (2021), we find variation of a",glm-4-flash,partial,,"Using the procedure and code of Sellam et al. (2021), we find variation of about 0.5 points (F1). As such, we do not find differences smaller than this signific",0,1,YES,yes,,,3010
+1,significance,C1P16,True,deepseek-chat,entail,0.9,with their standard deviations of 5 splits,glm-4-flash,partial,,"The metrics used for assessing performance are Accuracy and Recall, with their standard deviations of 5 splits.",0,1,YES,yes,,,4015
+1,significance,C1P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,partial,,Training with Varying Number of Passages. Figure 3 shows the performance of our model and FiD reader with regard to different number of retrieved training passa,0,0,,no,,,3010
+1,significance,C1P19,True,deepseek-chat,neutral,0.9,The significance of each correlation was calculated using a two-tailed test that resulted in p < 0.01,glm-4-flash,partial,,The significance of each correlation was calculated using a two-tailed test that resulted in p < 0.01 for each category. We observe a positive correlation betwe,0,0,,no,,,4015
+1,significance,C1P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P6,True,deepseek-chat,entail,0.95,"For our own model and its variations, we conduct three runs, and calculate the average of their performance and standard deviations.",glm-4-flash,entail,0.8,"For our own model and its variations, we conduct three runs, and calculate the average of their performance and standard deviations.",1,0,,yes,,,4015
+1,significance,C1P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,significance,C1P8,False,deepseek-chat,contradict,0.95,"We use a single run, because the model is computational and we observe stable performance.",glm-4-flash,partial,,We first identify the knowledge in KdConv which is grounded in more than one dialogue response and these responses form a unit. Then all of the units are groupe,0,0,,no,,,3010
+1,significance,C1P9,True,deepseek-chat,entail,0.95,"For each number of self-consistency paths, we evaluate the randomly selected subsets five times and report the mean and standard deviation.",glm-4-flash,entail,1.0,"For each number of self-consistency paths, we evaluate the randomly selected subsets five times and report the mean and standard deviation.",1,0,,yes,,,4015
+1,zero_few_shot,C1P1,True,deepseek-chat,neutral,0.95,Language models are few-shot learners.,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,zero_few_shot,C1P10,True,deepseek-chat,entail,0.9,"This model is not finetuned with domain-specific question-answer pairs, and we report the zero-shot performance.",glm-4-flash,entail,1.0,we report the zero-shot performance,1,0,,yes,,,4015
+1,zero_few_shot,C1P11,True,deepseek-chat,entail,0.95,We evaluate our proposed method on three different knowledge-intensive tasks and demonstrate its effectiveness on both zero-shot and supervised settings.,glm-4-flash,entail,,"The reader can still be a large model (e.g., InstructGPT (Ouyang et al., 2022)) used under a zero-shot setting, or a small one (e.g., FiD (Izacard & Grave, 2021",1,0,,yes,,,4015
+1,zero_few_shot,C1P12,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P13,True,deepseek-chat,neutral,0.9,Language models are few-shot learners.,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,zero_few_shot,C1P14,True,deepseek-chat,entail,0.95,"Throughout these experiments, we conduct zero-shot evaluations, where we provide instructions describing tasks without few-shot demonstrations",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+1,zero_few_shot,C1P15,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P16,True,deepseek-chat,neutral,0.95,An empirical study of gpt-3 for few-shot knowledge- based vqa,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P17,True,deepseek-chat,neutral,0.9,we experiment with different unsupervised and supervised approaches,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,zero_few_shot,C1P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P2,True,deepseek-chat,neutral,0.95,Language models are few-shot learners.,glm-4-flash,neutral,,,1,0,,no,,,4015
+1,zero_few_shot,C1P20,True,deepseek-chat,neutral,0.9,"These pretrained models will be used directly to answer questions, in a zero-shot manner (Radford et al., 2019;Raffel et al., 2019)",glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P6,True,deepseek-chat,entail,0.9,"Our approach outperforms substantially prior methods across various settings (i.e. fully supervised, domain transfer, and fewshot learning).",glm-4-flash,partial,,"Our approach outperforms substantially prior methods across various settings (i.e. fully supervised, domain transfer, and fewshot learning).",0,1,YES,yes,,,4015
+1,zero_few_shot,C1P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+1,zero_few_shot,C1P8,True,deepseek-chat,entail,0.9,Zero-shot Performance A more knowledgeable PDM will perform better in the zero-shot scenario.,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+1,zero_few_shot,C1P9,True,deepseek-chat,entail,0.95,We verify the effectiveness of our recitation-augmented generation on few-shot Closed-Book Question Answering (CBQA) tasks,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,ablation,C2P1,True,deepseek-chat,entail,0.95,We perform further ablation studies to understand the two key components of our method.,glm-4-flash,entail,1.0,We perform further ablation studies to understand the two key components of our method. Ablations,1,0,,yes,,,4015
+2,ablation,C2P10,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P11,True,deepseek-chat,entail,0.95,We conduct an ablation study to investigate the impact of training data size,glm-4-flash,entail,1.0,"We conduct an ablation study to investigate the impact of training data size (up to 1,344,000) on the performance of the model, given optimal hyperparameters.",1,0,,yes,,,4015
+2,ablation,C2P12,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P14,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P15,True,deepseek-chat,entail,0.95,We conduct ablations and sample studies to understand the emergence of reasoning capabilities of student models.,glm-4-flash,entail,1.0,We conduct ablations and sample studies to understand the emergence of reasoning capabilities of student models.,1,0,,yes,,,4015
+2,ablation,C2P16,True,deepseek-chat,entail,0.95,We also conduct an ablation to show some potential benefits of filtering noisy token reweightings.,glm-4-flash,partial,,"We also attempt interpolating between different behavior deltas with EFT, for example to change the desired tradeoff between helpfulness and harmlessness at tes",0,1,YES,yes,,,4015
+2,ablation,C2P17,True,deepseek-chat,entail,0.95,Table 2: Ablation studies on the XTREME benchmark.,glm-4-flash,entail,1.0,The ablation studies in Section 4.2 empirically show that the operation improves fine-tuning performance.,1,0,,yes,,,4015
+2,ablation,C2P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P19,True,deepseek-chat,entail,0.95,"Ablations. In Table 2, we evaluate several design choices in §3.2 on GPT-2 XL. First, we observe that removing the entropy term from the score function decrease",glm-4-flash,entail,1.0,"Ablations. In Table 2, we evaluate several design choices in §3.2 on GPT-2 XL. First, we observe that removing the entropy term from the score function decrease",1,0,,yes,,,4015
+2,ablation,C2P2,False,deepseek-chat,neutral,0.9,the three other versions (single outgroup framing and no framing) are reductions of the example shown,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P3,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P4,True,deepseek-chat,entail,0.95,"In this section, we first present our main results, then conduct several ablation studies and analyses of our models.",glm-4-flash,entail,1.0,"In this section, we first present our main results, then conduct several ablation studies and analyses of our models.",1,0,,yes,,,4015
+2,ablation,C2P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,ablation,C2P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2783
+2,ablation,C2P7,False,deepseek-chat,entail,0.9,Effect of knowledge distillation from the pre-trained model: Table 7 shows that applying knowledge distillation has limited effect on JL-D but enhances the accu,glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+2,ablation,C2P8,True,deepseek-chat,entail,0.95,"We conducted experiments by freezing the gating function, expert modules, and MoE parameters of the given model, as presented in Table 2.",glm-4-flash,entail,0.8,"We conducted experiments by freezing the gating function, expert modules, and MoE parameters of the given model, as presented in Table 2. The results indicate t",1,0,,yes,,,3010
+2,ablation,C2P9,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P1,True,deepseek-chat,neutral,0.9,"Overall, the human annotation approach is difficult to scale since collecting annotations on a wide range of tasks is expensive, time consuming and requires exp",glm-4-flash,neutral,,,1,0,,no,,,4015
+2,annotation_cost,C2P10,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P11,True,deepseek-chat,entail,0.9,"the most straightforward approach to generate the corresponding target of training data is through human annotation, but this method can be costly and time-cons",glm-4-flash,neutral,,"The most straightforward approach to generate the corresponding target of training data is through human annotation, but this method can be costly and time-cons",0,1,YES,yes,,,3010
+2,annotation_cost,C2P12,False,deepseek-chat,neutral,0.9,"To reduce data cost, prompting is recommended",glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P13,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P14,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P15,True,deepseek-chat,partial,0.7,"we analyze the cost of data annotation and diverse reasoning, based on current OpenAI API pricing and a low estimate of annotation cost at 30 annotations per ho",glm-4-flash,partial,,"In Appendix Figure 8, we analyze the cost of data annotation and diverse reasoning, based on current OpenAI API pricing and a low estimate of annotation cost at",1,0,,no,,,4015
+2,annotation_cost,C2P16,False,deepseek-chat,neutral,0.9,We collect human factuality labels using Prolific.co and the Potato annotation package,glm-4-flash,neutral,,"We collect human factuality labels using Prolific.co and the Potato annotation package (Pei et al., 2022).Human labelers are compensated between $15-18/hr. The ",1,0,,no,,,3010
+2,annotation_cost,C2P17,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P18,False,deepseek-chat,neutral,0.9,our strategy of hiring annotators for no more than 3 hours a day has proven to be quite successful,glm-4-flash,neutral,,"The annotators were throughly familiar with the genre, having spent over three months immediately prior to the experiment correcting texts from the same Corpus.",1,0,,no,,,3010
+2,annotation_cost,C2P19,True,deepseek-chat,neutral,0.9,The financial cost of Examples-Only search is considerably higher than GRIPS.,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,annotation_cost,C2P2,False,deepseek-chat,neutral,0.9,"Data was collected using the OpenAI API in early February 2023, costing ~$100.",glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P20,False,deepseek-chat,neutral,0.9,Our method described so far does not rely on alignments from external statistical toolkits but performs self-training on alignments extracted from the layer ave,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P3,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P4,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P5,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P6,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,annotation_cost,C2P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,annotation_cost,C2P8,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,annotation_cost,C2P9,False,deepseek-chat,neutral,0.9,each with automatically generated rewards,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,code_release,C2P1,True,deepseek-chat,neutral,0.95,https://github.com/tatsu-lab/alpaca_eval,glm-4-flash,entail,1.0,https://github.com/tatsu-lab/stanford_alpaca,0,1,NO,no,,,4015
+2,code_release,C2P10,True,deepseek-chat,entail,0.98,Our code is available at https://github.com/keirp/automatic_prompt_engineer.,glm-4-flash,entail,1.0,Our code is available at https://github.com/keirp/automatic_prompt_engineer.,1,0,,yes,,,3549
+2,code_release,C2P11,True,deepseek-chat,entail,0.98,All resources of PandaLM are released at https://github.com/WeOpenML/PandaLM.,glm-4-flash,entail,1.0,All resources of PandaLM are released at https://github.com/WeOpenML/PandaLM.,1,0,,yes,,,4015
+2,code_release,C2P12,True,deepseek-chat,neutral,0.9,The code to run our experiments was developed upon Schick and Schütze's code: https://github.com/timoschick/pet,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,code_release,C2P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2723
+2,code_release,C2P14,True,deepseek-chat,entail,0.98,Data and code for the current study are available through the GitHub repository https://github.com/marcelbinz/CENTaUR.,glm-4-flash,entail,1.0,Data and code for the current study are available through the GitHub repository https://github.com/marcelbinz/CENTaUR.,1,0,,yes,,,4015
+2,code_release,C2P15,True,deepseek-chat,entail,0.98,Our code implementation and data are available at https://github.com/itsnamgyu/reasoning-teacher.,glm-4-flash,entail,1.0,Our code implementation and data are available at https://github.com/itsnamgyu/reasoning-teacher.,1,0,,yes,,,3661
+2,code_release,C2P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,code_release,C2P17,True,deepseek-chat,entail,0.95,The code is available at https://github.com/ bozheng-hit/xTune.,glm-4-flash,entail,1.0,The code is available at https://github.com/bozheng-hit/xTune.,1,0,,yes,,,4015
+2,code_release,C2P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2883
+2,code_release,C2P19,True,deepseek-chat,entail,0.9,1 Code: https://github.com/archiki/GrIPS,glm-4-flash,entail,1.0,Code: https://github.com/archiki/GrIPS,1,0,,yes,,,4015
+2,code_release,C2P2,False,deepseek-chat,neutral,0.9,"Data Availability
+
+Available as an annex to this paper.",glm-4-flash,neutral,,"Data Availability
+Available as an annex to this paper.",1,0,,no,,,3010
+2,code_release,C2P20,True,deepseek-chat,entail,0.9,Code can be found at https://github.com/ pytorch/fairseq/pull/1095,glm-4-flash,neutral,,"Code can be found at https://github.com/pytorch/fairseq/pull/1095
+https://github.com/lilt/alignment-scripts",0,1,YES,yes,,,4015
+2,code_release,C2P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,code_release,C2P4,False,deepseek-chat,neutral,0.9,http://nlp.csai.tsinghua.edu.cn/˜ly/ systems/TsinghuaAligner/TsinghuaAligner. html,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,code_release,C2P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,code_release,C2P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,code_release,C2P7,True,deepseek-chat,entail,0.98,Our code is available at https://github.com/thu-ml/LM-Calibration.,glm-4-flash,entail,1.0,Our code is available at https://github.com/thu-ml/LM-Calibration.,1,0,,yes,,,3010
+2,code_release,C2P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,code_release,C2P9,True,deepseek-chat,entail,0.9,"we release a novel benchmark, Language Rearrangement, consisting of 150, 000 training and 1, 000 testing tasks",glm-4-flash,neutral,,"Finally, to aid the community in studying language conditioned, massively multi-task, embodied AI problems we release a novel benchmark, Language Rearrangement,",0,1,YES,yes,,,4015
+2,deployment,C2P1,False,deepseek-chat,neutral,0.9,this process deviates from our live launch procedure,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P11,True,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,deployment,C2P12,True,deepseek-chat,entail,0.9,"when using such models in real-world applications, efficiency considerations are paramount",glm-4-flash,neutral,,,0,1,NO,no,,,4015
+2,deployment,C2P13,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,deployment,C2P14,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P15,True,deepseek-chat,neutral,0.9,This shows the potential of our method to enable reliable performance in small models that are feasible for use in real-world applications.,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,deployment,C2P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P18,False,deepseek-chat,neutral,0.95,"To test the algorithm discussed above, we ran the following experiment.",glm-4-flash,neutral,,,1,0,,no,,,2883
+2,deployment,C2P19,False,deepseek-chat,neutral,0.9,we do not encourage using instruction search for any high-stakes applications,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P5,False,deepseek-chat,neutral,0.9,This tool could substantially increase the productivity of translators,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P6,False,deepseek-chat,neutral,0.95,We focus on the few-shot classification problem,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,deployment,C2P7,True,deepseek-chat,neutral,0.9,We hope our work can draw more attention to ... contribute to building safe and reliable NLP systems for real-world applications.,glm-4-flash,partial,,"The powerful fine-tuned language models have been experimented with for decision-making in real-world applications such as the healthcare domain (He et al., 202",0,0,,no,,,4015
+2,deployment,C2P8,True,deepseek-chat,neutral,0.9,"their rapidly growing size and computational requirements pose significant challenges in terms of training efficiency, memory footprint, and deployment costs",glm-4-flash,neutral,,,1,0,,no,,,4015
+2,deployment,C2P9,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,fine_tuning,C2P1,True,deepseek-chat,entail,0.95,This data is then used to finetune a stronger model. Finetuning LLaMa on two iterations of our approach yields a model,glm-4-flash,entail,1.0,"Our approach, named instruction backtranslation, starts with a language model finetuned on a small amount of seed data, and a given web corpus.",1,0,,yes,,,4015
+2,fine_tuning,C2P10,True,deepseek-chat,neutral,0.9,"recent work has considered fine-tuning (Ouyang et al., 2022;Ziegler et al., 2019)",glm-4-flash,partial,,Prompt Engineering in TruthfulQA We want to stress that the TruthfulQA dataset is in e challenging task (Start With) in the Appendix ( Figure 28). As shown in b,0,0,,no,,,4015
+2,fine_tuning,C2P11,True,deepseek-chat,entail,0.95,"Tuned from LLaMA-7B, PandaLM is used to distinguish the most superior model among various candidates",glm-4-flash,entail,1.0,Each of these models is fine-tuned using the same data and hyperparameters as Alpaca [13]. The paired responses from these tuned LLMs constitute the input of tr,1,0,,yes,,,4015
+2,fine_tuning,C2P12,True,deepseek-chat,entail,0.95,"we compare standard finetuning, prompting, and knowledge distillation (KD)",glm-4-flash,entail,1.0,"In this paper, we study how different training procedures that adapt LMs to text classification perform, as we vary model and train set size. More specifically,",1,0,,yes,,,4015
+2,fine_tuning,C2P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2723
+2,fine_tuning,C2P14,True,deepseek-chat,entail,0.98,we extracted data sets for several behavioral paradigms which we then used to finetune a large language model,glm-4-flash,entail,1.0,"In the present paper, we address this gap and ask whether large language models can be turned into cognitive models. We find that -after finetuning them on data",1,0,,yes,,,4015
+2,fine_tuning,C2P15,True,deepseek-chat,entail,0.98,"We propose Fine-tune-CoT, a method that generates reasoning samples from very large teacher models to fine-tune smaller models.",glm-4-flash,entail,1.0,"We propose Fine-tune-CoT, a method that generates reasoning samples from very large teacher models to fine-tune smaller models.",1,0,,yes,,,4015
+2,fine_tuning,C2P16,True,deepseek-chat,neutral,0.85,avoids resource-intensive fine-tuning of large pre-trained models by ensembling them with small fine-tuned models,glm-4-flash,entail,1.0,"Using an RL-based framework derived from recent developments in learning from human preferences, we introduce emulated fine-tuning (EFT), a principled and pract",0,1,NO,no,,,4015
+2,fine_tuning,C2P17,True,deepseek-chat,entail,0.95,"In this work, we propose to improve cross-lingual finetuning with consistency regularization.",glm-4-flash,entail,1.0,"In this work, we introduce a cross-lingual finetuning method XTUNE that is enhanced by consistency regularization and data augmentation.",1,0,,yes,,,4015
+2,fine_tuning,C2P18,False,deepseek-chat,neutral,0.95,training the parser. The sample sentence is viewed by the parser as a tag sequence,glm-4-flash,neutral,,,1,0,,no,,,2883
+2,fine_tuning,C2P19,True,deepseek-chat,contradict,0.95,"As GRIPS does not involve additional training or finetuning of the language models, all our experiments are light weight.",glm-4-flash,neutral,,"However, when gradient-information is available, we compare GRIPS to direct finetuning and other parameter-efficient methods using GPT-2 XL.",0,0,,no,,,4015
+2,fine_tuning,C2P2,False,deepseek-chat,contradict,0.95,nor did we adapt GPT-3 in any way,glm-4-flash,neutral,,,0,0,,no,,,3010
+2,fine_tuning,C2P20,False,deepseek-chat,entail,0.9,we are able to produce better alignments than previous approaches,glm-4-flash,partial,,"By using a multi-task objective along with providing full target sentence context to our alignment module, we are able to produce better alignments than previou",0,1,YES,yes,,,3010
+2,fine_tuning,C2P3,True,deepseek-chat,entail,0.9,We use data from UD to fine-tune LM weights on the target task,glm-4-flash,entail,1.0,"the former study fine-tunes LM weights using training data from target languages, while the latter retrains the lexical layer while freezing all LM weights.",1,0,,yes,,,4015
+2,fine_tuning,C2P4,True,deepseek-chat,entail,0.98,"we leverage pre-trained LMs and fine-tune them on parallel text with not only LM-based objectives, but also unsupervised objectives over the parallel corpus",glm-4-flash,entail,1.0,"In this paper, we examine methods to marry the two approaches: leveraging pre-trained LMs but finetuning them on parallel text with objectives designed to impro",1,0,,yes,,,4015
+2,fine_tuning,C2P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,fine_tuning,C2P6,True,deepseek-chat,entail,0.98,we fine-tune a pre-trained language model (LM) to predict the target label given the input sequence on a collection of tasks,glm-4-flash,entail,1.0,"To metatrain the model to learn from in-context examples, we fine-tune a pre-trained language model (LM) to predict the target label given the input sequence on",1,0,,yes,,,4015
+2,fine_tuning,C2P7,True,deepseek-chat,entail,0.95,we evaluate the calibration of several methods that preserve pre-trained features and show that preserving pre-trained features can improve the calibration of f,glm-4-flash,entail,1.0,Large pre-trained language models (PLMs) have demonstrated strong performance on natural language understanding (NLU) tasks through fine-tuning.,1,0,,yes,,,4015
+2,fine_tuning,C2P8,True,deepseek-chat,entail,0.97,We fine-tune FLAN-MOE using the prefix language model objective on the FLAN collective dataset,glm-4-flash,entail,1.0,"In particular, we conduct empirical studies across three experimental setups: (i) Direct finetuning on individual downstream tasks devoid of instruction tuning;",1,0,,yes,,,4015
+2,fine_tuning,C2P9,True,deepseek-chat,entail,0.9,"We train LLaRP using only reinforcement learning... During training, we freeze the LLM backbone and the visual encoder.",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,human_eval,C2P1,True,deepseek-chat,entail,0.95,Human Evaluation. We also conduct human evaluation on the general quality of the model responses,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,human_eval,C2P10,True,deepseek-chat,neutral,0.9,Lin et al. (2022) used human evaluation to assess the model performance,glm-4-flash,partial,,We conduct extensive qualitative and quantitative evaluations,0,0,,no,,,4015
+2,human_eval,C2P11,True,deepseek-chat,partial,0.75,each label independently provided by three different human evaluators,glm-4-flash,neutral,,,0,0,,no,,,4015
+2,human_eval,C2P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P13,False,deepseek-chat,neutral,0.95,the tutorial will mostly cover work by other researchers,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P14,False,deepseek-chat,neutral,0.9,we never presented data from the experiment under consideration during finetuning,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P15,True,deepseek-chat,neutral,0.9,This boosts the performance of student models without any additional human annotation.,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,human_eval,C2P16,True,deepseek-chat,entail,0.95,"Finally, we conduct a human evaluation of model-generated responses to validate the accuracy of our GPT-4-based fact-checking.",glm-4-flash,entail,1.0,"Finally, we conduct a human evaluation of model-generated responses to validate the accuracy of our GPT-4-based fact-checking.",1,0,,yes,,,4015
+2,human_eval,C2P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P18,True,deepseek-chat,entail,0.95,This material is then hand-corrected by our annotators; the result is consistent within annotators to about 3%,glm-4-flash,entail,1.0,"the resulting mapping is about 9% inaccurate, given the tagging guidelines of the Penn Treebank project (as given in 40 pages of explicit tagging guidelines). T",1,0,,yes,,,4015
+2,human_eval,C2P19,True,deepseek-chat,neutral,0.9,The entire process was dedicated nearly 5 hours of manual effort.,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P2,True,deepseek-chat,entail,0.95,We used the Prolific platform (www.prolific.co) to recruit 1000 participants,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,human_eval,C2P20,True,deepseek-chat,neutral,0.9,Och and Ney (2003) provided annotators two options to specify alignments,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,human_eval,C2P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P8,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,human_eval,C2P9,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,multilingual,C2P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,"Our self-training approach assumes access to a base language model, a small amount of seed data, and a collection of unlabelled examples, e.g. a web corpus. The",1,0,,no,,,3010
+2,multilingual,C2P10,True,deepseek-chat,neutral,0.9,Multilingual 0.94,glm-4-flash,neutral,0.5,"The combination of scale and attention-based architectures has resulted in language models possessing an unprecedented level of generality (Kaplan et al., 2020;",1,0,,no,,,4015
+2,multilingual,C2P11,True,deepseek-chat,neutral,0.9,We plan to collect more multilingual test data from more apps and websites and open source it for future research.,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,multilingual,C2P12,False,deepseek-chat,contradict,0.95,"For future work, we want to expand our study to other NLP tasks such as sequence tagging, as well as languages other than English.",glm-4-flash,neutral,,,0,0,,no,,,3010
+2,multilingual,C2P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2723
+2,multilingual,C2P14,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,multilingual,C2P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,multilingual,C2P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,multilingual,C2P17,True,deepseek-chat,entail,0.97,Experimental results on the XTREME benchmark show that our method 1 significantly improves crosslingual fine-tuning across various tasks,glm-4-flash,entail,1.0,"Experimental results on the XTREME benchmark show that our method 1 significantly improves cross-lingual fine-tuning across various tasks, including text classi",1,0,,yes,,,4015
+2,multilingual,C2P18,False,deepseek-chat,neutral,0.95,The corpus we use to train our parser is the Tagged Brown Corpus,glm-4-flash,neutral,,,1,0,,no,,,2883
+2,multilingual,C2P19,True,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,multilingual,C2P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,multilingual,C2P20,False,deepseek-chat,neutral,0.9,"three different datasets: Romanian→English, English→French and German→English",glm-4-flash,entail,1.0,"The authors provide pre-processing and scoring scripts 2 for three different datasets: Romanian→English, English→French and German→English. Training data and te",0,1,NO,no,,,3010
+2,multilingual,C2P3,True,deepseek-chat,entail,0.9,"we build upon previous work on monolingual model adaptation, extending it in a new, flexible, typologically-informed framework of gradual model adaptation",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,multilingual,C2P4,True,deepseek-chat,entail,0.95,we demonstrate that we are able to train multilingual word aligners that can obtain robust performance on different language pairs,glm-4-flash,entail,1.0,"In this paper, we examine methods to marry the two approaches: leveraging pre-trained LMs but finetuning them on parallel text with objectives designed to impro",1,0,,yes,,,4015
+2,multilingual,C2P5,False,deepseek-chat,neutral,0.9,I intend to explore other ideas that can apply in more general translation situations,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,multilingual,C2P6,True,deepseek-chat,neutral,0.95,"Massively multilingual neural machine translation. Roee Aharoni, Melvin Johnson, and Orhan Firat. 2019.",glm-4-flash,neutral,,,1,0,,no,,,4015
+2,multilingual,C2P7,False,deepseek-chat,neutral,0.95,"We conduct experiments on three natural language understanding tasks: natural language inference (NLI), paraphrase detection (PD), and commonsense reasoning (CR",glm-4-flash,neutral,,,1,0,,no,,,3010
+2,multilingual,C2P8,True,deepseek-chat,entail,0.9,We found all the FLAN-MOE perform poorly on multilingual benchmarks including TyDiQA and MGSM.,glm-4-flash,partial,,We found all the FLAN-MOE perform poorly on multilingual benchmarks including TyDiQA and MGSM.,0,1,YES,yes,,,4015
+2,multilingual,C2P9,False,deepseek-chat,neutral,0.95,Paraphrasic Robustness (PR) evaluates if the agent can produce the same behavior under a linguistic variation.,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P1,True,deepseek-chat,entail,0.95,"Bias
+
+Since the augmented data is sourced from a web corpus... we evaluate the accuracy in detecting biased statements... Safety
+
+...we evaluate the model on 30",glm-4-flash,partial,,"However, this does not mean our model is less likely to generate responses that contain biases.",0,1,YES,yes,,,4015
+2,safety_bias,C2P10,True,deepseek-chat,neutral,0.95,Discarded tasks: ... diverse social bias ... gender sensitivity chinese ... muslim violence bias,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,safety_bias,C2P11,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,safety_bias,C2P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P14,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,safety_bias,C2P15,True,deepseek-chat,entail,0.95,Our work presents various challenges and opportunities in terms of bias and toxicity in language models.,glm-4-flash,entail,0.8,Our work presents various challenges and opportunities in terms of bias and toxicity in language models. It is widely known that LLMs trained on large corpora h,1,0,,yes,,,4015
+2,safety_bias,C2P16,False,deepseek-chat,neutral,0.95,we measure harmfulness by prompting GPT-4 to estimate the likelihood that a response will cause harm to the user or society,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2874
+2,safety_bias,C2P18,False,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P19,True,deepseek-chat,entail,0.9,"our proposed search can unfortunately be misused intentionally or unintentionally (Weidinger et al., 2021) to elicit harmful, biased and problematic outputs",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,safety_bias,C2P2,False,deepseek-chat,neutral,0.95,Ethics Statement,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P20,False,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P4,True,deepseek-chat,neutral,0.95,"Gabriel Stanovsky, Noah A Smith, and Luke Zettlemoyer. 2019. Evaluating gender bias in machine translation.",glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P6,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,safety_bias,C2P7,True,deepseek-chat,neutral,0.95,"safety-critical domain (Sandagiri et al., 2020)",glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,safety_bias,C2P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,"We compare our instruction backtranslation method (sel on quality evaluation. We ran both automatic evaluation using AlpacaEval , which computes the win rate ag",1,0,,no,,,3010
+2,significance,C2P10,True,deepseek-chat,entail,0.95,We repeat our experiments five times with different random seeds to report the mean and standard deviation.,glm-4-flash,entail,0.9,We repeat our experiments five times with different random seeds to report the mean and standard deviation.,1,0,,yes,,,4015
+2,significance,C2P11,False,deepseek-chat,neutral,0.95,"The final IAA amongst the three annotators, as measured by Cohen's Kappa [53], yields average scores of 0.85, 0.86, and 0.88",glm-4-flash,neutral,,,1,0,,no,,,2427
+2,significance,C2P12,True,deepseek-chat,entail,0.95,we run training 4 times and report on the model achieving the highest accuracy... we observe similar trends when considering mean and standard deviation across ,glm-4-flash,entail,1.0,"For every task and configuration (combination of LM and train set size; 5 × 11), we run training 4 times and report on the model achieving the highest accuracy ",1,0,,yes,,,4015
+2,significance,C2P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P14,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,Model performance was measured through the predictive log-likelihood on hold-out data obtained using a 100-fold cross-validation procedure. We standardized all ,1,0,,no,,,3010
+2,significance,C2P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P17,False,deepseek-chat,neutral,0.95,The results of XTUNE are from the best models selected with the performance on the corresponding development set.,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P18,True,deepseek-chat,neutral,0.9,The standard deviation of the values of the bigram mutual information vector of an n-gram is a valid measure of the confidence of these values.,glm-4-flash,partial,,The standard deviation of the values of the bigram mutual information vector of an n-gram is a valid measure of the confidence of these values.,0,0,,no,,,4015
+2,significance,C2P19,True,deepseek-chat,entail,0.9,is statistically significant at the p < 0.05 level,glm-4-flash,partial,,Our main results are shown in Table 1 is statistically significant at the p < 0.05 level.,0,1,YES,yes,,,4015
+2,significance,C2P2,True,deepseek-chat,entail,0.95,Confidence intervals and p-values were computed using 10 4 bootstrap resamplings of the participants and statements. Bonferroni correction was used to prevent e,glm-4-flash,entail,0.9,The values in the first row show that our results reconfirm the standard ITE (HITE). The significantly negative tilt coefficient in the second row adds the nuan,1,0,,yes,,,4015
+2,significance,C2P20,True,deepseek-chat,neutral,0.9,Difference in AER w.r.t. GIZA++ (BPE-based) is statistically significant (p<0.001),glm-4-flash,entail,0.8,Table 3: Results on the alignment task (in AER [%] ). ‡ Difference in AER w.r.t. GIZA++ (BPE-based) is statistically significant (p<0.001),0,1,YES,yes,,,4015
+2,significance,C2P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P4,True,deepseek-chat,neutral,0.9,"""*"" denotes significant differences using paired bootstrapping (p<0.05)",glm-4-flash,partial,,"Our objectives can improve the model cross-lingual transfer ability. ""*"" denotes significant differences using paired bootstrapping (p<0.05)",0,0,,no,,,4015
+2,significance,C2P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P6,False,deepseek-chat,entail,0.95,We can decompose the total variance of µ into its variance w.r.t. each of the three random variables,glm-4-flash,partial,,"We analyze the sensitivity of in-context tuning accuracy with respect to example ordering, example choices, and instruction wording, and compare it with prompti",0,1,YES,yes,,,3010
+2,significance,C2P7,True,deepseek-chat,entail,0.95,We report the averaged accuracy and ECE across five random fine-tuning runs. We also report the corresponding standard deviation in subscripts.,glm-4-flash,entail,1.0,We report the averaged accuracy and ECE across five random fine-tuning runs. We also report the corresponding standard deviation in subscripts.,1,0,,yes,,,4015
+2,significance,C2P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,significance,C2P9,True,deepseek-chat,entail,0.95,We report the mean and standard deviation across 3 random seeds for all RL-based methods.,glm-4-flash,entail,0.9,We report the mean and standard deviation across 3 random seeds for all RL-based methods.,1,0,,yes,,,4015
+2,zero_few_shot,C2P1,True,deepseek-chat,entail,0.95,We compute zero-shot accuracy based on perplexity of the correct answer following LLaMa,glm-4-flash,entail,1.0,"We compute zero-shot accuracy based on perplexity of the correct answer following LLaMa [Touvron et al., 2023].",1,0,,yes,,,4015
+2,zero_few_shot,C2P10,True,deepseek-chat,entail,0.95,we evaluate the zero-shot performance of another LLM following the selected instruction,glm-4-flash,entail,1.0,"To evaluate the quality of the selected instruction, we evaluate the zero-shot performance of another LLM following the selected instruction.",1,0,,yes,,,4015
+2,zero_few_shot,C2P11,True,deepseek-chat,entail,0.9,Note that all experiments are conducted zero-shot on all datasets with the same prompts and settings.,glm-4-flash,entail,1.0,Note that all experiments are conducted zero-shot on all datasets with the same prompts and settings.,1,0,,yes,,,4015
+2,zero_few_shot,C2P12,True,deepseek-chat,neutral,0.95,"Concurrent to our work, Meng et al. (2022) propose to use data generated by large unidirectional models to transfer their zero-shot NLU abilities",glm-4-flash,neutral,,,1,0,,no,,,4015
+2,zero_few_shot,C2P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,zero_few_shot,C2P14,True,deepseek-chat,neutral,0.9,Language models are few-shot learners.,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,zero_few_shot,C2P15,True,deepseek-chat,entail,0.9,"We apply existing zero-shot CoT prompting (Kojima et al., 2022) to generate rationales from very large teacher models",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,zero_few_shot,C2P16,True,deepseek-chat,neutral,0.9,Language models are few-shot learners. Tom Brown,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,zero_few_shot,C2P17,True,deepseek-chat,neutral,0.9,which is also known as the setting of zero-shot cross-lingual fine-tuning,glm-4-flash,entail,1.0,"Specifically, given a training corpus D in the source language (typically in English), and a model f (·; θ) that predicts task-specific probability distribution",0,1,YES,yes,,,4015
+2,zero_few_shot,C2P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,zero_few_shot,C2P19,True,deepseek-chat,neutral,0.9,Most of the work in this area focuses on few-shot learning,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,zero_few_shot,C2P2,False,deepseek-chat,neutral,0.9,Language models are few- shot learners.,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,zero_few_shot,C2P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,zero_few_shot,C2P3,True,deepseek-chat,neutral,0.9,This lends them the ability to also carry out zero-shot transfer,glm-4-flash,neutral,,,1,0,,no,,,4015
+2,zero_few_shot,C2P4,True,deepseek-chat,entail,0.95,we show that it is possible to train multilingual word aligners that can obtain robust performance even in zero-shot settings,glm-4-flash,entail,0.8,We show that it is possible to train multilingual word aligners that can obtain robust performance even in zero-shot settings,1,0,,yes,,,4015
+2,zero_few_shot,C2P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,zero_few_shot,C2P6,True,deepseek-chat,entail,0.9,"At test time, we ask the model to learn a new taskT given its instruction and only a few (K) labeled examples",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+2,zero_few_shot,C2P7,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+2,zero_few_shot,C2P8,True,deepseek-chat,entail,0.95,We conduct both zero-shot and few-shot evaluations on held-out tasks as in [4],glm-4-flash,partial,,We conduct both zero-shot and few-shot evaluations on held-out tasks as in [4] which were not included as part of the finetuning data.,0,1,YES,yes,,,4015
+2,zero_few_shot,C2P9,True,deepseek-chat,neutral,0.9,Prior work has demonstrated large language models (LLMs) can be used as zero-shot policies,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,ablation,C3P1,False,deepseek-chat,neutral,0.9,"We experimentally found that if the gradient does not flow throughout the different blocks, the development set performance for later classifiers drops",glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P10,False,deepseek-chat,entail,0.9,The duplication component's importance in formula (1) can be evaluated by modifying the value of c in the term frequency equation,glm-4-flash,neutral,,The duplication component's importance in formula (1) can be evaluated by modifying the value of c in the term frequency equation: D 3 ¥ P I d 3Q ! S H U W Y X ,0,1,YES,yes,,,3010
+3,ablation,C3P11,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P12,False,deepseek-chat,neutral,0.9,"we perform a hyperparameter search over depth L ∈ {1, 2, 4, 8, 12, 16}, hidden size W ∈ {16, 32, 64, 256, 512, 1024} and heads M ∈ {1, 2, 4, 8}",glm-4-flash,partial,,"we experimented with d = {1, 2, 4, 8, 12, 16, 20} and run an experiment sweep for each dimension over: For each feature that affects computational capacity of t",0,0,,no,,,3010
+3,ablation,C3P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P14,False,deepseek-chat,entail,0.9,We investigate how dropping AF layers impacts the performance on the four smallest GLUE tasks,glm-4-flash,entail,1.0,"In this experiment we compare the performance of AF with and without AdapterDrop during training. For both, we use standard adapters as well as adapters created",1,0,,yes,,,3010
+3,ablation,C3P15,False,deepseek-chat,neutral,0.9,"we (i) text-concatenate evidence sentences, (ii) apply max pooling to their individual embedding representation, or (iii) compute their weighted sum",glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P17,True,deepseek-chat,entail,0.95,Table 1: Ablation of position encoding methods.,glm-4-flash,partial,0.8,Table 1: Ablation of position encoding methods. All models are optimized with λ = 0.02 (PNSR ≈ 35.0 on Kodak).Information Mode bpp ∆ bpp (%) CNNs - - 0.6621 - T,0,1,YES,yes,,,4015
+3,ablation,C3P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P2,False,deepseek-chat,entail,0.9,"we additionally experiment with (1) training a randomly-initialized DAN model with D train , without knowledge distillation (""from scratch"")",glm-4-flash,neutral,,,0,1,YES,yes,,,3010
+3,ablation,C3P20,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P3,True,deepseek-chat,entail,0.95,We not only demonstrate the model effectiveness with supervised forecasting results and ablation studies,glm-4-flash,entail,1.0,"We not only demonstrate the model effectiveness with supervised forecasting results and ablation studies, but also achieves SOTA self-supervised representation ",1,0,,yes,,,4015
+3,ablation,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P5,True,deepseek-chat,entail,0.95,We analyze the techniques one-by-one to make clear which combinations have impact on performance.,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+3,ablation,C3P6,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P7,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P8,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,ablation,C3P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P1,True,deepseek-chat,entail,0.9,https://github.com/alexa/ wqa-cascade-transformers,glm-4-flash,entail,1.0,https://github.com/alexa/wqa-cascade-transformers,1,0,,yes,,,4015
+3,code_release,C3P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P11,True,deepseek-chat,entail,0.98,The code can be found here: https://github.com/ AkshitaJha/SimpleModelsforLongDocumentMatching.,glm-4-flash,entail,1.0,The code can be found here: https://github.com/AkshitaJha/SimpleModelsforLongDocumentMatching.,1,0,,yes,,,3819
+3,code_release,C3P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P13,True,deepseek-chat,entail,0.95,Our data is located here: https://github.com/ katherine-atwell/discourse-domain-shift,glm-4-flash,entail,1.0,Our data is located here: https://github.com/katherine-atwell/discourse-domain-shift,1,0,,yes,,,4015
+3,code_release,C3P14,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P15,True,deepseek-chat,entail,0.95,Our code is available at https://github.com/iKernels/ reasoning-baselines.,glm-4-flash,entail,1.0,Our code is available at https://github.com/iKernels/reasoning-baselines.,1,0,,yes,,,4015
+3,code_release,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P17,True,deepseek-chat,entail,0.95,Code is available at https://github.com/damo-cv/entroformer.,glm-4-flash,entail,1.0,Code is available at https://github.com/damo-cv/entroformer.,1,0,,yes,,,4015
+3,code_release,C3P18,False,deepseek-chat,neutral,0.95,See http://www.morphologic.hu/e sgml.htm,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P2,True,deepseek-chat,entail,0.95,Code available at https://github.com/INK-USC/spa rse-distillation.,glm-4-flash,entail,1.0,Code available at https://github.com/INK-USC/spa rse-distillation.,1,0,,yes,,,4015
+3,code_release,C3P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,code_release,C3P3,True,deepseek-chat,partial,0.9,The code will be publicly available.,glm-4-flash,entail,1.0,The code will be publicly available.,0,1,NO,no,,,4015
+3,code_release,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2640
+3,code_release,C3P5,True,deepseek-chat,entail,0.9,https://github.com/google/trax/tree/master/trax/models/reformer,glm-4-flash,entail,1.0,https://github.com/google/trax/tree/master/trax/models/reformer,1,0,,yes,,,4015
+3,code_release,C3P6,True,deepseek-chat,entail,0.95,https://github.com/TalSchuster/CATs,glm-4-flash,entail,1.0,https://github.com/TalSchuster/CATs,1,0,,yes,,,4015
+3,code_release,C3P7,True,deepseek-chat,entail,0.9,Our codebase is available on https://github.com/,glm-4-flash,entail,1.0,Our codebase is available on https://github.com/,1,0,,yes,,,4015
+3,code_release,C3P8,True,deepseek-chat,entail,0.95,Code and tool available at https://github.com/ jfiacco/aes_neural_functional_groups,glm-4-flash,entail,1.0,Code and tool available at https://github.com/jfiacco/aes_neural_functional_groups,1,0,,yes,,,3010
+3,code_release,C3P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P10,False,deepseek-chat,neutral,0.9,a question answering (QA) system was created to find and extract answers from a corpus,glm-4-flash,neutral,,,1,0,,no,,,2758
+3,deployment,C3P11,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,2814
+3,deployment,C3P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P14,True,deepseek-chat,neutral,0.85,We therefore recommend performing Adaper-Fusion pruning before deploying these models in practice.,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,deployment,C3P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P16,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,2745
+3,deployment,C3P17,False,deepseek-chat,neutral,0.95,our parallel Entroformer is more time-efficient than the serialized one on modern GPU devices,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P18,False,deepseek-chat,neutral,0.8,The most recent development is MoBiDic's client-server implementation.,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P19,False,deepseek-chat,neutral,0.9,Le projet que nous prtsentons clans oct article a pour but I'imptOnentation Can syst~me de traduction automatique pour des bulletins d'avalanches,glm-4-flash,neutral,,"Ce projet a pour but l'implmentation d'un syst~me de traduction automatique pour des bulletins d'avalanches 6mis par I'IFENA 1 , one ~t plusieurs lois par semam",1,0,,no,,,3010
+3,deployment,C3P2,True,deepseek-chat,neutral,0.85,the user may wish to deploy a faster version of this model,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,deployment,C3P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P4,False,deepseek-chat,neutral,0.9,"in the PUNDIT text processing system, (described in ~a~ner1986] )",glm-4-flash,neutral,,,1,0,,no,,,2640
+3,deployment,C3P5,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P6,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,deployment,C3P9,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P1,True,deepseek-chat,entail,0.95,our approach reduces computation by 37% with almost no impact on accuracy,glm-4-flash,partial,,"In this paper, we introduce the Cascade Transformer, a simple yet effective technique to adapt transformer-based models into a cascade of rankers. Each ranker i",0,1,YES,yes,,,4015
+3,efficiency,C3P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P11,False,deepseek-chat,neutral,0.95,"Comparison of simple neural models with transformer-based models based on (a) Training Time, (b) Memory Consumption, and (c) Energy Consumption.",glm-4-flash,entail,0.8,"Figure 2 :Figure 3 : 23Comparison of simple neural models with transformer-based models based on (a) Training Time, (b) Memory Consumption, and (c) Energy Consu",0,1,NO,no,,,3010
+3,efficiency,C3P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P14,True,deepseek-chat,entail,0.95,We show that the training steps of adapters can be up to 60% faster than full model fine-tuning... while being 4-6% slower at inference.,glm-4-flash,entail,1.0,We close this gap and establish the computational efficiency of two adapter architectures at training and inference time.,1,0,,yes,,,4015
+3,efficiency,C3P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P17,True,deepseek-chat,entail,0.95,"In Table 2, we report the inference latency of Entroformer (serial architecture and parallel architecture) comparing to other learned entropy models.",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+3,efficiency,C3P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P2,True,deepseek-chat,entail,0.95,achieve up to 600x speedup on both GPUs and CPUs at inference time,glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+3,efficiency,C3P20,False,deepseek-chat,neutral,0.95,"The cumulative training time of all models for this project was ∼ 30,000 GPU hours.",glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P3,False,deepseek-chat,neutral,0.9,"'-' denotes running out of GPU memory even with batch size 1, or exceeding the maximum running time (12 hours).",glm-4-flash,neutral,,,1,0,,no,,,2574
+3,efficiency,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2640
+3,efficiency,C3P5,False,deepseek-chat,partial,0.7,Right: Speed of attention evaluation as a function of input length for full-and LSH-attention.,glm-4-flash,neutral,,"We ran our experiments on the imagenet64 and enwik8-64K tasks, where the latter is a variant of enwik8 that is chunked into subsequences of 2^16 = 64K tokens. W",0,0,,no,,,3010
+3,efficiency,C3P6,True,deepseek-chat,entail,0.95,we compute the amortized inference time with a naive implementation and report its percentage out of the full model,glm-4-flash,entail,0.9,"Following the analysis in §5.4, we compute the amortized inference time with a naive implementation and report its percentage out of the full model. As Table 5 ",1,0,,yes,,,4015
+3,efficiency,C3P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,efficiency,C3P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,err,,,0,0,,no,,"LLMError: 无法解析模型返回的 JSON。内容前 200 字: '```json\n{""label"":""neut",3010
+3,fine_tuning,C3P1,True,deepseek-chat,entail,0.95,Our models are fine-tuned starting from a pretrained RoBERTa encoder,glm-4-flash,entail,1.0,"Our models are fine-tuned starting from a pretrained RoBERTa encoder (Liu et al., 2019c).",1,0,,yes,,,4015
+3,fine_tuning,C3P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P11,True,deepseek-chat,entail,0.9,We only report the fine-tuning time after downloading the pre-trained models.,glm-4-flash,partial,,We only report the fine-tuning time after downloading the pre-trained models.,0,1,YES,yes,,,4015
+3,fine_tuning,C3P12,False,deepseek-chat,neutral,0.8,,glm-4-flash,partial,,"We train this probe to minimize the squared error between the predictions and targets v: L(v,v) = |v −v| 2 .",0,0,,no,,,3010
+3,fine_tuning,C3P13,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P14,True,deepseek-chat,entail,0.95,We show that the training steps of adapters can be up to 60% faster than full model fine-tuning,glm-4-flash,entail,1.0,"We propose AdapterDrop, removing adapters from lower transformer layers during training and inference",1,0,,yes,,,4015
+3,fine_tuning,C3P15,True,deepseek-chat,neutral,0.7,they use additional DocIR components and data (MultiNLI ... corpus) for fine-tuning,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,fine_tuning,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P17,True,deepseek-chat,entail,0.95,"After pretrain, we finetune the models with regular manner",glm-4-flash,entail,1.0,"After pretrain, we finetune the models with regular manner",1,0,,yes,,,3010
+3,fine_tuning,C3P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P2,True,deepseek-chat,entail,0.95,We first fine-tune a RoBERTa-Large model on the train set D train of task T,glm-4-flash,entail,1.0,"We first fine-tune a RoBERTa-Large model on the train set D train of task T, and use the resulting model as the teacher model.",1,0,,yes,,,4015
+3,fine_tuning,C3P20,False,deepseek-chat,neutral,0.9,The models are trained with the same objective as in Eq. 1,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P3,True,deepseek-chat,entail,0.95,we perform supervised training to evaluate the learned representation with two options: (a) linear probing and (b) end-to-end fine-tuning,glm-4-flash,entail,1.0,"Once the pre-trained model on each dataset is available, we perform supervised training to evaluate the learned representation with two options: (a) linear prob",1,0,,yes,,,4015
+3,fine_tuning,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P5,True,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,fine_tuning,C3P6,False,deepseek-chat,entail,0.9,"After each intermediate layer k < l, we train an early classification head",glm-4-flash,partial,,"We fix F rather than train it jointly with the new components of G to avoid any reduction in F's performance (Xin et al., 2020b). This also makes our method sim",0,1,YES,yes,,,3010
+3,fine_tuning,C3P7,True,deepseek-chat,neutral,0.85,"Instead of training the performer model from the checkpoints of SpanBERT, we directly replace some layers from a fine-tuned SpanBERT model",glm-4-flash,neutral,,,1,0,,no,,,3010
+3,fine_tuning,C3P8,True,deepseek-chat,entail,0.95,"each generic trait's model is a Longformer with a single-output regression head, fine-tuned on the trait's balanced dataset",glm-4-flash,entail,1.0,"In the context of AES, each generic trait's model is a Longformer with a single-output regression head, fine-tuned on the trait's balanced dataset:",1,0,,yes,,,4015
+3,fine_tuning,C3P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P1,True,deepseek-chat,neutral,0.95,"Some proposed solutions rely on leveraging knowledge distillation in the pre-training step, e.g., (Sanh et al., 2019)",glm-4-flash,neutral,,,1,0,,no,,,4015
+3,knowledge_distill,C3P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P11,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P12,True,deepseek-chat,neutral,0.95,In-context reinforcement learning with algorithm distillation.,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,knowledge_distill,C3P13,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P14,True,deepseek-chat,neutral,0.95,Minilm: Deep self-attention distillation for task-agnostic compression,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,knowledge_distill,C3P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P17,True,deepseek-chat,neutral,0.95,The top-k self-attention is helpful in dependencies distillation.,glm-4-flash,neutral,,"The top-k self-attention is helpful in dependencies distillation. In particular, the top-k module benefits the convergence of neural networks training.",1,0,,no,,,3010
+3,knowledge_distill,C3P18,False,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P2,True,deepseek-chat,entail,0.98,we use six single-sentence text classification tasks and apply knowledge distillation to DANs,glm-4-flash,entail,1.0,"Prior work mainly achieves this by leveraging knowledge distillation (Hinton et al., 2015), which allows for the capabilities of a large well-performing model k",1,0,,yes,,,4015
+3,knowledge_distill,C3P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P3,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2640
+3,knowledge_distill,C3P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,knowledge_distill,C3P9,False,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P10,False,deepseek-chat,neutral,0.95,the algorithm may be use in many natural languages,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P11,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P12,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P13,True,deepseek-chat,neutral,0.95,"Cross-lingual RST discourse parsing. Chloé Braud, Maximin Coavoux, Anders Søgaard",glm-4-flash,neutral,,,1,0,,no,,,4015
+3,multilingual,C3P14,True,deepseek-chat,neutral,0.95,"Adapters have been shown to work well for machine translation (Bapna and Firat, 2019), cross-lingual transfer (Pfeiffer et al., 2020b",glm-4-flash,neutral,,,1,0,,no,,,4015
+3,multilingual,C3P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P18,False,deepseek-chat,neutral,0.9,it has been implemented and is available with a gradually increasing number of dictionaries for numerous language pairs,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P19,False,deepseek-chat,entail,0.9,"ces bulletins doivent ensuite 6tre traduits dens les deux antres langues oflicielles suisses, le francals et l'italien",glm-4-flash,neutral,,Nous montrons d'abord qu'une collaboration trés étroite lors du développement des différentes grammaries nous permet généralement d'obtenir une même représentat,0,1,YES,yes,,,3010
+3,multilingual,C3P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P20,True,deepseek-chat,neutral,0.95,Bloom: A 176b-parameter open-access multilingual language model,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P3,False,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P5,False,deepseek-chat,neutral,0.95,BLEU+case.lc+lang.en-de+numrefs.1+smooth.exp+test.wmt14/full,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P6,True,deepseek-chat,neutral,0.95,We demonstrate the effectiveness of this approach on four classification and regression tasks.,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,multilingual,C3P7,True,deepseek-chat,contradict,0.95,it remains for future work in long-range transformer evaluation to extend our analysis into multilingual conditions,glm-4-flash,neutral,,it remains for future work in long-range transformer evaluation to extend our analysis into multilingual conditions,0,0,,no,,,4015
+3,multilingual,C3P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,multilingual,C3P9,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P1,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P10,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,The idea behind the algorithm is to evaluate potential answers in the passages retrieved using the term frequency equation. The question classification patterns,1,0,,no,,,3010
+3,proof_theory,C3P11,False,deepseek-chat,neutral,0.9,we empirically demonstrate the trade-off of using transformer-based models,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P12,True,deepseek-chat,entail,0.95,"Lemma 1. Each of mov, mul, div and aff can be implemented by a single transformer decoder layer... Theorem 1. A transformer can compute Eq. (11)... Theorem 2. A",glm-4-flash,entail,0.8,Theorem 1. A transformer can compute Eq. (11) (i.e. the prediction resulting from single step of gradient descent on an in-context example) with constant number,1,0,,yes,,,4015
+3,proof_theory,C3P13,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P14,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P15,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P16,False,deepseek-chat,neutral,0.85,,glm-4-flash,neutral,,This reasoning process can be partially regarded as a subproduct of an inferential process that takes spatio-temporal locations as the main component and is tri,1,0,,no,,,3010
+3,proof_theory,C3P17,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,"In this paper, Entroformer is proposed to improve learned image compression. To our knowledge, it is the first successful attempt to introduce Transformer based",1,0,,no,,,3010
+3,proof_theory,C3P18,True,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,4012
+3,proof_theory,C3P19,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P20,True,deepseek-chat,entail,0.9,"we provide quantitative evidence for Bayesian prediction, and where it is hard to do we provide qualitative arguments. Generalizing the results of Garg et al. [",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+3,proof_theory,C3P3,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P4,False,deepseek-chat,neutral,0.7,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P5,False,deepseek-chat,neutral,0.9,In this section we present experimental results demonstrating the techniques described above.,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P6,True,deepseek-chat,entail,0.95,A proof is given in Appendix A. ... Theorem 4.4. ... Theorem 4.6.,glm-4-flash,entail,0.9,A proof is given in Appendix A.,1,0,,yes,,,4015
+3,proof_theory,C3P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P8,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,proof_theory,C3P9,True,deepseek-chat,neutral,0.85,,glm-4-flash,entail,0.8,"Winograd's program could be called pure AI, in that it was motivated by classic problems of AI: plans (how to pick up the blocks) and theorem proving (how to sh",0,1,NO,no,,,4015
+3,safety_bias,C3P1,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,safety_bias,C3P10,False,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P11,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P12,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,safety_bias,C3P13,True,deepseek-chat,neutral,0.95,indicates a strong bias towards Contingency,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,safety_bias,C3P14,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P15,True,deepseek-chat,neutral,0.95,Schuster et al. (2019) proposed a debiased symmetric test set,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,safety_bias,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P17,True,deepseek-chat,neutral,0.98,,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,safety_bias,C3P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P2,True,deepseek-chat,entail,0.95,"DANs may raise fairness concerns: it lacks ability to understand the meaning of words in context, so it may learn spurious correlations such as overemphasis on ",glm-4-flash,neutral,,,0,1,YES,yes,,,4015
+3,safety_bias,C3P20,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,safety_bias,C3P3,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,safety_bias,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2088
+3,safety_bias,C3P6,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P7,True,deepseek-chat,partial,0.7,Experimental Bias ... existing artifacts are biased towards English ... Language Bias,glm-4-flash,neutral,,,0,0,,no,,,4015
+3,safety_bias,C3P8,False,deepseek-chat,neutral,0.9,the potentially more problematic demographic-based,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,safety_bias,C3P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,partial,,"Our experiment shows that classifiers in a CT model are more robust against variance in partial encodings, induced by early classifiers.",0,0,,no,,,3010
+3,significance,C3P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P11,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P12,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P13,True,deepseek-chat,partial,0.7,"significantly outperformed both (p<0.01 , t>11.172)",glm-4-flash,partial,,These results drive home the influence of the linguistic and structural differences between intra-and inter-sentence implicit relations on the performance of th,1,0,,no,,,4015
+3,significance,C3P14,True,deepseek-chat,entail,0.95,report the mean and standard deviation over three runs of the best development performance evaluated after every epoch,glm-4-flash,entail,,We report the mean and standard deviation over three runs of the best development performance evaluated after every epoch.,1,0,,yes,,,4015
+3,significance,C3P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2107
+3,significance,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P2,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P20,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P3,True,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,significance,C3P6,True,deepseek-chat,neutral,0.95,Shaded regions show the 16-84th percentiles across trials.,glm-4-flash,partial,,"For all methods, we report the marginalized results over 25 random trials, where in each trial we partition the data into 80% D cal (x 1:n ) and 20% D test (x n",0,0,,no,,,4015
+3,significance,C3P7,True,deepseek-chat,entail,0.95,we conduct significance test using bootstrapping methods to verify our conclusions,glm-4-flash,entail,0.9,We conduct significance test for the comparison between curves. Please refer to appendix D for more details.,1,0,,yes,,,4015
+3,significance,C3P8,True,deepseek-chat,neutral,0.9,"Pearson's R values for relevant importance metric (model difference, model predictions) and feature group alignment are presented with p-values.",glm-4-flash,partial,,"Table 3 : 3Selected examples of correlated functional group/feature groups. Pearson's R values for relevant importance metric (model difference, model predictio",0,0,,no,,,4015
+3,significance,C3P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P1,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2521
+3,zero_few_shot,C3P10,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P11,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P12,True,deepseek-chat,neutral,0.9,This behavior occurs both in models trained on collections of few-shot learning problems,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,zero_few_shot,C3P13,True,deepseek-chat,neutral,0.95,"Zero-shot transfer for implicit discourse relation classification. Murathan Kurfalı, Robertöstling",glm-4-flash,neutral,,,1,0,,no,,,4015
+3,zero_few_shot,C3P14,True,deepseek-chat,neutral,0.95,MultiCQA: Exploring the Zero-Shot Transfer,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,zero_few_shot,C3P15,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P16,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,2745
+3,zero_few_shot,C3P17,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P18,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P19,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P2,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P20,True,deepseek-chat,neutral,0.95,Language models are few-shot learners. Tom B Brown,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,zero_few_shot,C3P3,False,deepseek-chat,neutral,0.9,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P4,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P5,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P6,True,deepseek-chat,neutral,0.95,Language models are few-shot learners,glm-4-flash,neutral,,,1,0,,no,,,4015
+3,zero_few_shot,C3P7,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P8,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010
+3,zero_few_shot,C3P9,False,deepseek-chat,neutral,0.95,,glm-4-flash,neutral,,,1,0,,no,,,3010

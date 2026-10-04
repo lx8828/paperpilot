@@ -1,0 +1,174 @@
+﻿cluster,facet,docid,A_label,B_label,agree,need_third,third,new_gold_rich,ev_chars,A_quote
+1,ablation,C1P3,neutral,neutral,1,0,,no,12055,
+1,ablation,C1P9,neutral,neutral,1,0,,no,12055,We analyze how the number of passages recited would affect the performance
+1,ablation,C1P12,entail,entail,1,0,,yes,12055,"We also ablate the system showing the effectiveness of each feature. When disabling joint training, i.e., for ablating the model, the retriever is not"
+1,ablation,C1P15,partial,neutral,0,0,,no,12055,This baseline specifically ablates the retrieval component of RGF
+1,code_release,C1P5,neutral,neutral,1,0,,no,11058,https://github.com/OpenNMT/OpenNMT 2 https://github.com/magic282/NQG 3 https://github.com/seanie12/neural-question-generation
+1,code_release,C1P14,neutral,entail,0,1,NO,no,12055,https://github.com/princeton-nlp/ALCE
+1,code_release,C1P18,neutral,neutral,1,0,,no,12055,https://github.com/facebookresearch/ FiD
+1,code_release,C1P19,neutral,neutral,1,0,,no,12055,Our model is implemented using PyTorch 1 and OpenNMT-py 2
+1,human_eval,C1P2,neutral,neutral,1,0,,no,11440,"it could be provided by human annotations (Dinan et al., 2019)"
+1,human_eval,C1P4,neutral,neutral,1,0,,no,12055,"developing effective automatic evaluation metrics, and rigorous and efficient human evaluation procedures"
+1,human_eval,C1P12,contradict,neutral,0,0,,no,12055,"D Did you use human annotators (e.g., crowdworkers) or research with human participants?Left blank."
+1,human_eval,C1P15,entail,neutral,0,1,YES,yes,12055,"The authors sampled 300 examples of generated questions. To annotate for fluency, authors use the following rubric"
+1,human_eval,C1P16,neutral,neutral,1,0,,no,11356,There are 5 annotators for each OKVQA question.
+1,human_eval,C1P17,neutral,neutral,1,0,,no,11101,we carefully selected a set of questions... We searched the index against each of these questions and inspected the relevance of the top 20 search res
+1,multilingual,C1P4,neutral,neutral,1,0,,no,11926,We will cover a broad diversity of methods and applications in many languages and domains.
+1,multilingual,C1P5,neutral,neutral,1,0,,no,12055,"We conduct experiments on HotpotQA (Yang et al., 2018), a challenging dataset"
+1,multilingual,C1P9,neutral,neutral,1,0,,no,12055,"It has strong capabilities in in-context few-shot learning, multilingual, as well as reasoning tasks."
+1,multilingual,C1P11,neutral,neutral,1,0,,no,12055,
+1,multilingual,C1P12,neutral,neutral,1,0,,no,12055,"We evaluate our system on two benchmarks, i.e. NQ-TABLES (Herzig et al., 2021) and E2E-WTQ (Pan et al., 2021)."
+1,multilingual,C1P16,neutral,neutral,1,0,,no,12055,Conceptnet 5.5: An open multilingual graph of general knowledge
+1,multilingual,C1P20,neutral,neutral,1,0,,no,12055,
+1,efficiency,C1P2,neutral,neutral,1,0,,no,11440,
+1,efficiency,C1P7,neutral,neutral,1,0,,no,12055,
+1,efficiency,C1P11,neutral,neutral,1,0,,no,12055,"FLOPs are not a direct measure of real-world computing costs, as latency, power consumption, and other costs can vary widely"
+1,efficiency,C1P13,neutral,neutral,1,0,,no,12055,
+1,efficiency,C1P14,neutral,neutral,1,0,,no,12055,"We speed up inference using vllm (Kwon et al., 2023)."
+1,efficiency,C1P20,neutral,neutral,1,0,,no,12055,How to trade off the efficiency (computational time and memory requirements) and accuracy
+1,significance,C1P15,entail,neutral,0,1,YES,yes,12055,"we used the six RC models discussed in Section 3.4 to estimate cross-run variation. Using the procedure and code of Sellam et al. (2021), we find vari"
+1,significance,C1P19,neutral,entail,0,1,NO,no,12055,The significance of each correlation was calculated using a two-tailed test that resulted in p < 0.01
+1,case_study,C1P6,neutral,neutral,1,0,,no,12055,
+1,case_study,C1P13,entail,neutral,0,1,YES,yes,12055,We demonstrate some correct and typical error cases in Figure 5 including miscounting and misrecognizing objects.
+1,case_study,C1P15,neutral,neutral,1,0,,no,12055,
+1,case_study,C1P20,neutral,neutral,1,0,,no,12055,
+1,error_analysis,C1P13,entail,entail,1,0,,yes,12055,"In order to better understand the model's performance, we manually study 200 model outputs and classify them into three categories"
+1,fine_tuning,C1P2,neutral,neutral,1,0,,no,12055,The way of fine-tuning PLMs using only input-output pairs of target data is often referred to as close-book setting
+1,fine_tuning,C1P6,entail,neutral,0,1,YES,yes,12055,we minimize the joint loss function during training
+1,fine_tuning,C1P18,entail,entail,1,0,,yes,12055,"Our model is initialized with a pre-trained T5-base model, and trained using AdamW ... with a learning rate of 10 −4 , linear scheduling with 15k tota"
+1,fine_tuning,C1P19,entail,neutral,0,1,YES,yes,12055,The model is trained using Dropout ... The model parameters are optimized using Stochastic Gradient Descent with mini-batches of size 64.
+1,fine_tuning,C1P20,neutral,neutral,1,0,,no,12055,"These pretrained models will be used directly to answer questions, in a zero-shot manner (Radford et al., 2019;Raffel et al., 2019) or fine-tuned usin"
+1,zero_few_shot,C1P1,neutral,neutral,1,0,,no,12055,Language models are few-shot learners.
+1,zero_few_shot,C1P2,neutral,neutral,1,0,,no,11440,Language models are few-shot learners.
+1,zero_few_shot,C1P12,neutral,neutral,1,0,,no,11431,We first fine-tune the official pretrained DPR or ColBERTv2 model on each dataset
+1,zero_few_shot,C1P13,neutral,neutral,1,0,,no,12055,Language models are few-shot learners.
+1,zero_few_shot,C1P16,neutral,neutral,1,0,,no,12055,An empirical study of gpt-3 for few-shot knowledge- based vqa
+1,zero_few_shot,C1P17,neutral,neutral,1,0,,no,11101,we experiment with different unsupervised and supervised approaches
+1,zero_few_shot,C1P20,neutral,neutral,1,0,,no,12055,"These pretrained models will be used directly to answer questions, in a zero-shot manner (Radford et al., 2019;Raffel et al., 2019)"
+1,rl_training,C1P1,contradict,neutral,0,0,,no,12055,GAR does not require external resources or downstream feedback via RL as supervision
+1,rl_training,C1P12,neutral,neutral,1,0,,no,12055,
+1,rl_training,C1P14,contradict,partial,0,0,,no,12055,"we train our target LM on task examples augmented with reflection tokens from a critic model offline, with a far lower training cost compared to RLHF"
+1,rl_training,C1P19,neutral,neutral,1,0,,no,12055,Their model is trained using supervised learning combined with reinforcement learning
+1,rl_training,C1P20,neutral,neutral,1,0,,no,12055,Rˆ3: Reinforced reader-ranker for open-domain question answering.
+1,safety_bias,C1P5,neutral,neutral,1,0,,no,12055,
+1,safety_bias,C1P8,neutral,neutral,1,0,,no,12055,The documents we used in this paper and the generated dialogues have been carefully filtered to make sure there is no offensive and toxic information.
+1,safety_bias,C1P13,entail,entail,1,0,,yes,12055,"we anticipate our model to contain some biases (racial, gender, etc.). During our manual inspection, we saw some such biases"
+1,safety_bias,C1P14,neutral,neutral,1,0,,no,12055,Use an unbiased and journalistic tone.
+1,safety_bias,C1P15,neutral,neutral,1,0,,no,12055,"changing gendered words (Webster et al., 2020)"
+1,deployment,C1P1,neutral,neutral,1,0,,no,12055,Open-domain question answering (OpenQA) aims to answer factoid questions without a pre-specified domain and has numerous real-world applications.
+1,deployment,C1P4,neutral,neutral,1,0,,no,12055,how knowledge-enriched NLG is being used in several conversational AI systems including Amazon Alexa
+1,deployment,C1P12,neutral,neutral,1,0,,no,11431,"This suggests that when deployed as real applications, LI-RAGE does not bring significant increase in computation."
+1,deployment,C1P14,neutral,neutral,1,0,,no,12055,"perplexity.ai, an InstructGPT-based production search system"
+1,annotation_cost,C1P1,neutral,neutral,1,0,,no,12055,without external supervision or time-consuming downstream feedback
+1,annotation_cost,C1P7,neutral,neutral,1,0,,no,12055,"manually creating such datasets is quite costly, e.g., CoQA spent 3.6 USD per passage on crowdsourcing"
+1,annotation_cost,C1P8,entail,neutral,0,1,YES,yes,11708,without costly annotation
+1,annotation_cost,C1P12,neutral,neutral,1,0,,no,12055,"Did you use human annotators (e.g., crowdworkers) or research with human participants?Left blank."
+1,annotation_cost,C1P14,neutral,neutral,1,0,,no,12055,
+1,annotation_cost,C1P16,neutral,neutral,1,0,,no,12055,
+2,ablation,C2P6,neutral,neutral,1,0,,no,11828,
+2,ablation,C2P7,neutral,neutral,1,0,,no,12055,Effect of knowledge distillation from the pre-trained model: Table 7 shows that applying knowledge distillation has limited effect
+2,code_release,C2P1,neutral,entail,0,1,NO,no,12055,https://github.com/tatsu-lab/alpaca_eval
+2,code_release,C2P3,neutral,neutral,1,0,,no,11894,
+2,code_release,C2P8,neutral,neutral,1,0,,no,12055,
+2,code_release,C2P12,neutral,neutral,1,0,,no,11916,The code to run our experiments was developed upon Schick and Schütze's code: https://github.com/timoschick/pet
+2,code_release,C2P18,neutral,neutral,1,0,,no,11928,
+2,human_eval,C2P4,neutral,neutral,1,0,,no,12055,
+2,human_eval,C2P10,neutral,neutral,1,0,,no,12055,Lin et al. (2022) used human evaluation to assess the model performance
+2,human_eval,C2P11,entail,entail,1,0,,yes,12055,"we collect a diverse human-annotated test dataset, where all contexts are generated by humans and labels are aligned with human preferences"
+2,human_eval,C2P15,neutral,neutral,1,0,,no,11701,This boosts the performance of student models without any additional human annotation.
+2,human_eval,C2P17,neutral,neutral,1,0,,no,12055,
+2,human_eval,C2P19,neutral,neutral,1,0,,no,12055,"The rewriting process was done by the first three authors, after carefully studying the guidelines"
+2,human_eval,C2P20,neutral,neutral,1,0,,no,11217,The reference alignments were created by randomly selecting a subset of the Europarl v7 corpus and manually annotating them following the guidelines s
+2,multilingual,C2P2,neutral,neutral,1,0,,no,12055,Newly collected data from simulated subjects was compared to previously published data from a 15-country experiment on 7286 human participants.
+2,multilingual,C2P6,neutral,neutral,1,0,,no,12055,
+2,multilingual,C2P9,neutral,neutral,1,0,,no,12055,Paraphrasic Robustness (PR) evaluates if the agent can produce the same behavior under a linguistic variation.
+2,multilingual,C2P10,neutral,neutral,1,0,,no,12055,"They cover six categories (spelling, morphosyntax, lexical semantics, semantics, multi-lingual, and GLUE)."
+2,multilingual,C2P11,neutral,neutral,1,0,,no,12055,We plan to collect more multilingual test data from more apps and websites and open source it for future research.
+2,multilingual,C2P19,neutral,neutral,1,0,,no,12055,Bloom: A 176bparameter open-access multilingual language model
+2,significance,C2P4,neutral,neutral,1,0,,no,12055,"""*"" denotes significant differences using paired bootstrapping (p<0.05)"
+2,significance,C2P6,entail,neutral,0,1,YES,yes,12055,We can decompose the total variance of µ into its variance w.r.t. each of the three random variables
+2,significance,C2P18,neutral,partial,0,0,,no,12055,The standard deviation of the values of the bigram mutual information vector of an n-gram is a valid measure of the confidence of these values.
+2,fine_tuning,C2P10,neutral,neutral,1,0,,no,11589,"recent work has considered fine-tuning (Ouyang et al., 2022;Ziegler et al., 2019)"
+2,fine_tuning,C2P13,neutral,neutral,1,0,,no,9758,The tutorial is mostly introductory-we will explain the literature on computational models of language acquisition and processing.
+2,fine_tuning,C2P16,neutral,entail,0,1,NO,no,12055,without additional hyperparameters or training
+2,fine_tuning,C2P19,contradict,neutral,0,0,,no,12055,"As GRIPS does not involve additional training or finetuning of the language models, all our experiments are light weight."
+2,fine_tuning,C2P20,entail,partial,0,1,YES,yes,12055,We train our model to minimize L a in conjunction with the standard NLL translation loss L t .
+2,zero_few_shot,C2P3,neutral,neutral,1,0,,no,12055,"This lends them the ability to also carry out zero-shot transfer, solving tasks in a target language without languagespecific supervision (Wu and Dred"
+2,zero_few_shot,C2P7,neutral,neutral,1,0,,no,12055,
+2,zero_few_shot,C2P9,entail,partial,0,1,YES,yes,12055,We show LLaRP has better zero-shot generalization capabilities than the baselines on most of the unseen Language Rearrangement evaluation datasets.
+2,zero_few_shot,C2P12,neutral,neutral,1,0,,no,12055,"Concurrent to our work, Meng et al. (2022) propose to use data generated by large unidirectional models to transfer their zero-shot NLU abilities"
+2,zero_few_shot,C2P14,neutral,neutral,1,0,,no,12055,Language models are few-shot learners. Tom B Brown
+2,zero_few_shot,C2P16,neutral,neutral,1,0,,no,12055,Language models are few-shot learners. Tom Brown
+2,zero_few_shot,C2P19,neutral,neutral,1,0,,no,12055,Most of the work in this area focuses on few-shot learning
+2,safety_bias,C2P3,neutral,neutral,1,0,,no,12055,
+2,safety_bias,C2P4,neutral,neutral,1,0,,no,12055,"Gabriel Stanovsky, Noah A Smith, and Luke Zettlemoyer. 2019. Evaluating gender bias in machine translation."
+2,safety_bias,C2P6,neutral,neutral,1,0,,no,12055,
+2,safety_bias,C2P7,neutral,neutral,1,0,,no,11786,
+2,safety_bias,C2P9,neutral,neutral,1,0,,no,12055,
+2,safety_bias,C2P10,neutral,neutral,1,0,,no,12055,Discarded tasks: ... diverse social bias ... gender sensitivity chinese ... muslim violence bias
+2,safety_bias,C2P11,neutral,neutral,1,0,,no,12055,
+2,safety_bias,C2P14,neutral,neutral,1,0,,no,12055,
+2,deployment,C2P7,neutral,neutral,1,0,,no,12055,We hope our work can draw more attention to the deeper exploitation of the pre-trained features learned by PLMs and contribute to building safe and re
+2,deployment,C2P8,neutral,neutral,1,0,,no,12055,"their rapidly growing size and computational requirements pose significant challenges in terms of training efficiency, memory footprint, and deploymen"
+2,deployment,C2P11,neutral,neutral,1,0,,no,12055,
+2,deployment,C2P12,entail,neutral,0,1,NO,no,12055,"when using such models in real-world applications, efficiency considerations are paramount"
+2,deployment,C2P13,neutral,neutral,1,0,,no,9758,We strongly prefer NAACL for logistical reasons; if NAACL is not possible then we would be open to EMNLP instead.
+2,deployment,C2P15,neutral,neutral,1,0,,no,12055,This shows the potential of our method to enable reliable performance in small models that are feasible for use in real-world applications.
+2,annotation_cost,C2P1,entail,neutral,0,1,YES,yes,12055,"the human annotation approach is difficult to scale since collecting annotations on a wide range of tasks is expensive, time consuming"
+2,annotation_cost,C2P6,neutral,neutral,1,0,,no,12055,
+2,annotation_cost,C2P8,neutral,neutral,1,0,,no,12055,
+2,annotation_cost,C2P15,entail,partial,0,1,YES,yes,12055,This makes it viable to obtain CoT training data in low-resource scenarios
+2,annotation_cost,C2P19,neutral,neutral,1,0,,no,12055,The financial cost of Examples-Only search is considerably higher than GRIPS.
+3,ablation,C3P2,neutral,neutral,1,0,,no,12055,"we additionally experiment with (1) training a randomly-initialized DAN model with D train , without knowledge distillation (""from scratch"")"
+3,ablation,C3P10,entail,neutral,0,1,YES,yes,12055,The duplication component's importance in formula (1) can be evaluated by modifying the value of c in the term frequency equation
+3,ablation,C3P14,entail,entail,1,0,,yes,12055,We investigate how dropping AF layers impacts the performance on the four smallest GLUE tasks
+3,code_release,C3P3,neutral,entail,0,1,NO,no,12055,The code will be publicly available.
+3,code_release,C3P16,neutral,neutral,1,0,,no,11790,"ConceptNet -available at www.conceptnet.org -is the largest freely available, machineuseable commonsense resource."
+3,multilingual,C3P6,neutral,neutral,1,0,,no,12055,We demonstrate the effectiveness of this approach on four classification and regression tasks.
+3,multilingual,C3P7,contradict,neutral,0,0,,no,11778,it remains for future work in long-range transformer evaluation to extend our analysis into multilingual conditions
+3,multilingual,C3P13,neutral,neutral,1,0,,no,12055,"corpora development in multiple languages (Zeyrek and Webber, 2008;Meyer et al., 2011;...)"
+3,multilingual,C3P14,neutral,neutral,1,0,,no,12055,"Adapters have been shown to work well for machine translation (Bapna and Firat, 2019), cross-lingual transfer (Pfeiffer et al., 2020b"
+3,multilingual,C3P16,neutral,neutral,1,0,,no,11790,
+3,multilingual,C3P17,neutral,neutral,1,0,,no,12055,
+3,multilingual,C3P19,entail,neutral,0,1,YES,yes,12055,le travail se concentre sur le francais et l'allemand
+3,multilingual,C3P20,neutral,neutral,1,0,,no,12055,
+3,efficiency,C3P5,entail,neutral,0,1,YES,yes,12055,"On the right half of Figure 5, we plot the speed of different attention types vs. the sequence length"
+3,efficiency,C3P10,neutral,neutral,1,0,,no,12055,
+3,efficiency,C3P15,neutral,neutral,1,0,,no,12055,we plan to capitalize from our results to build systems that can effectively trade-off efficiency for accuracy
+3,significance,C3P3,entail,neutral,0,1,YES,yes,12055,The mean and standard derivation across different runs are also provided in Table 14.
+3,significance,C3P6,entail,partial,0,1,YES,yes,12055,we report the marginalized results over 25 random trials... Shaded regions show the 16-84th percentiles across trials.
+3,significance,C3P8,neutral,partial,0,0,,no,12055,"Pearson's R values for relevant importance metric (model difference, model predictions) and feature group alignment are presented with p-values."
+3,significance,C3P13,neutral,partial,0,0,,no,12055,the differences in accuracy were not significant between indomain and out-of-domain data
+3,fine_tuning,C3P5,neutral,neutral,1,0,,no,12055,
+3,fine_tuning,C3P6,entail,partial,0,1,YES,yes,12055,For each task we fix a pre-trained F and train the early and meta classifiers.
+3,fine_tuning,C3P7,entail,neutral,0,1,YES,yes,12055,"Instead of training the performer model from the checkpoints of SpanBERT, we directly replace some layers from a fine-tuned SpanBERT model with Perfor"
+3,fine_tuning,C3P10,neutral,neutral,1,0,,no,11803,
+3,fine_tuning,C3P15,entail,neutral,0,1,YES,yes,12055,"We train for three epochs, with an evaluation checkpoint every 500 and 2500 training steps for global and local models"
+3,zero_few_shot,C3P4,neutral,neutral,1,0,,no,11685,
+3,zero_few_shot,C3P6,neutral,neutral,1,0,,no,12055,Language models are few-shot learners
+3,zero_few_shot,C3P12,neutral,neutral,1,0,,no,12055,"This behavior occurs both in models trained on collections of few-shot learning problems (Chen et al., 2022;Min et al., 2022)"
+3,zero_few_shot,C3P13,neutral,neutral,1,0,,no,12055,"Zero-shot transfer for implicit discourse relation classification. Murathan Kurfalı, Robertöstling"
+3,zero_few_shot,C3P14,neutral,neutral,1,0,,no,12055,
+3,zero_few_shot,C3P17,neutral,neutral,1,0,,no,12055,
+3,zero_few_shot,C3P20,neutral,neutral,1,0,,no,12055,Language models are few-shot learners. Tom B Brown
+3,knowledge_distill,C3P1,neutral,neutral,1,0,,no,12055,"Some proposed solutions rely on leveraging knowledge distillation in the pre-training step, e.g., (Sanh et al., 2019)"
+3,knowledge_distill,C3P6,neutral,neutral,1,0,,no,12055,
+3,knowledge_distill,C3P12,neutral,neutral,1,0,,no,12055,
+3,knowledge_distill,C3P14,neutral,neutral,1,0,,no,12055,"Smaller and faster models that are either distilled or trained from scratch (Sanh et al., 2019;Sun et al., 2020;Bai et al., 2021;Wang et al., 2020)."
+3,knowledge_distill,C3P17,neutral,neutral,1,0,,no,12055,It helps to distill irrelevant context latents and stable training procedure.
+3,proof_theory,C3P9,neutral,neutral,1,0,,no,12055,This method is proof against the 'inkstand in pen' point of Bar-Hillel's mentioned earlier.
+3,proof_theory,C3P18,neutral,neutral,1,0,,no,11149,
+3,proof_theory,C3P19,neutral,neutral,1,0,,no,12055,
+3,safety_bias,C3P1,neutral,neutral,1,0,,no,12055,
+3,safety_bias,C3P3,neutral,neutral,1,0,,no,12055,
+3,safety_bias,C3P7,neutral,neutral,1,0,,no,12055,Experimental Bias Due to the lack of pretrained checkpoints
+3,safety_bias,C3P11,neutral,neutral,1,0,,no,12055,
+3,safety_bias,C3P12,neutral,neutral,1,0,,no,12055,
+3,safety_bias,C3P13,neutral,neutral,1,0,,no,12055,
+3,safety_bias,C3P15,neutral,neutral,1,0,,no,12055,Schuster et al. (2019) proposed a debiased symmetric test set
+3,safety_bias,C3P16,neutral,neutral,1,0,,no,11790,
+3,safety_bias,C3P17,neutral,neutral,1,0,,no,12055,
+3,safety_bias,C3P20,neutral,neutral,1,0,,no,12055,
+3,deployment,C3P2,neutral,neutral,1,0,,no,12055,the user may wish to deploy a faster version of this model
+3,deployment,C3P14,neutral,neutral,1,0,,no,12055,This can have a considerable impact when deployed at scale.
+3,deployment,C3P15,neutral,neutral,1,0,,no,11880,

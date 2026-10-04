@@ -1,0 +1,258 @@
+{
+ "source": "三判官多数票（A deepseek-chat / B glm-4-flash / C deepseek-reasoner）",
+ "facet_defs": "_r2_facets_v2.py::F2（操作化定义）",
+ "criteria": "正例率∈[0.1,0.9] ∧ 正例≥2 ∧ 负例≥2",
+ "core_facets": [
+  "ablation",
+  "annotation_cost",
+  "case_study",
+  "code_release",
+  "efficiency",
+  "error_analysis",
+  "fine_tuning",
+  "human_eval",
+  "significance",
+  "zero_few_shot"
+ ],
+ "extended_facets": [
+  "knowledge_distill",
+  "multilingual",
+  "prompt_eng",
+  "proof_theory"
+ ],
+ "dropped_facets": [
+  "context_length",
+  "deployment",
+  "new_dataset",
+  "rl_training",
+  "safety_bias"
+ ],
+ "n_pairs": 451,
+ "n_pos": 132,
+ "per_combo": {
+  "1|ablation": {
+   "n": 16,
+   "n_pos": 7,
+   "rate": 0.438,
+   "disagree_rate": 0.312,
+   "n_anchor": 7,
+   "tier": "core"
+  },
+  "1|annotation_cost": {
+   "n": 16,
+   "n_pos": 2,
+   "rate": 0.125,
+   "disagree_rate": 0.125,
+   "n_anchor": 2,
+   "tier": "core"
+  },
+  "1|case_study": {
+   "n": 16,
+   "n_pos": 4,
+   "rate": 0.25,
+   "disagree_rate": 0.25,
+   "n_anchor": 4,
+   "tier": "core"
+  },
+  "1|code_release": {
+   "n": 16,
+   "n_pos": 9,
+   "rate": 0.562,
+   "disagree_rate": 0.125,
+   "n_anchor": 13,
+   "tier": "core"
+  },
+  "1|error_analysis": {
+   "n": 16,
+   "n_pos": 3,
+   "rate": 0.188,
+   "disagree_rate": 0.0,
+   "n_anchor": 2,
+   "tier": "core"
+  },
+  "1|fine_tuning": {
+   "n": 16,
+   "n_pos": 12,
+   "rate": 0.75,
+   "disagree_rate": 0.5,
+   "n_anchor": 11,
+   "tier": "core"
+  },
+  "1|human_eval": {
+   "n": 16,
+   "n_pos": 3,
+   "rate": 0.188,
+   "disagree_rate": 0.312,
+   "n_anchor": 9,
+   "tier": "core"
+  },
+  "1|significance": {
+   "n": 16,
+   "n_pos": 3,
+   "rate": 0.188,
+   "disagree_rate": 0.25,
+   "n_anchor": 2,
+   "tier": "core"
+  },
+  "1|zero_few_shot": {
+   "n": 16,
+   "n_pos": 5,
+   "rate": 0.312,
+   "disagree_rate": 0.312,
+   "n_anchor": 6,
+   "tier": "core"
+  },
+  "2|ablation": {
+   "n": 18,
+   "n_pos": 6,
+   "rate": 0.333,
+   "disagree_rate": 0.278,
+   "n_anchor": 6,
+   "tier": "core"
+  },
+  "2|annotation_cost": {
+   "n": 18,
+   "n_pos": 2,
+   "rate": 0.111,
+   "disagree_rate": 0.278,
+   "n_anchor": 2,
+   "tier": "core"
+  },
+  "2|code_release": {
+   "n": 18,
+   "n_pos": 8,
+   "rate": 0.444,
+   "disagree_rate": 0.0,
+   "n_anchor": 9,
+   "tier": "core"
+  },
+  "2|efficiency": {
+   "n": 18,
+   "n_pos": 2,
+   "rate": 0.111,
+   "disagree_rate": 0.222,
+   "n_anchor": 4,
+   "tier": "core"
+  },
+  "2|error_analysis": {
+   "n": 18,
+   "n_pos": 3,
+   "rate": 0.167,
+   "disagree_rate": 0.222,
+   "n_anchor": 2,
+   "tier": "core"
+  },
+  "2|fine_tuning": {
+   "n": 18,
+   "n_pos": 10,
+   "rate": 0.556,
+   "disagree_rate": 0.167,
+   "n_anchor": 13,
+   "tier": "core"
+  },
+  "2|human_eval": {
+   "n": 18,
+   "n_pos": 3,
+   "rate": 0.167,
+   "disagree_rate": 0.0,
+   "n_anchor": 8,
+   "tier": "core"
+  },
+  "2|knowledge_distill": {
+   "n": 18,
+   "n_pos": 2,
+   "rate": 0.111,
+   "disagree_rate": 0.167,
+   "n_anchor": 4,
+   "tier": "ext"
+  },
+  "2|multilingual": {
+   "n": 18,
+   "n_pos": 2,
+   "rate": 0.111,
+   "disagree_rate": 0.222,
+   "n_anchor": 4,
+   "tier": "ext"
+  },
+  "2|prompt_eng": {
+   "n": 18,
+   "n_pos": 3,
+   "rate": 0.167,
+   "disagree_rate": 0.222,
+   "n_anchor": 2,
+   "tier": "ext"
+  },
+  "2|significance": {
+   "n": 18,
+   "n_pos": 7,
+   "rate": 0.389,
+   "disagree_rate": 0.444,
+   "n_anchor": 7,
+   "tier": "core"
+  },
+  "2|zero_few_shot": {
+   "n": 18,
+   "n_pos": 4,
+   "rate": 0.222,
+   "disagree_rate": 0.222,
+   "n_anchor": 9,
+   "tier": "core"
+  },
+  "3|ablation": {
+   "n": 13,
+   "n_pos": 5,
+   "rate": 0.385,
+   "disagree_rate": 0.154,
+   "n_anchor": 3,
+   "tier": "core"
+  },
+  "3|case_study": {
+   "n": 13,
+   "n_pos": 2,
+   "rate": 0.154,
+   "disagree_rate": 0.231,
+   "n_anchor": 3,
+   "tier": "core"
+  },
+  "3|code_release": {
+   "n": 13,
+   "n_pos": 10,
+   "rate": 0.769,
+   "disagree_rate": 0.308,
+   "n_anchor": 10,
+   "tier": "core"
+  },
+  "3|efficiency": {
+   "n": 13,
+   "n_pos": 4,
+   "rate": 0.308,
+   "disagree_rate": 0.308,
+   "n_anchor": 6,
+   "tier": "core"
+  },
+  "3|fine_tuning": {
+   "n": 13,
+   "n_pos": 7,
+   "rate": 0.538,
+   "disagree_rate": 0.385,
+   "n_anchor": 8,
+   "tier": "core"
+  },
+  "3|proof_theory": {
+   "n": 13,
+   "n_pos": 2,
+   "rate": 0.154,
+   "disagree_rate": 0.077,
+   "n_anchor": 2,
+   "tier": "ext"
+  },
+  "3|significance": {
+   "n": 13,
+   "n_pos": 2,
+   "rate": 0.154,
+   "disagree_rate": 0.154,
+   "n_anchor": 5,
+   "tier": "core"
+  }
+ }
+}

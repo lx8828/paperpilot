@@ -1,0 +1,893 @@
+﻿key,cluster,facet,docid,kind,anchor_gold,new_gold,third_label,third_conf,third_quote,third_reason,third_err,model,third_yes,third_err_s,agree3
+1|ablation|C1P1,1,ablation,C1P1,removed,True,False,entail,0.85,Ablation studies are mostly shown on the NQ dataset to understand the drawbacks of GAR since it achieves better performance on Trivia.,本文明确报告了消融研究及其结果。,,deepseek-reasoner,True,,False
+1|annotation_cost|C1P6,1,annotation_cost,C1P6,removed,True,False,entail,0.9,"motivated by the need to reduce annotation cost, we assume that there is only a fixed budget for annotating K examples",本文提出JointEnc采样法降低标注成本并研究其效果,,deepseek-reasoner,True,,False
+1|annotation_cost|C1P7,1,annotation_cost,C1P7,removed,True,False,entail,0.9,we leverage a popular and effective reading comprehension (or QA) model ... to predict the answer ... and use its answer quality ... as rewards to fine-tune our model,本文用自动QA模型代理人工反馈作奖励，并报告方法有效性，属降低人工成本的自动手段。,,deepseek-reasoner,True,,False
+1|case_study|C1P16,1,case_study,C1P16,removed,True,False,entail,0.6,We redirect readers to other interesting analyses (e.g. an analysis of computational cost) and case studies in Appendices B-E.,本文自述其附录含案例研究，属本文所做,,deepseek-reasoner,True,,False
+1|code_release|C1P14,1,code_release,C1P14,removed,True,False,neutral,0.95,,证据未提及作者自己的代码/模型/数据链接。,,deepseek-reasoner,False,,True
+1|code_release|C1P18,1,code_release,C1P18,removed,True,False,neutral,0.95,"We use the data released on the repository of FiD1, containing question-answer pairs and top-100 passages retrieved by FiD-KD.",仅有第三方FiD仓库链接，未见本文自有代码/数据发布,,deepseek-reasoner,False,,True
+1|code_release|C1P19,1,code_release,C1P19,removed,True,False,neutral,0.95,"1pytorch.org
+2github.com/OpenNMT/OpenNMT-py",仅列出第三方工具链接，未提供作者自己的代码/数据链接,,deepseek-reasoner,False,,True
+1|code_release|C1P4,1,code_release,C1P4,removed,True,False,neutral,0.85,"Full reading list:
+https://github.com/wyu97/KENLG-Reading",该链接是阅读清单而非作者代码/模型/数据,,deepseek-reasoner,False,,True
+1|context_length|C1P6,1,context_length,C1P6,removed,True,False,neutral,0.95,we also use arguments within a maximum context window of the length equal to the average of ACE05 sentence length,仅提及上下文窗口限制，未提出长输入机制或报告长输入效果,,deepseek-reasoner,False,,True
+1|deployment|C1P1,1,deployment,C1P1,removed,True,False,neutral,0.95,Open-domain question answering (OpenQA) aims to answer factoid questions without a pre-specified domain and has numerous real-world applications.,仅有真实应用价值等动机性表述，未提任何线上部署。,,deepseek-reasoner,False,,True
+1|deployment|C1P12,1,deployment,C1P12,removed,True,False,neutral,0.95,for its value in real-world applications,仅泛泛提实际应用价值，未提本文系统上线部署,,deepseek-reasoner,False,,True
+1|deployment|C1P14,1,deployment,C1P14,removed,True,False,neutral,0.9,"as well as perplexity.ai, an InstructGPT-based production search system",仅提到第三方基线是线上系统，未提本文系统上线部署,,deepseek-reasoner,False,,True
+1|deployment|C1P4,1,deployment,C1P4,removed,True,False,neutral,0.95,we will briefly present how knowledge-enriched NLG is being used in several conversational AI systems including Amazon Alexa.,描述的是他人商业系统的应用，非本文自己部署,,deepseek-reasoner,False,,True
+1|efficiency|C1P12,1,efficiency,C1P12,removed,True,False,neutral,0.65,We set K=5 since it shows the best balance between performance and latency by both RAG and RAGE.,仅定性提latency，未给任何推理效率数值，成本在附录,,deepseek-reasoner,False,,True
+1|efficiency|C1P13,1,efficiency,C1P13,removed,True,False,neutral,0.95,"During inference time, we use fixed encodings to generate the answers.",仅提推理方式，未报告任何效率数值。,,deepseek-reasoner,False,,True
+1|efficiency|C1P14,1,efficiency,C1P14,removed,True,False,neutral,0.82,,片段仅描述推理流程与反思标记，未报告任何效率数值,,deepseek-reasoner,False,,True
+1|fine_tuning|C1P15,1,fine_tuning,C1P15,removed,True,False,partial,0.55,"We use a T5 (Raffel et al., 2020) model fine-tuned on (q, c, a) triples from Natural Questions",暗示使用微调模型，但未明说本文自己做了微调,,deepseek-reasoner,False,,True
+1|fine_tuning|C1P2,1,fine_tuning,C1P2,removed,True,False,neutral,0.72,The way of fine-tuning PLMs using only input-output pairs of target data is often referred to as close-book setting,微调仅作背景定义，未表明本文在自己数据上微调并报告,,deepseek-reasoner,False,,True
+1|human_eval|C1P11,1,human_eval,C1P11,removed,True,False,entail,0.85,"we ask human annotators to provide different prompts, in order to make the generated document diverse",本文明确让人工标注者提供提示并报告实验效果,,deepseek-reasoner,True,,False
+1|human_eval|C1P14,1,human_eval,C1P14,removed,True,False,entail,0.85,Manual assessment reveals that GPT-4 reflection token predictions show high agreement with human evaluations.,本文进行了人工评估并报告了高一致性结果,,deepseek-reasoner,True,,False
+1|human_eval|C1P16,1,human_eval,C1P16,removed,True,False,neutral,0.95,We follow Marino et al. (2019) to compute VQA Scores using pre-processed human annotations S,仅使用已有OKVQA人工标注，未表明本文自己收集或做人工评估,,deepseek-reasoner,False,,True
+1|human_eval|C1P17,1,human_eval,C1P17,removed,True,False,neutral,0.95,we are attempting to mimic conversational interactions with publicly available human-annotated data based on Wikipedia,仅使用公开人工标注数据，未做本文人工评估,,deepseek-reasoner,False,,True
+1|human_eval|C1P2,1,human_eval,C1P2,removed,True,False,neutral,0.9,"it could be provided by human annotations (Dinan et al., 2019)",仅提及他人可提供人工标注，本文未做人工评估,,deepseek-reasoner,False,,True
+1|human_eval|C1P4,1,human_eval,C1P4,removed,True,False,neutral,0.95,"developing effective automatic evaluation metrics, and rigorous and efficient human evaluation procedures",仅提及未来方向，未收集或报告人工判断结果。,,deepseek-reasoner,False,,True
+1|multilingual|C1P4,1,multilingual,C1P4,removed,True,False,neutral,0.9,starting from the data-to-text tasks such as Wikibio generation tasks in low-resource and multilingual setting,仅综述提及多语言任务，无本文非英语实验数字,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P14,1,prompt_eng,C1P14,removed,True,False,neutral,0.95,"For instruction-tuned LMs, we use the official system prompt or instruction format used during training if publicly available.",仅提及基线使用官方prompt，无本文模板设计或对比消融。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P9,1,prompt_eng,C1P9,removed,True,False,neutral,0.9,,未提及提示模板设计或模板对比/消融实验,,deepseek-reasoner,False,,True
+1|rl_training|C1P1,1,rl_training,C1P1,removed,True,False,contradict,0.92,GAR does not require external resources or downstream feedback via RL as supervision,原文明确说本文方法不需要RL监督，未做RL训练。,,deepseek-reasoner,False,,True
+1|rl_training|C1P14,1,rl_training,C1P14,removed,True,False,contradict,0.7,SELF-RAG trains an arbitrary LM to generate text with reflection tokens by unifying them as the next token prediction from the expanded model vocabulary.,证据表明本文训练方式是下一词预测监督学习，RL仅作灵感来源,,deepseek-reasoner,False,,True
+1|rl_training|C1P19,1,rl_training,C1P19,removed,True,False,neutral,0.95,Their model is trained using supervised learning combined with reinforcement learning to maximize several auxiliary goals,RL训练是Yuan et al.的模型，本文用SGD，未做RL,,deepseek-reasoner,False,,True
+1|safety_bias|C1P11,1,safety_bias,C1P11,removed,True,False,neutral,0.7,the use of a model to generate contextual documents may further permeate existing biases in common models,伦理声明仅泛泛提偏见并引他人工作，无专门实验或结果,,deepseek-reasoner,False,,True
+1|safety_bias|C1P15,1,safety_bias,C1P15,removed,True,False,neutral,0.95,we investigate whether training towards one type of change induces generalization bias,仅讨论泛化偏差与鲁棒性，未测毒性/公平/偏见,,deepseek-reasoner,False,,True
+1|safety_bias|C1P9,1,safety_bias,C1P9,removed,True,False,neutral,0.95,which ideally minimizes the bias of train-test overlapping,仅提数据重叠偏差，未评估安全/公平/社会偏见。,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P17,1,zero_few_shot,C1P17,removed,True,False,neutral,0.95,we can use templates or use a few-shot Natural Language Generation (NLG) model such as T5,仅提用few-shot NLG生成问题，未报告zero/few-shot设置下的结果,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P11,2,annotation_cost,C2P11,removed,True,False,neutral,0.9,The inputs and labels are solely human-generated,仅描述人类专家标注，未涉及自动/廉价标注降本手段及其效果。,,deepseek-reasoner,False,,True
+2|case_study|C2P7,2,case_study,C2P7,removed,True,False,partial,0.7,we conduct a case study on the LM fine-tuned on the QQP dataset,有案例研究，但仅可视化隐藏表示与平均置信度，非逐例展示讨论具体输入。,,deepseek-reasoner,False,,True
+2|code_release|C2P12,2,code_release,C2P12,removed,True,False,neutral,0.78,The code to run our experiments was developed upon Schick and Schütze's code: https://github.com/timoschick/pet,仅给出他人PET仓库链接，未提供本文自己的代码/数据链接,,deepseek-reasoner,False,,True
+2|context_length|C2P6,2,context_length,C2P6,removed,True,False,contradict,0.85,we leave out five evaluation tasks where the maximum task input length exceeds 230 BPE tokens,因长度限制砍掉任务，长上下文仅列为未来方向,,deepseek-reasoner,False,,True
+2|deployment|C2P11,2,deployment,C2P11,removed,True,False,neutral,0.9,"they are not specifically designed for assessment, thus making it difficult to deploy them directly as evaluators",证据仅讨论评估方法与局限，未提及本文系统在真实产品/线上环境部署,,deepseek-reasoner,False,,True
+2|deployment|C2P12,2,deployment,C2P12,removed,True,False,neutral,0.95,"when serving millions of users, inference happens very frequently and on large-scale",仅以真实应用为动机，未描述本文系统的实际部署,,deepseek-reasoner,False,,True
+2|deployment|C2P13,2,deployment,C2P13,removed,True,False,neutral,0.95,The tutorial is mostly introductory—we will explain the literature on computational models of language acquisition and processing.,未提及本文系统在生产/线上环境部署,,deepseek-reasoner,False,,True
+2|deployment|C2P15,2,deployment,C2P15,removed,True,False,neutral,0.92,These models are prohibitive to deploy at scale due to overwhelming computational requirements and inference costs,仅以部署成本为动机，未描述自身系统实际上线部署,,deepseek-reasoner,False,,True
+2|deployment|C2P7,2,deployment,C2P7,removed,True,False,neutral,0.95,which creates obstacles and concerns for their deployment in real-world applications,仅泛泛提及现实应用与部署障碍，未描述本文实际部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P8,2,deployment,C2P8,removed,True,False,neutral,0.97,"pose significant challenges in terms of training efficiency, memory footprint, and deployment costs.",仅以部署成本为动机，未描述自身系统上线部署。,,deepseek-reasoner,False,,True
+2|efficiency|C2P1,2,efficiency,C2P1,removed,True,False,neutral,0.95,,证据只有准确率/胜率等指标，未见推理效率数值,,deepseek-reasoner,False,,True
+2|efficiency|C2P15,2,efficiency,C2P15,removed,True,False,neutral,0.95,reduce model size and latency,仅提及延迟概念，无本文报告的具体效率数值,,deepseek-reasoner,False,,True
+2|efficiency|C2P8,2,efficiency,C2P8,removed,True,False,entail,0.9,utilizing less than 30% of FLOPs per token,明确报告了推理时每token的FLOPs占比，属推理效率数值。,,deepseek-reasoner,True,,False
+2|fine_tuning|C2P10,2,fine_tuning,C2P10,removed,True,False,neutral,0.92,"recent work has considered fine-tuning (Ouyang et al., 2022; Ziegler et al., 2019)",微调仅作为他人工作被引用，本文未做微调,,deepseek-reasoner,False,,True
+2|fine_tuning|C2P16,2,fine_tuning,C2P16,removed,True,False,neutral,0.9,avoids resource-intensive fine-tuning of large pre-trained models by ensembling them with small fine-tuned models,证据只提出EFT模拟微调，未说本文自己微调并报告训练,,deepseek-reasoner,False,,True
+2|fine_tuning|C2P9,2,fine_tuning,C2P9,removed,True,False,contradict,0.95,the action output module and observation encoder MLP are the only trained components and all other components are frozen.,证据表明仅用RL训练动作模块，LLM冻结，未做微调,,deepseek-reasoner,False,,True
+2|human_eval|C2P1,2,human_eval,C2P1,removed,True,False,neutral,0.95,"Similar to observations in LIMA using human-annotated data (Zhou et al., 2023)",仅引用他人人工标注，本文用自动评估,,deepseek-reasoner,False,,True
+2|human_eval|C2P10,2,human_eval,C2P10,removed,True,False,neutral,0.6,"Lin et al. (2022) used human evaluation to assess the model performance... In our experiments, we rely on their fine-tuned GPT-judge and GPT-info to evaluate the scores.",人工评估为Lin等他人所做，本文改用自动评判,,deepseek-reasoner,False,,True
+2|human_eval|C2P11,2,human_eval,C2P11,removed,True,False,neutral,0.95,"Current methods often involve either crowd-sourcing work or API usage, which could be costly, and time-consuming.",仅提及他人方法涉及人工标注/众包，未说明本文收集并报告人工判断。,,deepseek-reasoner,False,,True
+2|human_eval|C2P15,2,human_eval,C2P15,removed,True,False,neutral,0.9,This boosts the performance of student models without any additional human annotation.,只提到无需人工标注，未做人工评估或标注,,deepseek-reasoner,False,,True
+2|human_eval|C2P20,2,human_eval,C2P20,removed,True,False,neutral,0.95,Och and Ney (2003) provided annotators two options to specify alignments,人工标注是引用他人工作，本文未收集或报告人工评估。,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P1,2,knowledge_distill,C2P1,removed,True,False,contradict,0.7,outperforms all other LLaMa-based models on the Alpaca leaderboard not relying on distillation data,本文方法为自对齐/指令回译，明确不依赖蒸馏数据,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P7,2,knowledge_distill,C2P7,removed,True,False,neutral,0.95,"including knowledge distillation from deep ensembles (Guo et al., 2021)",知识蒸馏是引用他人工作，本文未用教师指导学生模型。,,deepseek-reasoner,False,,True
+2|multilingual|C2P3,2,multilingual,C2P3,removed,True,False,neutral,0.95,"M. S. Dryer and Martin Haspelmath. 2013. The World Atlas of Linguistic Structures. Max Planck Digital Library, München.",片段全为参考文献列表，未涉及本文自身实验。,,deepseek-reasoner,False,,True
+2|multilingual|C2P4,2,multilingual,C2P4,removed,True,False,entail,0.8,We perform experiments on five language pairs and demonstrate that our model can consistently outperform previous state-of-the-art models,本文在五个语言对（含非英语）上实验并报告结果。,,deepseek-reasoner,True,,False
+2|prompt_eng|C2P8,2,prompt_eng,C2P8,removed,True,False,neutral,0.65,"The evaluation metric across all benchmarks is few-shot prompted accuracy, specifically the exact match.",仅描述评测用固定提示方式，无模板设计或对比消融,,deepseek-reasoner,False,,True
+2|rl_training|C2P1,2,rl_training,C2P1,removed,True,False,contradict,0.7,"We use the same hyperparameters as existing supervised finetuning (SFT) methods (Zhou et al., 2023; Touvron et al., 2023a)",本文模型Humpback用监督微调训练，RLHF仅为他人基线与对比项,,deepseek-reasoner,False,,True
+2|rl_training|C2P16,2,rl_training,C2P16,removed,True,False,neutral,0.9,"can be justified through either a reinforcement learning (Rafailov et al., 2023) or Bayesian inference (Korbak et al., 2022) framework",仅引用他人RL框架作论证，未自己做RL训练,,deepseek-reasoner,False,,True
+2|safety_bias|C2P1,2,safety_bias,C2P1,removed,True,False,neutral,0.95,"e.g. writing, coding, mathematical reasoning, information seeking, advice, roleplay, safety, etc.",仅将safety列为任务类别，无专门评估或具体结果。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P11,2,safety_bias,C2P11,removed,True,False,neutral,0.9,"To address position bias, we also filter out inconsistent samples when swapping the orders of responses in the prompt.",仅提位置偏见过滤，无安全/公平/偏见评估或结果,,deepseek-reasoner,False,,True
+2|safety_bias|C2P15,2,safety_bias,C2P15,removed,True,False,partial,0.8,Our work presents various challenges and opportunities in terms of bias and toxicity in language models.,伦理声明专门讨论偏见/毒性，但无具体实验结果或分析。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P6,2,safety_bias,C2P6,removed,True,False,neutral,0.9,"Zhao et al. (2021) observed that LMs suffer from the “recency bias”, which assigns higher probability to labels that appear closer to the target input.",仅提例序敏感（recency bias，且为引用他人），未评估安全/公平/偏见,,deepseek-reasoner,False,,True
+2|safety_bias|C2P7,2,safety_bias,C2P7,removed,True,False,neutral,0.9,,仅泛提安全关键域与校准，未专门评估毒性/公平/偏见,,deepseek-reasoner,False,,True
+2|significance|C2P18,2,significance,C2P18,removed,True,False,neutral,0.85,The standard deviation of the values of the bigram mutual information vector of an n-gram is a valid measure of the confidence of these values.,该标准差是互信息向量的，非重复运行/种子的波动或显著性检验,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P12,2,zero_few_shot,C2P12,removed,True,False,neutral,0.95,"was found to outperform standard fine-tuning when using small train sets (Schick and Schütze, 2021d)",该句为引用他人发现，未表明本文报告zero/few-shot结果,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P17,2,zero_few_shot,C2P17,removed,True,False,entail,0.9,which is also known as the setting of zero-shot cross-lingual fine-tuning,本文跨语言迁移即零样本评估，并报告了XTREME结果,,deepseek-reasoner,True,,False
+2|zero_few_shot|C2P6,2,zero_few_shot,C2P6,removed,True,False,partial,0.5,"We focus on the few-shot classification problem, where the model first learns from a set of training tasks",只显示few-shot问题设定，未明确报告结果，也未涉及zero-shot,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P9,2,zero_few_shot,C2P9,removed,True,False,neutral,0.95,1.7x the success rate of other common learned baselines or zero-shot applications of LLMs,zero-shot 仅作对比基线，未报告本文在零/少样本设置下的结果。,,deepseek-reasoner,False,,True
+3|case_study|C3P13,3,case_study,C3P13,removed,True,False,neutral,0.9,we present a qualitative analysis of the impact of the practical choices that these models make,仅提到总体定性分析，未提逐例展示与讨论,,deepseek-reasoner,False,,True
+3|context_length|C3P13,3,context_length,C3P13,removed,True,False,neutral,0.95,This observation suggests the need for new computational experiments that can identify the right context window,长输入仅作为未来方向提及，本文未提出机制或实验,,deepseek-reasoner,False,,True
+3|context_length|C3P2,3,context_length,C3P2,removed,True,False,neutral,0.85,"It is most significant on Civil Comments (1091x), Wiki Toxic (668x) and IMDB dataset (607x), as they have longer input sequences",仅报告长序列上速度提升，未以长输入为目标提出机制,,deepseek-reasoner,False,,True
+3|context_length|C3P7,3,context_length,C3P7,removed,True,False,partial,0.55,"Transformers We consider three approaches: 1) pattern-based: Longformer (Beltagy et al., 2020), and BigBird (Zaheer et al., 2020)",本文用现成长上下文模型做长输入评测，但未提出新机制,,deepseek-reasoner,False,,True
+3|deployment|C3P14,3,deployment,C3P14,removed,True,False,neutral,0.92,We therefore recommend performing Adaper-Fusion pruning before deploying these models in practice.,仅建议部署前剪枝，未描述本文系统实际线上部署,,deepseek-reasoner,False,,True
+3|deployment|C3P2,3,deployment,C3P2,removed,True,False,neutral,0.95,we modify our experiment setting to a practical and privacy-preserving one,仅修改实验设置模拟实际场景，无本文实际部署证据,,deepseek-reasoner,False,,True
+3|efficiency|C3P1,3,efficiency,C3P1,removed,True,False,neutral,0.9,reduces computation by 37% with almost no impact on accuracy,仅提计算量减少37%，无时间/延迟/吞吐/FLOPs/显存具体数值,,deepseek-reasoner,False,,True
+3|efficiency|C3P20,3,efficiency,C3P20,removed,True,False,neutral,0.95,,片段未提及任何推理效率数值（时间/延迟/吞吐/FLOPs/显存）。,,deepseek-reasoner,False,,True
+3|fine_tuning|C3P1,3,fine_tuning,C3P1,removed,True,False,neutral,0.65,they can easily be applied to different tasks by just fine-tuning them on training data from the target domain/task,微调表述系泛述他人工作，未见本文自己微调及报告,,deepseek-reasoner,False,,True
+3|fine_tuning|C3P11,3,fine_tuning,C3P11,removed,True,False,neutral,0.9,fine-tuning a single BERT_BASE model on GPU can take hours,微调仅作为背景挑战提及，未表明本文执行微调。,,deepseek-reasoner,False,,True
+3|fine_tuning|C3P5,3,fine_tuning,C3P5,removed,True,False,neutral,0.9,cannot even be fine-tuned on a single GPU,仅提及他人模型难以微调，未报告本文自己微调,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P1,3,knowledge_distill,C3P1,removed,True,False,neutral,0.95,"Some proposed solutions rely on leveraging knowledge distillation in the pre-training step, e.g., (Sanh et al., 2019)",蒸馏仅作为他人工作被引用，未表明本文自己采用,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P17,3,knowledge_distill,C3P17,removed,True,False,neutral,0.9,The top-k self-attention is helpful in dependencies distillation.,仅提到依赖蒸馏，未涉及教师指导学生模型。,,deepseek-reasoner,False,,True
+3|multilingual|C3P14,3,multilingual,C3P14,removed,True,False,neutral,0.85,"cross-lingual transfer (Pfeiffer et al., 2020b, 2021b; Üstün et al., 2020; Vidoni et al., 2020; Ansell et al., 2021)",片段只提效率实验与引用的跨语言工作，无本文非英数据结果,,deepseek-reasoner,False,,True
+3|multilingual|C3P7,3,multilingual,C3P7,removed,True,False,contradict,0.92,it remains for future work in long range transformer evaluation to extend our analysis into multilingual conditions.,原文明确多语言评测留作未来工作，数据集偏英语,,deepseek-reasoner,False,,True
+3|safety_bias|C3P1,3,safety_bias,C3P1,removed,True,False,neutral,0.98,,证据仅涉及训练、实验与相关工作，未评估或分析安全/公平/偏见。,,deepseek-reasoner,False,,True
+3|safety_bias|C3P11,3,safety_bias,C3P11,removed,True,False,neutral,0.96,,全文只谈鲁棒性（长度/扰动）与局限，未涉及安全/公平/偏见评估。,,deepseek-reasoner,False,,True
+3|safety_bias|C3P13,3,safety_bias,C3P13,removed,True,False,neutral,0.85,this overrepresentation of Contingency.Cause in the predictions indicates a strong bias towards Contingency,文中bias指类别分布偏斜，非安全/公平/偏见评估,,deepseek-reasoner,False,,True
+3|safety_bias|C3P17,3,safety_bias,C3P17,removed,True,False,neutral,0.98,,全文聚焦熵模型与图像压缩，未涉及安全/公平/偏见讨论。,,deepseek-reasoner,False,,True
+3|safety_bias|C3P2,3,safety_bias,C3P2,removed,True,False,neutral,0.9,"We use Civil Comments (Borkan et al., 2019) and Wiki Toxic (Wulczyn et al., 2017) dataset for toxicity detection.",毒性仅作为下游分类任务数据集，未做安全/公平/偏见评估,,deepseek-reasoner,False,,True
+3|safety_bias|C3P20,3,safety_bias,C3P20,removed,True,False,neutral,0.95,"Simplicity bias, the tendency of machine learning algorithms to prefer simpler hypotheses among those consistent with the data",全文只讨论ICL的贝叶斯与简单性/归纳偏置，未涉及安全、公平、毒性。,,deepseek-reasoner,False,,True
+3|safety_bias|C3P7,3,safety_bias,C3P7,removed,True,False,neutral,0.88,"existing artifacts are biased towards English, as are many of the datasets employed in this study",仅提实验/英文偏向，未评测安全、公平或偏见,,deepseek-reasoner,False,,True
+3|significance|C3P13,3,significance,C3P13,removed,True,False,neutral,0.7,"reporting the maximum, the standard deviation, and # of sense types that were predicted 0% of the time",标准差为关系类别分布统计非重复运行；星号指未标注，非显著检验,,deepseek-reasoner,False,,True
+3|significance|C3P3,3,significance,C3P3,removed,True,False,neutral,0.95,,证据仅报告MSE/MAE，未提及标准差、方差、p值或显著性检验。,,deepseek-reasoner,False,,True
+3|significance|C3P8,3,significance,C3P8,removed,True,False,neutral,0.95,the standard deviation ofthe sentence length for completeness,标准差指句子长度特征，非重复运行波动或显著性检验,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P12,3,zero_few_shot,C3P12,removed,True,False,neutral,0.85,This behavior occurs both in models trained on collections of few-shot learning problems,仅背景提及few-shot，未报告本文zero/few-shot结果,,deepseek-reasoner,False,,True
+1|ablation|C1P12,1,ablation,C1P12,added,False,True,entail,0.98,our ablated LI-RAGE w/o joint training & relevance tokens attaining 42.19 EM,本文报告了去掉联合训练与相关性token后的消融性能。,,deepseek-reasoner,True,,True
+1|annotation_cost|C1P14,1,annotation_cost,C1P14,added,False,True,entail,0.95,We create supervised data by prompting GPT-4 to generate reflection tokens and then distill their knowledge into an in-house C.,本文用GPT-4自动生成监督数据替代人工标注，并报告其与人工/ GPT-4预测的高一致性,,deepseek-reasoner,True,,True
+1|annotation_cost|C1P15,1,annotation_cost,C1P15,added,False,True,entail,0.9,we develop a Retrieve-Generate-Filter (RGF) technique to create counterfactual evaluation and training data with minimal human supervision ... create counterfactuals that are fluen,本文用自动标注、极少人工监督生成数据，并报告低资源下可替代额外标注数据的效果,,deepseek-reasoner,True,,True
+1|case_study|C1P19,1,case_study,C1P19,added,False,True,entail,0.95,Table 4 provides examples of the effect of the copy mechanism... in Q14 and Q15 the model can effectively copy the right date into the question.,本文展示并逐例讨论Q14/Q15/Q17等具体实例,,deepseek-reasoner,True,,True
+1|error_analysis|C1P13,1,error_analysis,C1P13,added,False,True,entail,0.98,"We further categorize the image-query errors manually into the categories of Table 9. Counting is the most difficult question type, and constitutes 52% of the total errors, while o",本文手动分类错误并给出比例及具体错误案例，属于错误分析。,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P18,1,fine_tuning,C1P18,added,False,True,entail,0.85,"For a fair comparison, we retrained the FiD reader on the top-25 retrieved passages to match our experimental settings.",本文自行重训模型并在结果中报告了训练设置与结果,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P6,1,fine_tuning,C1P6,added,False,True,entail,0.9,we minimize the joint loss function during training,训练章节描述在自己数据上最小化损失，即微调。,,deepseek-reasoner,True,,True
+1|knowledge_distill|C1P14,1,knowledge_distill,C1P14,added,False,True,entail,0.95,We create supervised data by prompting GPT-4 to generate reflection tokens and then distill their knowledge into an in-house C.,本文明确用GPT-4作教师蒸馏到学生C并报告结果。,,deepseek-reasoner,True,,True
+1|new_dataset|C1P10,1,new_dataset,C1P10,added,False,True,partial,0.6,"Our final synthesized QA dataset consisted of 225,000 QA pairs.",详述构建新知识库与合成数据，但未提公开发布,,deepseek-reasoner,False,,False
+1|new_dataset|C1P17,1,new_dataset,C1P17,added,False,True,entail,0.8,we synthetically generated confounders based on a publicly available conversation dataset ... We have made the dataset publicly available,本文自建并公开数据集，并简述了构造方式,,deepseek-reasoner,True,,True
+1|significance|C1P13,1,significance,C1P13,added,False,True,entail,0.97,"All results reported are the medium score from three runs with different random seeds, and the variance of the Overall score is within 0.2%",本文报告了3次不同随机种子运行的方差,,deepseek-reasoner,True,,True
+1|significance|C1P16,1,significance,C1P16,added,False,True,neutral,0.95,The average of 3 runs with different seeds is reported.,仅报告3次运行均值，未给出标准差或显著性检验,,deepseek-reasoner,False,,False
+2|annotation_cost|C2P16,2,annotation_cost,C2P16,added,False,True,entail,0.95,This result suggests that GPT-4 is a significantly more accurate annotator of factual correctness than time-limited human crowdworkers.,本文使用GPT-4自动事实标注，并与人类比较报告效果。,,deepseek-reasoner,True,,True
+2|efficiency|C2P16,2,efficiency,C2P16,added,False,True,partial,0.6,speculative EFT decoding can accelerate sampling by nearly 2.5x when up-scaling Llama-2-7B-chat with Llama-2-70B-base,仅给出约2.5倍加速比，无时间/延迟/吞吐/FLOPs/显存具体数值,,deepseek-reasoner,False,,False
+2|efficiency|C2P4,2,efficiency,C2P4,added,False,True,entail,0.9,We measure both the extraction speed (#sentences/seconds) and the alignment quality (AER),本文测量了对齐提取速度（句/秒），属推理吞吐数值。,,deepseek-reasoner,True,,True
+2|error_analysis|C2P15,2,error_analysis,C2P15,added,False,True,entail,0.95,"To identify the strengths and weaknesses of our method, we perform a thorough sample study across all datasets and methods. Across all arithmetic tasks, we find that a large portio",本文对自身方法做了错误分类分析并给出具体错误类型,,deepseek-reasoner,True,,True
+2|new_dataset|C2P11,2,new_dataset,C2P11,added,False,True,partial,0.75,"To ensure the reliability of PandaLM, we create a test dataset that is labeled by humans and designed to align with human preferences for responses.",本文创建并说明了测试数据集构造方式，但未明确提及发布。,,deepseek-reasoner,False,,False
+2|prompt_eng|C2P1,2,prompt_eng,C2P1,added,False,True,entail,0.95,Table 5: Effect of system prompt. We report mean win rate and its standard error.,表5对比不同system prompt的胜率，属本文提示模板消融。,,deepseek-reasoner,True,,True
+2|prompt_eng|C2P6,2,prompt_eng,C2P6,added,False,True,entail,0.9,"We analyze the sensitivity of in-context tuning accuracy with respect to example ordering, example choices, and instruction wording, and compare it with prompting raw LMs.",本文分析了指令措辞对结果的影响，并与原始提示对比。,,deepseek-reasoner,True,,True
+2|significance|C2P2,2,significance,C2P2,added,False,True,entail,0.95,"Robust standard errors (clustered by country) of regression coefficients were reported, with t-tests being performed to determine when significantly non-zero.",本文对GPT-3数据做回归并报告标准误与t检验的显著性。,,deepseek-reasoner,True,,True
+3|ablation|C3P14,3,ablation,C3P14,added,False,True,entail,0.88,We investigate from how many lower layers we can remove AF at test time while still outperforming the corresponding singletask adapter,本文自己移除AF层/适配器并报告性能变化,,deepseek-reasoner,True,,True
+3|ablation|C3P2,3,ablation,C3P2,added,False,True,entail,0.8,Table 5: Variations made to the student model and the performance on IMDB. ? represents the design we adopt in our main experiments.,表5对自身学生模型各部分（池化、初始化等）做替换并报告性能,,deepseek-reasoner,True,,True
+3|case_study|C3P17,3,case_study,C3P17,added,False,True,entail,0.9,"In this section, we visualize the self-attentions mechanism of our Entroformer, focusing on a few points in the image.",可视化少数点并逐一分析注意力图，属逐例展示讨论。,,deepseek-reasoner,True,,True
+3|context_length|C3P5,3,context_length,C3P5,added,False,True,entail,0.85,much more memory-efficient and much faster on long sequences,本文提出LSH注意力与可逆残差，并报告长序列上更快更省内存的效果,,deepseek-reasoner,True,,True
+3|fine_tuning|C3P12,3,fine_tuning,C3P12,added,False,True,partial,0.6,"We train a Transformer decoder autoregresively on the objective in Eq. (8). For all experiments, we perform a hyperparameter search",本文自行训练模型并详述设置，但系从头训练而非微调/继续训练,,deepseek-reasoner,False,,False
+3|fine_tuning|C3P20,3,fine_tuning,C3P20,added,False,True,partial,0.55,"Several models are trained, one per task diversity $K \in \{ 2 ^ { 1 } , 2 ^ { 2 } , \cdot \cdot \cdot 2 ^ { 2 0 } \}$",本文确实训练模型并报告设置，但属从头元训练，非微调/继续训练,,deepseek-reasoner,False,,False
+3|new_dataset|C3P11,3,new_dataset,C3P11,added,False,True,partial,0.9,We create benchmark long document datasets (by pre-processing ACL Anthology 2014 papers and Wikipedia articles),创建并说明构造方式，但仅承诺将来公开，未发布,,deepseek-reasoner,False,,False
+2|code_release|C2P10,2,code_release,C2P10,agree_pos,True,True,entail,0.95,Our code is available at https://github.com/keirp/automatic\_prompt\_engineer.,脚注明确给出作者自己代码的GitHub链接,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P6,2,fine_tuning,C2P6,agree_pos,True,True,entail,0.97,we fine-tune a pre-trained language model (LM) to predict the target label given the input sequence on a collection of tasks,本文明确说明自己微调预训练LM进行元训练,,deepseek-reasoner,True,,True
+3|code_release|C3P1,3,code_release,C3P1,agree_pos,True,True,entail,0.7,1https://github.com/alexa/ wqa-cascade-transformers,脚注给出与本文同名的作者仓库链接，属自供资源。,,deepseek-reasoner,True,,True
+1|zero_few_shot|C1P11,1,zero_few_shot,C1P11,agree_pos,True,True,partial,0.6,We evaluate our proposed method on three different knowledge-intensive tasks and demonstrate its effectiveness on both zero-shot and supervised settings.,报告了zero-shot结果，但未提及few-shot设置,,deepseek-reasoner,False,,False
+2|zero_few_shot|C2P1,2,zero_few_shot,C2P1,agree_pos,True,True,entail,0.82,We compute zero-shot accuracy based on perplexity of the correct answer following LLaMa,本文自己做了zero-shot评测并在Table 4报告结果,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P1,2,fine_tuning,C2P1,agree_pos,True,True,entail,0.97,This data is then used to finetune a stronger model. Finetuning LLaMa on two iterations of our approach yields a model,本文用自建数据微调模型并报告了结果,,deepseek-reasoner,True,,True
+1|efficiency|C1P6,1,efficiency,C1P6,agree_pos,True,True,entail,0.95,"As for inference, it takes about 1GB of space.",Limitations 报告了推理显存(1GB)与推理速度(约2 examples/s)。,,deepseek-reasoner,True,,True
+2|code_release|C2P9,2,code_release,C2P9,agree_pos,True,True,entail,0.95,Video examples of LLaRP in Language Rearrangement and the code are at https://llm-rl.github.io.,摘要明确给出本文代码的可获取链接。,,deepseek-reasoner,True,,True
+1|human_eval|C1P13,1,human_eval,C1P13,agree_pos,True,True,entail,0.85,Table 8: The human evaluation results on WebQA dataset separately for image/text queries.,本文报告了自己做的人工评估结果（Table 8）,,deepseek-reasoner,True,,True
+2|new_dataset|C2P9,2,new_dataset,C2P9,agree_pos,True,True,partial,0.75,we introduce a dataset of rearrangement tasks (consisting of 150k training instructions and 10 challenging evaluation datasets),证据支持构建并说明生成方式，但未明确提到发布。,,deepseek-reasoner,False,,False
+2|ablation|C2P8,2,ablation,C2P8,agree_pos,True,True,entail,0.92,The results indicate that freezing either the expert or MoE components negatively impacts performance.,本文自己冻结/移除门控、专家、MoE组件并在Table 2报告消融结果,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P12,2,fine_tuning,C2P12,agree_pos,True,True,entail,0.98,"we compare standard finetuning, prompting, and knowledge distillation (KD)",本文比较并执行了标准微调，报告了设置与结果。,,deepseek-reasoner,True,,True
+3|efficiency|C3P14,3,efficiency,C3P14,agree_pos,True,True,entail,0.95,AdapterDrop is 39% faster when performing inference on 8 tasks simultaneously.,正文与表1给出推理相对速度数值。,,deepseek-reasoner,True,,True
+1|case_study|C1P7,1,case_study,C1P7,agree_pos,True,True,entail,1.0,"In Figure 3, we show the output questions of our ReDR and NQG on an example from CoQA dataset.",4.7节对具体实例逐轮展示并讨论，还展示SQuAD例子。,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P17,2,fine_tuning,C2P17,agree_pos,True,True,entail,0.97,we introduce a cross-lingual finetuning method XTUNE that is enhanced by consistency regularization and data augmentation,本文提出并实验了跨语言微调方法，报告了微调结果。,,deepseek-reasoner,True,,True
+1|ablation|C1P14,1,ablation,C1P14,agree_pos,True,True,entail,0.99,Ablation studies. We conduct a set of ablations of our framework to identify which factors play key roles.,本文明确开展消融并给出性能结果，符合论断。,,deepseek-reasoner,True,,True
+1|zero_few_shot|C1P6,1,zero_few_shot,C1P6,agree_pos,True,True,entail,0.95,we also investigate various models’ performance in the fewshot extraction setting.,本文明确调查few-shot抽取设置并报告结果,,deepseek-reasoner,True,,True
+3|efficiency|C3P2,3,efficiency,C3P2,agree_pos,True,True,entail,0.7,achieve up to 600x speedup on both GPUs and CPUs at inference time,摘要报告推理期600倍加速的量化效率数值,,deepseek-reasoner,True,,True
+2|multilingual|C2P17,2,multilingual,C2P17,agree_pos,True,True,entail,0.85,Experimental results on the XTREME benchmark show that our method1 significantly improves crosslingual fine-tuning across various tasks,本文自报在XTREME跨语言基准上实验，含非英语评测。,,deepseek-reasoner,True,,True
+2|multilingual|C2P8,2,multilingual,C2P8,agree_pos,True,True,entail,0.97,We found all the FLAN-MOE perform poorly on multilingual benchmarks including TyDiQA and MGSM. Even the largest FLAN-T5_32B only achieves 15.5% on MGSM and 25.1% on TyDiQA,本文在TyDiQA/MGSM等非英基准上报告了具体评测数字,,deepseek-reasoner,True,,True
+2|code_release|C2P7,2,code_release,C2P7,agree_pos,True,True,entail,1.0,Our code is available at https://github.com/thu-ml/LM-Calibration.,本文明确给出作者自己的代码链接,,deepseek-reasoner,True,,True
+2|error_analysis|C2P8,2,error_analysis,C2P8,agree_pos,True,True,entail,0.95,We found all the FLAN-MOE perform poorly on multilingual benchmarks including TyDiQA and MGSM.,本文设Failure Cases小节，给出多语言失败案例与具体数据,,deepseek-reasoner,True,,True
+2|efficiency|C2P12,2,efficiency,C2P12,agree_pos,True,True,entail,0.9,"Relative speedup is measured with respect to BERT-large, based on average inference time of our final models ... on a single 16GB GPU with batch size 32",表中给出基于推理时间的相对加速比数值，属本文报告,,deepseek-reasoner,True,,True
+3|code_release|C3P6,3,code_release,C3P6,agree_pos,True,True,entail,0.9,1W https://github.com/TalSchuster/CATs,脚注给出作者CATs的GitHub链接，可视为代码链接,,deepseek-reasoner,True,,True
+2|error_analysis|C2P7,2,error_analysis,C2P7,agree_pos,True,True,partial,0.75,"we conduct a case study on the LM fine-tuned on the QQP dataset, which is a typical failure case",本文做了失败案例分析，但分析的是微调基线模型而非本文方法的失败案例,,deepseek-reasoner,False,,False
+1|new_dataset|C1P4,1,new_dataset,C1P4,agree_neg,False,False,neutral,0.95,"We will provide pointers to resources, including data sets, software and on-line demos.",仅提及提供资源指引，未构建或发布新数据集。,,deepseek-reasoner,False,,True
+1|deployment|C1P19,1,deployment,C1P19,agree_neg,False,False,neutral,0.95,,证据仅描述实验设置与模型实现，未提及任何生产环境部署。,,deepseek-reasoner,False,,True
+1|safety_bias|C1P2,1,safety_bias,C1P2,agree_neg,False,False,neutral,0.95,"where quality could mean truthfulness, objectivity, lack of harmful content, source reliability, etc",仅泛泛提及语料质量含有害内容，无安全/公平/偏见评估或结果,,deepseek-reasoner,False,,True
+3|context_length|C3P12,3,context_length,C3P12,agree_neg,False,False,neutral,0.97,,证据只涉及线性函数ICL与闭式回归机制，未提长输入机制或长上下文实验。,,deepseek-reasoner,False,,True
+2|significance|C2P11,2,significance,C2P11,agree_neg,False,False,neutral,0.95,,证据仅报告IAA，未涉及重复运行波动或显著性检验,,deepseek-reasoner,False,,True
+1|new_dataset|C1P13,1,new_dataset,C1P13,agree_neg,False,False,neutral,0.95,"Our work uses the LAION dataset, a widely-used and publicly available large-scale visual-language corpus",仅使用已有LAION数据集，未构建发布新数据集,,deepseek-reasoner,False,,True
+1|safety_bias|C1P4,1,safety_bias,C1P4,agree_neg,False,False,neutral,0.9,We have a diverse instructor team across multiple institutions ... two of whom are female researchers.,多样性指讲者与方法覆盖，非输出安全/公平/偏见评估,,deepseek-reasoner,False,,True
+2|code_release|C2P1,2,code_release,C2P1,agree_neg,False,False,neutral,0.9,,片段只描述数据统计与实验，未提及任何代码/模型/数据链接,,deepseek-reasoner,False,,True
+2|error_analysis|C2P4,2,error_analysis,C2P4,agree_neg,False,False,neutral,0.85,"Alignment Examples. We also conduct qualitative analyses as shown in Figure 1, 2 and 3.",仅展示成功对齐的定性例子，未涉及失败或错误案例分析。,,deepseek-reasoner,False,,True
+3|deployment|C3P1,3,deployment,C3P1,agree_neg,False,False,neutral,0.95,,未提及生产环境部署，仅实验与未来工作,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P19,1,prompt_eng,C1P19,agree_neg,False,False,neutral,0.95,"In addition, we perform ablation tests to experiment with different feature settings.",消融的是模型特征，非提示模板，未涉及模板对比。,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P10,1,annotation_cost,C1P10,agree_neg,False,False,neutral,0.9,,未提及降低人工标注成本或廉价/自动标注手段。,,deepseek-reasoner,False,,True
+1|new_dataset|C1P19,1,new_dataset,C1P19,agree_neg,False,False,neutral,0.95,Section 3 presents an evaluation of the final model on the benchmark SQuAD testset,仅使用已有SQuAD数据集评测，未构建或发布新数据集,,deepseek-reasoner,False,,True
+3|deployment|C3P8,3,deployment,C3P8,agree_neg,False,False,neutral,0.95,"The true potential of this method, however, lies in its capacity to be broadly applied to any neural AES system",仅泛谈潜在应用，未提及任何实际部署,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P7,3,knowledge_distill,C3P7,agree_neg,False,False,neutral,0.98,,证据未提及蒸馏或教师指导学生模型训练,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P14,2,zero_few_shot,C2P14,agree_neg,False,False,neutral,0.6,we finetuned a linear layer on top of LLaMA embeddings.,证据只涉及微调评估，未报告零样本/少样本设置结果,,deepseek-reasoner,False,,True
+2|new_dataset|C2P7,2,new_dataset,C2P7,agree_neg,False,False,neutral,0.7,"Datasets: We conduct experiments on three natural language understanding tasks... SNLI (Bowman et al., 2015) and MNLI (Williams et al., 2018) are ID and OD datasets",仅使用已有数据集，未提本文构建发布新数据集,,deepseek-reasoner,False,,True
+2|efficiency|C2P14,2,efficiency,C2P14,agree_neg,False,False,neutral,0.95,,片段只报告拟合优度、NLL与行为预测，未提推理时间/延迟/吞吐/FLOPs/显存,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P12,1,zero_few_shot,C1P12,agree_neg,False,False,neutral,0.95,,证据未提及zero-shot或few-shot设置及结果,,deepseek-reasoner,False,,True
+2|significance|C2P1,2,significance,C2P1,agree_neg,False,False,neutral,0.95,,片段未提及重复运行、标准差、方差或显著性检验。,,deepseek-reasoner,False,,True
+2|significance|C2P3,2,significance,C2P3,agree_neg,False,False,neutral,0.95,,所给片段均为参考文献列表，未涉及重复运行方差或显著性检验,,deepseek-reasoner,False,,True
+1|safety_bias|C1P7,1,safety_bias,C1P7,agree_neg,False,False,neutral,0.95,consider 5 aspects: Naturalness... Relevance... Coherence... Richness... Answerability,评估仅涉及自然度、相关性、连贯性等，未涉及安全/公平/偏见,,deepseek-reasoner,False,,True
+1|context_length|C1P2,1,context_length,C1P2,agree_neg,False,False,neutral,0.92,"I demonstrate several pieces of evidence from both existing literature and my own experiments, and provide multiple potential solutions on retrieval-augmented generation methods ac",全文聚焦异构知识检索增强，未涉及长输入机制或长输入实验,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P5,3,prompt_eng,C3P5,agree_neg,False,False,neutral,0.95,We analyze the techniques one-by-one to make clear which combinations have impact on performance.,消融针对模型结构组件，未涉及提示模板设计或对比,,deepseek-reasoner,False,,True
+1|ablation|C1P10,1,ablation,C1P10,agree_neg,False,False,entail,0.88,"We compare the performance of RAG-original-QA and RAG-end2end-QA, isolating any performance improvement due to the reconstruction signal. The results in Table 1 illustrate that RAG",本文比较自身方法变体并报告性能变化，属消融,,deepseek-reasoner,True,,False
+1|ablation|C1P11,1,ablation,C1P11,agree_neg,False,False,neutral,0.8,GENREAD (FiD-xl) (sampling) ... GENREAD (FiD-xl) (clustering),仅列变体对比，未明确报告消融实验,,deepseek-reasoner,False,,True
+1|ablation|C1P13,1,ablation,C1P13,agree_pos,True,True,entail,0.98,Here we ablate the properties of MuRAG to better understand our experimental results.,本文对MuRAG做消融并报告去掉/替换组件后的性能变化。,,deepseek-reasoner,True,,True
+1|ablation|C1P15,1,ablation,C1P15,agree_neg,False,False,partial,0.55,We shard training examples into two categories based on whether q and q′ have the same reference (predicate change) or same predicate (reference change),仅按扰动类型分层分析，非明确组件消融但给出性能变化,,deepseek-reasoner,False,,True
+1|ablation|C1P16,1,ablation,C1P16,agree_pos,True,True,entail,0.95,Ablation Study | RA-VQA-FrDPR ... RA-VQA-NoPR ... RA-VQA-NoCT,表中列出本文模型去掉各部件后的消融变体及性能,,deepseek-reasoner,True,,True
+1|ablation|C1P17,1,ablation,C1P17,agree_neg,False,False,neutral,0.95,,原文只报告方法对比与误差分析，未提及消融实验。,,deepseek-reasoner,False,,True
+1|ablation|C1P18,1,ablation,C1P18,agree_neg,False,False,neutral,0.85,We explore the probability of generation during training to further investigate the effects of the pointer module.,仅分析生成概率和不同段落数，未做去掉组件的消融。,,deepseek-reasoner,False,,True
+1|ablation|C1P19,1,ablation,C1P19,agree_pos,True,True,entail,0.95,"In addition, we perform ablation tests to experiment with different feature settings.",本文自己进行消融实验并比较有无特征/机制的结果。,,deepseek-reasoner,True,,True
+1|ablation|C1P2,1,ablation,C1P2,agree_neg,False,False,neutral,0.95,,原文未提及消融实验或移除组件后的性能变化。,,deepseek-reasoner,False,,True
+1|ablation|C1P4,1,ablation,C1P4,agree_neg,False,False,neutral,0.9,At the end of the tutorial we will discuss the remaining challenges and some of the future directions,片段仅含日程、阅读清单，未提本文做消融实验,,deepseek-reasoner,False,,True
+1|ablation|C1P6,1,ablation,C1P6,agree_pos,True,True,entail,0.95,we also report ablation study results,本文报告消融，去掉analogy loss并给出性能数值,,deepseek-reasoner,True,,True
+1|ablation|C1P7,1,ablation,C1P7,agree_pos,True,True,entail,0.97,we also conduct an ablation study: (1) We first test our model with only one layer of reasoning,本文明确做了消融实验并报告各变体性能变化,,deepseek-reasoner,True,,True
+1|ablation|C1P9,1,ablation,C1P9,agree_neg,False,False,neutral,0.95,,证据仅分析自一致性路径数量和少样本稳健性，未做组件移除消融。,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P1,1,annotation_cost,C1P1,agree_neg,False,False,neutral,0.85,the relevant contexts generated by PLMs without external supervision,只提无外部监督生成查询扩展，并非自动/廉价标注手段,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P11,1,annotation_cost,C1P11,agree_neg,False,False,neutral,0.9,"it requires human annotators to write different prompts, which cannot be easily generalized",证据只涉及人工写prompt，未提自动/廉价标注降本。,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P12,1,annotation_cost,C1P12,agree_neg,False,False,neutral,0.95,,证据未提及任何降低人工标注成本的自动或廉价标注手段。,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P13,1,annotation_cost,C1P13,agree_neg,False,False,neutral,0.95,"The pre-training corpus consists of LAION (Schuhmann et al., 2021), Conceptual-Caption-12M+3M (CC)",未提及自动/廉价标注或降低人工标注成本。,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P16,1,annotation_cost,C1P16,agree_neg,False,False,neutral,0.9,,证据只描述评价指标与RAG基线，未涉及自动或廉价标注手段。,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P17,1,annotation_cost,C1P17,agree_neg,False,False,partial,0.7,We used the following methods to populate the candidate question space for a turn with negative examples based on the confounders,自动生成负例构造数据，但未报告降低标注成本的效果,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P18,1,annotation_cost,C1P18,agree_neg,False,False,neutral,0.85,"We evaluate the performance of our approach on two standard ODQA datasets, NQ and TriviaQA.",全文未提降低标注成本或自动/廉价标注手段,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P19,1,annotation_cost,C1P19,agree_neg,False,False,partial,0.5,The expert annotator rated a random sample of 60 questions using a private version of the HIT created on Mechanical Turk.,用众包Turkers廉价标注并报告与专家一致性，但未提降低成本,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P2,1,annotation_cost,C1P2,agree_neg,False,False,neutral,0.95,,全文未提及降低人工标注成本或自动/廉价标注手段。,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P4,1,annotation_cost,C1P4,agree_neg,False,False,neutral,0.95,,证据仅列教程挑战与应用，未提降低标注成本手段,,deepseek-reasoner,False,,True
+1|annotation_cost|C1P9,1,annotation_cost,C1P9,agree_neg,False,False,neutral,0.95,,片段只描述实验设置与结果，未提自动/廉价标注手段及效果。,,deepseek-reasoner,False,,True
+1|case_study|C1P1,1,case_study,C1P1,agree_pos,True,True,entail,0.97,"Case Studies. In Table 2, we show several examples of the generated query contexts and their ground-truth references.",本文用Case Studies逐例展示并讨论了生成查询上下文的具体例子。,,deepseek-reasoner,True,,True
+1|case_study|C1P10,1,case_study,C1P10,agree_neg,False,False,neutral,0.85,,证据仅涉及重建信号、数据构建与索引，无逐例展示讨论,,deepseek-reasoner,False,,True
+1|case_study|C1P11,1,case_study,C1P11,agree_pos,True,True,entail,0.98,"We also provide some case studies in Tables 16-19. For example, in Table 18, the question is",原文明确本文提供案例研究并逐例讨论具体问题,,deepseek-reasoner,True,,True
+1|case_study|C1P12,1,case_study,C1P12,agree_neg,False,False,neutral,0.95,,片段中无逐例展示或案例研究内容,,deepseek-reasoner,False,,True
+1|case_study|C1P13,1,case_study,C1P13,agree_neg,False,False,neutral,0.95,"During our manual inspection, we saw some such biases, for example, 5% of errors are caused by misrecognition of gender.",证据仅提手动检查与总体错误统计，无逐例展示讨论。,,deepseek-reasoner,False,,True
+1|case_study|C1P14,1,case_study,C1P14,agree_neg,False,False,neutral,0.95,Table 2: Overall experiment results on six tasks.,仅有总体定量结果，无逐例展示与讨论。,,deepseek-reasoner,False,,True
+1|case_study|C1P15,1,case_study,C1P15,agree_neg,False,False,neutral,0.8,"we introduce a measure of local consistency (§6.1) to measure model robustness, and perform a stratified analysis (§6.2)",片段仅提定量分析与分层分析，未展示逐例讨论。,,deepseek-reasoner,False,,True
+1|case_study|C1P17,1,case_study,C1P17,agree_neg,False,False,neutral,0.9,,片段仅含局限、任务定义与结论，未见逐例展示或个例讨论,,deepseek-reasoner,False,,True
+1|case_study|C1P18,1,case_study,C1P18,agree_neg,False,False,neutral,0.9,Table 3 shows the experimental results of our model and other approaches on the test sets,证据仅报告总体定量结果，无逐例展示与讨论,,deepseek-reasoner,False,,True
+1|case_study|C1P2,1,case_study,C1P2,agree_neg,False,False,neutral,0.9,Table 2: Exact match (EM-score) of retrieving heterogeneous knowledge for three open-domain QA benchmarks.,仅为汇总指标表格与总体讨论，无逐例案例展示或分析,,deepseek-reasoner,False,,True
+1|case_study|C1P4,1,case_study,C1P4,agree_neg,False,False,neutral,0.95,,片段仅列教程与阅读清单，未涉及逐例展示或案例讨论。,,deepseek-reasoner,False,,True
+1|case_study|C1P6,1,case_study,C1P6,agree_neg,False,False,neutral,0.95,,证据未提及对具体实例的逐例展示与讨论,,deepseek-reasoner,False,,True
+1|case_study|C1P9,1,case_study,C1P9,agree_neg,False,False,neutral,0.9,,证据未提及逐例展示或案例研究，仅有实验设置与可复现性说明。,,deepseek-reasoner,False,,True
+1|code_release|C1P1,1,code_release,C1P1,agree_pos,True,True,entail,0.97,Our code and retrieval results are available at https: //github.com/morningmoni/GAR.,原文明确给出本文代码与检索结果的开源链接。,,deepseek-reasoner,True,,True
+1|code_release|C1P10,1,code_release,C1P10,agree_pos,True,True,entail,0.75,"In addition, we open-source the implementation of RAG-end2end with the HuggingFace Transformers (Wolf et al., 2019) Library2",本文明确表示开源了自己的RAG-end2end实现，非引用他人,,deepseek-reasoner,True,,True
+1|code_release|C1P11,1,code_release,C1P11,agree_pos,True,True,entail,0.98,Our code and generated documents can be found at https://github.com/wyu97/GenRead.,摘要明确给出作者自己的代码与生成文档链接,,deepseek-reasoner,True,,True
+1|code_release|C1P12,1,code_release,C1P12,agree_pos,True,True,entail,0.95,1We make our code available at: https://github.com/ amazon-science/robust-tableqa,脚注明确称本文自己的代码已公开链接,,deepseek-reasoner,True,,True
+1|code_release|C1P13,1,code_release,C1P13,agree_neg,False,False,neutral,0.98,,片段未提及作者发布代码、模型或数据的链接。,,deepseek-reasoner,False,,True
+1|code_release|C1P15,1,code_release,C1P15,agree_pos,True,True,entail,0.95,1Code at https://github.com/ google-research/language/tree/master/ language/qa_counterfactuals,原文脚注给出本文代码的GitHub链接。,,deepseek-reasoner,True,,True
+1|code_release|C1P16,1,code_release,C1P16,agree_pos,True,True,partial,0.6,The code for this paper will be released at https://github.com/LinWeizheDragon/Retrieval-Au,给出本文代码链接，但为将来发布承诺，非已可获取,,deepseek-reasoner,False,,False
+1|code_release|C1P17,1,code_release,C1P17,agree_neg,False,False,neutral,0.95,,片段未提及代码/模型/数据链接或发布,,deepseek-reasoner,False,,True
+1|code_release|C1P2,1,code_release,C1P2,agree_neg,False,False,neutral,0.95,,证据未提及本文提供代码/模型/数据链接,,deepseek-reasoner,False,,True
+1|code_release|C1P6,1,code_release,C1P6,agree_pos,True,True,partial,0.65,The implementations will be released at https:// github.com/xinyadu/RGQA.,仅承诺将来发布并给出链接，未称现已可获取,,deepseek-reasoner,False,,False
+1|code_release|C1P7,1,code_release,C1P7,agree_pos,True,True,entail,0.98,Code is available at https: //github.com/ZJULearning/ReDR.,本文明确给出自己的代码链接ReDR仓库,,deepseek-reasoner,True,,True
+1|code_release|C1P9,1,code_release,C1P9,agree_pos,True,True,entail,1.0,Our code is available at https://github.com/Edward-Sun/RECITE.,摘要明确给出本文自己的代码链接,,deepseek-reasoner,True,,True
+1|context_length|C1P1,1,context_length,C1P1,agree_neg,False,False,neutral,0.9,"which concatenates the question and top-retrieved passages up to its length limit (1,024 tokens, 7.8 passages on average)",仅用BART长度限制，未提出长输入机制或长输入实验,,deepseek-reasoner,False,,True
+1|context_length|C1P10,1,context_length,C1P10,agree_neg,False,False,neutral,0.95,,证据只涉及端到端检索训练，未提及长输入或长上下文机制。,,deepseek-reasoner,False,,True
+1|context_length|C1P11,1,context_length,C1P11,agree_neg,False,False,neutral,0.95,scaling the size of retrieved documents can lead to better performance,证据未提及以处理更长输入为目标或长输入实验。,,deepseek-reasoner,False,,True
+1|context_length|C1P12,1,context_length,C1P12,agree_neg,False,False,contradict,0.95,"Another limitation lies in the token length limit of modern Transformer models. ... with better approaches addressing this limitation, our system can achieve better performance.",长度限制被列为未来工作，本文未提出长输入机制。,,deepseek-reasoner,False,,True
+1|context_length|C1P13,1,context_length,C1P13,agree_neg,False,False,neutral,0.95,,证据未提及长上下文方法或长输入实验，与方法目标无关,,deepseek-reasoner,False,,True
+1|context_length|C1P14,1,context_length,C1P14,agree_neg,False,False,neutral,0.9,Overall experiment results on six tasks.,证据只涉及长文本生成任务，未提处理更长输入的方法目标或机制。,,deepseek-reasoner,False,,True
+1|context_length|C1P15,1,context_length,C1P15,agree_neg,False,False,neutral,0.95,Our method attempts to address this by targeting a broad range of semantic phenomena,全文讲反事实数据增强，未涉及长输入或长上下文方法,,deepseek-reasoner,False,,True
+1|context_length|C1P16,1,context_length,C1P16,agree_neg,False,False,neutral,0.92,We also assess performance as a function of the number of documents retrieved during training and testing,仅讨论检索文档数量，未提长输入处理机制或效果,,deepseek-reasoner,False,,True
+1|context_length|C1P17,1,context_length,C1P17,agree_neg,False,False,neutral,0.9,"we experiment with BERT (Devlin et al., 2019) and RoBERTa (Liu et al., 2020)",未提及以长输入为目标、长上下文机制或长输入实验,,deepseek-reasoner,False,,True
+1|context_length|C1P18,1,context_length,C1P18,agree_neg,False,False,neutral,0.95,Training with Varying Number of Passages. Figure 3 shows the performance of our model and FiD reader with regard to different number of retrieved training passages.,证据只涉及多段落训练分析，未提长输入机制或目标,,deepseek-reasoner,False,,True
+1|context_length|C1P19,1,context_length,C1P19,agree_neg,False,False,neutral,0.85,"We create a novel Neural Network architecture that uses two source sequence encoders; the first encoder being at the token level, and the second being at the sentence level.",未提长输入目标或长输入实验，仅描述双编码器架构,,deepseek-reasoner,False,,True
+1|context_length|C1P4,1,context_length,C1P4,agree_neg,False,False,neutral,0.98,,证据未涉及长输入机制或长输入实验,,deepseek-reasoner,False,,True
+1|context_length|C1P7,1,context_length,C1P7,agree_neg,False,False,contradict,0.6,"Since a full passage is usually too long and makes it hard to focus on the most relevant information for generating the next question, our method first selects a text span from the",证据显示方法靠选取文本片段而非处理更长输入，无长输入实验,,deepseek-reasoner,False,,True
+1|context_length|C1P9,1,context_length,C1P9,agree_neg,False,False,neutral,0.95,,本文目标为背诵增强记忆，未提出长输入机制或报告长输入实验。,,deepseek-reasoner,False,,True
+1|deployment|C1P10,1,deployment,C1P10,agree_neg,False,False,neutral,0.95,,证据仅涉及训练/评测设置与架构，未提任何生产或线上部署,,deepseek-reasoner,False,,True
+1|deployment|C1P11,1,deployment,C1P11,agree_neg,False,False,neutral,0.95,,证据只描述零样本方法与实验流程，未提及任何线上生产部署。,,deepseek-reasoner,False,,True
+1|deployment|C1P13,1,deployment,C1P13,agree_neg,False,False,neutral,0.97,,仅描述模型实现与训练，未提生产部署,,deepseek-reasoner,False,,True
+1|deployment|C1P15,1,deployment,C1P15,agree_neg,False,False,neutral,0.94,"Experimental Setting We finetune a T5 (Raffel et al., 2020) model for reading comprehension",全文仅见实验设置与评测，未提及任何线上部署。,,deepseek-reasoner,False,,True
+1|deployment|C1P16,1,deployment,C1P16,agree_neg,False,False,neutral,0.98,,证据仅涉及实验比较与分析，未提及生产部署。,,deepseek-reasoner,False,,True
+1|deployment|C1P17,1,deployment,C1P17,agree_neg,False,False,neutral,0.95,we set out the task of simulating a similar scenario on a public conversation dataset and did not use any voice assistant data anymore.,仅用公开数据模拟，未提生产部署,,deepseek-reasoner,False,,True
+1|deployment|C1P18,1,deployment,C1P18,agree_neg,False,False,neutral,0.97,All experiments are run on eight Nvidia V100 32GB GPUs.,仅描述离线实验与训练细节，未提任何线上部署,,deepseek-reasoner,False,,True
+1|deployment|C1P2,1,deployment,C1P2,agree_neg,False,False,neutral,0.9,This is a thesis proposal paper presented at the student research workshop (SRW) at NAACL 2022,全文为论文提案，未提及任何线上部署，仅以行业成本为动机。,,deepseek-reasoner,False,,True
+1|deployment|C1P6,1,deployment,C1P6,agree_neg,False,False,neutral,0.95,making the systems not competitive in real circumstances,未提及生产/线上部署，仅讨论真实环境表现,,deepseek-reasoner,False,,True
+1|deployment|C1P7,1,deployment,C1P7,agree_neg,False,False,neutral,0.95,"We use the CoQA dataset3 (Reddy et al., 2018) to experiment with our ReDR and baseline methods.",仅描述离线实验与实现细节，未提任何线上部署。,,deepseek-reasoner,False,,True
+1|deployment|C1P9,1,deployment,C1P9,agree_neg,False,False,neutral,0.95,,原文仅做离线实验评估，未提及任何线上部署。,,deepseek-reasoner,False,,True
+1|efficiency|C1P1,1,efficiency,C1P1,agree_neg,False,False,entail,0.95,"For retrieval, GAR takes about 1 min to generate one query context with 1 GPU, 1 min to retrieve 1,000 passages for the NQ test set",报告了检索/生成查询上下文的推理时间数值。,,deepseek-reasoner,True,,False
+1|efficiency|C1P10,1,efficiency,C1P10,agree_neg,False,False,neutral,0.95,"During training, we use six Tesla V100 GPUs with 32 GBs of memory.",仅涉训练/索引成本，未报告推理时间延迟吞吐FLOPs显存,,deepseek-reasoner,False,,True
+1|efficiency|C1P11,1,efficiency,C1P11,agree_neg,False,False,neutral,0.95,,证据只涉及准确率与Recall@K，未报告推理效率数值,,deepseek-reasoner,False,,True
+1|efficiency|C1P15,1,efficiency,C1P15,agree_neg,False,False,neutral,0.95,We report exact-match scores in Table 3; F1 scores follow a similar trend.,片段只报告准确率等性能，未提推理时间/延迟/吞吐/FLOPs/显存。,,deepseek-reasoner,False,,True
+1|efficiency|C1P16,1,efficiency,C1P16,agree_neg,False,False,neutral,0.9,"GPU memory required during testing is significantly less, as there is no optimizer involved.",仅定性提及测试显存较少，未给出推理效率具体数值,,deepseek-reasoner,False,,True
+1|efficiency|C1P17,1,efficiency,C1P17,agree_neg,False,False,neutral,0.95,we evaluate the performance using Mean Reciprocal Rank (MRR),证据只报告MRR/Hit Ratio等效果指标，无推理效率数值,,deepseek-reasoner,False,,True
+1|efficiency|C1P18,1,efficiency,C1P18,agree_neg,False,False,neutral,0.95,"only 1537 extra parameters are added, indicating the efficiency of our model",仅提参数量，无推理时间/延迟/吞吐/FLOPs/显存,,deepseek-reasoner,False,,True
+1|efficiency|C1P19,1,efficiency,C1P19,agree_neg,False,False,neutral,0.95,"We use BLEU score (Papineni et al., 2002) as an automatic evaluation metric and compare directly to other work.",证据仅报告BLEU/METEOR/ROUGE与消融，未提推理效率数值,,deepseek-reasoner,False,,True
+1|efficiency|C1P2,1,efficiency,C1P2,agree_neg,False,False,neutral,0.95,"RAG methods have remarkable advantages such as easy knowledge acquisition, strong scalability, and low train ing cost",仅提训练成本，无推理时间/延迟/吞吐/FLOPs/显存数值,,deepseek-reasoner,False,,True
+1|efficiency|C1P4,1,efficiency,C1P4,agree_neg,False,False,neutral,0.95,,原文未提及任何模型推理效率数值，仅讨论挑战与教程大纲。,,deepseek-reasoner,False,,True
+1|efficiency|C1P7,1,efficiency,C1P7,agree_neg,False,False,neutral,0.95,"For computational efficiency concerns, during training, we make sure that the ground-truth question is in the sampling pool",仅定性提效率且指训练，未报告推理时间/吞吐/FLOPs等数值,,deepseek-reasoner,False,,True
+1|efficiency|C1P9,1,efficiency,C1P9,agree_neg,False,False,neutral,0.95,,证据未提及任何推理时间/延迟/吞吐/FLOPs/显存数值,,deepseek-reasoner,False,,True
+1|error_analysis|C1P1,1,error_analysis,C1P1,agree_neg,False,False,neutral,0.95,,所给片段未提及错误分析或失败案例。,,deepseek-reasoner,False,,True
+1|error_analysis|C1P10,1,error_analysis,C1P10,agree_neg,False,False,neutral,0.9,"We use the Exact Match (EM), F1 score, and Top-K retrieval accuracy as evaluation metrics.",仅描述评测指标与设置，未提失败案例或错误分析。,,deepseek-reasoner,False,,True
+1|error_analysis|C1P11,1,error_analysis,C1P11,agree_neg,False,False,partial,0.7,"First, our work shows that generated documents suffer from challenges of stale information from outdated documents used for training.",仅提局限，无具体错误案例或统计,,deepseek-reasoner,False,,True
+1|error_analysis|C1P12,1,error_analysis,C1P12,agree_neg,False,False,neutral,0.85,,仅见实验设置、结果表和消融变体，未提及错误/失败案例分析,,deepseek-reasoner,False,,True
+1|error_analysis|C1P14,1,error_analysis,C1P14,agree_neg,False,False,neutral,0.9,,原文只描述训练与实验设置，未提及失败案例分析。,,deepseek-reasoner,False,,True
+1|error_analysis|C1P15,1,error_analysis,C1P15,agree_neg,False,False,neutral,0.95,,证据未提及本文做失败/错误案例分析或分类统计,,deepseek-reasoner,False,,True
+1|error_analysis|C1P16,1,error_analysis,C1P16,agree_neg,False,False,neutral,0.95,,仅描述评价指标，未提及错误分析或失败案例,,deepseek-reasoner,False,,True
+1|error_analysis|C1P17,1,error_analysis,C1P17,agree_pos,True,True,entail,0.97,Error Analysis Analysing the fine-tuned models’ predicted scores for different confounder types... Inspecting some examples like the ones presented in Table 4,本文自己做了错误分析，含分类统计与具体例子。,,deepseek-reasoner,True,,True
+1|error_analysis|C1P18,1,error_analysis,C1P18,agree_neg,False,False,neutral,0.85,"Table 3 shows the experimental results of our model and other approaches on the test sets, evaluated with the standard exact match (EM) score",片段只报总体EM分数，未提及失败案例或错误分析,,deepseek-reasoner,False,,True
+1|error_analysis|C1P19,1,error_analysis,C1P19,agree_neg,False,False,neutral,0.75,Table 4: Question Generation with and without the Copy mechanism.,仅展示有无Copy的生成对比，未明确做错误案例分析,,deepseek-reasoner,False,,True
+1|error_analysis|C1P2,1,error_analysis,C1P2,agree_neg,False,False,neutral,0.9,,片段未提及失败案例检查或错误分析。,,deepseek-reasoner,False,,True
+1|error_analysis|C1P4,1,error_analysis,C1P4,agree_neg,False,False,neutral,0.95,At the end of the tutorial we will discuss the remaining challenges and some of the future directions,片段仅谈未来挑战与安排，未对本文方法做错误案例分析,,deepseek-reasoner,False,,True
+1|error_analysis|C1P6,1,error_analysis,C1P6,agree_neg,False,False,neutral,0.95,,证据仅描述实验设置与推理后处理，未提及错误分析或失败案例。,,deepseek-reasoner,False,,True
+1|error_analysis|C1P7,1,error_analysis,C1P7,agree_neg,False,False,neutral,0.95,,片段只涉及方法、RL与数据集统计，未提错误分析或失败案例,,deepseek-reasoner,False,,True
+1|error_analysis|C1P9,1,error_analysis,C1P9,agree_pos,True,True,entail,0.98,We perform an error analysis on the 1024 evaluation examples in the TriviaQA dataset. We classify the errors into three categories,本文明确做了错误分析并分类统计,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P1,1,fine_tuning,C1P1,agree_neg,False,False,neutral,0.7,Results of baseline methods are taken from Lewis et al. (2020b).,片段仅报告结果与对比，未提及本文自行微调训练及设置,,deepseek-reasoner,False,,True
+1|fine_tuning|C1P10,1,fine_tuning,C1P10,agree_pos,True,True,entail,0.98,we first propose a method to finetune the RAG model with its neural retriever and update its knowledge encodings asynchronously during training,原文明确本文提出并执行了对RAG的微调训练,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P11,1,fine_tuning,C1P11,agree_pos,True,True,entail,0.95,we leverage a small reader model such as FiD to peruse the generated documents under the supervised setting,本文在监督设置下用FiD在目标训练集上微调并报告了设置,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P12,1,fine_tuning,C1P12,agree_pos,True,True,entail,0.95,We first fine-tune the official pretrained DPR or ColBERTv2 model on each dataset,本文明确在自己数据集上微调预训练模型并报告设置。,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P13,1,fine_tuning,C1P13,agree_pos,True,True,entail,0.98,We fine-tune MuRAG on the downstream datasets with a contrastive and generative loss similar to pre-training.,原文明确本文在下游数据集上微调MuRAG并说明设置,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P14,1,fine_tuning,C1P14,agree_pos,True,True,entail,0.97,we train our target LM on task examples augmented with reflection tokens from a critic model offline,明确说明本文训练了目标LM并给出训练设置。,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P16,1,fine_tuning,C1P16,agree_pos,True,True,entail,0.98,OK-VQA Fine-tuning: Our RA-VQA framework trains the answer generator and the retriever jointly under Equation 6.,本文明确描述在OK-VQA上微调RA-VQA并报告设置。,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P17,1,fine_tuning,C1P17,agree_pos,True,True,entail,0.98,we fine-tune a pre-trained language model by translating the problem as a binary classification task,本文明确说明在监督实验中微调预训练语言模型并给出设置。,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P19,1,fine_tuning,C1P19,added,False,True,entail,0.9,The sentence encoder is initialized using the pre-training process described in Section 2.2.,本文用预训练初始化后在自己数据上继续训练并报告设置,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P4,1,fine_tuning,C1P4,agree_neg,False,False,neutral,0.95,,片段为教程议程与多样性说明，未提及本文微调模型或报告训练。,,deepseek-reasoner,False,,True
+1|fine_tuning|C1P7,1,fine_tuning,C1P7,agree_pos,True,True,entail,0.95,we leverage a popular question answering (QA) model to provide feedback and fine-tune the question generator,本文明确用QA模型反馈并微调问题生成器，属自做且报告。,,deepseek-reasoner,True,,True
+1|fine_tuning|C1P9,1,fine_tuning,C1P9,agree_pos,True,True,entail,0.95,fine-tuning the pre-trained LLMs on synthetic generated question-passage pairs can further improve the recitation performance,主语为We，表明本文进行了微调并报告结果,,deepseek-reasoner,True,,True
+1|human_eval|C1P1,1,human_eval,C1P1,agree_neg,False,False,neutral,0.85,we use top-k retrieval accuracy to evaluate the performance of the retriever and the Exact Match (EM) score,仅用自动指标评估，未提及人工标注或人工评估,,deepseek-reasoner,False,,True
+1|human_eval|C1P10,1,human_eval,C1P10,agree_neg,False,False,neutral,0.88,"We use the Exact Match (EM), F1 score, and Top-K retrieval accuracy as evaluation metrics.",证据只提自动指标，未提人工标注或人工评估,,deepseek-reasoner,False,,True
+1|human_eval|C1P12,1,human_eval,C1P12,agree_neg,False,False,neutral,0.9,We assume that labeled datasets consisting of triples ... are available to us.,仅使用已有标注数据集，未见本文收集人工判断或评估,,deepseek-reasoner,False,,True
+1|human_eval|C1P15,1,human_eval,C1P15,agree_neg,False,False,neutral,0.85,Gardner et al. (2020); Khashabi et al. (2020); Kaushik et al. (2020); Ribeiro et al. (2020) use humans to create these perturbations,人工标注仅出现在引用他人工作中，本文未自做,,deepseek-reasoner,False,,True
+1|human_eval|C1P18,1,human_eval,C1P18,agree_neg,False,False,neutral,0.9,"Table 3 shows the experimental results of our model and other approaches on the test sets, evaluated with the standard exact match (EM) score",仅用EM自动指标评测，未涉及人工评估或标注,,deepseek-reasoner,False,,True
+1|human_eval|C1P19,1,human_eval,C1P19,agree_pos,True,True,entail,0.95,We evaluate the models using both automatic evaluation metrics and a human evaluation using crowd sourced workers.,本文自己用众包工人做人工评估并报告结果,,deepseek-reasoner,True,,True
+1|human_eval|C1P6,1,human_eval,C1P6,agree_neg,False,False,neutral,0.95,"As for the evaluation, we use the same criteria as in previous work (Li et al., 2013) to judge whether an extracted argument is correct.",仅数据集与自动评估，无人评或人工标注描述,,deepseek-reasoner,False,,True
+1|human_eval|C1P7,1,human_eval,C1P7,agree_pos,True,True,entail,0.98,4.5 Human Evaluation We conduct human evaluation to measure the quality of generated questions. We randomly sampled 50 questions,本文自己做了人工评估并报告结果,,deepseek-reasoner,True,,True
+1|human_eval|C1P9,1,human_eval,C1P9,agree_neg,False,False,partial,0.4,"we evaluate TriviaQA in the single hop 5-shot setting, and manually compose the recitation passage from Wikipedia for 5 randomly sampled training questions",仅作者手工撰写少量提示段落，非人工评估/标注及结果报告,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P1,1,knowledge_distill,C1P1,agree_neg,False,False,neutral,0.95,,证据片段未提及任何教师-学生蒸馏方法或结果,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P10,1,knowledge_distill,C1P10,agree_neg,False,False,neutral,0.92,,片段只讲联合训练与辅助信号，未提及教师-学生蒸馏。,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P11,1,knowledge_distill,C1P11,agree_neg,False,False,neutral,0.95,we present details of our proposed novel generate-then-read (GENREAD) pipeline,本文方法是生成再阅读，未提及教师-学生蒸馏。,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P12,1,knowledge_distill,C1P12,agree_neg,False,False,neutral,0.95,,证据未提及教师模型指导学生模型的蒸馏方法。,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P13,1,knowledge_distill,C1P13,agree_neg,False,False,neutral,0.95,,证据只描述预训练损失，未提及教师-学生蒸馏方法。,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P15,1,knowledge_distill,C1P15,agree_neg,False,False,neutral,0.9,"We use a T5 (Raffel et al., 2020) model fine-tuned on $( q , c , a )$ triples from Natural Questions",全文未提教师-学生蒸馏，仅用T5微调与数据增强,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P16,1,knowledge_distill,C1P16,agree_neg,False,False,neutral,0.9,,证据只提RAG基线与联合训练，未涉及教师-学生蒸馏,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P17,1,knowledge_distill,C1P17,agree_neg,False,False,neutral,0.95,we fine-tune a pre-trained language model by translating the problem as a binary classification task,仅微调预训练模型，未提教师指导学生蒸馏,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P18,1,knowledge_distill,C1P18,agree_neg,False,False,contradict,0.75,we integrate a pointer network into the FiD reader to allow the model to directly select words from the retrieved passages,本文方法是指针网络增强FiD，蒸馏模型FiD-KD仅作对比基线,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P19,1,knowledge_distill,C1P19,agree_neg,False,False,neutral,0.9,,证据未提及教师-学生蒸馏方法，只讲注意力RNN与消融实验,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P2,1,knowledge_distill,C1P2,agree_neg,False,False,neutral,0.98,,原文未提及教师指导学生或蒸馏方法及结果,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P4,1,knowledge_distill,C1P4,agree_neg,False,False,neutral,0.95,,教程摘要，全文未提及教师-学生蒸馏方法,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P6,1,knowledge_distill,C1P6,agree_neg,False,False,neutral,0.95,,证据只讲检索增强生成与聚类采样，未提教师-学生蒸馏,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P7,1,knowledge_distill,C1P7,agree_neg,False,False,partial,0.55,we leverage a popular question answering (QA) model to provide feedback and fine-tune the question generator using a reinforcement learning mechanism,本文用QA模型反馈+强化学习微调，非明文蒸馏/师生框架,,deepseek-reasoner,False,,True
+1|knowledge_distill|C1P9,1,knowledge_distill,C1P9,agree_neg,False,False,neutral,0.6,we propose a novel recitation-augmented generation framework to improve language models’ performance in the closed-book question-answering setting,全文未提教师-学生蒸馏，方法为诵读式提示,,deepseek-reasoner,False,,True
+1|multilingual|C1P1,1,multilingual,C1P1,agree_neg,False,False,neutral,0.7,"We conduct experiments on the open-domain version of two popular QA benchmarks: Natural Questions (NQ) (Kwiatkowski et al., 2019) and TriviaQA (Trivia)",仅涉及英文数据集，全文未提及非英语数据实验,,deepseek-reasoner,False,,True
+1|multilingual|C1P10,1,multilingual,C1P10,agree_neg,False,False,neutral,0.95,,片段未提及非英语数据集或在非英语数据上评测。,,deepseek-reasoner,False,,True
+1|multilingual|C1P11,1,multilingual,C1P11,agree_neg,False,False,neutral,0.95,,证据片段未提及非英语数据或相关评测集。,,deepseek-reasoner,False,,True
+1|multilingual|C1P12,1,multilingual,C1P12,agree_neg,False,False,neutral,0.9,Our proposed system was tested on two open-domain TableQA datasets,证据只提英文TableQA数据集，未涉及非英语数据实验,,deepseek-reasoner,False,,True
+1|multilingual|C1P13,1,multilingual,C1P13,agree_neg,False,False,neutral,0.8,We demonstrate WebQA’s results in Table 4. ... We show the MultimodalQA results in Table 5.,实验仅在WebQA/MultimodalQA英文数据上，未涉及非英语数据,,deepseek-reasoner,False,,True
+1|multilingual|C1P14,1,multilingual,C1P14,agree_neg,False,False,neutral,0.95,Overall experiment results on six tasks.,证据未提及任何非英语数据或评测结果。,,deepseek-reasoner,False,,True
+1|multilingual|C1P15,1,multilingual,C1P15,agree_neg,False,False,neutral,0.95,,证据未提及非英语数据或多语言评测。,,deepseek-reasoner,False,,True
+1|multilingual|C1P16,1,multilingual,C1P16,agree_neg,False,False,neutral,0.95,,证据中未提及任何非英语数据或非英评测结果。,,deepseek-reasoner,False,,True
+1|multilingual|C1P17,1,multilingual,C1P17,agree_neg,False,False,neutral,0.9,We use the bert-base-cased and roberta-base variations of these models.,证据只提英文数据与英文模型，未提及非英语数据。,,deepseek-reasoner,False,,True
+1|multilingual|C1P18,1,multilingual,C1P18,agree_neg,False,False,neutral,0.65,Table 4: Test-train overlap evaluation on NQ and TriviaQA test sets.,证据只涉及NQ、TriviaQA英文数据，未提及非英语数据,,deepseek-reasoner,False,,True
+1|multilingual|C1P19,1,multilingual,C1P19,agree_neg,False,False,contradict,0.8,we conduct experiments exploring the effects of each of our model enhancements and train and evaluate all the models using the SQuAD dataset,实验全部在英语SQuAD数据集上，无任何非英语数据,,deepseek-reasoner,False,,True
+1|multilingual|C1P2,1,multilingual,C1P2,agree_neg,False,False,neutral,0.9,NQ | TQA | HotpotQA,证据仅涉及英语数据集，未提及非英语数据实验。,,deepseek-reasoner,False,,True
+1|multilingual|C1P6,1,multilingual,C1P6,agree_neg,False,False,neutral,0.7,we use ACE 2005 corpus for evaluation ... test on the WikiEvent test set,所列数据集均为英语，未提非英语实验，也非明确否认,,deepseek-reasoner,False,,True
+1|multilingual|C1P7,1,multilingual,C1P7,agree_neg,False,False,neutral,0.65,"We use the CoQA dataset3 (Reddy et al., 2018) to experiment with our ReDR and baseline methods.",仅提到使用CoQA数据集，未提非英语数据，需外部知识判断语言,,deepseek-reasoner,False,,True
+1|multilingual|C1P9,1,multilingual,C1P9,agree_neg,False,False,neutral,0.9,a diverse set of few-shot closed-book question answering tasks,片段只提QA任务与模型，未提非英语数据评测,,deepseek-reasoner,False,,True
+1|new_dataset|C1P1,1,new_dataset,C1P1,agree_neg,False,False,neutral,0.95,"a large collection of documents C (i.e., Wikipedia) are given as the resource to answer the questions",仅使用已有Wikipedia语料，未提及构建发布新数据集,,deepseek-reasoner,False,,True
+1|new_dataset|C1P11,1,new_dataset,C1P11,agree_neg,False,False,neutral,0.82,We conduct extensive experiments with three knowledge-intensive NLP tasks under both zeroshot and supervised settings.,贡献为方法提�与实验，未提及构建发布新数据集或语料,,deepseek-reasoner,False,,True
+1|new_dataset|C1P12,1,new_dataset,C1P12,agree_neg,False,False,neutral,0.65,"Our proposed system was tested on two open-domain TableQA datasets, with one of them (E2E-WTQ) being relatively small compared to the other.",仅提及在已有公开数据集上测试，未说明本文构建发布数据集,,deepseek-reasoner,False,,True
+1|new_dataset|C1P14,1,new_dataset,C1P14,agree_neg,False,False,neutral,0.95,"Our training data consists of diverse instruction-following input-output pairs. In particular, we sample instances from Open-Instruct processed data",仅使用已有数据集，未构建或发布新数据集/基准,,deepseek-reasoner,False,,True
+1|new_dataset|C1P15,1,new_dataset,C1P15,agree_neg,False,False,neutral,0.85,,证据未提及本文构建并发布新数据集/基准/语料。,,deepseek-reasoner,False,,True
+1|new_dataset|C1P16,1,new_dataset,C1P16,agree_neg,False,False,neutral,0.92,"we evaluate our proposed framework on another popular Knowledge-based VQA dataset, FVQA (Factbased VQA) (Wang et al., 2017)",仅使用已有数据集FVQA/OK-VQA，未提构建发布新数据集,,deepseek-reasoner,False,,True
+1|new_dataset|C1P18,1,new_dataset,C1P18,agree_neg,False,False,neutral,0.95,,证据均为相关工作介绍，未提及本文构建或发布数据集。,,deepseek-reasoner,False,,True
+1|new_dataset|C1P2,1,new_dataset,C1P2,agree_neg,False,False,neutral,0.9,"Some preliminary experiments were conducted on CREAK (Onoe et al., 2021) and CSQA2.0 (Talmor et al., 2021) datasets.",仅使用已有数据集，未提本文构建发布新数据集,,deepseek-reasoner,False,,True
+1|new_dataset|C1P6,1,new_dataset,C1P6,agree_neg,False,False,neutral,0.9,,原文未提及构建或发布新数据集，仅用已有数据与采样策略,,deepseek-reasoner,False,,True
+1|new_dataset|C1P7,1,new_dataset,C1P7,agree_neg,False,False,contradict,0.6,"Based on one of the most popular datasets CoQA (Reddy et al., 2018), we examine the possibility of automatically generating conversational questions",明确基于已有CoQA数据集，未构建发布新数据,,deepseek-reasoner,False,,True
+1|new_dataset|C1P9,1,new_dataset,C1P9,agree_neg,False,False,neutral,0.9,"The three evaluation datasets used in our experiments (Natural Questions, TriviaQA, and HotpotQA) are all publicly accessible.",仅使用已有公开数据集，未构建或发布新数据集,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P1,1,prompt_eng,C1P1,agree_neg,False,False,neutral,0.95,,证据只涉及数据集、泛化性与阅读器，未提提示模板对比或消融。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P10,1,prompt_eng,C1P10,agree_neg,False,False,neutral,0.75,"we prepend a special token (represents passages) in front of the reconstruction statements, which acts as a control token",仅描述固定输入格式/控制token，无模板对比或消融实验,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P11,1,prompt_eng,C1P11,agree_neg,False,False,partial,0.7,"In the experiments, we empirically found this method can bring improvement to the retrieval performance (Figure 2).",只报告多样人类提示带来提升，无模板对比消融。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P12,1,prompt_eng,C1P12,agree_neg,False,False,neutral,0.98,,片段未提及提示模板设计、对比或消融实验。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P13,1,prompt_eng,C1P13,agree_neg,False,False,neutral,0.95,4.5 Ablation Study Here we ablate the properties of MuRAG... Pre-training Corpus... Two-Stage Fine-tuning,消融仅涉及预训练语料与微调阶段，未提提示模板,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P15,1,prompt_eng,C1P15,agree_neg,False,False,neutral,1.0,,证据未提及提示模板设计或对比消融实验。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P16,1,prompt_eng,C1P16,agree_neg,False,False,neutral,0.98,,证据未提及任何提示模板设计、对比或消融。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P17,1,prompt_eng,C1P17,agree_neg,False,False,neutral,0.9,We format the input by concatenating the dialog history turns and a candidate utterance with a [SEP] token,证据只提及监督微调与固定拼接输入，未涉及提示模板对比或消融。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P18,1,prompt_eng,C1P18,agree_neg,False,False,neutral,0.95,,证据未提及提示模板的设计或对比实验,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P2,1,prompt_eng,C1P2,agree_neg,False,False,neutral,0.95,,证据未涉及提示模板设计或对比实验,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P4,1,prompt_eng,C1P4,agree_neg,False,False,neutral,0.97,,原文是教程大纲与阅读清单，未涉及提示模板实验或消融。,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P6,1,prompt_eng,C1P6,agree_neg,False,False,neutral,0.9,Ablations ... w/o analogy loss,证据仅提及演示作为 prompt，消融的是 analogy loss，无模板对比,,deepseek-reasoner,False,,True
+1|prompt_eng|C1P7,1,prompt_eng,C1P7,agree_neg,False,False,neutral,0.98,,证据未提及提示模板的设计、对比或消融实验。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P1,1,proof_theory,C1P1,agree_neg,False,False,neutral,0.85,"We conduct extensive experiments on the Natural Questions (NQ) (Kwiatkowski et al., 2019) and TriviaQA",全文仅报告实验与检索结果，未提及任何定理、引理或理论证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P10,1,proof_theory,C1P10,agree_neg,False,False,neutral,0.95,The formula (RAG-Token-Loss) can be written as illustrated in Equation 2.,证据仅含方法描述与损失公式，未给出定理、引理或证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P11,1,proof_theory,C1P11,agree_neg,False,False,neutral,0.95,,片段只含致谢、实验表格与相关工作，无定理或证明,,deepseek-reasoner,False,,True
+1|proof_theory|C1P12,1,proof_theory,C1P12,agree_neg,False,False,neutral,0.92,,片段仅描述方法、损失与检索，无定理引理证明或理论保证。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P13,1,proof_theory,C1P13,agree_neg,False,False,neutral,0.95,,证据仅含预训练、消融与伦理声明，无定理/引理/证明,,deepseek-reasoner,False,,True
+1|proof_theory|C1P14,1,proof_theory,C1P14,agree_neg,False,False,neutral,0.95,,证据只有方法描述与公式，未给定理引理或证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P15,1,proof_theory,C1P15,agree_neg,False,False,neutral,0.75,"we introduce a measure of pairwise consistency, and show that RGF significantly improves robustness to a range of local perturbations",仅有实证结果与度量，未见定理/引理/证明或理论保证。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P16,1,proof_theory,C1P16,agree_neg,False,False,neutral,0.95,,证据仅含局限、检索指标与基线系统，未提定理或证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P17,1,proof_theory,C1P17,agree_neg,False,False,neutral,0.95,,证据只含任务定义、指标与实验结果，未提任何定理或证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P18,1,proof_theory,C1P18,agree_neg,False,False,neutral,0.9,,仅描述模型架构与概率公式，无定理、引理或证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P19,1,proof_theory,C1P19,agree_neg,False,False,neutral,0.95,,原文未提及任何定理、引理、证明或理论保证。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P2,1,proof_theory,C1P2,agree_neg,False,False,neutral,0.95,,原文片段仅含致谢、背景与相关工作，未提及定理、引理、证明或理论保证。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P4,1,proof_theory,C1P4,agree_neg,False,False,neutral,0.95,,片段仅涉及教程安排、先修要求与未来方向，未提任何定理证明,,deepseek-reasoner,False,,True
+1|proof_theory|C1P6,1,proof_theory,C1P6,agree_neg,False,False,neutral,0.85,,片段仅含定义、实验设置与结果，未出现任何定理、引理或证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P7,1,proof_theory,C1P7,agree_neg,False,False,neutral,0.95,,证据仅描述模型方法，未提及定理、引理或证明。,,deepseek-reasoner,False,,True
+1|proof_theory|C1P9,1,proof_theory,C1P9,agree_neg,False,False,neutral,0.95,,证据仅涉及实验和动机，未提及任何定理、引理或证明。,,deepseek-reasoner,False,,True
+1|rl_training|C1P10,1,rl_training,C1P10,agree_neg,False,False,neutral,0.92,optimizing a joint QA and paraphrasing signal loss,训练用联合QA与复述信号损失，未提强化学习/PPO/RLHF,,deepseek-reasoner,False,,True
+1|rl_training|C1P11,1,rl_training,C1P11,agree_neg,False,False,neutral,0.95,,证据未提及任何强化学习/PPO/RLHF训练，只描述生成-阅读流程与微调。,,deepseek-reasoner,False,,True
+1|rl_training|C1P12,1,rl_training,C1P12,agree_neg,False,False,neutral,0.85,"We train both modules jointly using a compositional loss (Lin and Byrne, 2022, RAGE)",全文仅用对比损失与联合训练，未提强化学习/PPO/RLHF,,deepseek-reasoner,False,,True
+1|rl_training|C1P13,1,rl_training,C1P13,agree_neg,False,False,neutral,0.95,We train the model with a joint loss L = L_gen + L_con,仅描述预训练联合损失，未提RL/PPO/RLHF/策略梯度,,deepseek-reasoner,False,,True
+1|rl_training|C1P15,1,rl_training,C1P15,agree_neg,False,False,neutral,0.92,"We finetune a T5 (Raffel et al., 2020) model for reading comprehension, with input consisting of the question prepended to the context.",仅提及微调T5与数据增强，未涉及任何RL训练,,deepseek-reasoner,False,,True
+1|rl_training|C1P16,1,rl_training,C1P16,agree_neg,False,False,neutral,0.95,,证据未提及强化学习/PPO/RLHF/策略梯度,,deepseek-reasoner,False,,True
+1|rl_training|C1P17,1,rl_training,C1P17,agree_neg,False,False,neutral,0.9,"For the supervised experiments, we fine-tune a pre-trained language model by translating the problem as a binary classification task.",仅用监督分类微调，未提及任何强化学习方法,,deepseek-reasoner,False,,True
+1|rl_training|C1P18,1,rl_training,C1P18,agree_neg,False,False,neutral,0.9,"trained using AdamW (Loshchilov and Hutter, 2017) algorithm with a learning rate of 10^-4",证据只提AdamW监督训练，未提及任何RL方法,,deepseek-reasoner,False,,True
+1|rl_training|C1P2,1,rl_training,C1P2,agree_neg,False,False,neutral,0.9,train an RNN model that predicts $r _ { o } ( d _ { k } )$ based on the first k elements in the r series,证据只提训练RNN检索器，未提任何强化学习训练,,deepseek-reasoner,False,,True
+1|rl_training|C1P4,1,rl_training,C1P4,agree_neg,False,False,neutral,0.98,,片段为教程介绍，完全未提及强化学习训练或对齐,,deepseek-reasoner,False,,True
+1|rl_training|C1P6,1,rl_training,C1P6,agree_neg,False,False,contradict,0.6,"we minimize the joint loss function during training, ... where L_seq2seq is the cross-entropy loss between the decoder’s output and the target sequence",训练目标是交叉熵联合损失，非RL训练,,deepseek-reasoner,False,,True
+1|rl_training|C1P7,1,rl_training,C1P7,agree_pos,True,True,entail,0.95,we leverage a popular question answering (QA) model to provide feedback and fine-tune the question generator using a reinforcement learning mechanism,摘要明确称本文用RL机制微调自己的问题生成器并报告结果。,,deepseek-reasoner,True,,True
+1|rl_training|C1P9,1,rl_training,C1P9,agree_neg,False,False,neutral,0.7,The LLMs learn from these exemplars without being explicitly pre-trained for in-context learning and without any gradient updates or fine-tuning.,全文未提RL训练，仅提示式方法，无PPO/RLHF证据,,deepseek-reasoner,False,,True
+1|safety_bias|C1P1,1,safety_bias,C1P1,agree_neg,False,False,neutral,0.95,,全文仅提'公平对比'的fair，未涉及toxicity/公平/偏见评估,,deepseek-reasoner,False,,True
+1|safety_bias|C1P10,1,safety_bias,C1P10,agree_neg,False,False,neutral,0.95,This could be aligned with research areas like measuring factual consistency,仅在未来工作中提事实一致性/幻觉，未评估安全、公平或偏见,,deepseek-reasoner,False,,True
+1|safety_bias|C1P12,1,safety_bias,C1P12,agree_neg,False,False,neutral,0.97,,全文片段只讨论表格检索与RAGE损失，未涉及安全/公平/偏见,,deepseek-reasoner,False,,True
+1|safety_bias|C1P13,1,safety_bias,C1P13,agree_neg,False,False,partial,0.6,"we anticipate our model to contain some biases (racial, gender, etc.). During our manual inspection, we saw some such biases, for example, 5% of errors are caused by misrecognition",伦理声明给出偏见的具体观察结果，但非专门实验评估,,deepseek-reasoner,False,,True
+1|safety_bias|C1P14,1,safety_bias,C1P14,agree_neg,False,False,neutral,0.95,"holistically evaluating outputs with metrics designed to assess overall correctness, factuality, and fluency",证据仅评估正确性/事实性/流畅性，未提安全、公平或偏见。,,deepseek-reasoner,False,,True
+1|safety_bias|C1P16,1,safety_bias,C1P16,agree_neg,False,False,neutral,0.92,7 Limitations One possible limitation is that some relevant information (such as relative positioning of objects in the image) could be lost,仅涉检索指标与图像特征等局限，未评估安全/公平/偏见,,deepseek-reasoner,False,,True
+1|safety_bias|C1P17,1,safety_bias,C1P17,agree_neg,False,False,neutral,0.95,,证据未涉及安全/公平/偏见评估或讨论。,,deepseek-reasoner,False,,True
+1|safety_bias|C1P18,1,safety_bias,C1P18,agree_neg,False,False,neutral,0.97,,证据只涉及生成概率、重叠度等分析，未提安全/公平/偏见。,,deepseek-reasoner,False,,True
+1|safety_bias|C1P19,1,safety_bias,C1P19,agree_neg,False,False,neutral,0.98,,全文未涉及安全、公平或偏见问题的评估或讨论。,,deepseek-reasoner,False,,True
+1|safety_bias|C1P6,1,safety_bias,C1P6,agree_neg,False,False,neutral,0.97,,原文只涉及事件论元抽取实验，未提及安全/公平/偏见评估。,,deepseek-reasoner,False,,True
+1|significance|C1P1,1,significance,C1P1,agree_neg,False,False,neutral,0.78,all methods perform significantly better on the Question Overlap category,无标准差、多种子或p值/显著性检验，仅用「显著」措辞,,deepseek-reasoner,False,,True
+1|significance|C1P10,1,significance,C1P10,agree_neg,False,False,neutral,0.95,,证据未提及重复运行的标准差、方差、p值或显著性检验。,,deepseek-reasoner,False,,True
+1|significance|C1P11,1,significance,C1P11,agree_neg,False,False,neutral,0.95,,片段中未见标准差、重复运行、种子或显著性检验。,,deepseek-reasoner,False,,True
+1|significance|C1P12,1,significance,C1P12,agree_neg,False,False,neutral,0.85,,全文仅报告单次结果，未提标准差、重复运行或显著性检验,,deepseek-reasoner,False,,True
+1|significance|C1P14,1,significance,C1P14,agree_neg,False,False,neutral,0.75,∗ indicates concurrent or recent results reported by concurrent work.,仅见星号表示同期工作，未见std/方差或显著性检验；未提及,,deepseek-reasoner,False,,True
+1|significance|C1P15,1,significance,C1P15,agree_neg,False,False,neutral,0.75,show that RGF significantly improves robustness to a range of local perturbations,"表格仅单一数值，无±std/p值；仅提""显著提升""无检验",,deepseek-reasoner,False,,True
+1|significance|C1P17,1,significance,C1P17,agree_neg,False,False,neutral,0.9,In Table 3 we report results comparing the methods proposed in Section 4 on the adversarial dataset described in Section 3.,仅报告单次MRR/命中率结果，无标准差或显著性检验,,deepseek-reasoner,False,,True
+1|significance|C1P18,1,significance,C1P18,agree_neg,False,False,neutral,0.95,,证据未提及标准差、方差或显著性检验,,deepseek-reasoner,False,,True
+1|significance|C1P19,1,significance,C1P19,agree_neg,False,False,entail,0.9,The significance of each correlation was calculated using a two-tailed test that resulted in p < 0.01 for each category.,本文用双尾检验报告了相关系数的显著性 p<0.01,,deepseek-reasoner,True,,False
+1|significance|C1P2,1,significance,C1P2,agree_neg,False,False,neutral,0.95,,原文未报告多次运行波动或显著性检验。,,deepseek-reasoner,False,,True
+1|significance|C1P4,1,significance,C1P4,agree_neg,False,False,neutral,0.9,"developing effective automatic evaluation metrics, and rigorous and efficient human evaluation procedures",仅展望评测流程，未报告重复运行波动或显著性检验,,deepseek-reasoner,False,,True
+1|significance|C1P6,1,significance,C1P6,agree_pos,True,True,entail,0.98,"For our own model and its variations, we conduct three runs, and calculate the average of their performance and standard deviations.",本文对自身模型跑三次并报告均值与标准差,,deepseek-reasoner,True,,True
+1|significance|C1P7,1,significance,C1P7,agree_neg,False,False,neutral,0.9,"our model ReDR and its variants perform much better than the baselines, which indicates that the reasoning procedure can significantly boost",表格只给单次数值，无std/p值/星号标注,,deepseek-reasoner,False,,True
+1|significance|C1P9,1,significance,C1P9,agree_pos,True,True,entail,0.98,we evaluate the randomly selected subsets five times and report the mean and standard deviation,明确报告五次重复运行及标准差，另处用5个随机种子报告均值与标准差。,,deepseek-reasoner,True,,True
+1|zero_few_shot|C1P1,1,zero_few_shot,C1P1,agree_neg,False,False,neutral,0.9,"To further examine model generalizability, we study the per-category performance of different methods using the annotations in Lewis et al. (2020b).",片段只涉及训练/测试重叠分组，未提zero-shot或few-shot设置,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P10,1,zero_few_shot,C1P10,agree_pos,True,True,entail,0.75,"This model is not finetuned with domain-specific question-answer pairs, and we report the zero-shot performance.",明确说明本文报告了零样本性能结果,,deepseek-reasoner,True,,True
+1|zero_few_shot|C1P13,1,zero_few_shot,C1P13,agree_neg,False,False,neutral,0.95,,证据仅涉及消融、预训练与微调，未提及zero-shot/few-shot评估结果。,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P14,1,zero_few_shot,C1P14,agree_pos,True,True,entail,0.98,"we conduct zero-shot evaluations, where we provide instructions describing tasks without few-shot demonstrations",本文明确说自己在实验中进行了零样本评估。,,deepseek-reasoner,True,,True
+1|zero_few_shot|C1P15,1,zero_few_shot,C1P15,agree_neg,False,False,neutral,0.75,we evaluate RGF in a cross-domain setting where only a small amount of training data is available.,低资源迁移用1000样本微调，非zero/few-shot；零监督指他人检索模型,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P16,1,zero_few_shot,C1P16,agree_neg,False,False,neutral,0.7,Our TRiG* improves over the results released in its paper (VQA Score of 48.32 vs 45.51) at K_train = K_test = 5,K指检索文档数非训练样本；零/少样本出现于基线PICa，非本文,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P18,1,zero_few_shot,C1P18,agree_neg,False,False,neutral,0.85,"We train both models with top-k passages (k∈{1,5,10,25}) and evaluate on the development sets with the same number of passages.",全文只涉及有监督训练与不同段落数，未提零样本/少样本设置或结果,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P19,1,zero_few_shot,C1P19,agree_neg,False,False,neutral,0.95,,片段仅涉常规训练与评测，未提zero-shot或few-shot设置。,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P2,1,zero_few_shot,C1P2,agree_neg,False,False,neutral,0.95,,未报告本文零样本/少样本设置下的实验结果，仅泛述PLM能力。,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P4,1,zero_few_shot,C1P4,agree_neg,False,False,neutral,0.98,,证据仅列往届教程清单，未涉及零样本/少样本实验设置。,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P7,1,zero_few_shot,C1P7,agree_neg,False,False,neutral,0.95,,未提及zero-shot或few-shot设置及结果。,,deepseek-reasoner,False,,True
+1|zero_few_shot|C1P9,1,zero_few_shot,C1P9,agree_pos,True,True,entail,0.95,We verify the effectiveness of our recitation-augmented generation on few-shot Closed-Book Question Answering,本文在few-shot CBQA任务上验证并报告结果,,deepseek-reasoner,True,,True
+2|ablation|C2P1,2,ablation,C2P1,agree_pos,True,True,entail,0.95,We perform further ablation studies to understand the effectiveness of self-augmented data in our method.,本文自行开展消融，去掉种子数据/自筛选等并比较性能变化。,,deepseek-reasoner,True,,True
+2|ablation|C2P10,2,ablation,C2P10,agree_neg,False,False,neutral,0.85,we increase the sample size from 4 to 128 and evaluate the test accuracy change,仅超参/指标选择，无组件移除消融,,deepseek-reasoner,False,,True
+2|ablation|C2P11,2,ablation,C2P11,agree_neg,False,False,neutral,0.9,we conduct a statistical analysis comparing the accu,证据仅做性能对比，未提及消融或移除组件。,,deepseek-reasoner,False,,True
+2|ablation|C2P12,2,ablation,C2P12,agree_neg,False,False,neutral,0.85,"we explore which combinations of training procedure, train set and model size lead to high performance",仅比较训练过程组合，未做组件消融,,deepseek-reasoner,False,,True
+2|ablation|C2P13,2,ablation,C2P13,agree_neg,False,False,neutral,0.95,the tutorial will mostly cover work by other researchers,证据仅教程大纲，未提及消融或自身方法实验,,deepseek-reasoner,False,,True
+2|ablation|C2P14,2,ablation,C2P14,agree_neg,False,False,neutral,0.95,We added a random effect for each participant and embedding dimension while keeping the remaining evaluation procedure the same.,仅比较模型与加随机效应，未做部件消融。,,deepseek-reasoner,False,,True
+2|ablation|C2P15,2,ablation,C2P15,agree_pos,True,True,entail,0.72,"Our ablations show that performance is consistently scalable across all axes considered: diverse reasoning, dataset size, teacher...",本文明确说做了消融，含对diverse reasoning组件的分析,,deepseek-reasoner,True,,True
+2|ablation|C2P16,2,ablation,C2P16,agree_pos,True,True,entail,0.8,We also conduct an ablation to show some potential benefits of filtering noisy token reweightings.,本文自述进行了消融，展示方法某组件的好处,,deepseek-reasoner,True,,True
+2|ablation|C2P17,2,ablation,C2P17,agree_pos,True,True,entail,0.95,Table 2: Ablation studies on the XTREME benchmark. All numbers are averaged over five random seeds.,本文Table 2呈现消融，去掉/替换部分并报告性能。,,deepseek-reasoner,True,,True
+2|ablation|C2P18,2,ablation,C2P18,agree_neg,False,False,neutral,0.95,Our experiments show that this claim is largely true with a few interesting exceptions.,证据未提及消融或移除/替换模型部件及性能变化。,,deepseek-reasoner,False,,True
+2|ablation|C2P2,2,ablation,C2P2,agree_neg,False,False,neutral,0.92,3.3 Comparison of ITE in Humans and GPT-3,证据只做人类与GPT-3对比及回归系数比较，无消融实验。,,deepseek-reasoner,False,,True
+2|ablation|C2P20,2,ablation,C2P20,agree_neg,False,False,neutral,0.9,We perform the evaluation of alignments obtained by layer wise averaging of attention probabilities,仅评估层平均对齐，未做去部件消融实验,,deepseek-reasoner,False,,True
+2|ablation|C2P3,2,ablation,C2P3,agree_neg,False,False,neutral,0.98,,证据仅为参考文献列表，未涉及本文消融实验。,,deepseek-reasoner,False,,True
+2|ablation|C2P4,2,ablation,C2P4,agree_pos,True,True,entail,0.95,"we compare the performance of different alignment extraction methods, pre-trained embedding models and training objectives.",本文在消融研究中比较了自身方法的不同组件及性能变化,,deepseek-reasoner,True,,True
+2|ablation|C2P7,2,ablation,C2P7,agree_neg,False,False,neutral,0.7,"In this work, we adopt two common regularization techniques",片段只描述采用/选用他人方法，未报告本文的消融实验及结果,,deepseek-reasoner,False,,True
+2|ablation|C2P9,2,ablation,C2P9,agree_neg,False,False,entail,0.9,LLaRP-Scratch takes 10x more environment samples to converge than LLaRP (50M versus 500M),本文用Scratch替换预训练LLM并报告性能对比，属消融。,,deepseek-reasoner,True,,False
+2|annotation_cost|C2P1,2,annotation_cost,C2P1,agree_pos,True,True,entail,0.98,We present a scalable method to build a high quality instruction following language model by automatically labelling human-written text with corresponding instructions.,本文提出自动标注方法并报告模型效果，降低人工标注成本。,,deepseek-reasoner,True,,True
+2|annotation_cost|C2P10,2,annotation_cost,C2P10,agree_neg,False,False,entail,0.78,"To reduce the human effort involved in creating and validating effective instructions, we propose a novel algorithm using LLMs to generate and select instructions automatically.",本文提出用LLM自动生成指令以省人工，并报告其效果,,deepseek-reasoner,True,,False
+2|annotation_cost|C2P12,2,annotation_cost,C2P12,agree_neg,False,False,neutral,0.7,"To reduce data cost, prompting is recommended, better if combined with KD for smaller models.",仅推荐prompting降低数据成本，未提出或使用自动/廉价标注手段。,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P13,2,annotation_cost,C2P13,agree_neg,False,False,neutral,0.95,,证据未提及自动或廉价标注手段及其效果,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P14,2,annotation_cost,C2P14,agree_neg,False,False,neutral,0.95,,证据未提及自动或廉价标注手段及效果,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P15,2,annotation_cost,C2P15,agree_neg,False,False,entail,0.78,Rationales can be readily generated using publicly available APIs such as those provided by OpenAI or Anthropic.,本文用教师模型API自动生成CoT训练数据，并称其优于标准微调,,deepseek-reasoner,True,,False
+2|annotation_cost|C2P18,2,annotation_cost,C2P18,agree_neg,False,False,entail,0.9,"The material is first processed using Ken Church's tagger (Church 1988), which labels it as if it were Brown Corpus material, and then is mapped to our tagset by a SEDscript.",本文用自动词性标注器预处理再人工校正，并报告错误率与速度等效果。,,deepseek-reasoner,True,,False
+2|annotation_cost|C2P2,2,annotation_cost,C2P2,agree_neg,False,False,neutral,0.9,We first compare the exposure-phase ratings given by GPT-3 and humans.,仅比较GPT-3与人类评分，未提降低标注成本或自动标注。,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P20,2,annotation_cost,C2P20,agree_neg,False,False,neutral,0.95,The reference alignments were created by randomly selecting a subset of the Europarl v7 corpus and manually annotating them,仅描述使用人工标注数据，未提出或使用自动/廉价标注手段,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P3,2,annotation_cost,C2P3,agree_neg,False,False,neutral,0.95,,证据仅为参考文献列表，未涉及任何自动/廉价标注手段,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P4,2,annotation_cost,C2P4,agree_neg,False,False,neutral,0.9,"If we have access to word-level gold labels for word alignment, we can simply utilize them in our self-training objectives.",仅提自训练与利用金标，未涉及降低标注成本的自动/廉价标注及其效果。,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P6,2,annotation_cost,C2P6,agree_neg,False,False,neutral,0.95,In-context tuning reduces the need of task instructions.,仅提减少任务指令需求，未涉及降低人工标注成本手段及效果。,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P7,2,annotation_cost,C2P7,agree_neg,False,False,neutral,0.95,,片段只涉及正则化和参数高效微调，未提自动或廉价标注。,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P8,2,annotation_cost,C2P8,agree_neg,False,False,neutral,0.95,,证据只讲MoE指令微调与消融，未涉及降低人工标注成本的手段,,deepseek-reasoner,False,,True
+2|annotation_cost|C2P9,2,annotation_cost,C2P9,agree_neg,False,False,neutral,0.95,,证据仅描述LLaRP的强化学习训练方法，未提及降低人工标注成本的标注手段。,,deepseek-reasoner,False,,True
+2|case_study|C2P1,2,case_study,C2P1,agree_neg,False,False,neutral,0.95,We evaluate on test prompts from several sources: Vicuna ... In total there are 1130 unique prompts,证据仅涉及数据统计与整体评估，无逐例展示讨论。,,deepseek-reasoner,False,,True
+2|case_study|C2P10,2,case_study,C2P10,agree_neg,False,False,neutral,0.85,We show an example of the such template in Figure 2 (Middle).,仅展示模板示例，未对具体输入/实例逐例展示与讨论,,deepseek-reasoner,False,,True
+2|case_study|C2P11,2,case_study,C2P11,agree_neg,False,False,neutral,0.9,"The distribution of the test data comprises 105 instances of ties, 422 instances where Response 1 wins...",证据仅描述数据集统计与标注，无逐例展示分析,,deepseek-reasoner,False,,True
+2|case_study|C2P12,2,case_study,C2P12,agree_neg,False,False,neutral,0.95,,片段仅涉及数据集、提示与超参搜索，无逐例展示或案例分析,,deepseek-reasoner,False,,True
+2|case_study|C2P13,2,case_study,C2P13,agree_neg,False,False,neutral,0.95,the tutorial will mostly cover work by other researchers,该文是教程介绍，未表明自己对具体实例逐例展示讨论。,,deepseek-reasoner,False,,True
+2|case_study|C2P14,2,case_study,C2P14,agree_neg,False,False,neutral,0.95,,证据未提及对具体实例逐例展示与讨论,,deepseek-reasoner,False,,True
+2|case_study|C2P15,2,case_study,C2P15,agree_neg,False,False,neutral,0.8,Sample studies show that rationales output from student models may occasionally be repetitive and digressive.,仅有总体定性声明，未逐例展示或分析具体实例,,deepseek-reasoner,False,,True
+2|case_study|C2P16,2,case_study,C2P16,agree_neg,False,False,neutral,0.9,See Figure 3 for the aggregated results of this experiment... See Figures 4 and 6 for the per-model and per-dataset results.,仅展示聚合及分组结果，未逐例展示具体输入实例并讨论,,deepseek-reasoner,False,,True
+2|case_study|C2P17,2,case_study,C2P17,agree_neg,False,False,neutral,0.9,,片段只讲任务适配与数据增强，未提案例展示或个案分析,,deepseek-reasoner,False,,True
+2|case_study|C2P18,2,case_study,C2P18,agree_neg,False,False,neutral,0.7,A description of some of the word classes the program discovered can be found in Appendix A.,仅提及附录有描述，未展示逐例讨论,,deepseek-reasoner,False,,True
+2|case_study|C2P2,2,case_study,C2P2,agree_neg,False,False,neutral,0.8,Table 2: Hypothesis uses the labelling in Bos et al. (2020),仅有回归系数汇总表，无逐例展示与讨论,,deepseek-reasoner,False,,True
+2|case_study|C2P20,2,case_study,C2P20,agree_neg,False,False,neutral,0.95,,片段仅介绍基线与Transformer模型，未提及逐例展示或案例讨论。,,deepseek-reasoner,False,,True
+2|case_study|C2P3,2,case_study,C2P3,agree_neg,False,False,neutral,0.95,,片段均为参考文献，未涉及逐例展示或案例讨论。,,deepseek-reasoner,False,,True
+2|case_study|C2P4,2,case_study,C2P4,agree_neg,False,False,neutral,0.95,"we first present our main results, then conduct several ablation studies and analyses of our models.",只有消融与定量分析，无逐例展示讨论,,deepseek-reasoner,False,,True
+2|case_study|C2P6,2,case_study,C2P6,agree_neg,False,False,neutral,0.8,see Figure 1 left for examples,仅提及图示示例，无逐例展示与讨论,,deepseek-reasoner,False,,True
+2|case_study|C2P8,2,case_study,C2P8,agree_neg,False,False,neutral,0.9,,仅见汇总结果与设置，无逐例展示或讨论。,,deepseek-reasoner,False,,True
+2|case_study|C2P9,2,case_study,C2P9,agree_neg,False,False,neutral,0.85,,证据仅述方法、架构与结论，未见逐例案例展示或讨论,,deepseek-reasoner,False,,True
+2|code_release|C2P11,2,code_release,C2P11,agree_neg,False,False,neutral,0.95,,证据未提及作者自己代码/模型/数据的可获取链接,,deepseek-reasoner,False,,True
+2|code_release|C2P13,2,code_release,C2P13,agree_neg,False,False,neutral,0.95,We require Internet access in the tutorial room.,仅见讲师邮箱/个人网站，无本文代码或数据链接,,deepseek-reasoner,False,,True
+2|code_release|C2P14,2,code_release,C2P14,agree_pos,True,True,entail,0.98,Data and code for the current study are available through the GitHub repository https://github.com/marcelbinz/CENTaUR.,明确给出本文数据与代码的GitHub链接,,deepseek-reasoner,True,,True
+2|code_release|C2P15,2,code_release,C2P15,agree_pos,True,True,entail,0.98,Our code implementation and data are available at https://github.com/itsnamgyu/reasoning-teacher.,本文自己声明代码与数据公开于GitHub链接,,deepseek-reasoner,True,,True
+2|code_release|C2P16,2,code_release,C2P16,agree_neg,False,False,neutral,0.9,,证据中未提到任何作者自建代码/模型/数据的链接。,,deepseek-reasoner,False,,True
+2|code_release|C2P17,2,code_release,C2P17,agree_pos,True,True,entail,0.99,The code is available at https://github.com/ bozheng-hit/xTune.,原文明确给出本文代码的获取链接。,,deepseek-reasoner,True,,True
+2|code_release|C2P18,2,code_release,C2P18,agree_neg,False,False,neutral,0.95,,全文未提及任何代码/数据/模型的可获取链接,,deepseek-reasoner,False,,True
+2|code_release|C2P2,2,code_release,C2P2,agree_neg,False,False,partial,0.5,"Data Availability
+Available as an annex to this paper.",有数据可用性声明指向附件，但未给代码/数据链接,,deepseek-reasoner,False,,True
+2|code_release|C2P20,2,code_release,C2P20,agree_pos,True,True,entail,0.92,1Code can be found at https://github.com/ pytorch/fairseq/pull/1095,脚注给出本文作者自己的代码链接。,,deepseek-reasoner,True,,True
+2|code_release|C2P3,2,code_release,C2P3,agree_neg,False,False,neutral,0.95,,片段均为参考文献列表，未提本文代码/数据链接,,deepseek-reasoner,False,,True
+2|code_release|C2P4,2,code_release,C2P4,agree_neg,False,False,neutral,0.9,The Zh-En dataset is obtained from the TsinghuaAligner website,证据仅提及第三方数据来源，无本文自身代码/数据发布链接,,deepseek-reasoner,False,,True
+2|code_release|C2P6,2,code_release,C2P6,agree_pos,True,True,entail,0.95,1Code is released at https://github.com/ yandachen/In-context-Tuning.,脚注明确给出本文自己代码的发布链接,,deepseek-reasoner,True,,True
+2|code_release|C2P8,2,code_release,C2P8,agree_neg,False,False,neutral,0.95,,证据仅为实验设置与结果表，未提及任何代码/模型/数据链接。,,deepseek-reasoner,False,,True
+2|context_length|C2P1,2,context_length,C2P1,agree_neg,False,False,neutral,0.95,augmented data tends to have longer outputs compared to the seed data,仅统计输出长度，未以长输入为目标或提出长上下文机制,,deepseek-reasoner,False,,True
+2|context_length|C2P10,2,context_length,C2P10,agree_neg,False,False,neutral,0.95,,全文片段未涉及长输入机制或长输入实验,,deepseek-reasoner,False,,True
+2|context_length|C2P11,2,context_length,C2P11,agree_neg,False,False,neutral,0.95,analyzing and evaluating the extended text outputs of an untuned LLM can help predict how a tuned version might behave,仅在局限/未来方向提及扩展文本输出，未提出长输入机制或报告长输入实验,,deepseek-reasoner,False,,True
+2|context_length|C2P12,2,context_length,C2P12,agree_neg,False,False,neutral,0.95,,全文未涉及长输入处理机制或长上下文实验，目标为效率权衡,,deepseek-reasoner,False,,True
+2|context_length|C2P13,2,context_length,C2P13,agree_neg,False,False,neutral,0.95,,证据仅为教程大纲，未提及长输入机制或长输入实验,,deepseek-reasoner,False,,True
+2|context_length|C2P14,2,context_length,C2P14,agree_neg,False,False,neutral,0.97,we address this gap and ask whether large language models can be turned into cognitive models,聚焦微调LLM做认知模型，未提长输入机制或长输入实验,,deepseek-reasoner,False,,True
+2|context_length|C2P15,2,context_length,C2P15,agree_neg,False,False,neutral,0.85,to minimize sequence length,证据显示本文优化目标是缩短序列、生成简洁答案，未提长输入机制或长输入实验。,,deepseek-reasoner,False,,True
+2|context_length|C2P16,2,context_length,C2P16,agree_neg,False,False,neutral,0.98,,证据未提及长输入或长上下文方法，与该论断无关。,,deepseek-reasoner,False,,True
+2|context_length|C2P17,2,context_length,C2P17,agree_neg,False,False,neutral,0.95,,证据仅涉及数据增强与机器翻译，未提长输入机制或实验,,deepseek-reasoner,False,,True
+2|context_length|C2P18,2,context_length,C2P18,agree_neg,False,False,neutral,0.95,the error rate for longer sentences is more of an approximation than a rigorous value.,仅报告长句错误率，未提出处理长输入的机制/改进,,deepseek-reasoner,False,,True
+2|context_length|C2P2,2,context_length,C2P2,agree_neg,False,False,neutral,0.97,Two studies tested the hypothesis that a Large Language Model (LLM) can be used to model psychological change following exposure to influential input.,全文关于LLM模拟人类受影响力，未提长输入机制或实验。,,deepseek-reasoner,False,,True
+2|context_length|C2P20,2,context_length,C2P20,agree_neg,False,False,neutral,0.85,By using a multi-task objective along with providing full target sentence context to our alignment module,目标是对齐与翻译联合学习，未提出处理更长输入的机制或长输入实验,,deepseek-reasoner,False,,True
+2|context_length|C2P3,2,context_length,C2P3,agree_neg,False,False,neutral,0.95,,证据仅为参考文献列表，未涉及长输入方法或实验,,deepseek-reasoner,False,,True
+2|context_length|C2P4,2,context_length,C2P4,agree_neg,False,False,neutral,0.95,,证据全篇讨论词对齐与多语言，未涉及长输入机制或实验,,deepseek-reasoner,False,,True
+2|context_length|C2P7,2,context_length,C2P7,agree_neg,False,False,neutral,0.98,,证据未涉及长输入或长上下文机制，完全无关。,,deepseek-reasoner,False,,True
+2|context_length|C2P8,2,context_length,C2P8,agree_neg,False,False,neutral,0.95,,证据未涉及长输入机制或长输入实验，与论断无关。,,deepseek-reasoner,False,,True
+2|context_length|C2P9,2,context_length,C2P9,agree_neg,False,False,neutral,0.95,,证据未提及以处理更长输入为目标或长输入实验。,,deepseek-reasoner,False,,True
+2|deployment|C2P1,2,deployment,C2P1,agree_neg,False,False,neutral,0.95,,证据均为评测与数据统计，未提及任何线上部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P10,2,deployment,C2P10,agree_neg,False,False,neutral,0.98,,证据未提及系统在真实产品或线上环境的部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P14,2,deployment,C2P14,agree_neg,False,False,neutral,0.95,,证据仅涉及模拟评估，未提及真实产品/线上环境部署,,deepseek-reasoner,False,,True
+2|deployment|C2P16,2,deployment,C2P16,agree_neg,False,False,neutral,0.95,Our primary set of experiments studies the result of independently scaling pre-training and fine-tuning using emulated fine-tuning.,全文只描述实验与方法，未提及系统在生产/线上环境部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P17,2,deployment,C2P17,agree_neg,False,False,neutral,0.97,,证据只涉及实验设置与基准评测，未提线上部署,,deepseek-reasoner,False,,True
+2|deployment|C2P18,2,deployment,C2P18,agree_neg,False,False,neutral,0.9,"To test the algorithm discussed above, we ran the following experiment.",仅描述在Brown语料上的离线实验，未提任何生产部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P2,2,deployment,C2P2,agree_neg,False,False,neutral,0.97,,全文未提及任何真实产品/线上环境部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P20,2,deployment,C2P20,agree_neg,False,False,neutral,0.98,,原文只描述实验设置与模型方法，未提及生产或线上部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P3,2,deployment,C2P3,agree_neg,False,False,neutral,0.97,,仅参考文献列表，未提及任何生产环境部署,,deepseek-reasoner,False,,True
+2|deployment|C2P4,2,deployment,C2P4,agree_neg,False,False,neutral,0.98,We perform experiments on five language pairs and demonstrate that our model can consistently outperform previous state-of-the-art models,仅描述实验与模型，未提及任何产品/线上部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P6,2,deployment,C2P6,agree_neg,False,False,neutral,0.98,,证据仅涉及少样本分类问题设置与基线比较，未提及任何产品/线上部署。,,deepseek-reasoner,False,,True
+2|deployment|C2P9,2,deployment,C2P9,agree_neg,False,False,neutral,0.95,,全文仅提基准与实验，未提生产或线上部署。,,deepseek-reasoner,False,,True
+2|efficiency|C2P10,2,efficiency,C2P10,agree_neg,False,False,neutral,0.9,This adaptive filtering scheme significantly improves the computation efficiency,仅定性提计算效率，无推理时间/延迟/吞吐/FLOPs/显存数值,,deepseek-reasoner,False,,True
+2|efficiency|C2P11,2,efficiency,C2P11,agree_neg,False,False,neutral,0.95,which is indeed resource-intensive,片段未报告任何推理效率数值，仅定性提及资源消耗。,,deepseek-reasoner,False,,True
+2|efficiency|C2P13,2,efficiency,C2P13,agree_neg,False,False,neutral,0.95,,证据仅为教程大纲，未出现任何推理效率数值。,,deepseek-reasoner,False,,True
+2|efficiency|C2P17,2,efficiency,C2P17,agree_neg,False,False,neutral,0.95,,证据只含准确率/F1等效果指标，未报告推理效率数值。,,deepseek-reasoner,False,,True
+2|efficiency|C2P18,2,efficiency,C2P18,agree_neg,False,False,neutral,0.9,Table 4: Speed of part-of-speech annotation,仅报告人工标注速度，未给模型推理效率数值,,deepseek-reasoner,False,,True
+2|efficiency|C2P2,2,efficiency,C2P2,agree_neg,False,False,neutral,0.95,,证据仅含回归系数表与引言，未提及任何推理效率数值,,deepseek-reasoner,False,,True
+2|efficiency|C2P20,2,efficiency,C2P20,agree_neg,False,False,neutral,1.0,,片段未提及推理时间、延迟、吞吐、FLOPs或显存等效率数值。,,deepseek-reasoner,False,,True
+2|efficiency|C2P3,2,efficiency,C2P3,agree_neg,False,False,neutral,0.97,,证据仅为参考文献列表，未涉及推理效率数值,,deepseek-reasoner,False,,True
+2|efficiency|C2P6,2,efficiency,C2P6,agree_neg,False,False,neutral,0.95,,证据只报告准确率、方差下降等，未涉及推理效率数值。,,deepseek-reasoner,False,,True
+2|efficiency|C2P7,2,efficiency,C2P7,agree_neg,False,False,neutral,0.98,,原文片段未提及任何推理效率数值。,,deepseek-reasoner,False,,True
+2|efficiency|C2P9,2,efficiency,C2P9,agree_neg,False,False,neutral,0.92,"LLaRP is the most sample efficient model, converging in around 50M-100M steps",只涉及样本/收敛效率，未报告推理时间/延迟/吞吐等数值,,deepseek-reasoner,False,,True
+2|error_analysis|C2P1,2,error_analysis,C2P1,agree_neg,False,False,neutral,0.97,,片段仅涉及实验设置与数据统计，未提失败案例分析,,deepseek-reasoner,False,,True
+2|error_analysis|C2P10,2,error_analysis,C2P10,agree_neg,False,False,neutral,0.9,,证据只讲评分函数与选择策略，未涉及失败案例或错误分析,,deepseek-reasoner,False,,True
+2|error_analysis|C2P11,2,error_analysis,C2P11,agree_neg,False,False,neutral,0.95,,证据未提及本文对自身方法做失败案例检查或分类统计。,,deepseek-reasoner,False,,True
+2|error_analysis|C2P12,2,error_analysis,C2P12,agree_neg,False,False,neutral,0.9,,证据未提及失败案例检查或错误分析统计,,deepseek-reasoner,False,,True
+2|error_analysis|C2P13,2,error_analysis,C2P13,agree_neg,False,False,neutral,0.95,The tutorial is mostly introductory—we will explain the literature on computational models of language acquisition and processing.,教程大纲，未提及任何失败案例或错误分析,,deepseek-reasoner,False,,True
+2|error_analysis|C2P14,2,error_analysis,C2P14,agree_neg,False,False,neutral,0.95,,原文仅介绍方法、数据与评估指标，未提及失败或错误案例分析。,,deepseek-reasoner,False,,True
+2|error_analysis|C2P16,2,error_analysis,C2P16,agree_neg,False,False,neutral,0.95,,证据只报告总体及分模型/分数据集结果，未提及失败案例分析。,,deepseek-reasoner,False,,True
+2|error_analysis|C2P17,2,error_analysis,C2P17,agree_neg,False,False,neutral,0.9,,证据仅含方法描述与总体实验表格，未涉及错误/失败案例分析,,deepseek-reasoner,False,,True
+2|error_analysis|C2P18,2,error_analysis,C2P18,agree_neg,False,False,entail,0.9,the parser averages about two errors per sentence... at least one of the errors is caused by confusion about conjuncts.,本文报告自身解析器错误率并指出连词混淆等错误类型，属错误分析。,,deepseek-reasoner,True,,False
+2|error_analysis|C2P2,2,error_analysis,C2P2,agree_neg,False,False,entail,0.85,"In the PFN study, out of twelve influence effects tested (Table 2): four were absent... two were present in humans but not GPT-3; and three were present in GPT-3 but not in humans.",有分类统计并提及失败复制案例,,deepseek-reasoner,True,,False
+2|error_analysis|C2P20,2,error_analysis,C2P20,agree_neg,False,False,neutral,0.95,,原文仅描述实验设置与数据集，未提及错误分析或失败案例。,,deepseek-reasoner,False,,True
+2|error_analysis|C2P3,2,error_analysis,C2P3,agree_neg,False,False,neutral,0.95,,证据仅为参考文献列表，未涉及错误分析,,deepseek-reasoner,False,,True
+2|error_analysis|C2P6,2,error_analysis,C2P6,agree_neg,False,False,neutral,0.9,We compute the Pearson correlation between the instruction tuning accuracy and the accuracy gain,仅有相关性敏感性分析，未做失败案例检查或错误分类统计,,deepseek-reasoner,False,,True
+2|error_analysis|C2P9,2,error_analysis,C2P9,agree_neg,False,False,neutral,0.95,we show a success example of LLaRP on the Context dataset,仅展示成功案例，未做失败或错误案例分析,,deepseek-reasoner,False,,True
+2|fine_tuning|C2P11,2,fine_tuning,C2P11,agree_pos,True,True,entail,0.8,"Tuned from LLaMA, PandaLM is used to distinguish... Each of these models is fine-tuned using the same data and hyperparameters as Alpaca",本文自述从LLaMA调优PandaLM并微调各基座模型,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P13,2,fine_tuning,C2P13,agree_neg,False,False,neutral,0.95,,教程摘要，未提及本文微调模型或报告训练,,deepseek-reasoner,False,,True
+2|fine_tuning|C2P14,2,fine_tuning,C2P14,agree_pos,True,True,entail,0.98,We then finetuned a linear layer on top of these embeddings to predict human choices.,本文明确描述自己微调线性层并报告结果,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P15,2,fine_tuning,C2P15,agree_pos,True,True,entail,0.98,"the curated reasoning samples are used to fine-tune a small, lightweight student to exhibit reasoning capabilities.",本文明确提出用生成样本微调学生模型并展开实验。,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P18,2,fine_tuning,C2P18,agree_neg,False,False,neutral,0.95,which was not used for training the parser,未提及微调或继续训练模型，仅说明解析器训练数据划分,,deepseek-reasoner,False,,True
+2|fine_tuning|C2P2,2,fine_tuning,C2P2,agree_neg,False,False,contradict,0.98,nor did we adapt GPT-3 in any way,原文明确表示未以任何方式调整（微调）GPT-3,,deepseek-reasoner,False,,True
+2|fine_tuning|C2P3,2,fine_tuning,C2P3,agree_neg,False,False,neutral,0.95,,证据仅为参考文献和作者列表，未提及本文训练或微调模型。,,deepseek-reasoner,False,,True
+2|fine_tuning|C2P4,2,fine_tuning,C2P4,agree_pos,True,True,entail,0.98,"we leverage pre-trained LMs and fine-tune them on parallel text with not only LM-based objectives, but also unsupervised objectives",本文自述在平行文本上微调预训练LM并做实验报告,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P7,2,fine_tuning,C2P7,agree_pos,True,True,entail,0.8,our proposed method that encourages the fine-tuned model to learn generative representations with auxiliary language modeling objective achieves competitive accuracy,本文提出方法并评估微调模型，表明自己执行了微调并报告结果,,deepseek-reasoner,True,,True
+2|fine_tuning|C2P8,2,fine_tuning,C2P8,agree_pos,True,True,entail,0.95,we conduct empirical studies across three experimental setups: (i) Direct finetuning on individual downstream tasks devoid of instruction tuning,摘要明确本文执行直接微调与指令微调并报告,,deepseek-reasoner,True,,True
+2|human_eval|C2P12,2,human_eval,C2P12,agree_neg,False,False,neutral,0.95,We considered efficiency both as the compute cost associated with inference and the data cost of labeling training examples.,仅提及标注数据成本，未做也未报告人工评估,,deepseek-reasoner,False,,True
+2|human_eval|C2P13,2,human_eval,C2P13,agree_neg,False,False,neutral,0.95,,仅为教程大纲，未提及本文收集人工判断或标注。,,deepseek-reasoner,False,,True
+2|human_eval|C2P14,2,human_eval,C2P14,agree_neg,False,False,neutral,0.65,we considered data from a recent study that provided participants with a choice between one option whose information is provided via a description,人类数据来自已有研究与他人数据集，未表明本文自己收集人工标注,,deepseek-reasoner,False,,True
+2|human_eval|C2P16,2,human_eval,C2P16,agree_pos,True,True,entail,0.98,"Finally, we conduct a human evaluation of model-generated responses to validate the accuracy of our GPT-4-based fact-checking.",原文明确称本文开展了人工评估并报告结果,,deepseek-reasoner,True,,True
+2|human_eval|C2P17,2,human_eval,C2P17,agree_neg,False,False,neutral,0.95,"Datasets For our experiments, we select three types of cross-lingual understanding tasks from XTREME benchmark",仅使用现有人工标注数据集，未提及本文收集人工判断或报告人工评估,,deepseek-reasoner,False,,True
+2|human_eval|C2P18,2,human_eval,C2P18,agree_pos,True,True,entail,0.95,This material is then hand-corrected by our annotators; the result is consistent within annotators to about 3%,本文让标注员手工校对并报告标注者间一致率,,deepseek-reasoner,True,,True
+2|human_eval|C2P2,2,human_eval,C2P2,agree_pos,True,True,entail,0.95,We used the Prolific platform ... to recruit 1000 participants ... Each participant completed a multi-screen questionnaire,本文招募1000名人类被试并收集问卷数据，属人工判断收集与报告,,deepseek-reasoner,True,,True
+2|human_eval|C2P3,2,human_eval,C2P3,agree_neg,False,False,neutral,0.95,,证据仅为参考文献与作者名单，未涉及本文人工评估,,deepseek-reasoner,False,,True
+2|human_eval|C2P4,2,human_eval,C2P4,agree_neg,False,False,neutral,0.85,we mainly evaluate our word aligners using AER following previous work,证据只提自动指标AER评估，未涉及人工标注或人工评估,,deepseek-reasoner,False,,True
+2|human_eval|C2P6,2,human_eval,C2P6,agree_neg,False,False,neutral,0.95,,证据仅涉及数据集与评估指标，未提及任何人工标注或人工评估。,,deepseek-reasoner,False,,True
+2|human_eval|C2P7,2,human_eval,C2P7,agree_neg,False,False,neutral,0.95,,证据只描述数据集与自动评估指标，未提及人工判断或标注。,,deepseek-reasoner,False,,True
+2|human_eval|C2P8,2,human_eval,C2P8,agree_neg,False,False,neutral,0.9,"The evaluation metric across all benchmarks is few-shot prompted accuracy, specifically the exact match.",证据只提自动基准与精确匹配指标，未涉及人工判断/标注。,,deepseek-reasoner,False,,True
+2|human_eval|C2P9,2,human_eval,C2P9,agree_neg,False,False,neutral,0.9,"The authors would like to thank Eduord Grave, Mathias Muller, Josh Susskind, Barry Theobald, Yizhe Zhang for valuable comments and discussion.",仅有致谢，未提及人工评估或标注及结果,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P10,2,knowledge_distill,C2P10,agree_neg,False,False,neutral,0.95,,仅提LLM生成/评分指令，未涉及教师-学生蒸馏,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P11,2,knowledge_distill,C2P11,agree_neg,False,False,neutral,0.85,"During the fine-tuning phase of PandaLM, we use the standard cross-entropy loss targeting the next token prediction.",证据只描述常规微调，未提及教师-学生蒸馏方法,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P12,2,knowledge_distill,C2P12,agree_pos,True,True,entail,0.9,"we compare standard finetuning, prompting, and knowledge distillation (KD) when the teacher was trained with either fine-tuning or prompting",本文自己比较并采用KD（教师指导学生）作为训练流程并报告结果,,deepseek-reasoner,True,,True
+2|knowledge_distill|C2P13,2,knowledge_distill,C2P13,agree_neg,False,False,neutral,0.97,,仅为教程大纲，未提及教师-学生蒸馏方法或结果,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P14,2,knowledge_distill,C2P14,agree_neg,False,False,neutral,0.85,We then finetuned a linear layer on top of these embeddings to predict human choices.,本文方法是微调线性层，未提教师指导学生模型蒸馏。,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P15,2,knowledge_distill,C2P15,agree_pos,True,True,entail,0.95,The role of the teacher model in our method is to teach the notion of intermediate reasoning.,本文方法Fine-tune-CoT用教师模型指导学生模型并报告结果,,deepseek-reasoner,True,,True
+2|knowledge_distill|C2P16,2,knowledge_distill,C2P16,agree_neg,False,False,neutral,0.9,avoids resource-intensive fine-tuning of large pre-trained models by ensembling them with small fine-tuned models,本文方法为EFT/up-scaling集成采样，未提教师指导学生蒸馏。,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P17,2,knowledge_distill,C2P17,agree_neg,False,False,neutral,0.6,We propose two consistency regularization methods that encourage the model to make consistent predictions for an example and its semantically equivalent data augmentation.,本文自述方法是一致性正则，未提教师-学生蒸馏,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P18,2,knowledge_distill,C2P18,agree_neg,False,False,neutral,0.98,,证据只涉及分布分析与统计句法，未提教师-学生蒸馏方法,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P2,2,knowledge_distill,C2P2,agree_neg,False,False,neutral,0.97,Two studies tested the hypothesis that a Large Language Model (LLM) can be used to model psychological change following exposure to influential input.,全文研究LLM模拟人类受影响力，未提教师-学生蒸馏方法。,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P20,2,knowledge_distill,C2P20,agree_neg,False,False,neutral,0.92,"Currently, our self-training based approach needs two training runs.",证据提及的是自训练方法，未提教师模型指导学生模型的蒸馏。,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P3,2,knowledge_distill,C2P3,agree_neg,False,False,neutral,0.95,,证据均为参考文献列表，未提本文使用教师-学生蒸馏方法。,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P4,2,knowledge_distill,C2P4,agree_neg,False,False,neutral,0.9,,原文未提及教师模型指导学生模型的蒸馏方法或结果,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P6,2,knowledge_distill,C2P6,agree_neg,False,False,neutral,0.95,,证据未提及教师模型指导学生模型的蒸馏方法,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P8,2,knowledge_distill,C2P8,agree_neg,False,False,neutral,0.9,,证据只涉及MoE路由与指令微调，未提教师-学生蒸馏,,deepseek-reasoner,False,,True
+2|knowledge_distill|C2P9,2,knowledge_distill,C2P9,agree_neg,False,False,neutral,0.85,"We train LLaRP using only reinforcement learning (Sutton & Barto, 2018).",全文只提强化学习训练与LLM骨干改造，未提教师-学生蒸馏,,deepseek-reasoner,False,,True
+2|multilingual|C2P1,2,multilingual,C2P1,agree_neg,False,False,neutral,0.9,,证据仅提Alpaca榜单与英文无标注语料，未涉及非英语数据评测。,,deepseek-reasoner,False,,True
+2|multilingual|C2P10,2,multilingual,C2P10,agree_neg,False,False,neutral,0.95,,证据未提及任何非英语数据或相关评测。,,deepseek-reasoner,False,,True
+2|multilingual|C2P11,2,multilingual,C2P11,agree_neg,False,False,neutral,0.85,The test data is sampled from the diverse human evaluation dataset of self-instruct,片段只涉及英语为主的评测数据，未提及任何非英语实验,,deepseek-reasoner,False,,True
+2|multilingual|C2P12,2,multilingual,C2P12,agree_neg,False,False,contradict,0.7,"We use 4 English text classification datasets (Zhang et al., 2015): Yelp-full … Yahoo-questions … AG news",数据集章节列出的实验数据全为英语，无非英语评测,,deepseek-reasoner,False,,True
+2|multilingual|C2P13,2,multilingual,C2P13,agree_neg,False,False,neutral,0.97,,证据为教程摘要，未提及非英语数据或报告实验结果。,,deepseek-reasoner,False,,True
+2|multilingual|C2P14,2,multilingual,C2P14,agree_neg,False,False,neutral,0.95,,证据未提及任何非英语数据或跨语言评测,,deepseek-reasoner,False,,True
+2|multilingual|C2P15,2,multilingual,C2P15,agree_neg,False,False,neutral,0.95,,片段未提及非英语数据或多语言评测结果。,,deepseek-reasoner,False,,True
+2|multilingual|C2P16,2,multilingual,C2P16,agree_neg,False,False,neutral,0.95,,片段均未提及在非英语数据上评测或报告结果,,deepseek-reasoner,False,,True
+2|multilingual|C2P18,2,multilingual,C2P18,agree_neg,False,False,contradict,0.65,"to automatically provide both a set of part of speech tags for English, and a grammatical analysis of free English text",实验均在英语语料（Brown Corpus）上进行，无非英语数据,,deepseek-reasoner,False,,True
+2|multilingual|C2P2,2,multilingual,C2P2,agree_neg,False,False,neutral,0.9,,证据未提及任何非英语数据或跨语言评测。,,deepseek-reasoner,False,,True
+2|multilingual|C2P20,2,multilingual,C2P20,agree_neg,False,False,entail,0.95,"three different datasets: Romanian English, English French and German English",在罗英语、英法、德英等含非英语数据上开展实验,,deepseek-reasoner,True,,False
+2|multilingual|C2P6,2,multilingual,C2P6,agree_neg,False,False,neutral,0.9,"We benchmark our algorithm on LAMA (Petroni et al., 2019)... and BinaryClfs (Zhong et al., 2021)",实验数据集均为英语数据，未涉及非英语评测。,,deepseek-reasoner,False,,True
+2|multilingual|C2P7,2,multilingual,C2P7,agree_neg,False,False,neutral,0.9,We conduct experiments on three natural language understanding tasks... SNLI... MNLI... QQP... TwitterPPDB... SWAG... HellaSWAG... WikiText-103,所列数据集均为英文，未提及非英语数据。,,deepseek-reasoner,False,,True
+2|multilingual|C2P9,2,multilingual,C2P9,agree_neg,False,False,neutral,0.9,We show that LLaRP is robust to complex paraphrasings of task instructions,证据只涉及英语指令数据集，未提及任何非英语数据实验,,deepseek-reasoner,False,,True
+2|new_dataset|C2P1,2,new_dataset,C2P1,agree_neg,False,False,partial,0.75,"we derive the candidate augmented paired data $\boldsymbol { \mathcal { A } } : = \{ ( \hat { x } _ { i } , y _ { i } ) \}$",仅说明构建增强数据，未提及发布数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P10,2,new_dataset,C2P10,agree_neg,False,False,neutral,0.95,,证据未提及本文构建或发布任何数据集/基准/语料。,,deepseek-reasoner,False,,True
+2|new_dataset|C2P12,2,new_dataset,C2P12,agree_neg,False,False,contradict,0.95,"We use 4 English text classification datasets (Zhang et al., 2015)",明确使用已有数据集，未构建发布新数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P13,2,new_dataset,C2P13,agree_neg,False,False,neutral,0.95,"in 2018, we observed a shift in the field from building models to creating datasets",仅为教程摘要，未称本文构建发布数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P14,2,new_dataset,C2P14,agree_neg,False,False,entail,0.9,We made use of this and extracted data sets for several behavioral paradigms which we then used to finetune a large language model.,本文提取并公开了行为范式数据集及代码，并说明了构造流程,,deepseek-reasoner,True,,False
+2|new_dataset|C2P15,2,new_dataset,C2P15,agree_neg,False,False,neutral,0.9,This makes it viable to obtain CoT training data in low-resource scenarios,片段只谈方法与局限，未提及构建发布新数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P16,2,new_dataset,C2P16,agree_neg,False,False,partial,0.8,We generate an evaluation dataset of 100 prompts from ELI5 and the corresponding response from Falcon-40binstruct,仅提及生成评估数据集并说明构造，未提发布,,deepseek-reasoner,False,,True
+2|new_dataset|C2P17,2,new_dataset,C2P17,agree_neg,False,False,contradict,0.65,"For our experiments, we select three types of cross-lingual understanding tasks from XTREME benchmark (Hu et al., 2020)",本文明确使用XTREME现有数据集，未构建发布新数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P18,2,new_dataset,C2P18,agree_neg,False,False,neutral,0.55,We also discuss the state of a tagged NL corpus to aid such research (now amounting to 4 million words of hand-corrected part-of-speech tagging).,仅提到讨论某已存在语料的状态，未称本文构建发布并说明构造方式,,deepseek-reasoner,False,,True
+2|new_dataset|C2P2,2,new_dataset,C2P2,agree_neg,False,False,partial,0.75,Analysis of newly collected data from human and LLMsimulated subjects (1000 of each),本文收集了新数据并作为附件公开，但未说明构造方式,,deepseek-reasoner,False,,True
+2|new_dataset|C2P20,2,new_dataset,C2P20,agree_neg,False,False,neutral,0.95,"We use the same experimental setup as described in (Zenkel et al., 2019).",本文仅使用已有数据集，未构建或发布新数据集。,,deepseek-reasoner,False,,True
+2|new_dataset|C2P3,2,new_dataset,C2P3,agree_neg,False,False,neutral,0.95,,证据仅为参考文献列表，未提及本文构建或发布数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P4,2,new_dataset,C2P4,agree_neg,False,False,neutral,0.7,"For the De-En, Fr-En, Ro-En datasets, we follow the experimental setting of previous work",所列数据集均取自他人已有语料，未提及本文新建或发布数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P6,2,new_dataset,C2P6,agree_neg,False,False,neutral,0.9,"We experiment with two meta-datasets that contain a wide range of tasks, LAMA and BinaryClfs.",仅使用已有的LAMA与BinaryClfs数据集，未构建或发布新数据集,,deepseek-reasoner,False,,True
+2|new_dataset|C2P8,2,new_dataset,C2P8,agree_neg,False,False,neutral,0.95,,证据只介绍模型方法与实验，未提构建或发布新数据集。,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P10,2,prompt_eng,C2P10,agree_pos,True,True,entail,0.97,we propose Automatic Prompt Engineer (APE) for automatic instruction generation and selection... Extensive experiments show that our automatically generated instructions outperform,本文提出自动生成/选择指令并做大量对比实验，报告其效果。,,deepseek-reasoner,True,,True
+2|prompt_eng|C2P11,2,prompt_eng,C2P11,agree_neg,False,False,neutral,0.75,The results indicate the efficacy of removing noise in training data and the choosing of foundational model architectures and instructions.,片段仅比较评测模型，未涉及提示模板设计或模板消融对比,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P12,2,prompt_eng,C2P12,agree_neg,False,False,contradict,0.97,we tune the LM with a single template and use this as our final classifier.,原文明确只用单一模板，未做模板对比/消融。,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P13,2,prompt_eng,C2P13,agree_neg,False,False,neutral,0.95,,全文未提及提示模板设计或对比实验,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P14,2,prompt_eng,C2P14,agree_neg,False,False,partial,0.55,Example prompt for the choices13k data set. ... Exact prompts can be found in the Supplementary Materials.,仅展示设计了提示模板，未见模板对比或消融结果,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P15,2,prompt_eng,C2P15,agree_neg,False,False,partial,0.6,we construct our fine-tuning sample templates using special-character based delimiters instead of natural language used in concurrent work,仅一处模板设计并报告影响，非系统性模板对比/消融,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P16,2,prompt_eng,C2P16,agree_neg,False,False,neutral,0.9,we generate responses to all 256 evaluation prompts using four models,仅提到使用256个评估提示，未做模板设计或对比消融,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P17,2,prompt_eng,C2P17,agree_neg,False,False,neutral,0.95,,给定片段未提及提示模板设计、对比或消融。,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P18,2,prompt_eng,C2P18,agree_neg,False,False,neutral,0.97,Our investigations revealed that a useful way to combine mutual information values is,证据全为互信息/词类/句法分析，未涉及提示模板实验。,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P2,2,prompt_eng,C2P2,agree_neg,False,False,neutral,0.85,the LLM is conditioned by a self-description within the prompt,仅提到在 prompt 中条件化，无模板对比或消融。,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P20,2,prompt_eng,C2P20,agree_neg,False,False,neutral,0.95,,全文未涉及提示模板设计或对比实验,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P3,2,prompt_eng,C2P3,agree_neg,False,False,neutral,0.95,,证据均为参考文献列表，未提及提示模板研究或消融,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P4,2,prompt_eng,C2P4,agree_neg,False,False,neutral,0.95,,证据未提及提示模板或相关对比实验,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P7,2,prompt_eng,C2P7,agree_neg,False,False,neutral,0.95,,证据未提及提示模板的设计、对比或消融实验。,,deepseek-reasoner,False,,True
+2|prompt_eng|C2P9,2,prompt_eng,C2P9,agree_neg,False,False,neutral,0.85,"For details about the ZS baselines, prompt, and environment feedback see Appendix C.4.",仅描述基线使用固定prompt，未做模板对比或消融,,deepseek-reasoner,False,,True
+2|proof_theory|C2P1,2,proof_theory,C2P1,agree_neg,False,False,neutral,0.9,,片段仅描述方法，未提出定理/引理/证明或理论保证。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P10,2,proof_theory,C2P10,agree_neg,False,False,neutral,0.65,"we frame this as an optimization problem, where we seek instruction ρ that maximizes the expectation of some per-sample score",仅形式化为优化问题，未给出定理、引理、证明或理论保证,,deepseek-reasoner,False,,True
+2|proof_theory|C2P11,2,proof_theory,C2P11,agree_neg,False,False,neutral,0.98,,原文片段未提及任何定理、引理、证明或理论保证,,deepseek-reasoner,False,,True
+2|proof_theory|C2P12,2,proof_theory,C2P12,agree_neg,False,False,neutral,0.85,,片段均为实验设置与结果表，未提任何定理、引理或证明。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P13,2,proof_theory,C2P13,agree_neg,False,False,neutral,0.95,The tutorial is mostly introductory—we will explain the literature on computational models of language acquisition and processing.,全文未提及定理、引理或证明，属无关内容,,deepseek-reasoner,False,,True
+2|proof_theory|C2P14,2,proof_theory,C2P14,agree_neg,False,False,neutral,0.95,We verify this result through extensive model simulations,证据只提模拟验证，未提及定理引理证明或理论保证,,deepseek-reasoner,False,,True
+2|proof_theory|C2P15,2,proof_theory,C2P15,agree_neg,False,False,neutral,0.95,,原文只有实验、数据、模型与结果，未提定理/引理/证明或理论保证。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P16,2,proof_theory,C2P16,agree_neg,False,False,partial,0.55,we can re-write ... the fine-tuned model π_ft is the optimal policy to the KL-constrained reward maximization problem with reward function,本文自行推导了理论关系式，但非正式定理/引理/证明,,deepseek-reasoner,False,,True
+2|proof_theory|C2P17,2,proof_theory,C2P17,agree_neg,False,False,neutral,0.9,,证据仅含方法定义与实验结果，未出现定理/引理/证明或理论保证。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P18,2,proof_theory,C2P18,agree_neg,False,False,neutral,0.95,,证据仅描述算法与公式定义，未提定理、引理或证明。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P2,2,proof_theory,C2P2,agree_neg,False,False,neutral,0.95,,证据仅含回归结果表、数据与伦理声明，无任何定理或证明,,deepseek-reasoner,False,,True
+2|proof_theory|C2P20,2,proof_theory,C2P20,agree_neg,False,False,neutral,0.8,Our experiments show that our proposed approach is able to achieve state-of-the-art results in terms of alignment,证据只涉及实验设置与结果，未提任何定理/引理/证明,,deepseek-reasoner,False,,True
+2|proof_theory|C2P3,2,proof_theory,C2P3,agree_neg,False,False,neutral,0.9,,片段仅为参考文献列表，未出现任何定理、引理或证明。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P4,2,proof_theory,C2P4,agree_neg,False,False,neutral,0.95,,证据仅描述目标函数与实验，未提定理或证明。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P6,2,proof_theory,C2P6,agree_neg,False,False,neutral,0.85,"we conjecture that the fewshot learning potential of large LMs (e.g., GPT-3) may be broadly underestimated",全文只提经验结果与猜想，无定理引理证明,,deepseek-reasoner,False,,True
+2|proof_theory|C2P7,2,proof_theory,C2P7,agree_neg,False,False,neutral,0.8,,所给片段仅含致谢、复现声明与实验结果，未提定理证明或理论保证,,deepseek-reasoner,False,,True
+2|proof_theory|C2P8,2,proof_theory,C2P8,agree_neg,False,False,neutral,0.98,,原文仅描述方法、实验与消融，未提定理/引理/证明或理论保证。,,deepseek-reasoner,False,,True
+2|proof_theory|C2P9,2,proof_theory,C2P9,agree_neg,False,False,neutral,0.85,5.2 EMPIRICAL ANALYSIS,片段仅含POMDP形式化与实验分析，未提定理或证明,,deepseek-reasoner,False,,True
+2|rl_training|C2P10,2,rl_training,C2P10,agree_neg,False,False,neutral,0.85,we propose to treat this human-intractable question as a black-box optimization process guided by LLMs,全文只做提示词的黑盒搜索优化，未提及任何RL训练,,deepseek-reasoner,False,,True
+2|rl_training|C2P11,2,rl_training,C2P11,agree_neg,False,False,contradict,0.9,"Besides, we only research on supervised training of LLMs",原文明确只做监督训练（交叉熵），未用RL,,deepseek-reasoner,False,,True
+2|rl_training|C2P12,2,rl_training,C2P12,agree_neg,False,False,neutral,0.95,"F: fine-tuning, P: prompting, F+KD: fine-tuning followed by KD",文中训练方法仅有prompting、微调与KD，未涉及任何RL训练,,deepseek-reasoner,False,,True
+2|rl_training|C2P13,2,rl_training,C2P13,agree_neg,False,False,neutral,0.95,,全文为教程摘要，未提及任何强化学习训练或RLHF工作,,deepseek-reasoner,False,,True
+2|rl_training|C2P14,2,rl_training,C2P14,agree_neg,False,False,neutral,0.95,we finetuned a linear layer on top of LLaMA embeddings,仅提及监督式微调，未涉及RL/PPO/RLHF等强化学习训练。,,deepseek-reasoner,False,,True
+2|rl_training|C2P15,2,rl_training,C2P15,agree_neg,False,False,contradict,0.68,we fine-tune a small pre-trained student model on the assembled reasoning samples. We use the same training objective,论文训练步骤为自回归语言建模的监督微调，非强化学习,,deepseek-reasoner,False,,True
+2|rl_training|C2P17,2,rl_training,C2P17,agree_neg,False,False,neutral,0.92,we propose to improve cross-lingual finetuning with consistency regularization,全文方法为一致性正则与KL对齐，未提及强化学习/PPO/RLHF,,deepseek-reasoner,False,,True
+2|rl_training|C2P18,2,rl_training,C2P18,agree_neg,False,False,neutral,0.95,"The feature discovery system works as follows. First, a large amount of text is examined to discover the frequency of occurrence of different bigrams.",全文为基于bigram统计的解析算法，未提及任何强化学习训练。,,deepseek-reasoner,False,,True
+2|rl_training|C2P2,2,rl_training,C2P2,agree_neg,False,False,contradict,0.92,"such modelling is far from the task for which the LLM was constructed, nor did we adapt GPT-3 in any way.",明确声明未以任何方式调整GPT-3，无RL训练,,deepseek-reasoner,False,,True
+2|rl_training|C2P20,2,rl_training,C2P20,agree_neg,False,False,neutral,0.96,leverage them in a multi-task framework to optimize towards translation and alignment objectives,全文未提强化学习、PPO、RLHF或策略梯度，方法为多任务/自训练。,,deepseek-reasoner,False,,True
+2|rl_training|C2P3,2,rl_training,C2P3,agree_neg,False,False,neutral,0.98,,证据仅为参考文献列表，未提及本文做RL训练,,deepseek-reasoner,False,,True
+2|rl_training|C2P4,2,rl_training,C2P4,agree_neg,False,False,neutral,0.95,,证据只涉及微调嵌入、OT/阈值与自训练，未提任何强化学习训练,,deepseek-reasoner,False,,True
+2|rl_training|C2P6,2,rl_training,C2P6,agree_neg,False,False,neutral,0.95,In-context tuning directly optimizes pre-trained LMs with the few-shot in-context learning objective,证据只涉及监督式微调与MAML，未提强化学习训练。,,deepseek-reasoner,False,,True
+2|rl_training|C2P7,2,rl_training,C2P7,agree_neg,False,False,neutral,0.95,,证据仅涉及MLM联合优化与蒸馏正则，未提及强化学习训练,,deepseek-reasoner,False,,True
+2|rl_training|C2P8,2,rl_training,C2P8,agree_neg,False,False,neutral,0.95,We fine-tune FLAN-MOE using the prefix language model objective on the FLAN collective dataset,证据仅描述指令微调，未提及强化学习训练或对齐,,deepseek-reasoner,False,,True
+2|rl_training|C2P9,2,rl_training,C2P9,agree_pos,True,True,entail,0.95,"Using reinforcement learning, we train LLaRP to see and act solely through environmental interactions.",本文自己用RL训练LLaRP并报告成功率42%,,deepseek-reasoner,True,,True
+2|safety_bias|C2P10,2,safety_bias,C2P10,agree_neg,False,False,neutral,0.95,,证据只讨论评分函数与提案/选择质量，未涉及安全、公平或偏见。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P12,2,safety_bias,C2P12,agree_neg,False,False,neutral,0.98,,原文只讨论模型大小、数据集与效率，未涉及安全/公平/偏见。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P13,2,safety_bias,C2P13,agree_neg,False,False,neutral,0.95,,证据均为教程主题与讲者介绍，未涉及安全、公平或偏见评估,,deepseek-reasoner,False,,True
+2|safety_bias|C2P14,2,safety_bias,C2P14,agree_neg,False,False,neutral,0.98,,证据只涉及行为拟合与个体差异，未提安全、公平或偏见。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P16,2,safety_bias,C2P16,agree_neg,False,False,partial,0.8,we measure harmfulness by prompting GPT-4 to estimate the likelihood that a response will cause harm to the user or society,提到评估harmlessness，但未给出具体结果或分析,,deepseek-reasoner,False,,True
+2|safety_bias|C2P17,2,safety_bias,C2P17,agree_neg,False,False,neutral,0.95,,证据只涉及分类/抽取任务与准确率F1等指标，未提及安全公平偏见,,deepseek-reasoner,False,,True
+2|safety_bias|C2P18,2,safety_bias,C2P18,agree_neg,False,False,neutral,0.98,,证据只涉及句法分析与词类统计，未提及安全/公平/偏见。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P2,2,safety_bias,C2P2,agree_neg,False,False,neutral,0.9,An improved understanding of influence would have applications ranging from the malign to the beneficial: national scale disinformation,仅泛泛提及影响研究的应用，未专门评估安全/公平/偏见并给结果,,deepseek-reasoner,False,,True
+2|safety_bias|C2P20,2,safety_bias,C2P20,agree_neg,False,False,neutral,0.95,"The alignment quality is evaluated by using the alignment error rate (AER) introduced in (Och and Ney, 2000).",实验仅评估对齐质量与翻译性能，未涉及安全/公平/偏见。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P3,2,safety_bias,C2P3,agree_neg,False,False,neutral,0.95,,证据仅为参考文献列表，未涉及安全/公平/偏见评估,,deepseek-reasoner,False,,True
+2|safety_bias|C2P4,2,safety_bias,C2P4,agree_neg,False,False,neutral,0.97,"we first present our main results, then conduct several ablation studies and analyses of our models",片段只提词对齐实验与分析，未涉及安全/公平/偏见评估,,deepseek-reasoner,False,,True
+2|safety_bias|C2P8,2,safety_bias,C2P8,agree_neg,False,False,neutral,0.97,The evaluation metric across all benchmarks is few-shot prompted accuracy,全文只讨论微调策略与准确率，未涉及安全/公平/偏见。,,deepseek-reasoner,False,,True
+2|safety_bias|C2P9,2,safety_bias,C2P9,agree_neg,False,False,neutral,0.97,,证据只涉及语言重排与泛化评估，未提及安全/公平/偏见。,,deepseek-reasoner,False,,True
+2|significance|C2P10,2,significance,C2P10,agree_pos,True,True,entail,0.98,We repeat our experiments five times with different random seeds to report the mean and standard deviation.,本文明确重复5次不同随机种子并报告均值与标准差。,,deepseek-reasoner,True,,True
+2|significance|C2P12,2,significance,C2P12,agree_pos,True,True,entail,0.95,Note that we observe similar trends when considering mean and standard deviation across runs (see Fig. 3 in the Appendix).,本文明确报告了跨4次运行的均值和标准差，并附于附录图3。,,deepseek-reasoner,True,,True
+2|significance|C2P13,2,significance,C2P13,agree_neg,False,False,neutral,0.95,Using end-to-end and deep neural approaches has resulted in significant improvements in various NLP tasks,本文为教程概览，未报告多次运行方差、标准差或显著性检验。,,deepseek-reasoner,False,,True
+2|significance|C2P14,2,significance,C2P14,agree_neg,False,False,neutral,0.9,,证据仅报告NLL比较和模型选择概率，无标准差、方差或显著性检验。,,deepseek-reasoner,False,,True
+2|significance|C2P15,2,significance,C2P15,agree_neg,False,False,neutral,0.9,diverse reasoning can significantly improve the performance of student models,只提显著提升，未见重复运行波动或显著性检验,,deepseek-reasoner,False,,True
+2|significance|C2P16,2,significance,C2P16,agree_neg,False,False,neutral,0.95,,证据只描述实验设置与聚合结果，未提标准差、重复运行或显著性检验,,deepseek-reasoner,False,,True
+2|significance|C2P17,2,significance,C2P17,agree_neg,False,False,neutral,0.9,degrades the averaged results by 0.4 and 1.0 points,仅报告平均点差，无标准差、方差、p值或显著性星号。,,deepseek-reasoner,False,,True
+2|significance|C2P20,2,significance,C2P20,agree_pos,True,True,entail,0.95,‡Difference in AER w.r.t. GIZA++ (BPE-based) is statistically significant (p<0.001),表格注释报告了本文结果的 p 值显著性检验。,,deepseek-reasoner,True,,True
+2|significance|C2P4,2,significance,C2P4,agree_pos,True,True,entail,0.95,"""*"" denotes significant differences using paired bootstrapping (p<0.05)",Table 9 明确用星号标注显著性检验，p<0.05,,deepseek-reasoner,True,,True
+2|significance|C2P6,2,significance,C2P6,agree_neg,False,False,entail,0.9,with p-value < 0.05 on 63% of the tasks,本文报告了相关系数的p值<0.05，属于显著性检验。,,deepseek-reasoner,True,,False
+2|significance|C2P7,2,significance,C2P7,agree_pos,True,True,entail,1.0,across five random fine-tuning runs. We also report the corresponding standard deviation in subscripts.,明确报告五次随机运行并给出标准差下标。,,deepseek-reasoner,True,,True
+2|significance|C2P8,2,significance,C2P8,agree_neg,False,False,neutral,0.9,,证据仅列单次数值，未见标准差、方差、p值或显著性标注,,deepseek-reasoner,False,,True
+2|significance|C2P9,2,significance,C2P9,agree_pos,True,True,entail,0.98,We report the mean and standard deviation across 3 random seeds for all RL-based methods.,本文自己报告了跨3个随机种子的均值与标准差,,deepseek-reasoner,True,,True
+2|zero_few_shot|C2P10,2,zero_few_shot,C2P10,agree_pos,True,True,entail,0.95,we evaluate the zero-shot performance of another LLM following the selected instruction,本文报告了零样本评估，并改进了few-shot学习表现,,deepseek-reasoner,True,,True
+2|zero_few_shot|C2P11,2,zero_few_shot,C2P11,agree_neg,False,False,neutral,0.95,,片段未提及zero-shot或few-shot评估设置及结果报告,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P13,2,zero_few_shot,C2P13,agree_neg,False,False,neutral,0.95,,全文为教程大纲，未提及zero/few-shot结果报告,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P16,2,zero_few_shot,C2P16,agree_neg,False,False,neutral,0.95,,证据未提及zero-shot或少样本设置,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P18,2,zero_few_shot,C2P18,agree_neg,False,False,neutral,0.95,,证据仅涉及分布分析与词性标注，未提零样本/少样本设置。,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P2,2,zero_few_shot,C2P2,agree_neg,False,False,neutral,0.8,,全文未提及zero-shot或few-shot设置下报告结果,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P20,2,zero_few_shot,C2P20,agree_neg,False,False,neutral,0.95,,证据片段未提及zero-shot或few-shot设置,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P3,2,zero_few_shot,C2P3,agree_neg,False,False,neutral,0.95,,证据仅是参考文献列表，未提零样本/少样本设置或结果。,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P4,2,zero_few_shot,C2P4,agree_pos,True,True,entail,0.95,we show that it is possible to train multilingual word aligners that can obtain robust performance even in zero-shot settings,本文明确报告了零样本设置下的性能结果。,,deepseek-reasoner,True,,True
+2|zero_few_shot|C2P7,2,zero_few_shot,C2P7,agree_neg,False,False,neutral,0.95,,证据未提及zero-shot或few-shot评估设置,,deepseek-reasoner,False,,True
+2|zero_few_shot|C2P8,2,zero_few_shot,C2P8,agree_pos,True,True,entail,0.9,(ii) Instruction tuning followed by in-context few-shot or zero-shot generalization on downstream tasks,摘要明确将few/zero-shot泛化列为本文三种实验设置之一,,deepseek-reasoner,True,,True
+3|ablation|C3P1,3,ablation,C3P1,agree_neg,False,False,neutral,0.9,we examined how different values for drop ratio α affect the performance of CT models,仅为 drop ratio 超参调优与级联效果比较，非组件消融。,,deepseek-reasoner,False,,True
+3|ablation|C3P11,3,ablation,C3P11,agree_neg,False,False,neutral,0.95,,证据仅涉及长度鲁棒性与扰动实验，未做组件消融。,,deepseek-reasoner,False,,True
+3|ablation|C3P12,3,ablation,C3P12,agree_neg,False,False,neutral,0.95,,片段仅含理论构造与讨论，未提及消融实验。,,deepseek-reasoner,False,,True
+3|ablation|C3P13,3,ablation,C3P13,agree_neg,False,False,neutral,0.95,,片段仅介绍话语分析背景，未提及任何消融实验,,deepseek-reasoner,False,,True
+3|ablation|C3P17,3,ablation,C3P17,agree_pos,True,True,entail,0.99,"To evaluate the importance of different components of the Entroformer, we varied our base model in different ways",原文明确通过变化自身组件并测量性能变化做消融,,deepseek-reasoner,True,,True
+3|ablation|C3P20,3,ablation,C3P20,agree_neg,False,False,neutral,0.9,we study the pretraining dynamics of transformers in the first subsection,片段只提研究预训练动态和超参鲁棒性，未做消融,,deepseek-reasoner,False,,True
+3|ablation|C3P3,3,ablation,C3P3,agree_pos,True,True,entail,0.95,We study the effects of patching and channel-independence in Table 7.,本文自己在消融实验中研究各组件效果,,deepseek-reasoner,True,,True
+3|ablation|C3P5,3,ablation,C3P5,agree_pos,True,True,entail,0.9,We analyze the techniques one-by-one to make clear which combinations have impact on performance. We start by showing that reversible layers and shared query-key spaces do not impa,本文逐项分析自身技术（共享QK、可逆层）并给出性能对比结果,,deepseek-reasoner,True,,True
+3|ablation|C3P6,3,ablation,C3P6,agree_neg,False,False,neutral,0.85,our Shared calibration is the most efficient method on all four tasks,证据仅比较不同方法变体，未声明为消融实验,,deepseek-reasoner,False,,True
+3|ablation|C3P7,3,ablation,C3P7,agree_neg,False,False,entail,0.85,overlapping does not bring performance improvement... a stacked LSTM even hurts the performance,本文替换池化策略实验并报告性能变化，属消融,,deepseek-reasoner,True,,False
+3|ablation|C3P8,3,ablation,C3P8,agree_neg,False,False,neutral,0.95,,原文未提及消融实验，仅描述功能组件提取与分组。,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P1,3,annotation_cost,C3P1,agree_neg,False,False,neutral,0.95,,证据只涉及重排序、AS2与复杂度相关工作，未提标注成本降低,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P11,3,annotation_cost,C3P11,agree_neg,False,False,neutral,0.98,,证据未提及自动或廉价标注手段及效果。,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P12,3,annotation_cost,C3P12,agree_neg,False,False,neutral,0.95,,片段只涉及模型训练与梯度下降，未提及自动或廉价标注手段。,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P13,3,annotation_cost,C3P13,agree_neg,False,False,neutral,0.7,we randomly selected 64 implicit relations predicted by the parsers and asked two expert linguists (a faculty member and a graduate student at a linguistics department) to annotate,仅为评估解析器而做人工抽样标注，未提自动或廉价标注手段,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P14,3,annotation_cost,C3P14,agree_neg,False,False,neutral,0.98,,证据全篇讨论AdapterDrop与AdapterFusion剪枝效率，未涉及标注手段或标注成本。,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P17,3,annotation_cost,C3P17,agree_neg,False,False,neutral,0.95,,证据均关于图像压缩注意力机制，未涉及标注成本或自动标注。,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P2,3,annotation_cost,C3P2,agree_neg,False,False,neutral,0.95,"Knowledge distillation is performed without task data (D_train), assuming that the task data is private",仅提及隐私保护下无任务数据蒸馏，未提自动/廉价标注或降低成本,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P20,3,annotation_cost,C3P20,agree_neg,False,False,neutral,0.95,,证据未提及任何自动或廉价标注手段及其效果。,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P3,3,annotation_cost,C3P3,agree_neg,False,False,neutral,0.95,We study the effects of patching and channel-independence in Table 7.,证据只讲patch与通道独立消融，与降低标注成本无关。,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P5,3,annotation_cost,C3P5,agree_neg,False,False,neutral,0.95,,证据全篇讲Transformer效率与内存，未涉及标注成本或自动标注,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P6,3,annotation_cost,C3P6,agree_neg,False,False,neutral,0.95,,全文只讲推理加速与一致性保证，未提任何标注手段,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P7,3,annotation_cost,C3P7,agree_neg,False,False,neutral,0.98,,证据未提及自动或廉价标注手段,,deepseek-reasoner,False,,True
+3|annotation_cost|C3P8,3,annotation_cost,C3P8,agree_neg,False,False,neutral,0.9,"the training data labels were continuous, averaged from rater scores",未提及自动或廉价标注手段，仅说明标签来自评分者平均。,,deepseek-reasoner,False,,True
+3|case_study|C3P1,3,case_study,C3P1,agree_neg,False,False,neutral,0.6,"For instance, let α = 0.3, batch size b = 128; ... after layer 4, the size of the batch gets reduced to 90",仅为批裁剪的算术假设示例，非对具体输入的逐例分析,,deepseek-reasoner,False,,True
+3|case_study|C3P11,3,case_study,C3P11,agree_neg,False,False,neutral,0.8,"We report the mean precision, recall, F1, and accuracy over 5 folds for the best performing hyper-parameters.",仅报告聚合指标，无逐例展示或案例分析的证据,,deepseek-reasoner,False,,True
+3|case_study|C3P12,3,case_study,C3P12,agree_neg,False,False,neutral,0.9,Results are shown in Fig. 4.,证据未提及对具体实例逐例展示与讨论。,,deepseek-reasoner,False,,True
+3|case_study|C3P14,3,case_study,C3P14,agree_neg,False,False,neutral,0.85,,片段只涉效率数据与致谢，无逐例展示或个案分析,,deepseek-reasoner,False,,True
+3|case_study|C3P2,3,case_study,C3P2,agree_pos,True,True,entail,0.98,Table 7: Case study on IMDB predictions. ... We list several representative cases in Table 7.,本文以Table 7逐例展示并讨论了IMDB预测案例。,,deepseek-reasoner,True,,True
+3|case_study|C3P20,3,case_study,C3P20,agree_neg,False,False,neutral,0.8,here we only report the plots for frequencies recovered from transformers at different prompt lengths in Figure 2,仅做频率/图整体分析，未见逐例展示讨论,,deepseek-reasoner,False,,True
+3|case_study|C3P3,3,case_study,C3P3,agree_pos,True,True,neutral,0.8,Table 1: A case study of multivariate time series forecasting on Traffic dataset.,仅为数据集级配置消融，非逐实例展示讨论,,deepseek-reasoner,False,,False
+3|case_study|C3P5,3,case_study,C3P5,agree_neg,False,False,neutral,0.9,Table 2: Accuracies on the duplication task of a 1-layer Transformer model with full attention and with locality-sensitive hashing attention using different number of parallel hash,仅有定量准确率表格，无逐例展示与讨论。,,deepseek-reasoner,False,,True
+3|case_study|C3P6,3,case_study,C3P6,agree_neg,False,False,neutral,0.9,,片段未提及任何逐例案例展示或分析，无相关证据,,deepseek-reasoner,False,,True
+3|case_study|C3P7,3,case_study,C3P7,agree_neg,False,False,neutral,0.8,"We normalize the αi over all tokens for each document, and take an average on each token index across all documents.",仅见定量归因/熵分析，未逐例展示讨论,,deepseek-reasoner,False,,True
+3|case_study|C3P8,3,case_study,C3P8,agree_neg,False,False,entail,0.8,we present detailed examples of this comparison only,本文明确提供详细例子并检查具体文章进行定性讨论,,deepseek-reasoner,True,,False
+3|code_release|C3P11,3,code_release,C3P11,agree_pos,True,True,entail,0.98,The code can be found here: https://github.com/ AkshitaJha/SimpleModelsforLongDocumentMatching.,原文明确给出本文代码的GitHub链接，属作者自己的可获取链接。,,deepseek-reasoner,True,,True
+3|code_release|C3P12,3,code_release,C3P12,agree_neg,False,False,neutral,0.95,,证据未提及作者自己的代码或数据链接。,,deepseek-reasoner,False,,True
+3|code_release|C3P13,3,code_release,C3P13,agree_pos,True,True,entail,0.9,We release our dataset to facilitate further discourse analysis under domain shift.,本文明确声明发布自己的数据集，符合可获取数据。,,deepseek-reasoner,True,,True
+3|code_release|C3P14,3,code_release,C3P14,agree_neg,False,False,neutral,0.95,,证据中未出现任何本文代码/数据的链接，仅致谢与引言,,deepseek-reasoner,False,,True
+3|code_release|C3P17,3,code_release,C3P17,agree_pos,True,True,entail,0.97,Code is available at https://github.com/damo-cv/entroformer.,摘要中给出本文自己的代码链接。,,deepseek-reasoner,True,,True
+3|code_release|C3P2,3,code_release,C3P2,agree_pos,True,True,entail,0.95,1Code available at https://github.com/INK-USC/spa rse-distillation.,原文脚注给出本文代码仓库链接，属于作者自己提供的代码链接。,,deepseek-reasoner,True,,True
+3|code_release|C3P20,3,code_release,C3P20,agree_pos,True,True,entail,0.98,We release our code at https://github.com/mdrpanwar/icl-bayesian-prism,本文明确声明发布了自家代码及链接,,deepseek-reasoner,True,,True
+3|code_release|C3P3,3,code_release,C3P3,agree_neg,False,False,neutral,0.95,"These datasets have been extensively utilized for benchmarking and publicly available on (Wu et al., 2021).",仅提数据集公开自他人，未提供本文自己的代码/模型/数据链接。,,deepseek-reasoner,False,,True
+3|code_release|C3P5,3,code_release,C3P5,agree_pos,True,True,entail,0.72,2https://github.com/google/trax/tree/master/trax/models/reformer,脚注给出本文Reformer代码的GitHub链接，属作者自身代码,,deepseek-reasoner,True,,True
+3|code_release|C3P7,3,code_release,C3P7,agree_pos,True,True,entail,0.98,Our codebase is available on https://github.com/hiaoxui/long-range-transformers.,明确给出本文自己代码库的链接,,deepseek-reasoner,True,,True
+3|code_release|C3P8,3,code_release,C3P8,agree_pos,True,True,entail,0.95,Code and tool available at https://github.com/ jfiacco/aes\_neural\_functional\_groups,脚注给出本文自己代码与工具的GitHub链接,,deepseek-reasoner,True,,True
+3|context_length|C3P1,3,context_length,C3P1,agree_neg,False,False,neutral,0.75,a simple yet effective technique to adapt transformer-based models into a cascade of rankers... dramatically increasing throughput at inference time,证据目标是提升推理吞吐、减少计算，未涉及处理更长输入的机制或长输入实验,,deepseek-reasoner,False,,True
+3|context_length|C3P11,3,context_length,C3P11,agree_neg,False,False,partial,0.6,"We experiment with three different kinds of semi-structured long document datasets in English: (i) ACL Anthology research papers, (ii) English Wikipedia articles, and (iii) Patents",有长输入实验，但未提出处理更长输入的机制，而是主张简单模型更优,,deepseek-reasoner,False,,True
+3|context_length|C3P14,3,context_length,C3P14,agree_neg,False,False,neutral,0.97,,证据只涉适配器效率与剪枝，未提长输入或长上下文方法。,,deepseek-reasoner,False,,True
+3|context_length|C3P17,3,context_length,C3P17,agree_neg,False,False,neutral,0.95,,证据未提以处理更长输入为目标或长输入实验,,deepseek-reasoner,False,,True
+3|context_length|C3P20,3,context_length,C3P20,agree_neg,False,False,neutral,0.95,"Our contributions. In brief, our contributions are 1. A setup for studying ICL for multiple function families",贡献列表只涉及ICL多函数族与贝叶斯预测，未提长输入方法或实验。,,deepseek-reasoner,False,,True
+3|context_length|C3P3,3,context_length,C3P3,agree_neg,False,False,neutral,0.9,Multivariate long-term forecasting results with self-supervised PatchTST.,片段只涉及长期预测，未提长输入目标或长输入实验。,,deepseek-reasoner,False,,True
+3|context_length|C3P6,3,context_length,C3P6,agree_neg,False,False,neutral,0.85,Adaptive approaches adjust the amount of computation per example to amortize the total inference cost,全文聚焦自适应早退以降低推理成本，未涉及处理更长输入的目标或实验,,deepseek-reasoner,False,,True
+3|context_length|C3P8,3,context_length,C3P8,agree_neg,False,False,partial,0.6,"each generic trait’s model is a Longformer with a single-output regression head, fine-tuned on the trait’s balanced dataset",用了Longformer并在长文上报告效果，但未以长输入为目标或提出改进,,deepseek-reasoner,False,,True
+3|deployment|C3P11,3,deployment,C3P11,agree_neg,False,False,neutral,0.98,,证据仅涉及实验评估与数据集，未提及任何线上部署。,,deepseek-reasoner,False,,True
+3|deployment|C3P12,3,deployment,C3P12,agree_neg,False,False,neutral,0.98,,证据仅研究ICL算法与实验，未提实际部署。,,deepseek-reasoner,False,,True
+3|deployment|C3P13,3,deployment,C3P13,agree_neg,False,False,neutral,0.95,we evaluate performance on the PDTB-2 and PDTB-3,仅在语料上做实验分析，未提任何线上/生产部署,,deepseek-reasoner,False,,True
+3|deployment|C3P17,3,deployment,C3P17,agree_neg,False,False,neutral,0.95,,全文片段仅涉及熵模型方法研究，未提及任何生产环境部署。,,deepseek-reasoner,False,,True
+3|deployment|C3P20,3,deployment,C3P20,agree_neg,False,False,neutral,0.95,we fix a value of N and sample functions f ∈ F_fourier_ΦN,全文仅为合成函数类实验，未提及任何线上产品部署,,deepseek-reasoner,False,,True
+3|deployment|C3P3,3,deployment,C3P3,agree_neg,False,False,neutral,0.95,,证据未提及任何生产环境部署，仅实验与未来展望。,,deepseek-reasoner,False,,True
+3|deployment|C3P5,3,deployment,C3P5,agree_neg,False,False,neutral,0.9,We ran our experiments on the imagenet64 and enwik8-64K tasks,实验均为学术基准任务，未提及任何线上产品部署,,deepseek-reasoner,False,,True
+3|deployment|C3P6,3,deployment,C3P6,agree_neg,False,False,neutral,0.95,"For each task, we use a proper training, validation, and test set. We use the training set to learn F and G.",仅描述标准训练/测试集实验，未提及真实部署,,deepseek-reasoner,False,,True
+3|deployment|C3P7,3,deployment,C3P7,agree_neg,False,False,neutral,0.95,,全文仅描述实验设置与分析，未提及任何生产环境部署。,,deepseek-reasoner,False,,True
+3|efficiency|C3P11,3,efficiency,C3P11,agree_neg,False,False,neutral,0.9,Training Time Figure 2a shows the training time taken to reach the best performance for every model,仅报告训练时间/能量与显存，未报告推理效率数值,,deepseek-reasoner,False,,True
+3|efficiency|C3P12,3,efficiency,C3P12,agree_neg,False,False,neutral,0.95,,证据片段未提及任何推理时间/延迟/吞吐/FLOPs/显存数值。,,deepseek-reasoner,False,,True
+3|efficiency|C3P13,3,efficiency,C3P13,agree_neg,False,False,neutral,0.95,,证据未提及推理时间、延迟、吞吐、FLOPs或显存等效率数值。,,deepseek-reasoner,False,,True
+3|efficiency|C3P17,3,efficiency,C3P17,agree_pos,True,True,entail,0.95,we report the inference latency of Entroformer (serial architecture and parallel architecture) comparing to other learned entropy models,本文表2与4.3节自报模型推理延迟数值,,deepseek-reasoner,True,,True
+3|efficiency|C3P3,3,efficiency,C3P3,agree_neg,False,False,neutral,0.9,| Metric | Metric | MSE | MAE |,片段只报告MSE/MAE精度，无推理效率数值,,deepseek-reasoner,False,,True
+3|efficiency|C3P5,3,efficiency,C3P5,agree_neg,False,False,neutral,0.9,while being much more memory-efficient and much faster on long sequences,仅有定性比较和复杂度公式，无具体推理效率数值,,deepseek-reasoner,False,,True
+3|efficiency|C3P6,3,efficiency,C3P6,agree_pos,True,True,entail,0.97,we compute the amortized inference time with a naive implementation and report its percentage out of the full model. As Table 5 shows,本文报告了推理时间及MACs减少等效率数值。,,deepseek-reasoner,True,,True
+3|efficiency|C3P7,3,efficiency,C3P7,agree_neg,False,False,neutral,0.95,,证据仅涉及归因分析与训练能量成本，未报告推理效率数值。,,deepseek-reasoner,False,,True
+3|efficiency|C3P8,3,efficiency,C3P8,agree_neg,False,False,neutral,0.95,,证据仅涉及功能组件与特征组统计，未提推理效率数值,,deepseek-reasoner,False,,True
+3|error_analysis|C3P1,3,error_analysis,C3P1,agree_neg,False,False,neutral,0.9,both the partial and final classifiers from CT achieve comparable or better performance than state of the art models,片段只报总体指标与训练细节，未提失败案例或错误分析,,deepseek-reasoner,False,,True
+3|error_analysis|C3P11,3,error_analysis,C3P11,agree_neg,False,False,neutral,0.85,"Here we provide details of the simple and the transformer-based models and present an empirical comparison between them based on their overall performance, training time, resource ",仅报告总体性能等，未提失败案例或错误分类分析。,,deepseek-reasoner,False,,True
+3|error_analysis|C3P12,3,error_analysis,C3P12,agree_neg,False,False,neutral,0.95,,证据未提及失败案例或错误分析，只报告总体实验结论。,,deepseek-reasoner,False,,True
+3|error_analysis|C3P13,3,error_analysis,C3P13,agree_neg,False,False,partial,0.55,we presented a detailed analysis of the performance of the state of the art discourse parsers and analysed their weaknesses and strength,有错误/弱点分析，但对象是现有解析器，且未见具体例子或分类统计,,deepseek-reasoner,False,,True
+3|error_analysis|C3P14,3,error_analysis,C3P14,agree_neg,False,False,neutral,0.95,,未提及失败案例或错误分析，仅报告效率与性能结果。,,deepseek-reasoner,False,,True
+3|error_analysis|C3P17,3,error_analysis,C3P17,agree_neg,False,False,neutral,0.95,,原文仅报告总体性能与方法描述，未提及失败案例或错误分析。,,deepseek-reasoner,False,,True
+3|error_analysis|C3P2,3,error_analysis,C3P2,agree_neg,False,False,neutral,0.95,,证据仅描述模型与训练流程，未提错误案例分析。,,deepseek-reasoner,False,,True
+3|error_analysis|C3P20,3,error_analysis,C3P20,agree_neg,False,False,neutral,0.8,We find that the error curves of the TF ... follow OLS baseline closely,仅研究偏差和总体误差曲线，未展示失败案例或分类统计,,deepseek-reasoner,False,,True
+3|error_analysis|C3P3,3,error_analysis,C3P3,agree_neg,False,False,neutral,0.95,,片段仅描述模型结构与损失函数，未涉及失败案例分析,,deepseek-reasoner,False,,True
+3|error_analysis|C3P5,3,error_analysis,C3P5,agree_neg,False,False,neutral,0.9,It goes down when evaluated with 2 or 1 hashes.,仅报告性能下降，无具体失败案例或错误分类统计,,deepseek-reasoner,False,,True
+3|error_analysis|C3P6,3,error_analysis,C3P6,agree_neg,False,False,neutral,0.9,,证据只描述评估指标与方法，未涉及失败案例或错误分析。,,deepseek-reasoner,False,,True
+3|error_analysis|C3P7,3,error_analysis,C3P7,agree_neg,False,False,partial,0.7,5.4 Error Accumulation of Kernel Methods We find that Performer could not match the results of its prototypes,做了错误累积分析，但未给具体例子或分类统计,,deepseek-reasoner,False,,True
+3|error_analysis|C3P8,3,error_analysis,C3P8,agree_neg,False,False,neutral,0.9,we provide examples taken from the model comparison between the LANGUAGE model and the MAIN IDEA model,只给模型比较示例，未涉及失败/错误案例,,deepseek-reasoner,False,,True
+3|fine_tuning|C3P13,3,fine_tuning,C3P13,agree_neg,False,False,neutral,0.9,In this work we presented a detailed analysis of the performance of the state of the art discourse parsers and analysed their weaknesses and strength.,全文为对现有解析器性能的分析，未提及本文微调模型。,,deepseek-reasoner,False,,True
+3|fine_tuning|C3P14,3,fine_tuning,C3P14,agree_pos,True,True,entail,0.7,We show that the training steps of adapters can be up to 60% faster than full model fine-tuning with common hyperparameter choices,本文做了微调训练实验并报告速度对比结果,,deepseek-reasoner,True,,True
+3|fine_tuning|C3P17,3,fine_tuning,C3P17,agree_neg,False,False,neutral,0.95,,片段未提及微调或在自己数据上继续训练,,deepseek-reasoner,False,,True
+3|fine_tuning|C3P2,3,fine_tuning,C3P2,agree_pos,True,True,entail,0.98,"(1) We first fine-tune a RoBERTa-Large model on the train set $D _ { t r a i n }$ of task T, and use the resulting model as the teacher model.",本文明确描述并执行了在自己的训练集上微调模型。,,deepseek-reasoner,True,,True
+3|fine_tuning|C3P3,3,fine_tuning,C3P3,agree_pos,True,True,entail,0.97,we apply linear probing for 10 epochs to update the model head and then end-to-end fine-tuning the entire network for 20 epochs,本文自述进行端到端微调并报告设置与Table 4结果,,deepseek-reasoner,True,,True
+3|fine_tuning|C3P6,3,fine_tuning,C3P6,added,False,True,partial,0.55,We use the training set to learn $\mathcal { F }$ and G. We perform model selection on the validation set,有在自己数据上训练并报告设置，但未明说是微调基础模型,,deepseek-reasoner,False,,False
+3|fine_tuning|C3P7,3,fine_tuning,C3P7,agree_pos,True,True,neutral,0.8,"Instead of training the performer model from the checkpoints of SpanBERT, we directly replace some layers from a fine-tuned SpanBERT model",证据未明确本文执行微调并报告训练设置/结果,,deepseek-reasoner,False,,False
+3|fine_tuning|C3P8,3,fine_tuning,C3P8,agree_pos,True,True,entail,0.95,"each generic trait’s model is a Longformer with a single-output regression head, fine-tuned on the trait’s balanced dataset",明确说明本文模型在自己的平衡数据上微调,,deepseek-reasoner,True,,True
+3|human_eval|C3P1,3,human_eval,C3P1,agree_neg,False,False,neutral,0.95,,片段仅涉及相关工作与模型定义，未提及人工评估或标注。,,deepseek-reasoner,False,,True
+3|human_eval|C3P11,3,human_eval,C3P11,agree_neg,False,False,neutral,0.95,we use classification metrics instead of informationretrieval metrics due to the limitations of the dataset,未提及本文收集人工判断或进行人工评估,,deepseek-reasoner,False,,True
+3|human_eval|C3P12,3,human_eval,C3P12,agree_neg,False,False,neutral,0.95,,片段仅涉及探针实验和致谢，未提人工判断或标注。,,deepseek-reasoner,False,,True
+3|human_eval|C3P13,3,human_eval,C3P13,agree_pos,True,True,entail,0.95,we randomly selected 64 implicit relations predicted by the parsers and asked two expert linguists ... to annotate them,本文自己组织两位专家标注并报告表5结果,,deepseek-reasoner,True,,True
+3|human_eval|C3P14,3,human_eval,C3P14,agree_neg,False,False,neutral,0.95,,片段未提及人工评估、标注或人工核对。,,deepseek-reasoner,False,,True
+3|human_eval|C3P17,3,human_eval,C3P17,agree_neg,False,False,neutral,0.95,,片段仅涉及注意力可视化与方法介绍，未提人工评估或标注。,,deepseek-reasoner,False,,True
+3|human_eval|C3P2,3,human_eval,C3P2,agree_neg,False,False,neutral,0.95,,证据仅含自动指标表格与设计消融，未提及人工标注或评估,,deepseek-reasoner,False,,True
+3|human_eval|C3P20,3,human_eval,C3P20,agree_neg,False,False,neutral,0.9,We would like to thank all the anonymous reviewers for their constructive feedback.,全文片段仅涉及理论、训练与致谢，无人工标注/评估。,,deepseek-reasoner,False,,True
+3|human_eval|C3P3,3,human_eval,C3P3,agree_neg,False,False,neutral,0.95,,证据片段仅描述模型结构与数值实验，未涉及人工评估或标注。,,deepseek-reasoner,False,,True
+3|human_eval|C3P5,3,human_eval,C3P5,agree_neg,False,False,neutral,0.95,,片段只有复杂度表与重复任务准确率，无人工评估。,,deepseek-reasoner,False,,True
+3|human_eval|C3P6,3,human_eval,C3P6,agree_neg,False,False,neutral,0.95,,原文未提及任何人工判断、标注或人工评估。,,deepseek-reasoner,False,,True
+3|human_eval|C3P7,3,human_eval,C3P7,agree_neg,False,False,neutral,0.95,,证据未提及人工判断、标注或人工评估。,,deepseek-reasoner,False,,True
+3|human_eval|C3P8,3,human_eval,C3P8,agree_neg,False,False,neutral,0.85,"a combination of algorithmically derived (Derczynski et al., 2015) and our own human defined style-based word lists",仅提人工定义词表，未报告人工评估/标注结果,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P11,3,knowledge_distill,C3P11,agree_neg,False,False,neutral,0.98,,证据未提及知识蒸馏或教师指导学生模型。,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P12,3,knowledge_distill,C3P12,agree_neg,False,False,neutral,0.98,,片段未提及教师-学生蒸馏方法。,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P13,3,knowledge_distill,C3P13,agree_neg,False,False,neutral,0.95,We present a position paper which provides a systematic analysis of the state of the art discourse parsers.,未提及教师-学生蒸馏方法或相关结果,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P14,3,knowledge_distill,C3P14,agree_neg,False,False,neutral,0.95,,证据只讲AdapterDrop的适配器丢弃与两种训练法，未涉及教师-学生蒸馏。,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P2,3,knowledge_distill,C3P2,agree_pos,True,True,entail,0.98,apply knowledge distillation to DANs. We observe that the resulting student models retain 97%,原文明确本文应用蒸馏并报告学生模型结果。,,deepseek-reasoner,True,,True
+3|knowledge_distill|C3P20,3,knowledge_distill,C3P20,agree_neg,False,False,neutral,0.9,,证据仅描述HMICL训练设置，未提及教师-学生蒸馏。,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P3,3,knowledge_distill,C3P3,agree_neg,False,False,neutral,0.95,,原文未提及教师模型或蒸馏，仅涉及自监督与微调。,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P5,3,knowledge_distill,C3P5,agree_neg,False,False,neutral,0.97,We introduce two techniques to improve the efficiency of Transformers.,证据未提及教师模型或蒸馏，本文方法为LSH注意力与可逆层。,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P6,3,knowledge_distill,C3P6,agree_neg,False,False,neutral,0.95,we describe our dynamic early exiting model,证据讲早退与共形校准，未提教师指导学生蒸馏。,,deepseek-reasoner,False,,True
+3|knowledge_distill|C3P8,3,knowledge_distill,C3P8,agree_neg,False,False,neutral,0.95,The neural network interpretation technique presented in this paper demonstrates significant promise,原文只描述解释技术，未提教师指导学生模型蒸馏。,,deepseek-reasoner,False,,True
+3|multilingual|C3P1,3,multilingual,C3P1,agree_neg,False,False,neutral,0.9,"we evaluated the performance of our system on two well known AS2 datasets, WikiQA and TRECQA",证据只提英文数据集WikiQA/TRECQA，未涉及非英语数据,,deepseek-reasoner,False,,True
+3|multilingual|C3P11,3,multilingual,C3P11,agree_neg,False,False,contradict,0.97,One of the limitations of our work is that we experimented only with long documents in English.,原文明确说明实验仅用英语长文档，与论断相反,,deepseek-reasoner,False,,True
+3|multilingual|C3P12,3,multilingual,C3P12,agree_neg,False,False,neutral,0.95,While our experiments have focused on the linear case,全文未涉及非英语数据实验，仅线性回归合成数据,,deepseek-reasoner,False,,True
+3|multilingual|C3P13,3,multilingual,C3P13,agree_neg,False,False,neutral,0.9,"The data we examine is: WSJ texts outside of the Penn Treebank , other news texts, and the GUM corpus (Zeldes, 2017).",证据仅列英语语料实验，未提及任何非英语数据,,deepseek-reasoner,False,,True
+3|multilingual|C3P17,3,multilingual,C3P17,agree_neg,False,False,neutral,0.98,Experiments show that the Entroformer achieves the SOTA results in standard benchmarks.,全文为图像压缩实验，未涉及非英语数据评测。,,deepseek-reasoner,False,,True
+3|multilingual|C3P2,3,multilingual,C3P2,agree_neg,False,False,neutral,0.8,Table 5: Variations made to the student model and the performance on IMDB.,证据只涉及英文IMDB，未提任何非英语数据实验,,deepseek-reasoner,False,,True
+3|multilingual|C3P20,3,multilingual,C3P20,agree_neg,False,False,neutral,0.95,We test the hypothesis on a variety of linear and non-linear inverse problems in both MICL and HMICL setups,证据只涉及合成函数类实验，未提非英语数据评测。,,deepseek-reasoner,False,,True
+3|multilingual|C3P3,3,multilingual,C3P3,agree_neg,False,False,neutral,0.95,,证据只涉时间序列实验，未提非英语数据评测。,,deepseek-reasoner,False,,True
+3|multilingual|C3P5,3,multilingual,C3P5,agree_neg,False,False,entail,0.7,Table 4: BLEU scores on newstest2014 for WMT English-German (EnDe).,本文在英德翻译（非英语目标语）上给出BLEU数字,,deepseek-reasoner,True,,False
+3|multilingual|C3P6,3,multilingual,C3P6,agree_neg,False,False,neutral,0.95,,证据未提及非英语数据或相关数据集,,deepseek-reasoner,False,,True
+3|multilingual|C3P8,3,multilingual,C3P8,agree_neg,False,False,neutral,0.95,,证据仅涉及英语作文AES模型，未提非英语数据,,deepseek-reasoner,False,,True
+3|new_dataset|C3P1,3,new_dataset,C3P1,agree_neg,False,False,neutral,0.95,,证据未提及构建或发布任何新数据集/基准/语料。,,deepseek-reasoner,False,,True
+3|new_dataset|C3P12,3,new_dataset,C3P12,agree_neg,False,False,neutral,0.95,,片段未提及构建或发布新数据集/基准,,deepseek-reasoner,False,,True
+3|new_dataset|C3P13,3,new_dataset,C3P13,agree_neg,False,False,neutral,0.95,"we measure the performance across several domain shifts from the PDTB-2 using three datasets: WSJ articles from the COHA corpus, other news articles from COHA, and the GUM corpus",仅使用已有数据集，未构建发布新数据集,,deepseek-reasoner,False,,True
+3|new_dataset|C3P14,3,new_dataset,C3P14,agree_neg,False,False,neutral,0.95,,证据只涉适配器效率方法，未提构建发布数据集,,deepseek-reasoner,False,,True
+3|new_dataset|C3P17,3,new_dataset,C3P17,agree_neg,False,False,neutral,0.95,,原文只讲模型架构与熵模型，未提及构建或发布数据集,,deepseek-reasoner,False,,True
+3|new_dataset|C3P2,3,new_dataset,C3P2,agree_neg,False,False,neutral,0.95,We tested this method on six single-sentence classification tasks,未提及构建或发布新数据集/基准，仅用已有任务。,,deepseek-reasoner,False,,True
+3|new_dataset|C3P20,3,new_dataset,C3P20,agree_neg,False,False,partial,0.75,we extend the MICL setup from Garg et al. (2022) to include multiple families of functions ... We call this extended setup HMICL,构建扩展setup并说明构造，但未提发布/公开,,deepseek-reasoner,False,,True
+3|new_dataset|C3P3,3,new_dataset,C3P3,agree_neg,False,False,neutral,0.95,A case study of multivariate time series forecasting on Traffic dataset.,证据未提及本文构建或发布新数据集/基准。,,deepseek-reasoner,False,,True
+3|new_dataset|C3P5,3,new_dataset,C3P5,agree_neg,False,False,neutral,0.95,We introduce two techniques to improve the efficiency of Transformers.,只提引入技术/模型，未提构建或发布数据集。,,deepseek-reasoner,False,,True
+3|new_dataset|C3P6,3,new_dataset,C3P6,agree_neg,False,False,neutral,0.92,,证据只讲模型与已有任务设置，未提及构建或发布新数据集。,,deepseek-reasoner,False,,True
+3|new_dataset|C3P7,3,new_dataset,C3P7,agree_neg,False,False,neutral,0.88,"We pick seven datasets that involve long texts, whose statistics are shown in table 1.",仅使用已有数据集，未构建发布新数据集/基准,,deepseek-reasoner,False,,True
+3|new_dataset|C3P8,3,new_dataset,C3P8,agree_neg,False,False,neutral,0.95,particularly when applied to the dataset under consideration,仅提及使用现有数据集，未构建或发布新数据集,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P1,3,prompt_eng,C3P1,agree_neg,False,False,neutral,0.9,"Before being processed by a transformer model, sequences are typically prefixed by a start symbol, such as “[CLS]”",仅提起始符号惯例，无提示模板设计或对比实验,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P11,3,prompt_eng,C3P11,agree_neg,False,False,neutral,0.95,We pick a representative set of models from different categories and compare them by building their siamese versions,全文只比较模型与嵌入，未涉及提示模板设计或对比,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P12,3,prompt_eng,C3P12,agree_neg,False,False,neutral,0.95,,证据未提及任何提示模板设计或模板对比实验。,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P13,3,prompt_eng,C3P13,agree_neg,False,False,neutral,0.98,,原文未涉及提示模板设计或对比实验,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P14,3,prompt_eng,C3P14,agree_neg,False,False,neutral,0.97,,全文证据只涉及适配器与AdapterFusion效率，未提及提示模板。,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P17,3,prompt_eng,C3P17,agree_neg,False,False,neutral,0.97,,全文未提及提示模板或prompt，与论断无关,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P2,3,prompt_eng,C3P2,agree_neg,False,False,neutral,0.95,Table 5: Variations made to the student model and the performance on IMDB.,证据只涉及模型结构消融，未提及提示模板研究。,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P20,3,prompt_eng,C3P20,agree_neg,False,False,neutral,0.9,,证据未提及提示模板设计或对比实验,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P3,3,prompt_eng,C3P3,agree_neg,False,False,neutral,0.95,4.3 ABLATION STUDY Patching and Channel-independence. We study the effects of patching and channel-independence in Table 7.,消融仅涉patching与通道独立，未提提示模板。,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P6,3,prompt_eng,C3P6,agree_neg,False,False,neutral,0.98,,证据只涉及早退与元分类器，未提及提示模板。,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P7,3,prompt_eng,C3P7,agree_neg,False,False,neutral,0.95,,证据未提及提示模板的设计、对比或消融实验,,deepseek-reasoner,False,,True
+3|prompt_eng|C3P8,3,prompt_eng,C3P8,agree_neg,False,False,neutral,0.95,the distribution of prompts over the different schools,文中prompt指作文题目，非提示模板，未涉及模板设计或对比。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P1,3,proof_theory,C3P1,agree_neg,False,False,neutral,0.9,,证据仅含实验与推理描述，未提任何定理/引理/证明或理论保证。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P11,3,proof_theory,C3P11,agree_neg,False,False,neutral,0.6,Here we provide details of the simple and the transformer-based models and present an empirical comparison between them,证据仅涉实证评估与任务定义，未提及任何定理或证明,,deepseek-reasoner,False,,True
+3|proof_theory|C3P12,3,proof_theory,C3P12,agree_pos,True,True,entail,0.98,"Lemma 1. Each of mov, mul, div and aff can be implemented by a single transformer decoder layer",本文提出Lemma 1与Theorem 1，给出理论保证。,,deepseek-reasoner,True,,True
+3|proof_theory|C3P13,3,proof_theory,C3P13,agree_neg,False,False,neutral,0.85,In this work we presented a detailed analysis of the performance of the state of the art discourse parsers,仅做实证分析，未提及任何定理/证明或理论保证,,deepseek-reasoner,False,,True
+3|proof_theory|C3P14,3,proof_theory,C3P14,agree_neg,False,False,neutral,0.95,"Motivated by these observations, we propose AdapterDrop: Dynamically removing adapters from lower transformer layers",文中只提出方法并做实验，未给定理/引理/证明或理论保证。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P17,3,proof_theory,C3P17,agree_neg,False,False,neutral,0.95,,片段只有方法描述与实验，未出现定理、引理或证明。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P2,3,proof_theory,C3P2,agree_neg,False,False,neutral,0.85,"Based on our empirical results, we conclude that faster and larger student models provide a valuable benefit",证据仅有经验结果与实验表，未见本文提出并证明的定理,,deepseek-reasoner,False,,True
+3|proof_theory|C3P20,3,proof_theory,C3P20,agree_neg,False,False,neutral,0.9,we hypothesize that in fact transformers may be attempting to do Bayesian inference.,原文只提假设与实验，未给出定理/引理/证明。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P3,3,proof_theory,C3P3,agree_neg,False,False,neutral,0.95,we prove its promising capability in self-supervised representation learning and transfer learning,仅证明实验能力，未给出定理/引理/理论保证。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P5,3,proof_theory,C3P5,agree_neg,False,False,neutral,0.6,"To verify the performance of LSH attention and study its behavior, we start with the following synthetic task",片段仅含实验与合成任务分析，未见定理、引理或证明。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P6,3,proof_theory,C3P6,agree_pos,True,True,entail,0.98,Proposition 3.1. ... A proof is given in Appendix A.,本文提出命题3.1与定理4.4并附证明，属自身理论保证。,,deepseek-reasoner,True,,True
+3|proof_theory|C3P7,3,proof_theory,C3P7,agree_neg,False,False,neutral,0.95,,片段均为实验设置与结果，未涉及定理、引理或证明。,,deepseek-reasoner,False,,True
+3|proof_theory|C3P8,3,proof_theory,C3P8,agree_neg,False,False,neutral,0.95,,片段中未提及定理、引理、证明或理论保证。,,deepseek-reasoner,False,,True
+3|rl_training|C3P1,3,rl_training,C3P1,agree_neg,False,False,neutral,0.97,,全文未提及强化学习/PPO/RLHF/策略梯度，训练用的是Adam监督优化,,deepseek-reasoner,False,,True
+3|rl_training|C3P11,3,rl_training,C3P11,agree_neg,False,False,neutral,0.95,,证据只讲文档匹配的实证评测，全无强化学习训练内容。,,deepseek-reasoner,False,,True
+3|rl_training|C3P12,3,rl_training,C3P12,agree_neg,False,False,neutral,0.75,We train a Transformer decoder autoregresively on the objective in Eq. (8),全文只提自回归监督训练，未提及任何RL/PPO/RLHF,,deepseek-reasoner,False,,True
+3|rl_training|C3P13,3,rl_training,C3P13,agree_neg,False,False,neutral,0.98,,全文未提及强化学习/PPO/RLHF/策略梯度训练。,,deepseek-reasoner,False,,True
+3|rl_training|C3P14,3,rl_training,C3P14,agree_neg,False,False,neutral,0.85,,全文只讲适配器与AdapterDrop效率，未提及任何RL训练,,deepseek-reasoner,False,,True
+3|rl_training|C3P17,3,rl_training,C3P17,agree_neg,False,False,neutral,0.9,The training goal for learned image compression is to optimize the trade-off between the estimated coding length of the bitstream and the quality of the reconstruction,证据只提率失真优化训练，未涉及任何强化学习/PPO/RLHF,,deepseek-reasoner,False,,True
+3|rl_training|C3P2,3,rl_training,C3P2,agree_neg,False,False,neutral,0.7,Our training pipeline is illustrated in Fig. 3. It has three stages: (1) We first fine-tune a RoBERTa-Large model ... (2) We train the student model by aligning the predictions of ,证据只描述知识蒸馏三阶段流程，未提及任何强化学习训练,,deepseek-reasoner,False,,True
+3|rl_training|C3P20,3,rl_training,C3P20,agree_neg,False,False,neutral,0.9,We use a batch size of 64 and train the model for 500k steps.,证据只描述监督式训练与课程学习，未提及任何强化学习训练。,,deepseek-reasoner,False,,True
+3|rl_training|C3P3,3,rl_training,C3P3,agree_neg,False,False,neutral,0.95,,证据只涉及自监督掩码预训练，未提及任何强化学习训练。,,deepseek-reasoner,False,,True
+3|rl_training|C3P5,3,rl_training,C3P5,agree_neg,False,False,neutral,0.97,,全文片段只涉效率技术与翻译/语言建模实验，未提强化学习训练。,,deepseek-reasoner,False,,True
+3|rl_training|C3P6,3,rl_training,C3P6,agree_neg,False,False,neutral,0.95,"Our method trains additional prediction heads on top of intermediate layers, and dynamically decides when to stop",证据只提训练额外预测头与保形预测，未涉及任何强化学习方法,,deepseek-reasoner,False,,True
+3|rl_training|C3P7,3,rl_training,C3P7,agree_neg,False,False,neutral,0.97,,全文片段未提及任何强化学习训练或对齐方法,,deepseek-reasoner,False,,True
+3|rl_training|C3P8,3,rl_training,C3P8,agree_neg,False,False,neutral,0.7,"each generic trait’s model is a Longformer with a single-output regression head, fine-tuned on the trait’s balanced dataset",全文未提强化学习/PPO/RLHF，模型为微调；文中alignment指ICA对齐,,deepseek-reasoner,False,,True
+3|safety_bias|C3P12,3,safety_bias,C3P12,agree_neg,False,False,neutral,1.0,,证据仅讨论ICL线性函数与探针，未涉及安全/公平/偏见。,,deepseek-reasoner,False,,True
+3|safety_bias|C3P14,3,safety_bias,C3P14,agree_neg,False,False,neutral,0.97,,片段只讨论适配器效率，未涉及安全/公平/偏见评估,,deepseek-reasoner,False,,True
+3|safety_bias|C3P3,3,safety_bias,C3P3,agree_neg,False,False,neutral,0.98,,证据仅为时间序列预测性能与表示学习比较，未涉及安全/公平/偏见。,,deepseek-reasoner,False,,True
+3|safety_bias|C3P5,3,safety_bias,C3P5,agree_neg,False,False,neutral,0.97,,证据只涉及性能/准确率实验，未提安全、公平或偏见。,,deepseek-reasoner,False,,True
+3|safety_bias|C3P6,3,safety_bias,C3P6,agree_neg,False,False,neutral,0.97,,片段未涉及安全/公平/偏见评估,,deepseek-reasoner,False,,True
+3|safety_bias|C3P8,3,safety_bias,C3P8,agree_neg,False,False,entail,0.62,we found it concerning that so many of the models were connected with feature groups that contained demographic features ... it becomes likely that many of these feature groups are,5.5节专门讨论模型含人口特征的偏见疑虑并给出具体分析,,deepseek-reasoner,True,,False
+3|significance|C3P1,3,significance,C3P1,agree_neg,False,False,neutral,0.9,"The three runs reported in Table 3 correspond to N(α=0.3), •(α=0.4), and •(α=0.5)",仅提三次运行，未报告波动或显著性检验,,deepseek-reasoner,False,,True
+3|significance|C3P11,3,significance,C3P11,agree_neg,False,False,neutral,0.95,"We report the mean precision, recall, F1, and accuracy over 5 folds for the best performing hyper-parameters.",仅报告5折均值，未含标准差、方差或显著性检验,,deepseek-reasoner,False,,True
+3|significance|C3P12,3,significance,C3P12,agree_neg,False,False,neutral,0.95,,原文未提及重复运行的标准差/方差或显著性检验,,deepseek-reasoner,False,,True
+3|significance|C3P14,3,significance,C3P14,agree_neg,False,False,neutral,0.95,significant differences exist in the forward and backward pass,仅提显著差异，无重复运行波动或显著性检验,,deepseek-reasoner,False,,True
+3|significance|C3P17,3,significance,C3P17,agree_neg,False,False,neutral,0.95,The results are test by the same model.,仅报告单次结果，未提重复运行、标准差或显著性检验,,deepseek-reasoner,False,,True
+3|significance|C3P2,3,significance,C3P2,agree_neg,False,False,neutral,0.95,,片段未提及重复运行、标准差、方差、p值或显著性检验；星号仅表示采用的设计。,,deepseek-reasoner,False,,True
+3|significance|C3P20,3,significance,C3P20,agree_neg,False,False,neutral,0.95,,证据未提及重复运行的标准差、方差或显著性检验。,,deepseek-reasoner,False,,True
+3|significance|C3P5,3,significance,C3P5,agree_neg,False,False,neutral,0.85,We ran our experiments on the imagenet64 and enwik8-64K tasks,仅描述单次实验设置与结果，未提重复运行标准差或显著性检验,,deepseek-reasoner,False,,True
+3|significance|C3P6,3,significance,C3P6,agree_pos,True,True,entail,0.62,we report the marginalized results over 25 random trials ... Shaded regions show the 16-84th percentiles across trials,报告了25次随机试验的波动（16-84百分位区间）,,deepseek-reasoner,True,,True
+3|significance|C3P7,3,significance,C3P7,agree_pos,True,True,entail,0.9,We conduct significance test for the comparison between curves.,明确说明本文进行了显著性检验并指向附录D。,,deepseek-reasoner,True,,True
+3|zero_few_shot|C3P1,3,zero_few_shot,C3P1,agree_neg,False,False,neutral,0.9,,三段证据均未提及zero-shot/few-shot实验设置，属无关。,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P11,3,zero_few_shot,C3P11,agree_neg,False,False,neutral,0.95,,证据未提及零样本或极少样本设置下的结果。,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P13,3,zero_few_shot,C3P13,agree_neg,False,False,neutral,0.95,,片段只涉及标注细节与解析器预测分布，未提零样本/少样本设置或结果。,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P14,3,zero_few_shot,C3P14,agree_neg,False,False,neutral,0.9,AdapterFusion (AF) is particularly useful for small training sets where learning adequate models is difficult.,片段仅谈效率与小训练集，未报告zero/few-shot评测结果,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P17,3,zero_few_shot,C3P17,agree_neg,False,False,neutral,0.95,,片段未提及零样本或少样本评测设置。,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P2,3,zero_few_shot,C3P2,agree_neg,False,False,neutral,0.85,we remove $D _ { t r a i n }$ from the knowledge distillation stage in our experiment pipeline and only use the unlabeled corpus C,证据为无标签蒸馏设置，未提及zero-shot或few-shot评估结果,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P20,3,zero_few_shot,C3P20,agree_neg,False,False,neutral,0.95,,证据未提及zero-shot或few-shot设置，也无相关结果报告。,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P3,3,zero_few_shot,C3P3,agree_neg,False,False,neutral,0.92,we perform supervised training to evaluate the learned representation with two options: (a) linear probing and (b) end-to-end fine-tuning,证据只涉及监督/自监督预训练与微调，未提零样本或少样本评测,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P5,3,zero_few_shot,C3P5,agree_neg,False,False,neutral,0.95,,证据仅涉及合成任务与机器翻译实验，未提零样本/少样本评估。,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P6,3,zero_few_shot,C3P6,agree_neg,False,False,neutral,0.95,,片段未提及zero-shot/few-shot设置或结果,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P7,3,zero_few_shot,C3P7,agree_neg,False,False,neutral,0.9,,证据未提及zero-shot或few-shot设置，仅描述标准任务实验。,,deepseek-reasoner,False,,True
+3|zero_few_shot|C3P8,3,zero_few_shot,C3P8,agree_neg,False,False,neutral,0.95,,证据未提及zero-shot或few-shot评估设置与结果。,,deepseek-reasoner,False,,True

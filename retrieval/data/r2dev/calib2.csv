@@ -1,0 +1,754 @@
+﻿cluster,facet,docid,在真值,论断,证据,块长,构造标签,NLI_entail,NLI_contra,NLI_判定,LLM判定,LLM置信度,LLM理由
+2,fine_tuning,C2P17,True,该论文做了微调训练,"g data without translation available)Fine-tune multilingual model on all target language target language training sets (translate-train-all)3417 
+
+
+
+Table 14 :
+14POS results (accuracy) for each language.Cross-lingual-transfer (models are fine-tuned on English training data without translation available)Translate-train-all (translation-based augmentation is available for English training data) Cross-lingual-transfer (models are fine-tuned on English training data without translation available)Translate-train-all (translation-based augmentation is available for English training data)Model 
+en 
+af 
+ar 
+bg bn 
+de 
+el 
+es 
+et 
+eu 
+fa 
+fi 
+fr 
+he 
+hi 
+hu 
+id 
+it 
+ja 
+jv 
+
+XLM-Rlarge 
+84.7 78.9 53.0 81.4 78.8 78.8 79.5 79.6 79.1 60.9 61.9 79.2 80.5 56.8 73.0 79.8 53.0 81.3 23.2 62.5 
+
+XTUNE 
+
+85.0 80.4 59.1 84.8 79.1 80.5 82.0 78.1 81.5 64.5 65.9 82.2 81.9 62.0 75.0 82.8 55.8 83.1 30.5 65.9 
+
+FILTER (Fang et al., 2020) 83.5 80.4 60.7 83.5 78.4 80.4 80.7 74.0 81.0 66.9 71.3 80.2 79.9 57.4 74.3",1000,支持,0.75,0.016,entailment,entail,1.0,论文中明确提到对多语言模型进行了微调训练
+2,fine_tuning,C2P11,True,该论文做了微调训练,"s and provide contextually appropriate responses, is increasingly being recognized as a valuable metric for evaluating models [23]. Optimizing hyperparameters with considerations towards these  qualitative measures could lead to models that perform more robustly in diverse real-world scenarios.
+
+
+N-th iteration of Instruction-tuning pipeline
+
+The previous qualitative analysis can be achieved either through human evaluators or through APIs of advanced language models, which is different from our motivation.
+
+
+Methodology
+
+As shown in Figure 2, the process of instruction tuning begins with a foundation model, which is then fine-tuned using instructions. The performance of each tuned model is evaluated to determine the best output. This involves exploring numerous models, each tuned with different hyperparameters, to identify the optimal one. To facilitate this pipeline, a reliable and automated language model assessment system is essential. To address this, we introduce PandaLM -a judge ",1000,支持,0.3,0.12,neutral,partial,0.5,论文提到模型经过指令微调，但未明确说明是否进行了微调训练
+2,fine_tuning,C2P16,True,该论文做了微调训练," and fine-tuning (or 'alignment') continues to be the dominant strategy for building more powerful language systems.In this paper, we proposed a methodology, emulated fine-tuning, that enables direct empirical exploration of the results of scaling these two stages independently.Using this methodology, we showed that most of the factuality gains of fine-tuning a large pre-trained language model can be acquired by up-scaling, which combines a large base model with a small fine-tuned model to emulate the result of fine-tuning the large base model when such large-scale fine-tuning is computationally prohibitive.Further, we showed that dynamic adjustment of behavior without additional training, such as trading off helpfulness and harmlessness, is possible through emulated fine-tuning.Future work may use emulated fine-tuning to study additional dimensions of model capabilities to those in our experiments, interpolate between other test-time model behaviors without requiring additional tuning",1000,支持,0.844,0.017,entailment,entail,1.0,论文中明确提到了微调训练（fine-tuning）
+2,significance,C2P18,True,该论文报告了多次运行的方差或统计显著性,"tual information values, its behavior parallels that of bigram mutual information.
+
+The standard deviation of the values of the bigram mutual information vector of an n-gram is a valid measure of the confidence of these values. Since distituency is indicated by mutual information minima, we use the reciprocal of the standard deviation as a weighting function.
+
+
+2.3
+
+The Parsing Algorithm The generalized mutual information statistic is the most theoretically significant aspect of the mutual information parser. However, if it were used in a completely straightforward way, it would perform rather poorly on sentences which exceed the size of the maximum word window. Generalized mutual information is a local measure which can only be compared in a meaningful way with other values which are less than a word window away. In fact, the further apart two potential distituents are, the less meaningful the comparison between their corresponding G.A4Z values. Thus, it is necessary to compensate for",1000,支持,0.193,0.15,neutral,neutral,0.5,未提及多次运行方差或统计显著性
+2,safety_bias,C2P10,True,该论文讨论了安全 / 公平 / 偏见问题,"ional question answering, cycled letters, diverse social bias, dynamic counting, factuality of summary, forecasting subquestions, gender sensitivity chinese, gender sensitivity english, high low game, long context integration, multistep arithmetic, muslim violence bias, program synthesis, protein interacting sites, python programming challenge, question answer creation, roots optimization and games, self awareness, self evaluation courtroom, self evaluation tutoring, simple arithmetic, spelling bee, squad shifts, subject verb agreement, sudoku, taboo, talkdown, text navigation game, training on test set, truthful qa, twenty questions, unqover, web of lies, word problems on sets and graphs, yes no black white.Criteria: Tasks without sub-task. Discarded tasks: abstract narrative understanding, arithmetic, authorship verification, bbq lite json, cause and effect, chess state tracking, cifar10 classification, color, conceptual combinations, conlang translation, cs algorithms, elementary ma",1000,支持,0.955,0.009,entailment,neutral,0.5,证据列举了多个任务，但未明确提及安全、公平、偏见问题
+1,fine_tuning,C1P15,True,该论文做了微调训练,"ation, and then use this along with (limited) in-domain data to further fine-tune an RC model, using the NQ-trained weights for initialization. Further training details are provided in Appendix A.  
+
+
+A Model Training and Implementation Details
+
+Below, we describe the details of different models trained in the RGF pipeline. Unless specified otherwise, we use the T5X library 6 and pre-trained checkpoints from Raffel et al. (2020) 7 .
+
+Question Generation We use a T5-3B model fine-tuned on Natural Questions (NQ) dataset. We only train on the portion of the dataset that consists of gold short answers and an accompanying long answer evidence paragraph from Wikipedia. The input consists of the title of the Wikipedia article the passage is taken from, a separator ('»') and the passage. The short answer is enclosed in the passage using character sequences '« answer =' and '»' on left and right respectively. The output is the original NQ question. The input and output sequence lengths are rest",1000,支持,0.057,0.001,neutral,entail,1.0,原文提到使用NQ数据集微调RC模型
+3,ablation,C3P3,True,该论文做了消融实验,"ion 4.3, we run different variants of PatchTST:
+
+• Both patching and channel-independence are included in model (P+CI): this is the full PatchTST model that we have proposed in paper.
+
+• Only channel-independence (CI): we simply set both patch length P and stride S to be 1 to avoid patching and only keep channel-independence.
+
+• Only patching (P): referring to the implementation in A.  Note that the default number of maximum epochs for Electricity and Traffic datasets are reduced from 100 to 20 for ablation experiments due to the huge space and time complexity of the original time series Transformer and channel independent model (no patching).
+
+Full Benchmark of Ablation Study. The full benchmark is shown in Table 10, which is a completed version of Table 7 in the main text. We can observe that patching together with channelindependence achieves the best results from the table, especially on larger datasets (Weather, Traffic, and Electricity) where the models are less susceptible to ov",1000,支持,0.837,0.028,entailment,entail,1.0,论文中明确提到了消融实验，包括不同变体的运行和结果比较。
+2,ablation,C2P4,True,该论文做了消融实验,". The results in the main paper have demonstrated that our alignment extraction methods are able to outperform IterMax. In Figure 4, we  can see that the IterMax algorithm tends to sacrifice precision for a small improvements in recall, while our model can generate more accurate alignments.
+
+Ablation Studies on Training Objectives. Table 12 presents more ablation studies on our training objectives. We can see that the self training objective is the most effective one, with the translation language modeling objective being the second and the parallel sentence identification objective being the third. The masked language modeling objective can sometimes hurt the model performance, possibly because of the translation language modeling objective.
+
+Experiments on More Language Pairs. We also test our alignment extraction methods on other language pairs following the setting of Sabet et al.
+
+(2020) without fine-tuning as shown in Table 13. 2
+
+More Qualitative Examples. In addition to the exa",1000,支持,0.993,0.001,entailment,entail,1.0,论文中明确提到了消融实验（Ablation Studies）和实验结果（Table 12）
+2,safety_bias,C2P15,True,该论文讨论了安全 / 公平 / 偏见问题,"hics Statement
+
+Our work presents various challenges and opportunities in terms of bias and toxicity in language models. It is widely known that LLMs trained on large corpora have been shown to capture biases found in the training data (Brown et al., 2020;Chowdhery et al., 2022). Since our student models are trained on reasoning samples generated by these LLMs, it is possible that such characteristics of the teacher model can get passed along to the student. This is an important point to consider when selecting the teacher model for our method.
+
+Our training setup, however, does offer a unique opportunity to minimize bias and toxicity in student models, by influencing the samples used for fine-tuning. One approach would be to augment the curating step of Fine-tune-CoT to filter out biased or toxic samples. It is possible to automate this via neural network-based verifiers, previously used to filter correct output (Cobbe et al., 2021;Li et al., 2022b). Alternatively, one may consider op",1000,支持,0.84,0.064,entailment,entail,1.0,论文讨论了语言模型中的偏见和毒性问题，并提出了减少这些问题的方法。
+3,zero_few_shot,C3P12,True,该论文报告了零样本或少样本的结果,", Alec Radford, Ilya Sutskever, and Dario Amodei. Language models are few-shot learners. In Hugo Larochelle, Marc'Aurelio Ranzato, Raia Hadsell, Maria-Florina Balcan, and Hsuan-Tien Lin (eds.), Advances in Neural Information Processing Systems 33: An- nual Conference on Neural Information Processing Systems 2020, NeurIPS 2020, Decem- ber 6-12, 2020, virtual, 2020. URL https://proceedings.neurips.cc/paper/2020/hash/ 1457c0d6bfcb4967418bfb8ac142f64a-Abstract.html.
+
+. Nick Cammarata, Shan Carter, Gabriel Goh, Chris Olah, Michael Petrov, Ludwig Schubert, Chelsea Voss, Ben Egan, Swee Kiat Lim, Thread: circuits. Distill. 5324Nick Cammarata, Shan Carter, Gabriel Goh, Chris Olah, Michael Petrov, Ludwig Schubert, Chelsea Voss, Ben Egan, and Swee Kiat Lim. Thread: circuits. Distill, 5(3):e24, 2020.
+
+Data distributional properties drive emergent fewshot learning in transformers. C Y Stephanie, Adam Chan, Santoro, Jane X Andrew K Lampinen, Aaditya Wang, Singh, H Pierre, Jay Richemond, Felix Mcclel",1000,支持,0.487,0.476,entailment,neutral,0.5,原文未提及零样本或少样本结果
+3,fine_tuning,C3P14,True,该论文做了微调训练,"e-tuned models, executed sequentially. Parallelized denotes the time required by N fully fine-tuned models running fully parallelized. Batch size 1 on the V100 is an outlier compared to the other results with a smaller speedup for each dropped layer but a higher relative speed compared to the fine-tuned models due to the small input size. Negative values indicate that the iterative implementation is faster. We calculate the difference as t i − t p , where t i , t p are the times for iterative and parallel implementation, respectively. In Figure (a), the parallel implementation is faster if the input is sufficiently small as the GPU is not working at capacity and is able to use the parallel implementation. Figure 12: Evaluation performance of fine-tuning RoBERTA-base in comparison with different initialization strategies for adapters (randomly initialized vs. pre-trained on masked language modeling task). Training was conducted for 10k steps with a learning rate of 5e-05 for RoBERTa-bas",1000,支持,0.596,0.024,entailment,entail,1.0,论文中明确提到了微调训练（fine-tuning）
+1,fine_tuning,C1P13,True,该论文做了微调训练,"by one produces steady improvements.
+
+Two-Stage Fine-tuning In order to study the necessity of the two-stage fine-tuning, we perform an ablation study to see the impact of the two stages. We display our results in    refers to the model trained only with in-batch memory are directly used to generate outputs by accessing the global memory. Without further tuning, the performance will drop by roughly 2% on both datasets. (Only Fixed-Retrieval) refers to using the pre-trained retriever directly to obtain Top-K and then optimize the generative loss. As can be seen, the performance drop is more severe in this case for both datasets. This is understandable due the misalignment between pre-training retrieval is (image + text->text) while the fine-tuning retrieval is (text -> image+text). Thus, it is necessary to adapt the MuRAG's pre-trained retriever to different use cases depending on the downstream datasets.
+
+
+Human Analysis
+
+In order to better understand the model's performance, we manual",1000,支持,0.783,0.02,entailment,entail,1.0,论文中明确提到了两阶段微调训练，并进行了消融实验。
+3,multilingual,C3P20,True,该论文做了多语言或跨语言的实验,"atural language processing. In Proceedings of the 2020 
+Conference on Empirical Methods in Natural Language Processing: System Demonstrations, pages 38-45, Online, 
+October 2020. Association for Computational Linguistics. doi: 10.18653/v1/2020.emnlp-demos.6. URL 
+https://aclanthology.org/2020.emnlp-demos.6. 
+
+BigScience Workshop. Bloom: A 176b-parameter open-access multilingual language model, 2023. 
+
+Sang Michael Xie, Aditi Raghunathan, Percy Liang, and Tengyu Ma. An explanation of in-context learning 
+as implicit bayesian inference. In The Tenth International Conference on Learning Representations, ICLR 
+2022, Virtual Event, April 25-29, 2022. OpenReview.net, 2022. URL https://openreview.net/forum?id= 
+RdJVFCHjUMI. 
+
+
+Table 1 :
+1The values of curriculum attributes used for each experiment. C d , C p and C freq denote the curriculum on number of input dimensions (d), number of points (p) and any other experiment-specific attribute respectively. For Fourier Series C freq refers to maxi",1000,支持,0.001,0.0,neutral,neutral,0.5,未提及多语言或跨语言实验
+1,ablation,C1P13,True,该论文做了消融实验,"er both settings. For image questions, the gap becomes more significant, with 20+% improvement under both settings. Similarly, we find that our model is more capable of handling full-wiki corpus.   
+
+
+Ablation Study
+
+Here we ablate the properties of MuRAG to better understand our experimental results.
+
+Pre-training Corpus In order to study the contributions of different pre-training corpora, we investigated several pre-training corpus combinations. We report their fine-tuned results on WebQA test set in Table 6. As can be seen, without any pre-training, our model only achieves an overall score of 23.5, which lags behind the baseline models. After pretraining on different singular datasets, MuRAG is able to achieve better performance than the baselines. Among the individual datasets, LAION is shown to yield the highest score, and adding CC, PAQ, and VQA to the pre-training corpus set one by one produces steady improvements.
+
+Two-Stage Fine-tuning In order to study the necessity of the t",1000,支持,0.135,0.403,neutral,entail,1.0,论文中明确提到了消融实验，包括对MuRAG属性进行消融以更好地理解实验结果。
+3,fine_tuning,C3P5,True,该论文做了微调训练,"a number of tasks. To obtain these results, researchers have resorted to training ever larger Transformer models. The number of parameters exceeds 0.5B per layer in the largest configuration reported in  while the number of layers goes up to 64 in (Al-Rfou et al., 2018). Transformer models are also used on increasingly long sequences. Up to 11 thousand tokens of text in a single example were processed in (Liu et al., 2018) and when processing other modalities, like music (Huang et al., 2018) and images , even longer sequences are commonplace. These large-scale long-sequence models yield great results but strain resources to the point where some argue that this trend is breaking NLP research 1 . Many large Transformer models can only realistically be trained in large industrial research laboratories and such models trained with model parallelism cannot even be fine-tuned on a single GPU as their memory requirements demand a multi-accelerator hardware setup even for a single training ste",1000,支持,0.118,0.44,neutral,neutral,0.5,未提及微调训练，只提到训练大模型
+2,human_eval,C2P15,True,该论文做了人工评估或人工标注," values? Section 4. We use default hyperparameters.C3. Did you report descriptive statistics about your results (e.g., error bars around results, summary statistics from sets of experiments), and is it transparent whether you are reporting the max, mean, etc. or just a single run? Section 4, Appendix A C4. If you used existing packages (e.g., for preprocessing, for normalization, or for evaluation), did you report the implementation, model, and parameter settings used (e.g., NLTK, Spacy, ROUGE, etc.)? Not applicable. Left blank.D Did you use human annotators (e.g., crowdworkers) or research with human participants?Left blank.D1. Did you report the full text of instructions given to participants, including e.g., screenshots, disclaimers of any risks to participants or annotators, etc.? No response.D2. Did you report information about how you recruited (e.g., crowdsourcing platform, students) and paid participants, and discuss if such payment is adequate given the participants' demograph",1000,支持,0.715,0.006,entailment,neutral,0.5,未提及人工评估或标注，也未明确表示未使用
+3,knowledge_distill,C3P12,True,该论文用了知识蒸馏," in Neural Information Processing Systems, 34:14122-14134, 2021. Michael Laskin, Luyu Wang, Junhyuk Oh, Emilio Parisotto, Stephen Spencer, Richie Steigerwald, DJ Strouse, Steven Hansen, Angelos Filos, Ethan Brooks, et al. In-context reinforcement learning with algorithm distillation. ArXiv preprint, abs/2210.14215, 2022. URL https://arxiv.org/ abs/2210.14215. Sewon Min, Mike Lewis, Luke Zettlemoyer, and Hannaneh Hajishirzi. MetaICL: Learning to learn in context. In Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pp. 2791-2809, Seattle, United States, 2022. Association for Computational Linguistics. doi: 10.18653/v1/2022. naacl-main.201. URL https://aclanthology.org/2022.naacl-main.201. Marc'Aurelio Ranzato, Raia Hadsell, Maria-Florina Balcan, and Hsuan-Tien Lin (eds.), Advances in Neural Information Processing Systems 33: Annual Confer-Samuel Müller, Noah Hollmann, Sebastian Pineda Arango, J",1000,支持,0.75,0.12,entailment,neutral,0.5,未提及知识蒸馏
+2,multilingual,C2P3,True,该论文做了多语言或跨语言的实验,"rs, and their joint pretraining on data taken from a large set of languages results in surprisingly robust cross-lingual representations (Pires et al., 2019;Wu andDredze, 2019, 2020). This lends them the ability to also carry out zero-shot transfer, solving tasks in a target language without languagespecific supervision (Wu and Dredze, 2019;Üstün et al., 2020, 2022.
+
+However, multilingual LMs may struggle when it comes to adapting to additional languages (Conneau et al., 2020;Pfeiffer et al., 2020;de Vries et al., 2021). This is especially true if these languages are resource-poor (Wu and Dredze, 2020;Rust et al., 2021;Pfeiffer et al., 2020Pfeiffer et al., , 2021, or have typological characteristics unseen by the LM during its pretraining (Üstün et al., 2020, 2022). The performance of multilingual LMs might suffer even on resource-rich languages due to the lack of model capacity to adequately incorporate languagespecific parameters and vocabulary (Conneau et al., 2020;Pfeiffer et al., ",1000,支持,0.818,0.061,entailment,entail,1.0,提到了在多种语言的数据上进行联合预训练，并产生了跨语言的表示
+2,zero_few_shot,C2P12,True,该论文报告了零样本或少样本的结果,"a. Exploiting 
+cloze-questions for few-shot text classification and 
+natural language inference. In Proceedings of the 
+16th Conference of the European Chapter of the As-
+sociation for Computational Linguistics: Main Vol-
+ume, pages 255-269. 
+
+Timo Schick and Hinrich Schütze. 2021b. Generating 
+datasets with pretrained language models. In Pro-
+ceedings of the 2021 Conference on Empirical Meth-
+ods in Natural Language Processing, pages 6943-
+6951, Online and Punta Cana, Dominican Republic. 
+Association for Computational Linguistics. 
+
+Timo Schick and Hinrich Schütze. 2021c. It's not just 
+size that matters: Small language models are also 
+few-shot learners. In Proceedings of the 2021 Con-
+ference of the North American Chapter of the Asso-
+ciation for Computational Linguistics: Human Lan-
+guage Technologies, pages 2339-2352. 
+
+Timo Schick and Hinrich Schütze. 2021d. True few-
+shot learning with prompts-a real-world perspective. 
+arXiv preprint arXiv:2111.13440. 
+
+Emma Strubell, Ananya Ga",1000,支持,0.248,0.732,contradiction,neutral,0.5,原文片段未提及零样本或少样本结果
+1,fine_tuning,C1P17,True,该论文做了微调训练,"
+
+
+Supervised
+
+For the supervised experiments, we fine-tune a pre-trained language model by translating the problem as a binary classification task.
+
+In other words, for a given dialog x = {(q 1 , a 1 ), ...., (q L−1 , a L−1 ), (q T , a T )} and a candidate set y = {y + } ∪ y − , we train a model θ to predictŷ = P (i | x), i ∈ y, whereŷ → R : [0, 1].
+
+We format the input by concatenating the dialog history turns and a candidate utterance with a [SEP] token and a single output node outputs a continuous value between 0 and 1. As the starter pre-trained language model we experiment with BERT (Devlin et al., 2019) and RoBERTa . We use the bert-base-cased 5 and roberta-base 6 variations of these models. We finetune the models for 20 epochs with an early stopping patience of three epochs with a learning rate of 2e −5 and batch size of 64. We use cross-entropy loss to optimize the model with AdamW optimizer. During inference, we use the model predicted score to rearrange the candidate set for",1000,支持,0.948,0.022,entailment,entail,1.0,明确提到对预训练语言模型进行了微调训练
+1,human_eval,C1P7,True,该论文做了人工评估或人工标注," question, the NQG question and the human-created question) by assigning each a score from {1,2,3} (the higher, the better). For each aspect, we show the average score across the five annotators on all samples. Table 3 shows the results of human evaluation. We can see that our method almost outperforms NQG in all aspects. For Naturalness, the three  methods obtain the similar scores, which is probably because that the most generated questions are short and fluent, makes them have no significant difference on this aspect. We also observe that on the Relevance, Coherence and Answerability aspects, there is an obvious gap between the generative models and human annotation. This indicates that the contextual understanding is still a challenging problem for the task of the conversational question generation.
+
+
+Linguistic Analysis
+
+We further analyze the generated questions in terms of their linguistic features and constitutions in Table 4, from which we draw three observations: (1) Overall,",1000,支持,0.975,0.005,entailment,entail,1.0,论文中明确提到进行了人工评估，并展示了五个标注者在所有样本上的平均分数。
+2,significance,C2P12,True,该论文报告了多次运行的方差或统计显著性,"nd on the task-specific prompting template (Schick and Schütze, 2021a 
+
+
+Other Details
+
+For every task and configuration (combination of LM and train set size; 5 × 11), we run training 4 times and report on the model achieving the highest accuracy on the dev set (Le Scao and Rush, 2021). As there tends to be variation across runs (Dodge et al., 2020; Schick and Schütze, 2021d), we focus on the highest achieved accuracy, as opposed to the mean, in order to compare each configuration in its best case scenario. Note that we observe similar trends when considering mean and standard deviation across runs (see Fig. 3 in the Appendix). 
+
+
+Results and Discussion
+
+3.1 Effect of Training Procedure Fig. 1 shows classification accuracy on Yahoo Questions (Yahoo-Q), Yelp-Full and AG News across training procedures, models and train set sizes. 4 We identify consistent trends across datasets that can be summarized as follows:
+
+• Prompting (both P and P+KD) outperforms fine-tuning on small train sets ",1000,支持,0.337,0.428,contradiction,partial,0.8,论文中提到多次运行并报告最高准确率，但未明确说明报告方差或统计显著性
+1,code_release,C1P9,True,该论文公开了代码或数据,"ilable through API calls (https://beta.openai.com/examples/).
+
+
+Evaluation datasets
+
+The three evaluation datasets used in our experiments (Natural Questions 2 , TriviaQA 3 , and HotpotQA 4 ) are all publicly accessible.
+
+Prompts We provide all the used prompts in the appendix.
+
+Source code Though the prompt examples in the appendix should be enough to reproduce all the results in our paper, we open-source all the evaluation code at https://github.com/ Edward-Sun/RECITE. Fig. 7-15 illustrate the evidence-recitation, question-answering prompt that we used for Natural Questions, TriviaQA, and HotpotQA dataset. We also provide the example sampled recitations for these datasets. Notice that for Natural Questions, we use the ""long answer"" annotation as the recitation in the prompt, while for the other two datasets, we manually compose a few recitation passages based on web search.
+
+
+A ILLUSTRATIONS OF PROMPTS AND LANGUAGE MODEL OUTPUTS
+
+
+B PRINCIPLES OF PROMPT DESIGNS
+
+We mainly follow Chow",1000,支持,0.996,0.0,entailment,entail,1.0,论文明确指出代码已开源，并提供了链接。
+2,human_eval,C2P1,True,该论文做了人工评估或人工标注,"n human annotations in various steps, including writing instructions, writing model responses, providing preferences to indicate desired response, etc. Those instruction sets are often proprietary, one exception being the recent OpenAssistant datasets Köpf et al. [2023]. Overall, the human annotation approach is difficult to scale since collecting annotations on a wide range of tasks is expensive, time consuming and requires expertise in different domains.
+
+Several works have explored using LLMs to generate instructions. Unnatural instructions prompts GPT-3 to generate more instructions given a few in-context seed instructions Honovich et al. [2022]. Self-instruct Wang et al. [2022a] uses the same approach to generate instructions, as well as outputs for those instructions. They further perform manually engineered filtering rules to remove low-quality instruction-output pairs.  generates more complex instructions by creating variants of user instructions sent to ChatGPT.
+
+All these app",1000,支持,0.859,0.069,entailment,entail,1.0,论文中明确提到'human annotations'和'manually engineered filtering rules'，说明进行了人工评估或标注。
+2,multilingual,C2P4,True,该论文做了多语言或跨语言的实验," training objectives in multilingual settings. Zh-En 15.3 12.5 -Ja-En 38.4 31.6 30.0   ing word aligners. From Table 8, we can see that our model is also better than baselines in this setting, demonstrating its usefulness in cross-lingual annotation projection.
+
+
+Sentence-Level Representation Transfer.
+
+We also test if the aligned representations are beneficial for sentence-level cross-lingual transfer. In doing so, we perform experiments on XNLI (Conneau et al., 2018), which evaluates cross-lingual sentence representations in 15 languages on the task of natural language inference (NLI). We train our models with the provided 10k parallel data on the 15 languages, fine-tune our model on the English NLI data, then test its performance on other languages. As shown in Table 9, our model can outperform the baseline, indicating the aligned word representations can also be helpful for sentencelevel cross-lingual transfer.  Alignment Examples. We also conduct qualitative analyses as shown in F",1000,支持,0.976,0.006,entailment,entail,1.0,论文中明确提到了在多语言和跨语言设置下的实验和结果
+2,fine_tuning,C2P15,True,该论文做了微调训练,"ng smaller models has been successfully used in prior work (Li et al., 2022a), with a focus on specific single tasks. Also, a similar approach to ours is mentioned in (Huang et al., 2022); however we note that this concurrent work focuses on using Few-shot-CoT to self-generate fine-tuning examples by and for very large proprietary models. There is a brief glimpse into fine-tuning on smaller distilled models, but the results are limited to one dataset and very large teacher models that are inaccessible to the general community. In contrast, we provide a rich set of results and qualitative/quantitative analysis on a wide range of datasets, using open-source models that are small and accessible to everyone.
+
+Knowledge distillation Typically, knowledge distillation (KD) refers to training small models derived from large models in order to reduce model size and latency, while still preserving accuracy and capacity to generalize (Hinton et al., 2015;Sanh et al., 2019). Essentially, KD is a f",1000,支持,0.613,0.124,entailment,partial,0.5,提到了微调训练，但结果有限且不公开
+1,ablation,C1P14,True,该论文做了消融实验,"h the top one retrieved document without reflection tokens.This is similar to SAIL (Luo et al., 2023), and we use our instruction-output data instead of using the Alpaca dataset (Dubois et al., 2023), as in SAIL.We also conduct ablation on our inference-time algorithm, including No retrieval disables retrieval during inference; Hard constraints indicates the model performance that retrieves when Retrieve =Yes instead of using the adaptive threshold; Retrieve top 1 always retrieves and uses the top one document only, similar to standard RAG approaches; Remove ISSUP indicates the model performance that removes ISSUP score only during critique-guided beam search in Eq. 4. In this ablation experiment, we use a training instance size of 50k for a more efficient exploration of training variations.Later in this section, we conduct an analysis of the effect of training data size.We conduct the ablation studies on three datasets, PopQA, PubHealth, and ASQA.On ASQA, we evaluate models on sampled",1000,支持,0.922,0.065,entailment,entail,1.0,论文中明确提到了消融实验，包括对推理时间算法的消融实验。
+1,safety_bias,C1P11,True,该论文讨论了安全 / 公平 / 偏见问题,"e language models have a wide range of beneficial applications for society, but they also have potentially harmful applications. Previous work has shown various forms of bias, such as racial and gender bias, in large language models like GPT-3, even after explicit efforts to reduce toxic language (Chan, 2022). The importance of addressing these societal harms is acknowledged by OpenAI themselves in their 2020 paper introducing GPT-3 (Brown et al., 2020), which stated ""we focus on two primary issues: the potential for deliberate misuse of language models like GPT-3 ... and issues of bias, fairness, and representation within models like GPT-3."" on page 34.
+
+The goal of this paper is to utilize knowledge stored in the parameters of large language models to answer open-domain questions and solve knowledge-intensive tasks. Unlike retrieve-then-read where an external corpus can be curated to be trustworthy, the use of a model to generate contextual documents may further permeate existing bia",1000,支持,0.961,0.014,entailment,entail,1.0,论文明确提到了偏见、公平和代表性问题
+1,ablation,C1P19,True,该论文做了消融实验," et al. (2017) used a reference set containing only a single ground-truth question that corresponds to the same sentence and answer span from which the hypothesis was generated. We use this setup to evaluate our Focus and FocusCR models. The results are shown in Table 6. Here, Focus and FocusCR are the same models as shown in Table 5, with the only difference being the setting under which they are evaluated. Again, Fo-cusCR achieves the second highest score and Focus gets the highest BLEU 4 score at 14.39. While the datasets in aggregate are the same, our partitioning of training, development, and test datasets is different from that of Yuan et al. (2017).
+
+We perform ablation experiments to study the effects of each feature incorporated into the model. The results of these experiments can be seen in Table 8. With the exception of the CoRef feature, each feature added produces an improvement in BLEU, with the answer feature producing the greatest improvement. The copy-mechanism and sen",1000,支持,0.99,0.004,entailment,entail,1.0,论文中明确提到进行了消融实验
+3,zero_few_shot,C3P6,True,该论文报告了零样本或少样本的结果,"way.
+AcknowledgementsWe thank the MIT NLP group for helpful discussions. TS is supported in part by DSO grant DSOCL18002. AF is supported in part by an NSF GRFP. This work is also supported in part by DSTA award DST00OECI20300823.
+Distribution free, risk controlling prediction sets. Stephen Bates, Anastasios Nikolas Angelopoulos, Lihua Lei, Jitendra Malik, Michael I Jordan, arXiv 2101.02703arXiv preprintStephen Bates, Anastasios Nikolas Angelopoulos, Li- hua Lei, Jitendra Malik, and Michael I. Jordan. 2020. Distribution free, risk controlling prediction sets. arXiv preprint: arXiv 2101.02703.
+
+Ilya Sutskever, and Dario Amodei. 2020. Language models are few-shot learners. Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu, Clemens Winter, Chris Hesse, Mark Chen, ",1000,支持,0.882,0.103,entailment,neutral,0.5,原文未提及零样本或少样本结果
+2,code_release,C2P8,False,该论文公开了代码或数据,"Global 
+Facts 
+
+High School 
+Biology 
+
+High School 
+Chemistry 
+
+Model 
+
+
+
+Table 5 :
+5MMLU[20:30] individual task performance.MMLU 
+
+
+
+Table 6 :
+6MMLU[30:40] individual task performance.MMLU 
+
+
+
+Table 7 :
+7MMLU[40:50] individual task performance. 
+
+
+
+Table 8 :
+8MMLU[50:57] individual task performance. 
+
+MMLU 
+
+Professional 
+Psychology 
+
+Public 
+Relations 
+
+Security 
+Studies 
+Sociology 
+US Foreign 
+Policy 
+Virology World Religions Average 
+
+Model 
+
+Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT 
+
+-
+davinci 
+37.7 43.5 50.0 50.0 44.4 40.7 63.6 59.1 45.5 63.6 33.3 27.8 63.2 
+68.4 
+39.7 40.5 
+-
+text-davinci-002 
+65.2 58.0 50.0 50.0 77.8 48.1 90.9 86.4 81.8 81.8 44.4 33.3 84.2 
+78.9 
+63.1 60.0 
+-
+text-davinci-003 
+68.1 63.8 50.0 50.0 70.4 63.0 86.4 95.5 81.8 90.9 50.0 50.0 84.2 
+84.2 
+64.8 64.6 
+-
+code-davinci-002 76.8 66.7 50.0 58.3 74.1 51.9 86.4 90.9 90.9 72.7 50.0 44.4 84.2 
+78.9 
+68.2 64.5 
+
+80M T5-Small 
+20.3 4.3 33.3 16.7 18.5 0.0 22.7 0.0 27.3 ",1000,不支持,0.997,0.001,entailment,neutral,0.5,文中未提及代码或数据是否公开
+3,safety_bias,C3P10,False,该论文讨论了安全 / 公平 / 偏见问题,"tnaparkhi. IBM's statistical question answering system. In 9th Text REtrieval Conference, Gaithersburg, MD, 2000.
+
+Ranking suspected answers to natural language questions using predictive annotation. D R Radev, J Prager, V Samn, 6th Conference on Applied Natural Language Processing. SeattleD. R. Radev, J. Prager, and V. Samn. Ranking suspected answers to natural language questions using predictive annotation. In 6th Conference on Applied Natural Language Processing, Seattle, May 2000.
+
+Halfway to question answering. W A Woods, S Green, P Martin, A Houston, 9th Text REtrieval Conference. Gaithersburg, MDW. A. Woods, S. Green, P. Martin, and A. Houston. Halfway to question answering. In 9th Text REtrieval Conference, Gaithersburg, MD, 2000.",748,不支持,0.518,0.392,entailment,neutral,0.5,未提及安全、公平、偏见问题
+2,safety_bias,C2P2,False,该论文讨论了安全 / 公平 / 偏见问题,"der adults: A moderated mediation model. Jingjin Shao, Weiping Du, Tian Lin, Xiying Li, Jiamei Li, Huijie Lei, Journal of elder abuse & neglect. 312Jingjin Shao, Weiping Du, Tian Lin, Xiying Li, Jiamei Li, & Huijie Lei. (2019). Credulity rather than general trust may increase vulnerability to fraud in older adults: A moderated mediation model. Journal of elder abuse & neglect, 31(2), 146-162.
+
+Putting GPT-3's Creativity to the. Claire Stevenson, Iris Smal, Matthijs Baas, Raoul Grasman, Han Van Der Maas, arXiv:2206.08932Alternative Uses) Test. arXiv preprintClaire Stevenson, Iris Smal, Matthijs Baas, Raoul Grasman, & Han van der Maas. (2022). Putting GPT-3's Creativity to the (Alternative Uses) Test. arXiv preprint arXiv:2206.08932.
+
+The social identity theory of intergroup behavior. Henri Tajfel, C John, Turner, Political psychology. Psychology PressHenri Tajfel, & John C Turner. (2004). The social identity theory of intergroup behavior. In Political psychology (pp. 276-293). Psycholog",1000,不支持,0.724,0.229,entailment,neutral,0.5,论文标题未提及安全、公平、偏见问题
+3,deployment,C3P18,False,该论文面向真实部署或线上系统,"re a single word is sent to every open dictionary by a single mouseclick. In Figure 4 the user started from the word-form 'duties ', and eight dictionaries (that are open and contain English either on the source or the target side) send translations to the screen.
+
+
+Implementation Features
+
+The most recent development is MoBiDic's client-server implementation. Its server side (Windows NT, Unix and Novell) consists, in fact, of two servers: the linguistic server and the dictionary server. The user interface and screen handling modules will take place on the (Win, Mac, Linux, Java, etc.) client side.
+
+There are many software modules of other vendors on the market that can also be combined with
+
+MoBiDic through its well-defined application programming interface (API). With the help of this API the user can communicate to the other modules from MoBiDic without leaving it. Because of technical and legal reasons, it can, of course, be done in collaboration with the developer of the product i",1000,不支持,0.984,0.003,entailment,neutral,0.5,未提及真实部署或线上系统，只描述了软件实现和接口
+1,safety_bias,C1P13,False,该论文讨论了安全 / 公平 / 偏见问题,"edel. 2021. Paq: 65 million probably-asked questions and what you can do with them. Transactions of the Association for Computational Linguistics, 9:1098-1115.
+
+Oscar: Objectsemantics aligned pre-training for vision-language tasks. Xiujun Li, Xi Yin, Chunyuan Li, Pengchuan Zhang, Xiaowei Hu, Lei Zhang, Lijuan Wang, Houdong Hu, Li Dong, Furu Wei, European Conference on Computer Vision. SpringerXiujun Li, Xi Yin, Chunyuan Li, Pengchuan Zhang, Xi- aowei Hu, Lei Zhang, Lijuan Wang, Houdong Hu, Li Dong, Furu Wei, et al. 2020. Oscar: Object- semantics aligned pre-training for vision-language tasks. In European Conference on Computer Vision, pages 121-137. Springer.
+
+Microsoft coco: Common objects in context. Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Dollár, C Lawrence Zitnick, European conference on computer vision. SpringerTsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Dollár, and C Lawrence Zitni",1000,不支持,0.299,0.539,contradiction,neutral,0.5,未提及安全、公平、偏见问题
+2,fine_tuning,C2P10,True,该论文做了微调训练," as approximate inference models to generate program candidates based on a small set of demonstrations. Unlike classical program synthesis, our inference models do not require any training and generalize well to various tasks.
+
+
+NATURAL LANGUAGE PROGRAM SYNTHESIS USING LLMS
+
+We consider a task specified by a dataset D train = {(Q, A)} of input/output demonstrations sampled from population X , and a prompted model M. The goal of natural language program synthesis is to find a single instruction ρ such that, when M is prompted with the concatenation [ρ; Q] of instruction and a given input, M produces the corresponding output A. More formally, we frame this as an optimization problem, where we seek instruction ρ that maximizes the expectation of some per-sample score f (ρ, Q, A) over possible (Q, A):
+ρ = arg max ρ f (ρ) = arg max ρ E (Q,A) [f (ρ, Q, A)](1)
+Note that in general, Q may be the empty string, such that we are optimizing ρ as a prompt that directly produces outputs {A}. While t",1000,不支持,0.031,0.027,neutral,neutral,1.0,原文未提及微调训练，只提到模型不需要训练
+1,multilingual,C1P7,False,该论文做了多语言或跨语言的实验,"plications using natural language processing. the HLT-NAACL 03 workshop on Building educational applications using natural language processingAssociation for Computational Linguistics2Ruslan Mitkov and Le An Ha. 2003. Computer-aided generation of multiple-choice tests. In Proceed- ings of the HLT-NAACL 03 workshop on Build- ing educational applications using natural language processing-Volume 2, pages 17-22. Association for Computational Linguistics.
+
+Generating natural questions about an image. Nasrin Mostafazadeh, Ishan Misra, Jacob Devlin, Margaret Mitchell, Xiaodong He, Lucy Vanderwende, Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics. the 54th Annual Meeting of the Association for Computational Linguistics1Nasrin Mostafazadeh, Ishan Misra, Jacob Devlin, Mar- garet Mitchell, Xiaodong He, and Lucy Vander- wende. 2016. Generating natural questions about an image. In Proceedings of the 54th Annual Meet- ing of the Association for Computational L",1000,不支持,0.362,0.078,neutral,neutral,0.5,未提及多语言或跨语言实验
+2,ablation,C2P8,True,该论文做了消融实验,"Transactions of the 
+Association for Computational Linguistics, 9:346-361, 2021. 
+Appendix for 
+""Mixture-of-Experts Meets Instruction Tuning: A Winning 
+Combination for Large Language Models"" 
+
+A Full Experiment Results 
+
+A.1 MMLU 
+
+
+
+Table 3 :
+3MMLU[:10] individual task performance. Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoTMMLU 
+
+Abstract 
+Algebra 
+Anatomy 
+Astronomy 
+Business 
+Ethics 
+
+Clinical 
+Knowledge 
+
+College 
+Biology 
+
+College 
+Chemistry 
+
+College 
+Comp. Sci. 
+
+College 
+Math 
+
+College 
+Medicine 
+
+Model 
+
+
+
+Table 4 :
+4MMLU[10:20] individual task performance. Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoTMMLU 
+
+College 
+Physics 
+
+Computer 
+Security 
+
+Conceptual 
+physics 
+Econometrics 
+Electrical 
+Engineering 
+
+Elementary 
+Mathematics 
+
+Formal 
+Logic 
+
+Global 
+Facts 
+
+High School 
+Biology 
+
+High School 
+Chemistry 
+
+Model 
+
+
+
+Table 5 :
+5MMLU[20:30] ind",1000,不支持,0.047,0.635,contradiction,neutral,0.5,原文片段未提及消融实验
+3,proof_theory,C3P10,False,该论文给了理论分析或证明,"ted if ""knowing"" , ""half"", and ""battle"" scored highly.
+
+The idea behind the algorithm is to evaluate potential answers in the passages retrieved using the term frequency equation. The question classification patterns are used to limit the number of possible answers evaluated, which heightens accuracy. The algorithm will select phrases even if all the words are not possible answers. The term frequency algorithm does not need to know the answer classification to perform proficiently. This is a very robust method to extract answers, though knowing the question classification does improve the system's mean reciprocal rank considerably.
+
+In the future, term frequencies may be used in combination with Natural Language Processing (NLP) techniques such as a name entity tagging to further enhance the system's results.
+
+
+RESULTS
+
+In a large corpus there is duplicate or supporting information for almost any given question. The term frequency formula utilizes this knowledge, through two simple pre",1000,不支持,0.376,0.596,contradiction,neutral,0.5,未提及理论分析或证明
+2,deployment,C2P9,False,该论文面向真实部署或线上系统,"ese are binary expressions that are evaluated based on the underlying simulator state.For example, on top(X : pickable object, Y : receptacle) corresponds to if object X is on top of receptacle Y.
+
+Between episodes, the only component that changes is the ""Entities"" category since each episode will have different objects.The same entity types and predicates apply between episodes.
+
+A predicate expression refers to a boolean expression stated in first order logic involving the PDDL components.Predicate expressions involve the predicates, entities, entity types, logical connectives (""and"", ""or"", ""not"") and quantifier symbols (""for all"", ""exists"").For example, the predicate expression ∃ x : is type (x, ""apple""), on top(x, ""table"") will be evaluated to true, when any apple is placed on top of the table, and false otherwise.As described in the next section, we use predicate expressions to describe success criteria for instructions.
+
+
+B.2 INSTRUCTION GENERATION DETAILS
+
+We create a scalable p",1000,不支持,0.015,0.004,neutral,neutral,0.5,未提及真实部署或线上系统
+3,fine_tuning,C3P6,False,该论文做了微调训练,"n Adam optimizer (Kingma and Ba, 2015) with a learning rate of 10 −3 . For the early and meta training we use the same optimizer as for F.
+
+We fix F rather than train it jointly with the new components of G to avoid any reduction in F's performance (Xin et al., 2020b). This also makes our method simple to train over any existing Transformer without having to retrain the whole model which could be very costly. Training all parameters of G jointly can lead to more efficient inference as the early representations will be better suited for classification (Schwartz et al., 2020;Geng et al., 2021), but potentially with the cost of reducing the accuracy of F l . In the case of joint training, our CATs will provide consistency guarantees with respect to the jointly-trained F l .
+
+We implement the conformal calibration process in Python and perform retrospective analysis with different random splits of D cal and D test . For Theorem 4.4, we simply use the uniform Bonferroni correction, setting ",1000,不支持,0.93,0.023,entailment,neutral,0.5,未提及微调训练，只提到使用Adam优化器和固定F以避免性能下降
+2,significance,C2P15,False,该论文报告了多次运行的方差或统计显著性,"amples that hint at this issue when we look at questions that include phrasing that seems contradictory or counterintuitive to the context that the model expects (see Appendix Table 13d, where the number of movies watched is larger than the number of available movies). Additionally, previous work shows that GPT-3 exhibits a performance gap between instances including terms that are frequent in the pretraining corpus, and instances including less frequent terms (Razeghi et al., 2022). This can contribute to uneven performance on a multitude of (especially numerical) tasks across different methods and model sizes. We can then surmise the observed absolute differences in accuracy to stem from the various sources of errors for each method. For example, fine-tuning has much less room for error than Fine-tune-CoT, which can additionally make mistakes on intermediate reasonings such that errors compound.
+
+
+D.2 Improvements from diverse reasoning
+
+Semantic issues We find that models seem sensi",1000,不支持,0.065,0.854,contradiction,neutral,0.5,原文未提及方差或统计显著性，只讨论了模型性能差异和误差来源
+2,safety_bias,C2P8,False,该论文讨论了安全 / 公平 / 偏见问题,"Global 
+Facts 
+
+High School 
+Biology 
+
+High School 
+Chemistry 
+
+Model 
+
+
+
+Table 5 :
+5MMLU[20:30] individual task performance.MMLU 
+
+
+
+Table 6 :
+6MMLU[30:40] individual task performance.MMLU 
+
+
+
+Table 7 :
+7MMLU[40:50] individual task performance. 
+
+
+
+Table 8 :
+8MMLU[50:57] individual task performance. 
+
+MMLU 
+
+Professional 
+Psychology 
+
+Public 
+Relations 
+
+Security 
+Studies 
+Sociology 
+US Foreign 
+Policy 
+Virology World Religions Average 
+
+Model 
+
+Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT Direct CoT 
+
+-
+davinci 
+37.7 43.5 50.0 50.0 44.4 40.7 63.6 59.1 45.5 63.6 33.3 27.8 63.2 
+68.4 
+39.7 40.5 
+-
+text-davinci-002 
+65.2 58.0 50.0 50.0 77.8 48.1 90.9 86.4 81.8 81.8 44.4 33.3 84.2 
+78.9 
+63.1 60.0 
+-
+text-davinci-003 
+68.1 63.8 50.0 50.0 70.4 63.0 86.4 95.5 81.8 90.9 50.0 50.0 84.2 
+84.2 
+64.8 64.6 
+-
+code-davinci-002 76.8 66.7 50.0 58.3 74.1 51.9 86.4 90.9 90.9 72.7 50.0 44.4 84.2 
+78.9 
+68.2 64.5 
+
+80M T5-Small 
+20.3 4.3 33.3 16.7 18.5 0.0 22.7 0.0 27.3 ",1000,不支持,0.858,0.06,entailment,neutral,0.5,论文内容与安全、公平、偏见问题无关
+1,zero_few_shot,C1P8,True,该论文报告了零样本或少样本的结果," annotation are given in Section 3. Some data samples will be in supplement materials. D1. Did you report the full text of instructions given to participants. including e.g.D1. Did you report the full text of instructions given to participants, including e.g., screenshots, disclaimers of any risks to participants or annotators, etc.? Our annotation is simple and does not use visualization tools. The principles of annotation are given in Section 3. Some data samples will be in supplement materials.
+
+crowdsourcing platform, students) and paid participants, and discuss if such payment is adequate given the participants' demographic (e.g., country of residence)? Our annotations are few and simple. D2. Did you report information about how you recruited. Three authors of this paper performed the annotationD2. Did you report information about how you recruited (e.g., crowdsourcing platform, students) and paid participants, and discuss if such payment is adequate given the participants' demogr",1000,不支持,0.047,0.937,contradiction,neutral,0.5,原文未提及零样本或少样本结果
+3,code_release,C3P13,True,该论文公开了代码或数据,Nian- wen Xue. 2014. Chinese Discourse Treebank 0.5 ldc2014t21. Web Download. Philadelphia: Linguis- tic Data Consortium.,121,不支持,0.826,0.002,entailment,neutral,0.5,只提到数据集下载，未提及代码公开
+2,zero_few_shot,C2P16,True,该论文报告了零样本或少样本的结果,"0% of the time.Complete prompts for GPT-4 evaluations can be found in Appendix A.1.
+
+
+What Capabilities Arise from Scaling Pre-training vs Fine-tuning?
+
+Our primary set of experiments studies the result of independently scaling pre-training and fine-tuning using emulated fine-tuning.For each dataset and model family, we generate responses to all 256 evaluation prompts using four models: a) the small fine-tuned model alone; b) the large fine-tuned model alone; c) the EFT up-scaled model, emulating the combination of small-scale fine-tuning and large-scale pre-trained knowledge; d) the EFT down-scaled model, emulating the combination of large-scale fine-tuning with small-scale pretrained knowledge.For example, for the Llama-2 experiments, we sample from a) Llama-2-chat 7B; b) Llama-2-chat 70B; c) up-scaled EFT with Llama-2-base 70B as the pre-trained model and Llama-2-chat 7B/Llama-2-base 7B as the implicit reward; and c) down-scaled EFT with Llama-2-base 7B as the pre-trained model and ",1000,不支持,0.126,0.863,contradiction,neutral,0.5,未提及零样本或少样本结果
+3,safety_bias,C3P15,True,该论文讨论了安全 / 公平 / 偏见问题,"NLP.
+
+2020. e-FEVER: Explanations and Summaries for Automated Fact Checking. Dominik Stammbach, Elliott Ash, Truth and Trust Online. Dominik Stammbach and Elliott Ash. 2020. e-FEVER: Explanations and Summaries for Automated Fact Checking. In Truth and Trust Online.
+
+The Fact Extraction and VERification (FEVER) Shared Task. James Thorne, Andreas Vlachos, Oana Cocarascu, Proceedings of the First Workshop on Fact Extraction and VERification (FEVER). the First Workshop on Fact Extraction and VERification (FEVER)Brussels, BelgiumChristos Christodoulopoulos, and Arpit Mittal. Association for Computational LinguisticsJames Thorne, Andreas Vlachos, Oana Cocarascu, Christos Christodoulopoulos, and Arpit Mittal. 2018. The Fact Extraction and VERification (FEVER) Shared Task. In Proceedings of the First Work- shop on Fact Extraction and VERification (FEVER), pages 1-9, Brussels, Belgium. Association for Com- putational Linguistics.
+
+A Broad-Coverage Challenge Corpus for Sentence Understanding thr",1000,不支持,0.78,0.179,entailment,neutral,0.5,未提及安全、公平、偏见问题
+1,fine_tuning,C1P6,False,该论文做了微调训练,"iate ST with the training set. 6
+
+
+Demonstrations Store
+
+Data and Sampling Strategy In the fullysupervised setting, we use the entire training set (1) to train the models; (2) as the demonstration store.  In the few-shot setting, motivated by the need to reduce annotation cost, we assume that there is only a fixed budget for annotating K examples' arguments for training, and call the annotated subset S f ew . Then we use S f ew as both the training set and demonstration store.
+
+
+Methodology
+
+We first describe the retrieval-augmented generative question answering model (Figure 2), including (1) the generation model and how to construct the demonstration (prompt) as well as the final input&target sequence; (2) training, decoding, post-processing details; and how they differ from template-generation based models. Then we introduce our clustering-based sampling strategy to diversify the training examples for the few-shot setting.
+
+
+Retrieval-Augmented Generative QA
+
+BART (Lewis et al., 202",1000,不支持,0.172,0.61,contradiction,neutral,0.5,原文提到使用训练集训练模型，但没有明确说明是微调训练
+3,safety_bias,C3P6,False,该论文讨论了安全 / 公平 / 偏见问题,"way.
+AcknowledgementsWe thank the MIT NLP group for helpful discussions. TS is supported in part by DSO grant DSOCL18002. AF is supported in part by an NSF GRFP. This work is also supported in part by DSTA award DST00OECI20300823.
+Distribution free, risk controlling prediction sets. Stephen Bates, Anastasios Nikolas Angelopoulos, Lihua Lei, Jitendra Malik, Michael I Jordan, arXiv 2101.02703arXiv preprintStephen Bates, Anastasios Nikolas Angelopoulos, Li- hua Lei, Jitendra Malik, and Michael I. Jordan. 2020. Distribution free, risk controlling prediction sets. arXiv preprint: arXiv 2101.02703.
+
+Ilya Sutskever, and Dario Amodei. 2020. Language models are few-shot learners. Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini Agarwal, Ariel Herbert-Voss, Gretchen Krueger, Tom Henighan, Rewon Child, Aditya Ramesh, Daniel Ziegler, Jeffrey Wu, Clemens Winter, Chris Hesse, Mark Chen, ",1000,不支持,0.647,0.109,entailment,neutral,0.5,未提及安全、公平、偏见问题
+3,significance,C3P20,False,该论文报告了多次运行的方差或统计显著性,") and any other experiment-specific attribute respectively. For Fourier Series C freq refers to maximum frequency N)Experiment 
+Section 
+C d 
+C p 
+C freq 
+Dense, Sparse and Sign-Vector Regression  §3.1.1 
+[5, 20, 1, 2000] 
+[10, 40, 2, 2000] 
+n/a 
+Low-Rank Regression 
+ §3.1.1 
+Fixed (d = 100) Fixed (p = 114) n/a 
+Fourier Series 
+ §3.2.1 
+Fixed (d = 1) 
+[7, 43, 4, 2000] 
+[1, 10, 1, 2000] 
+Fourier Series Mixture 
+ §4.3 
+Fixed (d = 1) 
+Fixed (p = 40) 
+Fixed (N = 10) 
+GMM Regression (d = 10, p = 10) 
+ §4.1,  §A.8 [5, 10, 1, 2000] 
+[5, 10, 1, 2000] 
+n/a 
+GMM Regression (d = 10, p = 20) 
+ §4.1,  §A.8 [5, 10, 1, 2000] 
+[10, 20, 2, 2000] n/a 
+Degree-2 Monomial Basis Regression 
+ §A.6 
+Fixed (d = 20) 
+Fixed (p = 290) n/a 
+Haar Wavelet Basis Regression 
+ §A.7 
+Fixed (d = 1) 
+Fixed (p = 32) 
+n/a 
+
+
+
+Table 2 :
+2Normalization constants used for different tasks to define normalized mixtures for multi-task ICL experiments. Here d denotes the size of the weight vectors used in linear-inverse problems a",1000,不支持,0.57,0.298,entailment,neutral,0.5,未提及方差或统计显著性
+2,fine_tuning,C2P20,False,该论文做了微调训练," To train our model in a single run, we would like to investigate a training method which alternates between alignment extraction and model training.
+
+Figure 1 :
+1Two examples from the German→English alignment test set. Alignments in (a) show the output from GIZA++ and (b) from our model (Multi-task with full-context and GIZA++ supervised). Gold Alignments in shown in (c). Black squares and hatched squares in the reference represent sure and possible alignments, respectively.
+
+Figure 2 :
+2Test AER and validation loss (NLL) per epoch on the WMT'18 English→German task.
+
+Table 1 :
+1Number of sentences for three datasets: German→English (DeEn), Romanian→English (RoEn) and English→French (EnFr). The datasets include training data and test data with gold alignments.DeEn RoEn EnFr 
+training 1.9M 0.5k 1.1M 
+test 
+508 
+248 
+447 
+
+
+
+Table 2 :
+2AER[%] 
+
+per layer for all three language 
+pairs: German→English (DeEn), Romanian→English 
+(RoEn) and English→French (EnFr). 
+
+Layer 
+DeEn RoEn EnFr 
+1 (b",1000,不支持,0.101,0.197,neutral,neutral,0.5,原文未提及微调训练，只提到训练方法交替进行对齐提取和模型训练
+2,significance,C2P10,True,该论文报告了多次运行的方差或统计显著性,"ec . In most cases, execution accuracy is simply defined as the 0-1 loss, f (ρ, Q, A) = 1 [M([ρ; Q]) = A]. On some tasks, execution accuracy takes into account invariants; e.g., it may be an order invariant set matching loss, as described in Appendix A of Honovich et al. (2022).
+
+Log probability We further consider a softer probabilistic score function, which we hypothesize might improve optimization by providing a more fine-grained signal when searching over low-quality instruction candidates. In particular, we consider the log probability of the desired answer given the instruction and question under the target model M, which on a per sample basis, is log P (A | [ρ; Q]).
+
+Efficient score estimation Estimating the score by computing the score over the entire training dataset for all instruction candidates can be expensive. To reduce the computation cost, we adopt a filtering scheme where a promising candidate receives more computation resources while a lowquality candidate receives le",1000,不支持,0.54,0.44,entailment,neutral,0.5,未提及方差或统计显著性
+2,annotation_cost,C2P10,False,该论文关注标注成本," We provide the generated prompts in Table 16.
+
+
+D COST ANALYSIS
+
+More powerful models are cost-efficient for instruction proposal Despite higher per-token costs, we find larger, human-aligned models (models trained to follow human instructions (Ouyang et al., 2022)) dominate the accuracy-cost frontier of APE ( Figure 11). Compared to smaller models not fined-tuned with human instructions, they tend to generate more concise instructions ( Figure  12), significantly reducing the cost of APE scoring. Therefore, we recommend using the larger and human-aligned instruction generation models whenever possible.
+
+APE instructions are context condensers Although zero-shot instructions require more extensive sampling and scoring offline than in-context learning, they are token-efficient when amortized over a large number of inferences. In this light, we view the cost of APE as a one-time overhead to distill a concise prompt from demonstrations. As shown in Figure 13, APE instructions reduce the ",1000,不支持,0.614,0.326,entailment,neutral,0.5,论文讨论了模型成本，但未明确提及标注成本
+2,code_release,C2P17,True,该论文公开了代码或数据,"g data without translation available)Fine-tune multilingual model on all target language target language training sets (translate-train-all)3417 
+
+
+
+Table 14 :
+14POS results (accuracy) for each language.Cross-lingual-transfer (models are fine-tuned on English training data without translation available)Translate-train-all (translation-based augmentation is available for English training data) Cross-lingual-transfer (models are fine-tuned on English training data without translation available)Translate-train-all (translation-based augmentation is available for English training data)Model 
+en 
+af 
+ar 
+bg bn 
+de 
+el 
+es 
+et 
+eu 
+fa 
+fi 
+fr 
+he 
+hi 
+hu 
+id 
+it 
+ja 
+jv 
+
+XLM-Rlarge 
+84.7 78.9 53.0 81.4 78.8 78.8 79.5 79.6 79.1 60.9 61.9 79.2 80.5 56.8 73.0 79.8 53.0 81.3 23.2 62.5 
+
+XTUNE 
+
+85.0 80.4 59.1 84.8 79.1 80.5 82.0 78.1 81.5 64.5 65.9 82.2 81.9 62.0 75.0 82.8 55.8 83.1 30.5 65.9 
+
+FILTER (Fang et al., 2020) 83.5 80.4 60.7 83.5 78.4 80.4 80.7 74.0 81.0 66.9 71.3 80.2 79.9 57.4 74.3",1000,不支持,0.996,0.002,entailment,neutral,0.5,未提及代码或数据公开情况
+1,code_release,C1P6,True,该论文公开了代码或数据," 
+47.64 
+52.55 
+56.97 
+56.40 
+58.90 
+61.24 
+58.77 
+61.41 
+
+
+
+Table 4 :
+4Few-shot performance comparison (F1 in %).
+
+Table 5 :
+5Hyperparameters for Training R-GQA.• Lack of contextual understanding. For example, ""Earlier documents in the case have included embarrassing details about perks [W elch] P erson received as part of his retirement package from GE .B Distinct Event Types in WikiEvent 
+Ontology (as Compared to ACE05) 
+
+Hierachy L1 
+Hierachy L2 
+Hierachy L3 
+
+ArtifactExistence DamageDestroyDisableDismantle Damage 
+ArtifactExistence DamageDestroyDisableDismantle Destroy 
+ArtifactExistence DamageDestroyDisableDismantle DisableDefuse 
+ArtifactExistence DamageDestroyDisableDismantle Dismantle 
+ArtifactExistence DamageDestroyDisableDismantle Unspecified 
+ArtifactExistence ManufactureAssemble 
+Unspecified 
+Cognitive 
+IdentifyCategorize 
+Unspecified 
+Cognitive 
+Inspection 
+SensoryObserve 
+Cognitive 
+Research 
+Unspecified 
+Cognitive 
+TeachingTrainingLearning 
+Unspecified 
+Disaster 
+Diseas",1000,不支持,0.999,0.0,entailment,neutral,0.5,未提及代码或数据
+3,code_release,C3P14,False,该论文公开了代码或数据,"rogram under the promotional reference 01|S17050. (5) The LOEWE initiative (Hesse, Germany) within the emergenCITY center. (6) The German Research Foundation (DFG) as part of the UKP-SQuARE project (grant GU 798/29-1). Finally, we gratefully acknowledge the support of NVIDIA Corporation with the donation of the Titan X Pascal GPU used for this research. Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2019. BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL 2019), pages 4171-4186. Angela Fan, Edouard Grave, and Armand Joulin. 2020. Reducing Transformer Depth on Demand with Structured Dropout. In 8th International Conference on Learning Representations, (ICLR 2020). Neil Houlsby, Andrei Giurgiu, Stanislaw Jastrzkebski, Bruna Morrone, Quentin de Laroussilhe, Andrea Gesmundo, Mona Attariyan,",1000,不支持,0.998,0.001,entailment,neutral,0.5,未提及代码或数据公开
+2,human_eval,C2P14,False,该论文做了人工评估或人工标注,"rs with 30.0% chance and 1 dollars with 70.0% chance.
+
+Your goal is to maximize the amount of received dollars. Q: Which machine do you choose? A: Machine [insert] 
+
+Figure 1 :
+1Illustration of our approach and main results. (a) We provided text-based descriptions of psychological experiments to a large language model and extracted the resulting embeddings. We then finetuned a linear layer on top of these embeddings to predict human choices. We refer to the resulting model as CENTaUR. (b) Example prompt for the choices13k data set. (c) Negative log-likelihoods for the choices13k data set. (d) Example prompt for the horizon task. (e) Negative log-likelihoods for the horizon task. Prompts shown in this figure are stylized for readability. Exact prompts can be found in the Supplementary Materials.
+
+Figure 2 :
+2Model simulations. (a) Performance for different models and human participants on the choices13k data set. (b) Performance for different models and human participants on the horizon",1000,不支持,0.273,0.054,neutral,neutral,0.5,论文中未提及人工评估或标注，只描述了模型和人类参与者的性能比较
+1,rl_training,C1P10,False,该论文用了强化学习来训练或对齐,"he authors mainly explore the ability to train neural retrievers in an end-to-end way using retrieval augment models. Similarly, another related work  extended retrieval augmented architectures to an end-to-end model and illustrated that it could improve the question answering accuracy.  mainly focused on improving the document reading ability and answer generation rather than domain adaptation.
+
+
+Model Architecture and
+
+Training Procedure
+
+In this work, we extend RAG to finetune all components, including the DPR retriever, and dynamically update the external knowledge base Figure 1: System Overview. Our RAG-end2end training architecture uses asynchronous processes to dynamically re-encode and re-index the knowledge base while optimizing a joint QA and paraphrasing signal loss. The training dataset consists of both reconstruction signals and QA pairs. The network learns to generate answers to questions and useful statements jointly. The input to the BART reader is illustrated in Equati",1000,不支持,0.219,0.19,neutral,neutral,0.5,未提及强化学习，只提到使用检索增强模型进行端到端训练。
+3,code_release,C3P12,False,该论文公开了代码或数据," w w            →              0 y 1 0 x 1 x 1 x 2 w x 1 w x 1 w x 2 w x 1 w x 1 − y w x 2 x 1 w x 1 x 1 (w x 1 − y) x 2 w x 1 w − 2α(x 1 w x 1 − λw) w w − 2α(x 2 w x 1 − λw) x 1 w x 1 − λw x 1 (w x 1 − y) − λw x 2 w x 1 − λw w − 2α(x 1 w x 1 − λw) w w (w − 2α(x 1 w x 1 − λw)) x1 w x 1 w x 2             
+We obtain the updated prediction in the last hidden unit of the third time-step.
+
+Generalizing to multiple steps of SGD. Since w is written in the hidden states, we may repeat this iteration to obtainŷ 3 = w x 3 where w is the one step update w − 2α(x 2 w x 2 − y 2 x 2 + λw, requiring a total of O(n) layers for a single pass through the dataset where n is the number of examplers.
+
+As an empirical demonstration of this procedure, the accompanying code release contains a reference implementation of SGD defined in terms of the base primitive provided in an anymous links https://icl1.s3.us-east-2.amazonaws.com/theory/{primitives,sgd,ridge}.py (to preser",1000,不支持,0.988,0.004,entailment,entail,1.0,论文中提到了代码发布链接
+1,safety_bias,C1P6,False,该论文讨论了安全 / 公平 / 偏见问题,"match (EM) in Section 4, and the gap mitigates as the performance gets higher (over 70% F1). This demonstrates there is an ambiguity in determining the argument's boundary. Moreover, for the example in the first bullet point, predicting pronoun does not get credit -while in a certain amount of training data it's permitted.
+
+Influence of Similarity-based Retrieval In Figure 5, we provide insights on how the similarity between the demonstration and current context affects the model's performance. We divide the original test set into five subsets, corresponding to the example's similarity score. It is observed there is a trend that when the similarity score grows, performance of the model also grows, especially when the similarity is over 0.7. This to a certain extent shows the benefits of augmenting the current context with a more similar demonstration as the prompt.  Who is the target of the crime? Place
+
+Where the crime takes place?
+
+Figure 1 :
+1Current/test example's context and quest",1000,不支持,0.675,0.082,entailment,neutral,0.5,未提及安全、公平、偏见问题

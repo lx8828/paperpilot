@@ -1,0 +1,82 @@
+{
+ "ablation": [
+  "ablation study to evaluate the contribution of each component",
+  "we remove individual modules and measure the performance drop",
+  "effect of removing different parts of our method on the results"
+ ],
+ "annotation_cost": [
+  "We use cheap or automatic annotations to reduce labeling cost",
+  "To avoid expensive manual labeling, we generate labels automatically",
+  "Our method relies on low-cost annotation sources instead of human-annotated data"
+ ],
+ "case_study": [
+  "case study",
+  "we present a case study",
+  "case analysis of the proposed method"
+ ],
+ "code_release": [
+  "code and data are publicly available at",
+  "we release our source code and datasets",
+  "the implementation and datasets can be downloaded from"
+ ],
+ "deployment": [
+  "real-world deployment online system production environment",
+  "deployed in practice live system real-world application",
+  "online serving production deployment real-world scenario"
+ ],
+ "efficiency": [
+  "inference time latency throughput reported results",
+  "we measure inference speed and computational efficiency",
+  "evaluation of runtime performance and throughput on benchmark"
+ ],
+ "error_analysis": [
+  "error analysis of the proposed method",
+  "failure case analysis and discussion",
+  "we analyze the failure cases and errors made by our model"
+ ],
+ "fine_tuning": [
+  "we fine-tune the model on",
+  "fine-tuning was performed to adapt the pretrained network",
+  "the model is trained further on the target dataset"
+ ],
+ "human_eval": [
+  "human evaluation",
+  "human annotation",
+  "manual evaluation or annotation"
+ ],
+ "knowledge_distill": [
+  "knowledge distillation is applied to transfer knowledge from a teacher model to a student model",
+  "we employ knowledge distillation as a training strategy to improve the student network",
+  "the proposed method leverages knowledge distillation to guide model training"
+ ],
+ "multilingual": [
+  "We conduct experiments on multilingual datasets to evaluate cross-lingual transfer performance.",
+  "Our evaluation includes multiple languages and assesses the model's ability to generalize across languages.",
+  "We perform cross-lingual experiments where training and test languages differ."
+ ],
+ "proof_theory": [
+  "We provide a theoretical analysis showing that",
+  "We prove that our method converges",
+  "Theoretical guarantee and proof of the proposed algorithm"
+ ],
+ "rl_training": [
+  "We train the model using reinforcement learning to optimize the policy",
+  "Reinforcement learning from human feedback is employed for alignment",
+  "The agent is fine-tuned with a reward signal via RL"
+ ],
+ "safety_bias": [
+  "We discuss the security, fairness, and bias issues in our approach.",
+  "Our work addresses concerns related to safety, fairness, and bias.",
+  "We analyze potential biases and fairness implications, as well as security risks."
+ ],
+ "significance": [
+  "We report the variance across multiple runs of our method",
+  "statistical significance of the performance differences between models",
+  "results are averaged over several random seeds with standard deviations"
+ ],
+ "zero_few_shot": [
+  "zero-shot performance results",
+  "few-shot learning evaluation",
+  "without task-specific training examples"
+ ]
+}

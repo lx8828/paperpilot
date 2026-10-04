@@ -1,0 +1,44 @@
+{
+ "C1P1": {
+  "cluster": 1,
+  "docid": "C1P1",
+  "title": "Generation-Augmented Retrieval for Open-Domain Question Answering",
+  "arxiv": "2009.08553v4",
+  "why": "命中 1 条"
+ },
+ "C1P2": {
+  "cluster": 1,
+  "docid": "C1P2",
+  "title": "Retrieval-augmented Generation across Heterogeneous Knowledge",
+  "arxiv": "",
+  "why": "无结果"
+ },
+ "C1P3": {
+  "cluster": 1,
+  "docid": "C1P3",
+  "title": "RESPONSE GENERATION IN QUESTION -ANSWERING SYSTEMS",
+  "arxiv": "",
+  "why": "无结果"
+ },
+ "C1P4": {
+  "cluster": 1,
+  "docid": "C1P4",
+  "title": "Knowledge-Enriched Natural Language Generation",
+  "arxiv": "",
+  "why": "无结果"
+ },
+ "C1P5": {
+  "cluster": 1,
+  "docid": "C1P5",
+  "title": "Answer-driven Deep Question Generation based on Reinforcement Learning",
+  "arxiv": "",
+  "why": "无结果"
+ },
+ "C1P6": {
+  "cluster": 1,
+  "docid": "C1P6",
+  "title": "Retrieval-Augmented Generative Question Answering for Event Argument Extraction",
+  "arxiv": "2211.07067v1",
+  "why": "命中 1 条"
+ }
+}

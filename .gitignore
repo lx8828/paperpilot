@@ -82,7 +82,36 @@ qa/qasper_*.md
 # 2026-09-18 新增：LitSearch 等公开评测集与向量缓存体积大、可重下 → 不入库。
 # 仍然入库的是：retrieval/scripts/*.py（下载/解析/评测脚本）、
 # retrieval/results/*.md（报告）、retrieval/*.md（设计说明）。
-retrieval/data/
+#
+# ⚠️ 2026-10-05 修正：原先用 `retrieval/data/` **整目录** ignore —— 但该目录里
+#    **只有 `r2dev/` 是本仓库自建、不可再生的**（人工 + 多判官标注的评测真值），
+#    其余都能重下：arxiv 3.9G / litsearch 3.1G / loft 181M / nli_models 914M。
+#    一刀切导致**干净 clone 拿不到论文线评测真值**（已定：gold **不重标**，
+#    即不可再生 → 必须入库）。故改为「挡可再生的大件、放行手工标注的真值」。
+retrieval/data/*/
+!retrieval/data/r2dev/
+retrieval/data/r2dev/*
+# ↓ 本目录的说明（**必须入库** —— 否则"哪份真值现役"又只能靠猜）
+!retrieval/data/r2dev/README.md
+# ↓ 手工标注 / 题集 / 映射（**不可再生** → 入库；合计约 1.3MB）
+!retrieval/data/r2dev/gold_final*.csv
+!retrieval/data/r2dev/gold_final_meta.json
+!retrieval/data/r2dev/gold_recalib*.csv
+!retrieval/data/r2dev/gold_adjudicate*.csv
+!retrieval/data/r2dev/gold_ext.csv
+!retrieval/data/r2dev/calib2*.csv
+!retrieval/data/r2dev/subqueries*.json
+!retrieval/data/r2dev/facets_v2_selected.json
+!retrieval/data/r2dev/facet_matrix.json
+!retrieval/data/r2dev/pdf_map.json
+!retrieval/data/r2dev/arxiv_map.json
+!retrieval/data/r2dev/arxiv_map.ids.txt
+!retrieval/data/r2dev/arxiv_title_search.json
+!retrieval/data/r2dev/setsel_summary.json
+# ↑ 刻意**不**放行的（体积大 / 可再生）：`*_evidence.json`(11.6MB)、
+#   `corpus20.parquet`、`mt_cache.json`、`mineru_progress*.json`、
+#   以及 6 个子目录（clusters/corpus50/pdftext/pdftext50/prodchunk/prodchunk50）
+#   —— 重建方法见 `retrieval/data/r2dev/README.md`。
 retrieval/results/*.json
 retrieval/results/*.jsonl
 retrieval/results/*.npy
