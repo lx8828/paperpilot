@@ -63,6 +63,7 @@ DOWN: frozenset[str] = frozenset({
     "qa.validator_rewritten",   # 被闸门改写/拦下的题数
     "qa.parse_degraded",        # 解析降级题数
     "retrieval.gold_map_failed",  # gold 定位失败条数；应为 0
+    "qampari.unanswered",       # 空预测题数；官方口径会把它们**剔出分母** → 虚高
 })
 
 # 按**相对**幅度判的指标（绝对值大到 2 个点没意义）
