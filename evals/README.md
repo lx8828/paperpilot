@@ -46,9 +46,11 @@ evals/
   baselines/                 ① 基线（棘轮）：只进不退
     path_liveness.json         已知悬空引用（66 条，历史债）
     tmp_scripts.json           retrieval/tmp 脚本分类（库/入口/归档判定）
+    metrics.json               **指标基线**（值 + 容差 + 方向）；空则填 `{}`
   checks/                    ② L0 不变量（只读工具）
     path_liveness.py           路径存活棘轮（--update 收缩基线）
     tmp_scripts_audit.py       retrieval/tmp 脚本分类器（analyze() 纯分析）
+    metrics_ratchet.py         **指标棘轮**：掉出容差就报错（--update 建/更新基线）
   report.py                  ③ **统一记录格式** —— 让各层数字能放一张表里比
   reports/                     落盘（**gitignore**：可再生成；入库的是 .md 摘要）
   (待建)
@@ -77,7 +79,8 @@ evals/
 | gold ↔ 导出是否同步 | 同上 + `_check_export_sync.py` | 不同步 = 跑批**静默测另一份题** |
 | 悬空路径引用 | `evals/checks/path_liveness.py` + `tests/test_path_liveness.py` | 无**新增**悬空引用（棘轮，66 条历史债不阻塞） |
 | `retrieval/tmp` 脚本归属 | `evals/checks/tmp_scripts_audit.py` + `tests/test_tmp_scripts_audit.py` | 保留脚本**已入库**；归档**不造断 import** |
-| 统一记录格式 | `evals/report.py` + `tests/test_evals_report.py` | 缺 `n`/`note` 的记录**写不进去**；round-trip 可读 |
+| 统一记录格式 | `evals/report.py` + `tests/test_evals_report.py` | 缺 `n`/`note` 的记录**写不进去**；NaN/inf 被拒；表格列宽自适应且**对齐** |
+| **指标棘轮** | `evals/checks/metrics_ratchet.py` + `tests/test_metrics_ratchet.py` | 跑批后指标**掉出容差**就报错；★ 带容差（M1 ±16pt）与**方向**（健康指标越低越好） |
 | 草稿/备份是否混在 gold 旁 | `tests/test_eval_assets.py` | 无（同前缀会让人改错文件） |
 | CLI 入口能否跑 | 同上（`@pytest.mark.local`） | `cli/eval/*.py --help` 退出码 0（验证 `parents[2]`） |
 
@@ -99,14 +102,29 @@ evals/
    **要拆 `lib/` + `runners/`，前提是先改成包导入**（`import evals.lib.x`），
    那是独立的一次重构，不该混在"归档清理"里做。
 
-2. **把 L1 / L2 也接上 `report.emit`**（L3 已接，见 `cli/eval/run_group_qa.py`
-   的 `_emit_report`）。现在 L1 落**纯文本**、L2 落 **CSV**，两者的**汇总指标
-   都只 print**。接上后 `python evals/report.py --table` 才能一次看到三层。
-   ⚠️ 接的时候**别顺手改各自的判分口径** —— 那是另一件事。
+2. **L1 / L2 / L3 已全部接上 `report.emit`**（2026-10-05 完成）。
 
-3. **指标棘轮**（schema 就位后才可能）：在 `evals/baselines/` 下建**指标基线**
-   （每个指标的基线值 **+ 容差**），跑批后自动比 —— "这次比上次掉了几个点"变成
-   一条断言。★ **必须带容差**：M1 噪声底 ≈ ±16pt，硬比会天天误报。
-   （此处**刻意不写具体文件名** —— 它还没建，写了就是死链，棘轮会（该）拦。）
+   | 层 | 文件 | 落的指标 |
+   |---|---|---|
+   | L1 | `cli/eval/run_retrieval_eval.py` | `retrieval.recall@k` / `mrr@k` + 健康度 `gold_map_failed` |
+   | L2 | `retrieval/tmp/_r2_retr_eval.py` | `r2.mrecall@10` / `strecall@10` / `setf1@10` / `andcg@10` / `ev_recall_c12k` |
+   | L2 | `retrieval/tmp/_r2_reader.py` | `r2.reader_p@10` / `reader_r@10` / `reader_f1@10` / `ret_f1@10`（基线对照） |
+   | L3 | `cli/eval/run_group_qa.py` | `qa.ok*` / `qa.kind_*` + 三条健康度 |
+
+   ⚠️ 接的时候**没动各自的判分口径**（那是另一件事）。
+
+3. **指标棘轮已就位**：`evals/baselines/metrics.json` 初始 `{}`，
+   **跑过一次批后执行一次**即可建立基线：
+
+       python evals/checks/metrics_ratchet.py --update   # 建/更新基线
+       python evals/checks/metrics_ratchet.py            # 比对（掉出容差 → 退出码 1）
+
+   ★ 两条必须记住的：**容差**（M1 ±16pt，硬比天天误报）与**方向**
+   （`reader_offlabel` / `gold_map_failed` 这些**越低越好**，一律"降了就红"
+   会把**修好了**判成回退）。
 
 4. **L4 重跑能力**：QAMPARI / LoFT 目前只有历史记录；要做成"一条命令重跑并出官方口径数"。
+
+5. **`evals/reports/` 是 gitignore 的** → 干净 clone 里指标棘轮**无数据可比**（会跳过并说明）。
+   若要让"指标历史"进版本库，应入库 `--md` 摘要（`python evals/report.py --md`），
+   而不是每次跑的原始 JSONL。

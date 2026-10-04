@@ -403,7 +403,53 @@ def main() -> int:
         print(f"  {int(x['cluster']):>3}{x['facet']:<18}{int(x['n_gold']):>5}"
               f"{int(x['n_yes']):>6}{x['reader_F1']:>10.3f}{x['ret_F1']:>8.3f}")
     print(f"\n已写 {OUT / f'R2_{tag}.csv'}")
+    _emit_report(df, args, proto, GOLD2, tag)
     return 0
+
+
+def _emit_report(df, args, proto, goldf, tag: str) -> None:
+    """把 reader 判定汇总落进统一记录格式（`evals/report.py`）。
+
+    为什么：本脚本原先只写**逐 facet CSV**，汇总只 print —— 无法与 L1/L3 比、
+    也无法与历史比（要翻 stdout 考古）。
+
+    ⚠️ **失败绝不影响评测**；且**算不出（NaN）就不 emit 那条**（schema 会拒收 NaN）。
+    """
+    try:
+        sys.path.insert(0, str(HERE.parent))
+        from evals import report as R  # noqa: PLC0415
+
+        # ★ 口径必须写全：判官协议 / 证据预算 / facet 定义 / 真值文件 ——
+        #   **换任何一个，reader 的 P/R/F1 都不可比**（协议从三档改四档时
+        #   `code_release` / `fine_tuning` 上 reader 曾系统性偏严）。
+        note = (f"R2 reader 判定（k=10，集合 P/R/F1，{len(df)} 个真值）"
+                f" ｜ 语料 **{args.corpus}** ｜ 真值 `{goldf.name}`"
+                f" ｜ **判官协议 proto={proto}** ｜ 证据预算 b={args.b}"
+                f"/anchor_b={args.anchor_b} ｜ facet 定义 "
+                f"{'v1（旧）' if args.legacy else 'v2（操作化）'}"
+                f" ｜ 运行 tag={tag}")
+        ev = f"retrieval/results/R2_{tag}.csv"
+        recs: list[dict] = []
+        for col, metric in (("reader_P", "r2.reader_p@10"),
+                            ("reader_R", "r2.reader_r@10"),
+                            ("reader_F1", "r2.reader_f1@10"),
+                            ("ret_F1", "r2.ret_f1@10"),
+                            ("n_yes", "r2.delivered_papers"),
+                            ("n_gold", "r2.gold_papers")):
+            if col not in df.columns:
+                continue
+            v = float(df[col].mean())
+            if not np.isfinite(v):
+                continue      # ★ 算不出来就别 emit（不要写 NaN）
+            recs.append(dict(layer="L2", name=f"r2reader_{tag}", metric=metric,
+                             value=v, n=int(len(df)), note=note,
+                             evidence_path=ev))
+        if recs:
+            p = R.emit(*recs)
+            print(f"→ 汇总记录已落 {p.relative_to(HERE.parent)}（{len(recs)} 条）")
+    except Exception as e:  # noqa: BLE001  报告失败不能弄挂评测
+        print(f"⚠️ 汇总记录落盘失败（不影响本次评测结果）：{type(e).__name__}: {e}",
+              file=sys.stderr)
 
 
 if __name__ == "__main__":
