@@ -82,9 +82,18 @@ evals/
 
 ## 下一步（按价值排序）
 
-1. **L2/L3 的脚本搬家**：`retrieval/tmp/_r2_*.py` 里混着**被 import 的库**
-   （`_r2_std_metrics.py` 被 37 个文件引用）与一次性实验 —— 先分类，再把库迁到
-   `retrieval_core/`（生产与评测共用的部分），`evals/runners/` 只留入口。
+1. **L2/L3 脚本的归属 —— 已定，不搬**（2026-10-05 实测结论）。
+   `retrieval/tmp/_*.py`（135 个：库 14 + 有出处的入口 ~120）**原地入库**，
+   归属说明见 `retrieval/tmp/README.md`；一次性实验 161 个已归档
+   （判定在 `evals/baselines/tmp_scripts.json`）。
+
+   **为什么不能"搬去 `evals/`"**：实测 **133/135 个脚本用 `parents[N]` 定位**、
+   88 个改过 `sys.path`、50 个用 `spec_from_file_location` 动态加载兄弟脚本，
+   而它们**按「相对 `retrieval/`」算路径**（`HERE / "scripts"` → `retrieval/scripts`）。
+   换目录会让这些**语义变化**，不是换名能修的 → 得逐处判断。
+   **要拆 `lib/` + `runners/`，前提是先改成包导入**（`import evals.lib.x`），
+   那是独立的一次重构，不该混在"归档清理"里做。
+
 2. **统一报告 schema**：现在每层各写各的 JSON，无法横向对比。定一个
    `{layer, name, metric, value, n, baseline, delta, evidence_path}` 的最小 schema。
 3. **L4 重跑能力**：QAMPARI / LoFT 目前只有历史记录；要做成"一条命令重跑并出官方口径数"。

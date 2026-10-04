@@ -130,6 +130,11 @@ retrieval/tmp/*.pid
 retrieval/tmp/*.log
 retrieval/tmp/*.out
 retrieval/tmp/*.png
+# ↓ 运行缓存（沙盘/翻译/smoke 输出，可再生成）：`_scan_quota*.json` /
+#   `_xling_cache.json` / `_smoke_*.json`。脚本本身仍入库（见 tmp/README.md）。
+retrieval/tmp/_*cache*.json
+retrieval/tmp/_scan_quota*.json
+retrieval/tmp/_smoke_*.json
 # ⚠️ `retrieval/tmp/*.py`（约 294 个）**故意不挡**：其中混着**被 import 的库**
 #    （`_r2_std_metrics.py` 被 37 个文件引用、`_sandbox.py` 被 16 个），不是一次性垃圾。
 #    要先把「库」与「一次性实验」分开（阶段 5），在此之前**保持可见**，不藏。
