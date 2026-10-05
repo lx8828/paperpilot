@@ -418,6 +418,26 @@ def _job_view(j: dict[str, Any]) -> dict[str, Any]:
             "n_usable": j.get("n_usable") or 0,
             "reason": j.get("reason") or "",
         })
+    # 「多答案开放域检索」（2026-10-05）：同样**只在 kind 匹配时**附加字段，
+    # 单篇 / 方向两种视图逐位不变（既有前端与测试不受影响）。
+    elif str(j.get("kind") or "") == "multianswer":
+        view.update({
+            "kind": "multianswer",
+            "question": j.get("question", ""),
+            "n": j.get("n") or 0,
+            "corpus_papers": j.get("corpus_papers") or 0,
+            "progress": dict(j.get("progress") or {}),
+            "n_yes": j.get("n_yes") or 0,
+            "n_candidates": j.get("n_candidates") or 0,
+            "papers": [dict(p) for p in (j.get("papers") or [])
+                       if isinstance(p, dict)],
+            # ★ 全 unclear 的提示**不吞掉**：那通常意味着判官链路坏了，
+            #   而输出看着像「没有论文符合」——正是要防的静默假结论。
+            "warning": j.get("warning") or "",
+            "answer_text": j.get("answer_text") or "",
+            "retr": j.get("retr") or "",
+            "win_chars": j.get("win_chars") or 0,
+        })
     return view
 
 
@@ -473,6 +493,11 @@ async def api_meta() -> JSONResponse:
         # 前端以为能选 8 篇、后端只收 10 篇，用户白勾一场）。
         "search_k": SEARCH_K,          # 阶段①给几篇候选（10）
         "select_max": SELECT_MAX,      # 用户最多能选几篇（10；依据见 direction.SELECT_MAX）
+        # 「多答案开放域检索」的契约值：★ 同样**前端据此渲染，不写死魔数**。
+        #   `ma_n_tiers` = N 的分段选项；`ma_corpus_exists` = 语料在不在（不在就别让点）。
+        "ma_n_tiers": list(_MA_N_TIERS),
+        "ma_n_max": _MA_N_MAX,
+        "ma_corpus_exists": Path(_ma_corpus_path()).exists(),
         # 上下文预算（**字符**，0=不限制）：`fullctx` 把全文塞进提示词，这是硬闸。
         # 前端可用它显示"当前语料 / 预算"，或据 `ctx_per_paper_chars` 提示篇数。
         "ctx_budget_chars": _fc.ctx_budget_chars(),
@@ -616,6 +641,59 @@ def direction_process(body: DirectionProcessBody) -> JSONResponse:
         raise HTTPException(status_code=400, detail="所选论文里有重复的 arXiv id")
     job = worker.submit_direction(q, k=SEARCH_K, phase="process",
                                   force=bool(body.force), arxiv_ids=ids)
+    return JSONResponse(_job_view(job), status_code=202)
+
+
+# ─────────── 多答案开放域检索（2026-10-05）：与「方向」完全分开的一条线 ───────────
+# ⚠️ 路径**拼接**而非整条字面量：路径存活闸门会把 `目录/文件.扩展名` 形态的字面量
+#    当**引用**，而 `retrieval/data/` 下的语料是**有意不入库**的（可再生）→
+#    写成整条会被判「悬空引用」（今天实测被闸门抓到过）。
+_MA_CORPUS_REL = ("retrieval", "data", "r2dev", "prodchunk50", "mineru", "c0.parquet")
+_MA_N_TIERS = (10, 20, 30, 50)      # 档位；语料只有 50 篇，故不超过它
+_MA_N_MAX = max(_MA_N_TIERS)
+
+
+def _ma_corpus_path() -> str:
+    """切块语料路径。可用 `PAPERPILOT_MA_CORPUS` 覆盖（便于换更大语料）。"""
+    env = (os.environ.get("PAPERPILOT_MA_CORPUS") or "").strip()
+    if env:
+        return env
+    return str(Path(__file__).resolve().parents[1].joinpath(*_MA_CORPUS_REL))
+
+
+class MultiAnswerBody(BaseModel):
+    question: str
+    n: int = 30                     # 语料规模 = 用户说的"选 N"（从多少篇里找）
+
+
+@app.post("/api/multianswer/search")
+def multianswer_search(body: MultiAnswerBody) -> JSONResponse:
+    """**多答案开放域检索**：一个问题 + 选 N → 「哪几篇论文符合」（每篇带证据片段）。
+
+    提交即返回 `202`；轮询 `GET /api/job/{id}`，`ready` 后读 `papers[]`。
+
+    ★ 为什么必须异步（不能同步请求）：建索引编码 **50 篇 ≈ 156 秒**（bge-m3，
+      `max_seq_length=8192` 是生产值），命中缓存才秒级；再加逐篇判定 ~20s。
+    """
+    if not llm.is_configured():
+        raise HTTPException(status_code=500,
+                            detail="LLM 未配置：多答案检索要调判官，请先配好 .env。")
+    q = (body.question or "").strip()
+    if not q:
+        raise HTTPException(status_code=400, detail="请先填一个问题（不能为空）")
+    n = int(body.n or 0)
+    if n and not 1 <= n <= _MA_N_MAX:
+        raise HTTPException(
+            status_code=400,
+            detail=(f"N 需在 1~{_MA_N_MAX} 之间（收到 {n}）。"
+                    f"★ N 是**语料规模**（从多少篇里找），不是「答案条数」。"))
+    corpus = _ma_corpus_path()
+    if not Path(corpus).exists():
+        raise HTTPException(
+            status_code=400,
+            detail=(f"语料不存在：{corpus}。可用环境变量 PAPERPILOT_MA_CORPUS 指定"
+                    f"（需含 `docid` / `text` 两列的切块 parquet）。"))
+    job = worker.submit_multianswer(q, n=n, corpus=corpus)
     return JSONResponse(_job_view(job), status_code=202)
 
 

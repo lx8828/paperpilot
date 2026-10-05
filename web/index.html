@@ -145,12 +145,16 @@
   #landing h1 { font-size:22px; font-weight:800; }
   #landing .sub { color:var(--muted); font-size:13.5px; margin-top:-8px; text-align:center; }
   .ask { display:flex; gap:8px; width:min(680px,90vw); }
-  #dinput { flex:1; padding:13px 16px; font-size:14.5px; border:1px solid var(--line);
-            border-radius:12px; outline:none; background:#fff; }
-  #dinput:focus { border-color:var(--accent); box-shadow:0 0 0 3px #2563eb1a; }
-  #go { padding:13px 22px; border:none; border-radius:12px; background:var(--accent);
-        color:#fff; font-size:14.5px; cursor:pointer; white-space:nowrap; }
-  #go:disabled { opacity:.55; cursor:default; }
+  /* ⚠️ 用 `.ask input` / `.ask button`，**不要**写 `#dinput` / `#go`：
+     landing 现在有**两个**入口（方向 + 多答案），各有一对"输入框 + 按钮"。
+     只按 id 写样式的话，新入口的 `#minput` / `#mgo` 会落到**浏览器默认样式**
+     —— 实测表现：输入框过窄、按钮压在它上面。 */
+  .ask input { flex:1; min-width:0; padding:13px 16px; font-size:14.5px;
+               border:1px solid var(--line); border-radius:12px; outline:none; background:#fff; }
+  .ask input:focus { border-color:var(--accent); box-shadow:0 0 0 3px #2563eb1a; }
+  .ask button { padding:13px 22px; border:none; border-radius:12px; background:var(--accent);
+                color:#fff; font-size:14.5px; cursor:pointer; white-space:nowrap; }
+  .ask button:disabled { opacity:.55; cursor:default; }
   .chips { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:680px; }
   .chip { font-size:12.5px; padding:4px 11px; border:1px solid var(--line); border-radius:20px;
           background:#fff; cursor:pointer; color:var(--muted); }
@@ -229,25 +233,141 @@
   #pkgo { padding:9px 18px; border:none; border-radius:10px; background:var(--accent);
           color:#fff; font-size:13.5px; cursor:pointer; }
   #pkgo:disabled { opacity:.45; cursor:default; }
+
+  /* ═══ 多答案开放域检索（2026-10-05）—— 与「方向」**并列**的第二入口 ═══
+     token 与上方一致。⚠️ 上方 `.ask` / `.chips` 是**全局**选择器（不是 `#landing .ask`），
+     放进卡片后必须覆盖宽度与对齐，否则 680px 的输入框会撑破卡片。 */
+  #landing { padding:22px; overflow:auto; }
+  #landing .entries { display:grid; grid-template-columns:1fr 1fr; gap:16px;
+                      width:min(1040px,94vw); margin-top:20px; text-align:left; }
+  @media (max-width:760px) { #landing .entries { grid-template-columns:1fr; } }
+  #landing .entry { border:1px solid var(--line); border-radius:12px;
+                    padding:15px 17px; background:#fbfcfd; }
+  #landing .entry.new { border-color:#bfd3f7; background:#f7faff;
+                        box-shadow:0 0 0 3px rgba(37,99,235,.07); }
+  #landing .et { font-weight:700; font-size:14px; display:flex; align-items:center; gap:7px; }
+  #landing .ed { font-size:12px; color:var(--muted); margin:5px 0 11px; min-height:48px; }
+  .entry .ask { width:100%; }
+  .entry .chips { justify-content:flex-start; max-width:none; margin-top:9px; }
+  .badge { font-size:10.5px; font-weight:600; padding:1px 7px; border-radius:8px;
+           background:#e6edfd; color:#1d4ed8; }
+  .badge.old { background:#eef0f3; color:#5b6470; }
+  .nrow { display:flex; align-items:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
+  .nrow .lab { font-size:12px; color:var(--muted); }
+  .nsegs { display:flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:#fff; }
+  .nseg { padding:5px 12px; font-size:12.5px; cursor:pointer; border-right:1px solid var(--line);
+          color:#4b5563; background:#fff; user-select:none; }
+  .nseg:last-child { border-right:0; }
+  .nseg.on { background:var(--accent); color:#fff; font-weight:600; }
+
+  /* 新入口的两个**整屏覆盖层**（与 #transit / #pick 同构，但独立命名以免互相干扰）*/
+  #mat, #mar { position:fixed; inset:0; z-index:65; background:var(--bg); display:none; }
+  #mat.on { display:flex; flex-direction:column; align-items:center; justify-content:center;
+            gap:14px; padding:24px; }
+  #mar.on { display:block; overflow:auto; padding:26px 18px 60px; }
+  .ma-box { background:#fff; border:1px solid var(--line); border-radius:14px;
+            padding:22px 26px; width:min(880px,93vw); margin:0 auto; }
+  .ma-meta { display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--muted);
+             border-bottom:1px dashed var(--line); padding-bottom:9px; margin-bottom:6px; }
+  .ma-ans { display:flex; gap:12px; padding:12px 0; border-bottom:1px dashed var(--line); }
+  .ma-ans:last-child { border-bottom:0; }
+  .ma-idx { flex:0 0 26px; height:26px; border-radius:50%; background:#eef2ff; color:#3730a3;
+            font-weight:700; font-size:12.5px; display:flex; align-items:center; justify-content:center; }
+  .ma-ev { margin-top:6px; padding:8px 11px; background:#fafbfc; border:1px solid var(--line);
+           border-radius:8px; font-size:12px; color:#4b5563;
+           font-family:ui-monospace,Consolas,monospace; line-height:1.5; }
+  .ma-sc { margin-left:auto; font-size:11.5px; color:var(--muted); font-weight:400; }
+  /* ★ 判官链路异常时的提示（如"全部候选 unclear"）—— 不吞掉，否则会被读成
+     「没有论文符合」这种**假结论**。 */
+  .ma-warn { background:#fff7ed; border:1px solid #fed7aa; color:#9a3412;
+             border-radius:10px; padding:9px 12px; font-size:12.5px; margin:10px 0; }
 </style>
 </head>
 <body>
 <div id="mockbar" hidden></div>
 
-<!-- ══════════ 起始页：给一个**研究方向**（2026-10-02 接入真后端）══════════ -->
+<!-- ══════════ 起始页：**两条并列的路**（2026-10-05 加第二条）══════════
+     · 左「方向检索」（现有）：一篇论文的**深度报告** → 走 `#transit` → `#pick` → 三栏工作台
+     · 右「多答案开放域检索」（新增）：**哪几篇论文符合** → 走 `#mat`（进度）→ `#mar`（结果）
+     ★ 两条路**完全分开**（不同的后端任务、不同的覆盖层），只在**这一页并列**。 -->
 <div id="landing">
   <h1>⚡Paper<em>Pilot</em></h1>
-  <div class="sub">给一个研究方向 → 检索最相关的 10 篇 → 你挑几篇 → 逐篇精读 + 在它们上面直接问答</div>
-  <div class="ask">
-    <input id="dinput" value="如何用对比学习做跨语言摘要生成" placeholder="输入一个研究方向…">
-    <button id="go">检索并解析</button>
+  <div class="sub">选一条路：<b>方向</b>读得深（一篇篇精读），
+    <b>问题</b>铺得开（一批里找哪几篇符合）</div>
+
+  <div class="entries">
+    <!-- ① 现有：方向检索 -->
+    <div class="entry">
+      <div class="et">🧭 方向检索 <span class="badge old">现有</span></div>
+      <div class="ed">给一个研究方向 → 检索最相关的 10 篇 → 你挑几篇 → 逐篇精读，并在它们上面直接问答。<br>
+        <span style="color:#9aa3af">产物：一篇论文的<b>深度报告</b></span></div>
+      <div class="ask">
+        <input id="dinput" value="如何用对比学习做跨语言摘要生成" placeholder="输入一个研究方向…">
+        <button id="go">检索并解析</button>
+      </div>
+      <div class="chips" id="dchips">
+        <span class="chip">如何用对比学习做跨语言摘要生成</span>
+        <span class="chip">大模型长上下文的高效注意力</span>
+        <span class="chip">表格问答的检索增强</span>
+      </div>
+    </div>
+
+    <!-- ② 新增：多答案开放域检索 -->
+    <div class="entry new">
+      <div class="et">🎯 多答案开放域检索 <span class="badge">新增</span></div>
+      <div class="ed">给一个<b>问题</b> → 在已有论文语料里检索 → <b>逐篇判定「这篇做没做这件事」</b>
+        → 给出符合的论文清单（每篇带证据片段）。<br>
+        <span style="color:#9aa3af">产物：<b>哪几篇论文符合</b>（多答案）</span></div>
+      <div class="ask">
+        <input id="minput" value="哪些论文报告了多次运行的波动或显著性检验" placeholder="输入一个开放域问题…">
+        <button id="mgo">开始检索</button>
+      </div>
+      <div class="nrow">
+        <span class="lab">语料规模 N</span>
+        <div class="nsegs" id="nsegs"></div>
+        <span class="lab" id="mhint"></span>
+      </div>
+      <div class="chips" id="mchips">
+        <span class="chip">哪些论文报告了显著性检验</span>
+        <span class="chip">哪些工作把表格检索接进了 RAG</span>
+      </div>
+    </div>
   </div>
-  <div class="chips">
-    <span class="chip">如何用对比学习做跨语言摘要生成</span>
-    <span class="chip">大模型长上下文的高效注意力</span>
-    <span class="chip">表格问答的检索增强</span>
-  </div>
+
   <div class="up2">也可以 <label for="file">直接上传一篇 PDF</label>（跳过检索）</div>
+</div>
+
+<!-- ══════════ 多答案检索：进度覆盖层（阶段只有两个：index / run）══════════ -->
+<div id="mat" role="dialog" aria-modal="true" aria-busy="true" aria-label="正在做多答案检索">
+  <div class="ma-box" style="width:min(560px,90vw); text-align:center">
+    <div style="font-weight:800; font-size:16px">⚡Paper<em style="font-style:normal;color:var(--accent)">Pilot</em></div>
+    <div class="muted" id="matq" style="margin-top:6px">—</div>
+    <div id="matstages" style="margin:16px 0 6px; font-size:13px; text-align:left; line-height:2"></div>
+    <div style="height:6px; background:#e6e9ee; border-radius:4px; overflow:hidden">
+      <div id="matbar" style="height:100%; width:0; background:var(--accent); transition:width .3s"></div>
+    </div>
+    <div class="muted" id="matnote" style="margin-top:9px">准备中…</div>
+  </div>
+</div>
+
+<!-- ══════════ 多答案检索：结果覆盖层（篇 + 理由 + 证据片段）══════════ -->
+<div id="mar" role="dialog" aria-modal="true" aria-label="多答案检索结果">
+  <div class="ma-box">
+    <div style="display:flex; align-items:baseline; gap:10px; margin-bottom:4px">
+      <b style="font-size:15px">🎯 多答案开放域检索</b>
+      <span class="muted" id="marq"></span>
+      <span style="flex:1"></span>
+      <button id="mback" style="padding:6px 14px; border:1px solid var(--line); border-radius:9px;
+              background:#fff; color:var(--text); font-size:13px; cursor:pointer">← 换问题</button>
+    </div>
+    <div class="ma-meta" id="marmeta"></div>
+    <div id="marwarn"></div>
+    <div id="marlist"></div>
+    <details style="margin-top:14px">
+      <summary class="muted" style="cursor:pointer">原始答案文本</summary>
+      <pre id="martext" style="white-space:pre-wrap; font-size:12.5px; color:#374151; margin-top:8px"></pre>
+    </details>
+  </div>
 </div>
 
 <!-- ══════════ 过渡页：检索 / 解析进行中（独立整屏，防误点）══════════
@@ -1171,7 +1291,9 @@ $msgs.addEventListener('click',e=>{
 // 方向流程的事件（起始页 / 过渡页 / 论文切换器）
 $('go').addEventListener('click',dStart);
 $('dinput').addEventListener('keydown',e=>{if(e.key==='Enter')dStart();});
-document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+// ⚠️ 必须限定在**方向卡片的 chip 容器**内：`#landing` 现在还并列着第二个入口，
+//    再写 `.chip`（全局）会把新入口的示例词也塞进**方向输入框**（实测踩过）。
+document.querySelectorAll('#dchips .chip').forEach(c=>c.addEventListener('click',()=>{
   $('dinput').value=c.textContent;}));
 $('papersel').addEventListener('change',e=>dSelect(e.target.value));
 $('pklist').addEventListener('click',e=>{
@@ -1182,8 +1304,166 @@ $('pklist').addEventListener('click',e=>{
 $('pkgo').addEventListener('click',dPickStart);
 $('pkback').addEventListener('click',dPickBack);
 
+// ═════════ 多答案开放域检索（2026-10-05）：与方向流程**完全分开**的一条线 ═════════
+// 后端：`POST /api/multianswer/search` → job → 轮询 `/api/job/{id}`（阶段只有 index / run）
+// 前端：`#mat`（进度）→ `#mar`（结果）。★ 不复用 `#transit/#pick`：那套与方向的
+// 五阶段死绑，套过来只会互相牵制。
+const MA = { question: '', n: 30, corpusOk: true };
+
+function maEsc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, m=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function maPick(n){
+  MA.n = Number(n);
+  document.querySelectorAll('#nsegs .nseg').forEach(el=>
+    el.classList.toggle('on', Number(el.dataset.n) === MA.n));
+}
+function maInit(tiers, maxN, corpusOk){
+  MA.corpusOk = !!corpusOk;
+  const box = $('nsegs'); if(!box) return;
+  const ts = ((tiers && tiers.length) ? tiers : [10,20,30,50])
+              .filter(n => !maxN || n <= maxN);
+  box.innerHTML = '';
+  ts.forEach(n=>{
+    const s = document.createElement('span');
+    s.className = 'nseg'; s.dataset.n = n; s.textContent = n;
+    s.addEventListener('click', ()=>maPick(n));
+    box.appendChild(s);
+  });
+  if(ts.length) maPick(ts[Math.floor((ts.length-1)/2)]);   // 中间档当默认，而不是最大档
+  $('mhint').textContent = MA.corpusOk
+    ? '← 从多少篇里找（不是「答案条数」）'
+    : '⚠️ 语料未就绪：服务端要配 PAPERPILOT_MA_CORPUS（切块 parquet）';
+  $('mgo').disabled = !MA.corpusOk;
+}
+const MA_STAGES = [
+  ['index', '① 语料就绪（建索引 / 读缓存）'],
+  ['run',   '② 检索 + 逐篇判定'],
+];
+function maRenderStages(j){
+  const st = j.stages || {}, pr = j.progress || {};
+  $('matstages').innerHTML = MA_STAGES.map(([k,label])=>{
+    const s = st[k] || {};
+    const mark = s.status==='ok' ? '✓' : s.status==='running' ? '▸'
+               : s.status==='failed' ? '✗' : '·';
+    const sec = (s.seconds!=null) ? ` <span class="muted">${s.seconds}s</span>` : '';
+    return `<div>${mark} ${label}${sec}</div>`;
+  }).join('');
+  const done = MA_STAGES.filter(([k])=>(st[k]||{}).status==='ok').length;
+  $('matbar').style.width = Math.round(done / MA_STAGES.length * 100) + '%';
+  const iRunning = (st.index||{}).status === 'running';
+  const rRunning = (st.run||{}).status === 'running';
+  $('matnote').textContent = pr.note
+    || (iRunning ? '正在建索引…首次约 1~3 分钟（之后走缓存，秒级）'
+       : rRunning ? '正在逐篇判定…' : '准备中…');
+}
+function maAt(id, on){ $(id).classList.toggle('on', !!on); }
+
+function maFail(msg){
+  maAt('mat', false);
+  $('mgo').disabled = false;
+  $('marq').textContent = MA.question;
+  $('marmeta').innerHTML = ''; $('marlist').innerHTML = ''; $('martext').textContent = '';
+  $('marwarn').innerHTML = `<div class="ma-warn">✗ ${maEsc(msg)}</div>`;
+  maAt('mar', true);
+}
+
+function maShowResult(j){
+  maAt('mat', false);
+  const p = j.papers || [];
+  $('marq').textContent = j.question || MA.question;
+  $('marmeta').innerHTML = [
+    j.corpus_papers ? `语料 <b>${j.corpus_papers}</b> 篇` : '',
+    `候选 <b>${j.n_candidates||0}</b> 篇`,
+    `判「符合」 <b>${j.n_yes||0}</b> 篇`,
+    j.retr ? `检索 <b>${maEsc(j.retr)}</b>` : '',
+    j.win_chars ? `窗口 <b>${j.win_chars}</b> 字符` : '',
+    j.elapsed!=null ? `耗时 <b>${j.elapsed}s</b>` : '',
+  ].filter(Boolean).map(s=>`<span>${s}</span>`).join('');
+  // ★ 后端给的 warning（如"全部候选 unclear"）**照实显示** —— 那通常意味着
+  //   判官链路坏了，而不是"真的没有论文做过这件事"。
+  $('marwarn').innerHTML = j.warning
+    ? `<div class="ma-warn">${maEsc(j.warning)}</div>` : '';
+  $('marlist').innerHTML = p.length ? p.map((x,i)=>{
+    const ev = (x.evidence && x.evidence.length) ? `证据片段 ${x.evidence.join(',')}` : '';
+    const pg = x.page ? `（第 ${x.page} 页）` : '';
+    return `<div class="ma-ans">
+      <div class="ma-idx">${i+1}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13.5px">${maEsc(x.pdf)}
+          <span class="ma-sc">检索分 ${(x.score||0).toFixed(4)}</span></div>
+        <div style="font-size:12.5px;color:#374151;margin-top:3px">${maEsc(x.why)}</div>
+        ${x.snippet ? `<div class="ma-ev">${maEsc(ev)}${maEsc(pg)}
+          <br>${maEsc(String(x.snippet).slice(0,220))}…</div>` : ''}
+      </div></div>`;
+  }).join('') : '<div class="muted" style="padding:14px 0">没有论文被判为符合这个问题。</div>';
+  $('martext').textContent = j.answer_text || '';
+  maAt('mar', true);
+}
+
+async function maStart(){
+  const q = $('minput').value.trim();
+  if(!q || !MA.corpusOk) return;
+  MA.question = q;
+  $('mgo').disabled = true;
+  $('matq').textContent = q;
+  $('matstages').innerHTML = ''; $('matbar').style.width = '0';
+  $('matnote').textContent = '已提交，排队中…';
+  $('marwarn').innerHTML = ''; $('marlist').innerHTML = '';
+  maAt('mar', false); maAt('mat', true);
+  let job;
+  try{
+    const r = await fetch('/api/multianswer/search', {method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({question:q, n:MA.n})});
+    job = await r.json();
+    if(!r.ok) throw new Error(job.detail || r.statusText);
+  }catch(e){ maFail('提交失败：' + e.message); return; }
+  maPoll(job.job_id);
+}
+
+async function maPoll(jobId){
+  let bad = 0;
+  for(;;){
+    let j;
+    try{
+      const r = await fetch('/api/job/' + encodeURIComponent(jobId));
+      j = await r.json();
+      if(!r.ok) throw new Error(j.detail || r.statusText);
+      bad = 0;
+    }catch(e){
+      if(++bad >= 5){ maFail('进度查询连续失败：' + e.message); return; }
+      await new Promise(s=>setTimeout(s, 2000)); continue;
+    }
+    maRenderStages(j);
+    if(j.status === 'ready'){ maShowResult(j); return; }
+    if(j.status === 'failed'){ maFail(j.error || '检索失败'); return; }
+    if(j.status === 'cancelled'){ maFail('任务已取消'); return; }
+    await new Promise(s=>setTimeout(s, 1500));
+  }
+}
+
+$('mgo').addEventListener('click', maStart);
+$('minput').addEventListener('keydown', e=>{ if(e.key === 'Enter') maStart(); });
+document.querySelectorAll('#mchips .chip').forEach(c=>c.addEventListener('click', ()=>{
+  $('minput').value = c.textContent; }));
+$('mback').addEventListener('click', ()=>{ maAt('mar', false); $('mgo').disabled = false; });
+
+// N 档位**从 `/api/meta` 取**（契约值在后端，不在这里写死魔数）。
+async function maMeta(){
+  try{
+    const r = await fetch('/api/meta');
+    const m = await r.json();
+    maInit(m.ma_n_tiers, m.ma_n_max, m.ma_corpus_exists);
+  }catch(e){
+    maInit([10,20,30,50], 50, true);      // meta 拿不到也不让入口变砖
+  }
+}
+
 window.addEventListener('load',async()=>{
   $qin.focus(); showMode();
+  maMeta();                      // 多答案入口的 N 档位（来自 /api/meta 的契约值）
   // 方向流程优先恢复（只有它带**跨篇**语料）；没恢复出东西，再看单篇上传的记录。
   if(!await resumeDirection()) await resumeJob();
 });

@@ -489,4 +489,138 @@ def submit_direction(query: str, *, k: int = 5, force: bool = False,
         return job
 
 
-__all__ = ["JobCancelled", "retry", "submit", "submit_direction"]
+# ───────────── 多答案开放域检索（2026-10-05）：**与方向流程完全分开的一条线** ─────────────
+# 为什么必须走 job（不能同步请求）：实测建索引编码 **50 篇 ≈ 156 秒**（bge-m3），
+# 加上逐篇判定 ~20s → 一次 20 秒~3 分钟。同步 HTTP 会超时。
+_MA_EXEC = ThreadPoolExecutor(max_workers=1, thread_name_prefix="multianswer-job")
+
+# 阶段键（前端据此渲染进度）。★ 只有两个：索引（贵，一次性）+ 跑（检索+逐篇判定）。
+MA_STAGES = ("index", "run")
+
+
+def _ma_key(question: str, *, n: int, corpus: str) -> str:
+    """job 去重键。同问题 + 同语料 + 同 N 且未结束 → 直接复用（不重复花钱）。"""
+    import hashlib
+    h = hashlib.sha1(f"{question}|{corpus}|{n}".encode("utf-8")).hexdigest()[:8]
+    return f"ma:{h}:{n}"
+
+
+def _run_multianswer_job(job: dict[str, Any]) -> None:
+    """执行「多答案开放域检索」：`multianswer.answer()`（薄适配生产 `set_judge`）。
+
+    ⚠️ `answer()` 在**判官未配置**时**抛 RuntimeError**（不静默返回空结果）——
+       这里必须让它落成 job 的 `failed`，否则前端会一直转圈（`_guard` 只兜底未捕获异常）。
+    """
+    ev = jobs.cancel_event(job["job_id"])
+    try:
+        with _JOB_LOCK:
+            job["status"] = jobs.STATUS_RUNNING
+            job["started_at"] = _now_iso()
+            job["_t0"] = time.time()
+            jobs.save(job)
+
+        question = str(job.get("question") or "")
+        n = int(job.get("n") or 0)
+        corpus = str(job.get("corpus") or "")
+        b = int(job.get("b") or 12)
+        workers = int(job.get("workers") or 8)
+
+        # ① 建索引（★ 耗时 ∝ 语料规模；命中缓存则秒级）
+        _check_cancel(ev)
+        _mark(job, "index", status="running")
+        t0 = time.time()
+        from paperpilot.multianswer import CorpusIndex
+        idx = CorpusIndex.from_parquet(corpus, n=(n or None), verbose=False)
+        _mark(job, "index", status="ok", seconds=time.time() - t0)
+        with _JOB_LOCK:
+            job["corpus_papers"] = len(idx.pdfs)
+            jobs.save(job)
+
+        # ② 检索 + 逐篇判定（生产 set_judge）
+        _check_cancel(ev)
+        _mark(job, "run", status="running")
+        t1 = time.time()
+        from paperpilot.multianswer import answer, render
+        res = answer(question, idx, n=None, b=b, workers=workers)   # 判全部候选 → 前端可切 N
+        _mark(job, "run", status="ok", seconds=time.time() - t1)
+
+        # ③ 落结果（前端只需 `papers[]`：篇 + 理由 + 证据片段）
+        cand = [str(c.get("pdf")) for c in (res.get("candidates") or [])]
+        order = {p: i for i, p in enumerate(cand)}
+        papers = []
+        for p in (res.get("papers") or []):
+            papers.append({
+                "pdf": str(p.get("pdf") or ""),
+                "rank": order.get(str(p.get("pdf")), 0) + 1,
+                "score": float(p.get("score") or 0.0),
+                "why": str(p.get("why") or ""),
+                "evidence": list(p.get("evidence") or []),
+                "snippet": str(p.get("snippet") or ""),
+                "page": int(p.get("page") or 0),
+                "extract": str(p.get("extract") or ""),
+            })
+        papers.sort(key=lambda x: x["rank"] or 999)
+
+        with _JOB_LOCK:
+            job["papers"] = papers
+            job["n_yes"] = int(res.get("n_yes") or 0)
+            job["n_candidates"] = int(res.get("n_papers") or 0)
+            job["labels"] = {str(k): str(v) for k, v in (res.get("labels") or {}).items()}
+            job["candidates"] = [{"pdf": str(c.get("pdf")), "score": float(c.get("score") or 0.0)}
+                                 for c in (res.get("candidates") or [])]
+            job["warning"] = str(res.get("warning") or "")     # ★ 全 unclear 的提示，不吞掉
+            job["answer_text"] = render(question, res)
+            job["retr"] = str(res.get("retr") or "")
+            job["win_chars"] = int(res.get("win_chars") or 0)
+            jobs.save(job)
+
+        _check_cancel(ev)
+        _finish(job, jobs.STATUS_READY)
+
+    except JobCancelled:
+        _mark(job, job.get("stage") or "", status="cancelled")
+        _finish(job, jobs.STATUS_CANCELLED, error="已取消")
+    except Exception as e:  # noqa: BLE001
+        import traceback
+        traceback.print_exc()
+        _finish(job, jobs.STATUS_FAILED, error=f"{type(e).__name__}: {e}")
+
+
+def submit_multianswer(question: str, *, n: int, corpus: str, b: int = 12,
+                       workers: int = 8) -> dict[str, Any]:
+    """提交「多答案开放域检索」任务（**立即返回 job**）。
+
+    Args:
+        question: 开放域问题（如"哪些论文报告了显著性检验"）。
+        n: **语料规模**（用户说的"选 N"）—— 从多少篇里找。`0` = 不限（用整个语料）。
+        corpus: 切块 parquet 路径（需含 `docid` / `text`）。★ 由调用方给，
+                worker 不硬编码仓库路径。
+        b / workers: 每篇给判官的块数 / 判官并发（生产默认 12 / 8）。
+
+    同一 `(问题, 语料, N)` 已有未结束的 job → 直接返回它。
+    """
+    jobs.recover_interrupted()
+    key = _ma_key(question, n=int(n or 0), corpus=str(corpus))
+    with _JOB_LOCK:
+        active = jobs.find_active(key)
+        if active is not None:
+            return active
+        job = jobs.new_job(key)
+        job.update({
+            "kind": "multianswer",
+            "question": str(question).strip(),
+            "n": int(n or 0),
+            "corpus": str(corpus),
+            "b": int(b),
+            "workers": int(workers),
+            "papers": [],
+            "progress": {"stage": "", "done": 0, "total": 0, "note": ""},
+            "note": f"多答案：{str(question).strip()[:60]}",
+        })
+        jobs.save(job)
+        fut = _MA_EXEC.submit(_run_multianswer_job, job)
+        fut.add_done_callback(lambda f: _guard(f, job))
+        return job
+
+
+__all__ = ["JobCancelled", "retry", "submit", "submit_direction", "submit_multianswer"]
