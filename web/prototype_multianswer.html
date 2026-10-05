@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PaperPilot · 原型：第二个入口「多答案开放域检索」</title>
+<style>
+  /* ═══ token 与现网 `web/index.html` / `web/prototype.html` 逐字沿用 ═══ */
+  :root { --bg:#eef1f5; --card:#fff; --line:#e2e5ea; --accent:#2563eb;
+          --text:#1a1d21; --muted:#6b7280; --good:#16a34a; --warn:#d97706; --bad:#dc2626; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+         color:var(--text); background:var(--bg); padding:26px 18px 60px; }
+  .wrap { max-width:1140px; margin:0 auto; }
+  .caption { font-size:12px; color:var(--muted); margin:0 0 10px 2px; letter-spacing:.3px; }
+
+  /* ── 起始页 ── */
+  .landing { background:#fff; border:1px solid var(--line); border-radius:14px;
+             padding:34px 30px 26px; margin-bottom:26px; text-align:center; }
+  .landing h1 { font-size:30px; font-weight:800; letter-spacing:.5px; }
+  .landing h1 em { color:var(--accent); font-style:normal; }
+  .landing .sub { color:var(--muted); font-size:13px; margin:6px 0 24px; }
+
+  /* ★★ 两个入口**并列**（用户要求："只是前端最开始放在一起"） */
+  .entries { display:grid; grid-template-columns:1fr 1fr; gap:16px; text-align:left; }
+  .entry { border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:#fbfcfd; }
+  .entry.new { border-color:#bfd3f7; background:#f7faff; box-shadow:0 0 0 3px rgba(37,99,235,.07); }
+  .entry .et { font-weight:700; font-size:14.5px; display:flex; align-items:center; gap:7px; }
+  .badge { font-size:10.5px; font-weight:600; padding:1px 7px; border-radius:8px;
+           background:#e6edfd; color:#1d4ed8; }
+  .badge.old { background:#eef0f3; color:#5b6470; }
+  .entry .ed { font-size:12px; color:var(--muted); margin:6px 0 12px; min-height:52px; }
+  .ask { display:flex; gap:8px; }
+  .ask input { flex:1; padding:9px 12px; border:1px solid var(--line); border-radius:10px;
+               font:13px/1.5 inherit; color:var(--text); background:#fff; }
+  .ask input:focus { outline:none; border-color:var(--accent); }
+  .ask button { padding:9px 16px; border:0; border-radius:10px; background:var(--accent);
+                color:#fff; font:13px/1.5 inherit; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .ask button.ghost { background:#fff; color:var(--accent); border:1px solid #bfd3f7; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .chip { font-size:12px; padding:3px 10px; border-radius:20px; background:#f1f3f6;
+          color:#4b5563; border:1px solid var(--line); cursor:pointer; }
+  .chip:hover { background:#e9edf3; }
+
+  /* N 选择器（★ 新入口独有） */
+  .nrow { display:flex; align-items:center; gap:10px; margin-top:11px; flex-wrap:wrap; }
+  .nrow .lab { font-size:12px; color:var(--muted); }
+  .nsegs { display:flex; gap:0; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:#fff; }
+  .nseg { padding:5px 12px; font-size:12.5px; cursor:pointer; border-right:1px solid var(--line);
+          color:#4b5563; background:#fff; }
+  .nseg:last-child { border-right:0; }
+  .nseg.on { background:var(--accent); color:#fff; font-weight:600; }
+  .hint { font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5; }
+
+  /* ── 结果页 ── */
+  .pagehead { display:flex; align-items:baseline; gap:10px; margin:0 2px 10px; }
+  .pagehead h2 { font-size:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px;
+          padding:16px 20px; margin-bottom:14px; }
+  .meta { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--muted);
+          border-bottom:1px dashed var(--line); padding-bottom:9px; margin-bottom:12px; }
+  .meta b { color:var(--text); font-weight:600; }
+
+  .ans { display:flex; gap:12px; padding:12px 0; border-bottom:1px dashed var(--line); }
+  .ans:last-child { border-bottom:0; }
+  .ans .idx { flex:0 0 26px; height:26px; border-radius:50%; background:#eef2ff; color:#3730a3;
+              font-weight:700; font-size:12.5px; display:flex; align-items:center; justify-content:center; }
+  .ans .body { flex:1; min-width:0; }
+  .ans .ptitle { font-weight:600; font-size:13.5px; display:flex; align-items:center; gap:8px; }
+  .ans .why { font-size:12.5px; color:#374151; margin-top:3px; }
+  .ans .ev { margin-top:7px; padding:8px 11px; background:#fafbfc; border:1px solid var(--line);
+             border-radius:8px; font-size:12px; color:#4b5563;
+             font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; line-height:1.5; }
+  .ans .ev .pno { color:var(--accent); font-weight:600; }
+  .sc { margin-left:auto; font-size:11.5px; color:var(--muted); font-weight:400; }
+  .tag { display:inline-block; font-size:11px; padding:0 7px; border-radius:8px;
+         background:#eef2ff; color:#3730a3; }
+
+  /* 扫 N 小表 */
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th,td { text-align:left; padding:6px 9px; border-bottom:1px solid var(--line); }
+  th { font-size:11.5px; color:var(--muted); font-weight:600; letter-spacing:.3px; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  tr.pick td { background:#f0f7ff; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ══════════════ 屏 1：起始页（两个入口并列）══════════════ -->
+  <div class="caption">屏 1 ｜ 起始页：新入口与「方向检索」**并列**，视觉上平等 —— 两者路线完全分开，只是放在一起</div>
+  <div class="landing">
+    <h1>⚡Paper<em>Pilot</em></h1>
+    <div class="sub">选一条路：<b>方向</b>读得深（一篇篇精读），<b>问题</b>铺得开（一批里找哪几篇符合）</div>
+
+    <div class="entries">
+      <!-- ① 现有入口 -->
+      <div class="entry">
+        <div class="et">🧭 方向检索 <span class="badge old">现有</span></div>
+        <div class="ed">给一个研究方向 → 检索并下载论文 → 解析建索引 → 出结构化报告，并在这些论文上问答。<br>
+          <span style="color:#9aa3af">产物：一篇论文的<b>深度报告</b></span></div>
+        <div class="ask">
+          <input value="如何用对比学习做跨语言摘要生成" placeholder="输入一个研究方向…">
+          <button class="ghost">检索并解析</button>
+        </div>
+        <div class="chips">
+          <span class="chip">大模型长上下文的高效注意力</span>
+          <span class="chip">表格问答的检索增强</span>
+        </div>
+      </div>
+
+      <!-- ② 新入口 -->
+      <div class="entry new">
+        <div class="et">🎯 多答案开放域检索 <span class="badge">新增</span></div>
+        <div class="ed">给一个<b>问题</b> → 在已有论文语料里检索 → <b>逐篇判定"这篇做没做这件事"</b> → 给出符合的论文清单（每篇带证据片段）。<br>
+          <span style="color:#9aa3af">产物：<b>哪几篇论文符合</b>（多答案）</span></div>
+        <div class="ask">
+          <input value="哪些论文改进了 RAG 的检索器训练？" placeholder="输入一个开放域问题…">
+          <button>开始检索</button>
+        </div>
+        <div class="nrow">
+          <span class="lab">语料规模 N</span>
+          <div class="nsegs">
+            <span class="nseg">20</span>
+            <span class="nseg on">50</span>
+            <span class="nseg">100</span>
+            <span class="nseg">300</span>
+          </div>
+          <span class="hint" style="margin:0">← 选「从多少篇里找」，不是「答案条数」</span>
+        </div>
+        <div class="hint">★ N 的两处代价：<b>建索引</b>与 N 成正比（首次约 3 秒/篇，之后走缓存）；
+          <b>逐篇判定</b>只与"被判定篇数"成正比。N 越大检索越必要，但题均成本越高。</div>
+        <div class="chips">
+          <span class="chip">哪些工作把表格检索接进了 RAG</span>
+          <span class="chip">谁用了双塔结构做图文检索</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 屏 2：多答案结果页 ══════════════ -->
+  <div class="pagehead"><h2>屏 2 ｜ 多答案结果</h2>
+    <span class="caption" style="margin:0">检索承担了筛选 → 判官只判候选 → 输出「篇 + 逐篇理由 + 证据片段」</span></div>
+  <div class="card">
+    <div class="meta">
+      <span>问题：<b>哪些论文改进了 RAG 的检索器训练？</b></span>
+      <span>语料 <b>50 篇</b></span>
+      <span>候选 N=<b>30</b></span>
+      <span>判 yes <b>4 篇</b></span>
+      <span>检索 <b>multiroute</b></span>
+      <span>双判官 <b>是</b></span>
+      <span>窗口 <b>4200 字符</b></span>
+    </div>
+
+    <div class="ans">
+      <div class="idx">1</div>
+      <div class="body">
+        <div class="ptitle">C1D26 <span class="tag">更</span><span class="sc">检索分 0.5984</span></div>
+        <div class="why">该文提出在检索器训练阶段引入对比学习目标，并给出消融说明其带来稳定提升。</div>
+        <div class="ev"><span class="pno">[3]</span> 3.2.2 Retriever Model Training — "In order to accurately learn a semantic representation …"</div>
+      </div>
+    </div>
+
+    <div class="ans">
+      <div class="idx">2</div>
+      <div class="body">
+        <div class="ptitle">C1D9 <span class="sc">检索分 0.5740</span></div>
+        <div class="why">该文把知识整合做成多分支集成，文中明确描述了检索分支的训练方式。</div>
+        <div class="ev"><span class="pno">[7]</span> 6.6 Knowledge Integration — "One branch of this approach is ensemble-based …"</div>
+      </div>
+    </div>
+
+    <div class="ans">
+      <div class="idx">3</div>
+      <div class="body">
+        <div class="ptitle">C1D30 <span class="sc">检索分 0.5238</span></div>
+        <div class="why">该文对查询分解做了消融，属于对检索侧的改进（非仅引用他人工作）。</div>
+        <div class="ev"><span class="pno">[11]</span> Ablation: Query Decomposition — "Summary and Paraphrase Embedding RAG. To …"</div>
+      </div>
+    </div>
+
+    <div class="ans">
+      <div class="idx">4</div>
+      <div class="body">
+        <div class="ptitle">C1P4 <span class="sc">检索分 0.5011</span></div>
+        <div class="why">该文在训练目标里加了检索一致性约束。</div>
+        <div class="ev"><span class="pno">[2]</span> Training Objective — "… we add a consistency term over retrieved passages."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 屏 3：扫 N（一次跑批，不重跑判官）══════════════ -->
+  <div class="pagehead"><h2>屏 3 ｜ 扫 N（可选）</h2>
+    <span class="caption" style="margin:0">判完**全部**候选后，「答案条数」只是切个前缀 —— 不重跑判官</span></div>
+  <div class="card">
+    <table>
+      <tr><th>候选 N</th><th style="text-align:right">判断过的篇数</th><th style="text-align:right">判 yes</th><th>说明</th></tr>
+      <tr><td>10</td><td class="num">10</td><td class="num">2</td><td>检索很强，但漏（gold 常 5~6 篇）</td></tr>
+      <tr><td>20</td><td class="num">20</td><td class="num">3</td><td>—</td></tr>
+      <tr class="pick"><td>30</td><td class="num">30</td><td class="num">4</td><td>★ 定稿口径（k=30）</td></tr>
+      <tr><td>50</td><td class="num">50</td><td class="num">4</td><td>已判全部候选，再加只会更慢</td></tr>
+    </table>
+    <div class="hint">※ 上表为**原型示意数据**；实际由 `sweep_n()` 从一次跑批的 `candidates` + `labels` 直接切出来。</div>
+  </div>
+
+</div>
+</body>
+</html>

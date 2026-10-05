@@ -1,0 +1,299 @@
+﻿cluster,facet,docid,in_gold,ground,why
+1,ablation,C1D11,1,YES,实验2通过对比去掉问题分解模块的基线来评估各组件影响
+1,ablation,C1D30,1,YES,本文开展多项消融实验，比较去掉/替换组件后的性能变化并报告结果
+1,ablation,C1D10,1,YES,片段1评估各组件贡献，片段3明确本文做消融研究
+1,ablation,C1D22,1,YES,片段4明确报告了本文方法RichRAG的消融实验及性能变化
+1,ablation,C1D17,1,YES,片段1报告了移除/引入模块后EM变化，属本文消融
+1,ablation,C1P13,1,NO,本文对预训练语料和两阶段微调做消融并报告结果
+1,ablation,C1D15,0,YES,片段3有Ablation Studies及消融表，片段5称本文做消融研究
+1,ablation,C1P14,1,YES,片段2明确描述本文对框架做消融并给出结果
+1,ablation,C1D4,1,YES,片段1明确报告了移除各组件后的消融结果
+1,ablation,C1D27,1,YES,片段4明确报告了本文方法各组件的消融实验及性能变化
+1,ablation,C1P6,1,NO,表2含本文模型R-GQA的消融行w/o analogy loss并给出结果
+1,ablation,C1D2,1,YES,片段3明确报告了移除各模块后的性能下降消融结果
+1,ablation,C1D12,1,YES,片段5明确报告了移除planning、retrieval等模块的消融实验及性能变化
+1,ablation,C1D23,0,YES,"片段1明确说In ablations, we also find that our method..."
+1,ablation,C1D24,1,YES,本文对RetroRAG各组件做消融并报告性能变化
+1,ablation,C1D5,0,YES,本文自己做了消融，去掉答案和引用奖励只留格式奖励并报告结果
+1,ablation,C1P19,1,YES,本文做了消融实验，Table 8报告去掉各特征后的性能变化
+1,ablation,C1D8,1,YES,片段3明确做了Rule Ablation和RGFT Ablation并报告性能变化
+1,ablation,C1D18,1,YES,片段4明确报告了去掉QDC后性能下降的消融结果
+1,ablation,C1D14,1,YES,"本文通过移除α_U和ω_U,D权重进行消融并报告性能变化"
+1,ablation,C1D19,1,YES,片段9/11报告了去掉或替换组件（如Filter、Rewriter）后的性能变化结果
+1,ablation,C1D34,1,NO,片段5明确报告了Auto-RAG的消融实验及性能变化
+1,ablation,C1D32,1,NO,片段2明确报告了本文的消融实验（w/o GPT、w/o Web）及结果
+1,ablation,C1P12,1,NO,片段5报告了去掉RAGE loss第三项及替换策略的消融结果
+1,annotation_cost,C1D16,1,YES,本文用LLM生成弱标签训练检索器并报告效果
+1,annotation_cost,C1P15,1,YES,本文提出RGF方法，以极少人工监督自动生成并标注反事实数据，并报告效果。
+1,annotation_cost,C1P11,0,YES,本文用LLM生成上下文文档替代检索，无需人工标注并报告效果
+1,annotation_cost,C1D34,0,NO,片段称自主合成指令，但未明确是否降低人工标注成本或报告其效果
+1,annotation_cost,C1D12,0,YES,本文用ChatGPT自动生成plan和answer标签，构建50k监督数据
+1,case_study,C1D11,1,YES,4.4节对具体样例输出逐一展示并分析其分解与推理过程
+1,case_study,C1D26,1,YES,片段1明确表示将回顾若干示例，对比本文系统与ChatGPT的输出，属于逐例展示与讨论。
+1,case_study,C1D2,1,YES,片段2以Case Study逐例展示三个样本并分析生成结果
+1,case_study,C1P16,0,NO,片段6仅提及附录有case studies，未展示具体逐例内容
+1,code_release,C1P9,1,YES,摘要和可复现性声明均给出本文代码开源链接
+1,code_release,C1D16,1,YES,片段2明确称代码已发布以确保可复现
+1,code_release,C1D10,1,NO,摘要明确称提供代码、数据集和检查点
+1,code_release,C1D31,1,YES,片段2明确写We released our code and data on GitHub
+1,code_release,C1D2,1,NO,片段1明确说本文代码将发布于github链接
+1,code_release,C1D14,1,NO,摘要末尾称Our code is available，提供本文代码链接
+1,code_release,C1D23,1,YES,片段3明确说公开释放训练和推理脚本
+1,code_release,C1P6,1,NO,片段2脚注明确本文实现将发布于github链接
+1,code_release,C1D8,0,NO,摘要末尾给出代码与RuleQA的匿名链接
+1,error_analysis,C1D11,1,YES,片段2明确对模型输出做定性分析，识别常见行为、优缺点，并给出具体输出示例。
+1,error_analysis,C1P9,1,YES,片段1明确进行error analysis并分类统计错误
+1,error_analysis,C1P17,1,YES,片段3有Error Analysis，分析错误类型并给出具体例子
+1,error_analysis,C1P13,1,YES,人工分析200个输出，分类错误并给出比例和典型错误案例
+1,error_analysis,C1P1,0,YES,片段6的Case Studies展示了生成查询上下文的具体例子，包括错误案例
+1,fine_tuning,C1P14,1,YES,本文训练生成器模型并给出训练数据与设置
+1,fine_tuning,C1D5,1,YES,片段1明确本文用GRPO对基座模型进行后训练并给出训练设置
+1,fine_tuning,C1P10,1,YES,本文扩展RAG并微调所有组件，报告了训练设置与结果
+1,fine_tuning,C1D23,1,YES,本文对参考模型进行指令微调/RA-IT训练并报告设置
+1,fine_tuning,C1D25,1,YES,本文自己从Mistral-7B检查点训练critic和generator模型，并报告了训练数据与配置。
+1,fine_tuning,C1D3,1,YES,片段2描述本文训练R-Feedback模型并给出损失与超参
+1,fine_tuning,C1P15,0,PARTIAL,片段提到用生成数据做增强实验，但未明确本文是否微调模型及报告训练设置
+1,fine_tuning,C1D15,1,YES,片段2明确本文进行MoE微调，片段5、8称本文训练单一MoE模型
+1,fine_tuning,C1D13,0,YES,本文用自建数据以自回归方式训练LLM并给出目标函数
+1,fine_tuning,C1D26,1,YES,片段2详述LLM微调训练设置，片段3明确基于Adobe数据微调LLM
+1,fine_tuning,C1P17,1,YES,片段1明确描述本文fine-tune预训练语言模型并给出训练设置
+1,fine_tuning,C1P16,1,YES,片段6/8/11表明本文对DPR和生成器进行联合训练/微调并报告结果
+1,fine_tuning,C1D20,1,YES,本文训练prober并给出数据集、损失与超参设置
+1,fine_tuning,C1D12,1,YES,片段7明确本文用PEFT微调Llama2-7B并给出训练设置
+1,fine_tuning,C1P6,1,YES,片段3描述本文训练时最小化联合损失函数，属本文自己的训练设置。
+1,fine_tuning,C1D4,1,NO,片段1给出训练超参但未明确说本文微调模型
+1,fine_tuning,C1D16,1,YES,片段4提及微调检索器，片段7表格展示本文用W-RAG数据微调检索器的结果
+1,fine_tuning,C1P7,1,YES,片段3明确描述本文用强化学习微调生成器并给出训练设置
+1,fine_tuning,C1D2,1,YES,片段3描述本文用LoRA微调答案生成模型并给出训练损失
+1,fine_tuning,C1D8,1,YES,片段2明确描述本文对检索器和生成器进行微调并给出训练目标
+1,fine_tuning,C1P1,0,NO,片段3提到seq2seq学习生成上下文，但未明确是否微调预训练模型或报告训练设置
+1,fine_tuning,C1P12,1,YES,本文联合训练检索与TableQA模块，并报告了训练设置与效果
+1,fine_tuning,C1D22,1,YES,片段3标题为监督微调，描述本文构建银标签支持ranker微调
+1,fine_tuning,C1P18,1,YES,片段12给出本文模型训练设置，片段11报告重训FiD结果
+1,fine_tuning,C1D21,1,YES,本文用QLoRA微调Llama-2-7B并报告了分类结果
+1,fine_tuning,C1D34,1,YES,片段11明确本文用合成指令微调Llama-3-8B-Instruct，片段5报告训练数据规模实验
+1,human_eval,C1P19,1,YES,本文用Mechanical Turk众包工人进行人工评估并报告评分结果
+1,human_eval,C1P14,0,NO,片段1提到Manual assessment reveals...，本文做了人工评估
+1,human_eval,C1P13,1,YES,片段2提到作者进行了人工检查并观察到偏差
+1,human_eval,C1D29,0,NO,片段2/4报告了参与者人工答题表现与准确率提升，属人工评估结果。
+1,human_eval,C1P7,1,NO,片段1明确描述本文进行人工评估并报告结果
+1,human_eval,C1D11,1,YES,片段1明确说由人类评估者对推理链进行定性分析
+1,human_eval,C1D33,1,YES,本文对LLM相关性标签进行人工复核并对照人工验证的ground truth
+1,human_eval,C1D25,1,YES,片段3明确描述本文用AMT收集人工评分并报告结果
+1,human_eval,C1P11,0,NO,片段7明确本文请人工标注者提供不同提示词并做实验
+1,human_eval,C1D31,1,YES,本文作者独立标注相关性并调查受访者进行人工评估
+1,human_eval,C1P15,0,NO,片段11明确说本文手动标注100个问题并报告96%流畅度等结果
+1,significance,C1P9,1,YES,片段1明确用5个随机种子报告均值和标准差
+1,significance,C1P13,1,YES,片段1明确报告三次不同随机种子运行，方差在0.2%以内。
+1,significance,C1P16,0,YES,片段1明确说报告了3个不同种子的平均结果
+1,significance,C1D31,1,YES,"报告了p值和显著性星号标注（如p=0.15, ∗p<0.05）"
+1,significance,C1P6,1,NO,表2报告了三次运行的平均值和标准差
+1,significance,C1D16,1,YES,表1脚注报告了t检验p<0.05的显著性标注
+1,significance,C1D6,1,NO,片段4报告了p<0.01的显著性检验结果
+1,zero_few_shot,C1P6,1,YES,本文在few-shot设置下实验并报告结果，含采样策略研究
+1,zero_few_shot,C1P11,1,YES,本文在zero-shot设置下提出并实验了GENREAD方法
+1,zero_few_shot,C1P14,1,YES,片段6明确说本文进行zero-shot评估，不提供few-shot示例。
+1,zero_few_shot,C1D11,0,YES,本文用zero-shot提示进行答案生成与实验评估
+1,zero_few_shot,C1D12,1,NO,片段6明确说本文进行zero-shot评估
+1,zero_few_shot,C1P9,1,YES,片段4、7明确在few-shot设置下报告了实验结果
+1,zero_few_shot,C1D3,1,NO,片段3明确说明所有方法在few-shot设置下评估，含4-shot/6-shot。
+1,zero_few_shot,C1D1,1,YES,片段2明确说明在0-shot、1-shot和5-shot设置下评估本文方法。
+1,zero_few_shot,C1D30,1,YES,片段4明确说在zero-shot设置下用LLM做查询分解并实验
+1,zero_few_shot,C1D21,1,NO,表2报告了RAGate-Prompt的Zero Shot与In-Context Learning结果
+2,ablation,C2D29,1,YES,片段1明确报告了本文的消融实验及性能变化结果
+2,ablation,C2D12,1,YES,片段1明确说本文进行了一系列消融研究以揭示ICL、FT等性质
+2,ablation,C2D11,0,YES,片段12展示本文方法各组件的消融实验及性能变化
+2,ablation,C2D17,1,YES,Table 5/6为本文消融实验，比较不同蒸馏与训练阶段组合的性能变化
+2,ablation,C2D2,1,YES,片段5明确以本文TIM方法做消融，移除各组件并分析影响
+2,ablation,C2P17,1,YES,表2给出本文方法去掉stopgrad等消融结果
+2,ablation,C2P1,1,YES,片段2明确有ABLATIONS节，报告了去掉自增强数据等消融结果
+2,ablation,C2D10,1,YES,片段2用w/o替换指令做对比实验并报告性能变化
+2,annotation_cost,C2P10,0,YES,本文用LLM自动生成指令，减少人工，并报告效果
+2,annotation_cost,C2P1,1,YES,本文提出instruction backtranslation，用无标注数据自增强自筛选，减少人工标注
+2,annotation_cost,C2D32,1,YES,本文提出Self-LLMDA自动生成增强指令，减少人工设计成本并报告效果
+2,annotation_cost,C2P15,0,NO,本文用大模型作教师生成推理样本微调小模型，降低对人工标注的依赖。
+2,annotation_cost,C2D29,1,YES,本文提出INSTREXP自动指令扩展框架，减少人工标注并报告效果
+2,annotation_cost,C2D6,0,NO,用合成正例对做对比微调，无需人工标注数据
+2,annotation_cost,C2D15,1,YES,本文用教师LLM替代人工构建指令数据并报告效果
+2,annotation_cost,C2D23,0,YES,本文用传统推荐模型生成标签做监督学习，降低人工标注成本
+2,annotation_cost,C2D9,0,YES,本文用人类指令配LLM生成回复构建数据集，降低标注成本并报告效果
+2,annotation_cost,C2D16,0,YES,提出SEALONG自采样打分自监督，无需人工或GPT-4标注并报告效果
+2,code_release,C2D8,1,YES,片段1明确列出本文开源代码仓库链接，供获取。
+2,code_release,C2P14,1,YES,片段1明确给出本文数据与代码的GitHub链接。
+2,code_release,C2D6,1,NO,摘要明确称源代码、合成数据和模型检查点公开在github链接
+2,code_release,C2P7,1,YES,片段3明确给出本文代码链接github.com/thu-ml/LM-Calibration
+2,code_release,C2P4,0,NO,摘要中给出本文模型AWE-SoME的GitHub链接
+2,code_release,C2P9,1,YES,摘要称发布基准，并给出代码链接llm-rl.github.io
+2,code_release,C2D2,1,YES,摘要明确给出本文代码的GitHub链接
+2,code_release,C2D23,1,YES,片段4明确给出本文源代码链接github.com/microsoft/RecAI
+2,code_release,C2D18,1,YES,片段2明确写We publicly release the code here，提供代码链接。
+2,code_release,C2D4,1,NO,片段4给出项目主页链接，片段10称开源生物医学数据集
+2,code_release,C2D25,1,NO,摘要明确称Our code is publicly available，提供本文代码链接
+2,efficiency,C2D8,0,YES,片段1报告了训练/推理时间与内存效率数值
+2,efficiency,C2P16,0,NO,片段1报告了speculative decoding加速采样近2.5x的效率数值
+2,error_analysis,C2D15,0,NO,片段2为案例研究，具体分析CITING与RLHF等案例
+2,error_analysis,C2D25,0,YES,Limitations中具体列出失败场景并给出例子与数值
+2,error_analysis,C2P20,0,YES,第6节分析了对齐错误，给出具体例子并解释原因
+2,error_analysis,C2D27,0,YES,片段3给出幻觉率统计及Figure 5具体错误案例，属失败案例分析
+2,fine_tuning,C2P1,1,YES,本文提出并执行了指令反向翻译的自训练微调方法，报告了设置与结果
+2,fine_tuning,C2D8,0,YES,目录含Continued Pre-training、Task Specific Fine-tuning等章节，表明本文自己做了继续训练/微调
+2,fine_tuning,C2D5,1,YES,本文训练适配器/全模型微调专家并报告设置
+2,fine_tuning,C2P14,1,YES,本文对LLaMA最终层进行微调并报告了设置与结果
+2,fine_tuning,C2P7,1,YES,片段2明确描述本文在微调阶段联合优化MLM目标并给出损失设置
+2,fine_tuning,C2D12,1,YES,本文用ICL+FT/FT-Only在FLoRes等数据上微调并报告结果
+2,fine_tuning,C2D2,1,YES,本文提出TIM方法，在指令微调框架下训练/微调生成模型并报告结果
+2,fine_tuning,C2D15,1,YES,本文用SFT和课程指令微调训练学生LLM并报告设置
+2,fine_tuning,C2D11,0,YES,片段5明确描述本文学生模型用LLaMA初始化并在70K数据上训练，给出迭代与超参设置。
+2,fine_tuning,C2D6,1,YES,本文用LoRA在MTEB分类数据上微调并报告了结果与设置
+2,fine_tuning,C2D4,1,YES,片段3给出本文微调目标与损失，片段8/10说明本文提出并实验了contextual fine-tuning。
+2,fine_tuning,C2D14,1,YES,本文自己微调了Mistral和Llama2并报告了设置与结果
+2,fine_tuning,C2D16,1,YES,本文提出SFT/ORPO微调方法并在MuSiQue上合成数据训练模型
+2,fine_tuning,C2D30,1,YES,片段3明确说用错误分析数据对模型进行fine-tuning并报告
+2,fine_tuning,C2P17,1,YES,本文提出XTUNE框架，对预训练模型进行跨语言微调并报告设置与结果
+2,fine_tuning,C2P11,1,YES,片段2/4/6显示本文用PandaLM对LLM进行指令微调并报告结果
+2,fine_tuning,C2D17,1,YES,本文提出后训练流程含SFT与知识蒸馏，并训练出模型
+2,fine_tuning,C2D25,1,YES,本文用LoRA对Llama/Qwen进行微调并报告训练设置
+2,fine_tuning,C2P15,1,YES,本文提出Fine-tune-CoT，用教师模型生成推理样本微调小模型并报告结果
+2,fine_tuning,C2P4,1,YES,本文提出在平行语料上微调LM并给出训练目标与实验设置
+2,fine_tuning,C2P12,1,YES,摘要与2.3节明确本文比较并执行了标准微调等训练过程
+2,fine_tuning,C2D10,1,YES,本文提出三阶段训练，含监督微调并描述LoRA微调设置
+2,fine_tuning,C2D9,1,YES,本文用自建数据集微调LLM并报告结果
+2,fine_tuning,C2P8,1,YES,片段2明确描述本文对FLAN-MOE进行指令微调并报告消融结果
+2,fine_tuning,C2D29,1,YES,片段3描述本文MIFT方法用指令数据微调基座模型并给出损失公式
+2,fine_tuning,C2D3,1,YES,片段1详述本文两阶段SFT+DPO微调设置与超参
+2,fine_tuning,C2D26,1,YES,本文提出并实验了基于个性化提示的微调方法，报告了设置与结果。
+2,fine_tuning,C2D27,0,NO,片段提及指令微调但未明确本文自己执行并报告微调设置
+2,fine_tuning,C2D7,1,YES,本文在平行数据上训练/指令微调LLM并报告实验
+2,fine_tuning,C2D18,1,YES,片段11明确本文对OPT/Llama-2模型进行三epoch微调
+2,fine_tuning,C2D31,1,YES,本文对开源LLM进行LoRA监督微调并报告了结果与设置
+2,human_eval,C2D27,1,YES,本文5.4节雇佣语言专家进行人工标注并报告结果
+2,human_eval,C2D8,0,YES,片段1描述本文通过众包收集模板并人工筛选/泛化，属于人工标注与核对。
+2,human_eval,C2P11,0,YES,本文创建人工标注测试集，三名标注者独立标注并报告IAA结果
+2,human_eval,C2P16,1,YES,本文收集人工标注并与GPT-4比较，还做了人工评估
+2,human_eval,C2D11,0,YES,本文让三位专家标注并报告与人工评估一致率
+2,human_eval,C2D18,1,YES,片段2描述了本文开展的人类评估，招募10名学生并收集151次评价。
+2,human_eval,C2D31,1,YES,本文使用人工编码语料并报告编码者一致性等结果
+2,human_eval,C2D30,0,NO,片段3明确提到本文评估后进行了human verification process
+2,human_eval,C2P2,1,NO,本文招募1000名人类参与者完成问卷并收集其回答数据
+2,human_eval,C2P18,1,NO,片段4明确说本文自己手工评估了parser输出
+2,knowledge_distill,C2D11,0,YES,本文提出对抗蒸馏框架，用教师模型指导训练学生模型并报告结果
+2,knowledge_distill,C2D17,1,YES,本文提出Distillation by Teacher/Student并报告了准确率结果
+2,knowledge_distill,C2D15,1,YES,本文提出CITING，用教师LLM指导学生LLM并报告实验结果
+2,knowledge_distill,C2P15,1,YES,本文提出Fine-tune-CoT，用大模型作教师生成推理样本微调小模型并报告结果
+2,knowledge_distill,C2P12,1,YES,本文用KD（含P+KD/F+KD）并报告了准确率结果
+2,multilingual,C2D25,0,YES,片段1报告了跨语言迁移在槽填充、机器翻译等非英语方向上的具体F1/BLEU/COMET数字。
+2,multilingual,C2P17,1,YES,本文在XNLI、TyDiQA等非英语数据集上实验并报告结果
+2,multilingual,C2P4,0,YES,片段1在XNLI的15种语言（含非英语）上报告了本文模型的实验结果数字。
+2,multilingual,C2D12,1,YES,片段1报告了英语到库尔德语、本巴语等低资源语言的翻译实验结果
+2,multilingual,C2D9,1,YES,本文用日语数据合成并评测，报告了非英语实验结果
+2,multilingual,C2D10,0,YES,在En⇔De、En⇔Zh等非英语翻译任务上报告了BLEU/COMET结果
+2,multilingual,C2P8,1,YES,片段1报告了FLAN-MOE在TyDiQA和MGSM上的具体数值结果。
+2,prompt_eng,C2D6,1,YES,本文设计多种提示模板并对比其对聚类嵌入的影响
+2,prompt_eng,C2D11,0,NO,片段1仅提及对提示模板做消融，但未给出具体对比实验内容，且其他片段均为其他消融。
+2,prompt_eng,C2D32,0,YES,本文做了指令选择策略的消融对比实验，并分析不同指令影响
+2,prompt_eng,C2D26,1,YES,本文提出并比较多种writer-specific提示模板，实验分析其性质与效果
+2,prompt_eng,C2D4,0,YES,本文研究自适应上下文提示与固定提示的对比，并分析其影响
+2,prompt_eng,C2D13,1,NO,片段2报告了多种提示工程方法的对比实验及准确率
+2,prompt_eng,C2D10,1,YES,片段4报告了Source-Language Consistent Instruction与English-Fixed Instruction的对比实验，属于提示
+2,prompt_eng,C2P6,1,YES,本文做了指令措辞、示例选择/顺序的方差敏感性分析，含模板对比
+2,significance,C2D8,1,YES,表格与图注报告了5个种子上的均值与标准差
+2,significance,C2P6,0,YES,报告了方差分解及p值<0.05的显著性检验
+2,significance,C2P20,1,YES,本文用Wilcoxon检验并标注p<0.001显著性
+2,significance,C2P12,1,YES,片段1明确报告了4次运行并提及标准差
+2,significance,C2D24,0,NO,表2报告了标准差±和p值，属于多次运行波动与显著性检验。
+2,significance,C2D12,1,YES,片段3明确报告了基于5个种子的±2%置信区间。
+2,significance,C2P9,1,YES,片段1明确报告了3个随机种子的均值和标准差。
+2,significance,C2D6,0,NO,片段2提到附录B.2报告了标准差
+2,significance,C2P7,1,YES,表2报告五次随机微调的平均值与标准差（下标）
+2,significance,C2D31,1,NO,表3报告三次独立运行的运行间可靠性（Krippendorff α等）
+2,significance,C2P4,1,NO,表9标注*表示配对bootstrap显著性差异(p<0.05)
+2,significance,C2D9,0,YES,表4中MT-Bench分数带±标准差，来自多次运行
+2,zero_few_shot,C2D6,1,YES,片段1明确报告了zero-shot setting下的分类结果
+2,zero_few_shot,C2P6,0,YES,本文在few-shot设置下报告了in-context tuning结果，并对比raw IC-L等基线。
+2,zero_few_shot,C2D3,0,YES,片段1报告了zero-shot准确率结果，片段4讨论zero-shot方法表现
+2,zero_few_shot,C2D13,1,YES,片段2报告了few-shot提示实验及无few-shot示例的NLL评估结果
+2,zero_few_shot,C2D15,1,YES,片段1明确报告了few-shot和zero-shot性能结果
+2,zero_few_shot,C2P10,1,YES,本文在zero-shot和few-shot设置下评估了APE生成的指令并报告结果
+2,zero_few_shot,C2D20,1,NO,片段6明确说本文考虑zero-shot和few-shot设置并报告结果
+2,zero_few_shot,C2D26,1,NO,片段6明确报告了zero-shot prompts在未知作者上的结果
+2,zero_few_shot,C2P4,1,YES,片段1称在zero-shot设置下取得稳健性能，片段11表格报告zero-shot结果。
+2,zero_few_shot,C2D27,1,NO,摘要明确报告了零样本翻译任务上的性能提升
+2,zero_few_shot,C2D31,1,NO,片段10明确说明所有LLM在zero-shot、codebook引导提示设置下完成编码任务。
+3,ablation,C3D24,1,YES,片段1明确报告了本文自己框架各组件的消融结果
+3,ablation,C3D32,1,YES,本文对Conformer变体做消融并报告性能变化
+3,ablation,C3D37,1,NO,片段2中Combination Method Comparison将本文cross-attention替换为拼接/相加并报告准确率下降，属消融。
+3,ablation,C3D3,1,YES,片段1明确报告了替换/移除自身组件的消融实验及结果
+3,ablation,C3D29,1,NO,片段3明确报告了本文方法不同排序策略的消融结果
+3,ablation,C3D19,1,NO,片段2明确本文做消融，比较去掉/截断AoSE组件后的结果
+3,ablation,C3P2,1,YES,表5列出对本文学生模型各变体（池化、层数等）的消融性能对比
+3,ablation,C3D4,1,NO,片段3明确说明5.3节做消融研究，分析ADA机制贡献
+3,ablation,C3P5,1,YES,片段2明确描述对共享QK、可逆层等组件逐一消融并给出性能曲线
+3,ablation,C3P14,1,YES,本文移除AF层/剪枝adapter并报告性能变化
+3,case_study,C3P8,0,YES,片段1称提供模型对比的具体例子，片段10对具体特征组和作文做定性分析。
+3,case_study,C3P13,0,NO,片段3对具体EDU附着错误实例逐一展示并讨论
+3,case_study,C3D12,1,YES,片段4用Figure 7逐例展示生成token时检索到的记忆并讨论
+3,case_study,C3D32,0,NO,片段3展示预测案例并定性比较，片段12给出逐例预测图
+3,code_release,C3D36,1,YES,片段1提到脚本在已发布代码中提供，表明本文发布了代码。
+3,code_release,C3D34,1,YES,片段1称预训练和微调模型可在Hugging Face获取，属本文发布模型链接
+3,code_release,C3D22,1,YES,片段1明确称本文所有代码在补充文件中可获取。
+3,code_release,C3D12,1,YES,片段1和4明确说本文开源新数据集，片段2提到开源模型
+3,code_release,C3D8,1,NO,摘要称复现实验代码已公开可获取
+3,code_release,C3P5,1,NO,片段1明确称训练代码已公开可用
+3,code_release,C3D13,1,NO,片段11脚注明确给出本文代码链接
+3,efficiency,C3D12,1,YES,片段6专设Inference Times节，报告推理时间实验
+3,efficiency,C3D32,1,YES,片段1报告了运行时间和内存消耗对比，属推理效率数值。
+3,efficiency,C3D14,0,YES,本文报告了推理延迟、FLOPs、显存等效率数值
+3,efficiency,C3D3,1,YES,本文测量并报告了推理时间与峰值显存等效率数值
+3,efficiency,C3D11,1,YES,片段1报告了FLOPs、压缩时间与内存占用等效率数值
+3,efficiency,C3D29,0,YES,片段报告了推理加速倍数、FLOPs减少等效率数值
+3,efficiency,C3D5,1,NO,片段2报告了FLOPs、内存、吞吐与延迟等推理效率数值
+3,efficiency,C3D21,1,YES,表1报告了FLOPs和推理时间
+3,efficiency,C3P17,1,YES,Table 2报告了Entroformer推理延迟(ms)数值
+3,efficiency,C3P2,1,NO,摘要报告了最高600倍推理加速，属效率数值
+3,efficiency,C3P6,1,YES,片段4报告了amortized inference time与MACs reduction等效率数值
+3,efficiency,C3D24,1,NO,表2报告了各模型的Inference Time(s)数值
+3,efficiency,C3P14,1,YES,本文报告了训练/推理速度百分比等效率数值
+3,fine_tuning,C3D15,0,NO,片段提到训练线性transformer但未明确本文是否微调及报告设置
+3,fine_tuning,C3D5,1,YES,片段1明确说在英文维基/书籍语料上微调GPT-2并报告困惑度，片段6也描述微调预训练模型。
+3,fine_tuning,C3D19,1,NO,本文在标准微调模式下训练并报告了结果
+3,fine_tuning,C3D36,0,YES,本文在RACE/MNLI/QQP等数据上微调BERT并报告结果
+3,fine_tuning,C3P2,1,YES,片段2明确描述本文先微调RoBERTa-Large作为教师模型，并给出训练流程。
+3,fine_tuning,C3D34,1,YES,本文对预训练模型进行微调并报告了设置与结果
+3,fine_tuning,C3P3,1,YES,本文对PatchTST进行fine-tuning并报告了结果
+3,fine_tuning,C3D25,0,NO,片段2描述本文用GPT-2做预训练并测试时训练，含训练设置与结果
+3,fine_tuning,C3D16,1,YES,片段3给出微调超参设置，片段5称本文训练BERT模型
+3,fine_tuning,C3D4,1,YES,本文提出ADA方法，对预训练Transformer增量训练新adapter和head
+3,fine_tuning,C3D20,1,YES,本文用在线梯度下降训练transformer并在CLOC上评估
+3,fine_tuning,C3D24,1,NO,片段提到训练与评估运行，但未明确说明是微调预训练模型
+3,fine_tuning,C3D29,0,YES,片段6描述本文在fine-tuning阶段先微调模型再离线调优，并报告结果
+3,fine_tuning,C3P12,1,YES,片段2、4描述本文自己训练transformer做ICL并给出设置
+3,fine_tuning,C3D11,1,YES,片段3明确描述本文对IC-Former进行instruction fine-tuning并给出目标函数
+3,fine_tuning,C3P1,0,YES,片段6明确说本文模型从预训练RoBERTa微调，并给出设置
+3,fine_tuning,C3P6,1,YES,摘要称本文训练额外预测头，且§3描述本文训练流程
+3,fine_tuning,C3D13,1,YES,片段1描述本文训练GPT-2风格解码器并给出课程训练设置
+3,fine_tuning,C3D14,1,NO,片段提到训练速度与基线设置，但未明确本文是否微调预训练模型
+3,fine_tuning,C3D35,1,YES,片段12描述本文在顺序场景下继续训练模型GEOM-S并评估
+3,fine_tuning,C3D37,1,NO,片段3描述本文训练损失、批并行训练及从零训练设置，属本文微调/训练。
+3,fine_tuning,C3D2,0,YES,片段4报告了本文模型训练50轮、Adam优化器等微调设置
+3,fine_tuning,C3P8,1,YES,片段4明确说明每个模型是在该特质数据集上微调得到的Longformer
+3,fine_tuning,C3P5,0,YES,片段4描述本文训练Reformer模型并报告结果
+3,fine_tuning,C3D22,0,NO,片段提到训练模型但未明确是微调预训练模型
+3,proof_theory,C3D10,1,YES,本文给出引理5的完整证明及定理1的证明步骤
+3,proof_theory,C3D23,1,YES,本文给出定理、引理并概述证明思路，属自身理论结果
+3,proof_theory,C3P6,1,YES,片段1给出Proposition 4.1及其证明保证，属本文理论结果
+3,proof_theory,C3D8,1,YES,本文提出定理1并给出证明概览与完整证明
+3,proof_theory,C3D6,1,YES,本文提出Proposition 3.2并给出附录B.1的详细证明
+3,proof_theory,C3D36,1,YES,片段含本文自己的理论推导、公式验证及附录证明
+3,proof_theory,C3D30,1,YES,结论明确称本文给出三层构造并证明估计器为一阶近似
+3,proof_theory,C3D27,1,YES,附录A给出本文定理13的证明细节，属本文自己的理论证明。
+3,proof_theory,C3D22,1,NO,贡献中明确列出'when depth provides an advantage'的理论，并框架化为序贯决策问题
+3,proof_theory,C3D26,1,YES,片段4给出Lemma 1及证明设定，片段6称提供统计保证，属本文理论结果。
+3,proof_theory,C3D7,1,YES,片段9给出本文Theorem 2及其证明性陈述，属本文理论保证
+3,proof_theory,C3D15,1,YES,本文提出并证明线性transformer保持线性回归的定理4.1/4.2
+3,proof_theory,C3D17,1,YES,"片段4提及Theorem 1,2，片段6给出Lemma 1，均为本文定理/引理"
+3,proof_theory,C3D25,1,YES,本文提出Theorem 4.2并证明（Appendix B），给出最优步长与损失改进的理论保证。
+3,proof_theory,C3D31,1,YES,贡献3称扩展可用信息理论，片段12提及本文定理2、3
+3,significance,C3D34,1,YES,报告了5折交叉验证的STD误差棒，即多次运行波动
+3,significance,C3D31,0,NO,片段1报告了10个样本上的标准差（narrow bands show std over 10 samples）
+3,significance,C3D30,0,YES,片段1报告了averaged over 3 seeds with error bars，即多次运行的标准差。
+3,significance,C3D21,1,YES,片段1对每个K重复评估5次；片段2报告标准差误差棒

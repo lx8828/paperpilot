@@ -118,6 +118,12 @@ retrieval/results/*.npy
 retrieval/results/*.npz
 retrieval/results/*.csv
 retrieval/_scratch/
+# ⚠️ 2026-10-05 放行：**定稿评测结果**（`R2_PROD_*`）—— 它们不是"跑批产出"，
+#    是**不可再生的记录**（与已入库的 85 份 `results/*.md` 同类），
+#    而且 `R2_PROD_FINAL.csv` 是 demo 对账（`_demo_multianswer.py`）的**依据**：
+#    不放行 → 干净 clone 里对账**跳空**，"复现了既有数"这句话就没人能验证。
+#    ★ 只放行 `R2_PROD_*`；其余 `.csv`（跑批产出）仍挡住。
+!retrieval/results/R2_PROD_*.csv
 
 # ── 评测/跑批的**产物与临时文件**（可再生）—— 2026-10-05 补 ────────
 # ⚠️ 报告 `retrieval/results/*.md` **仍入库**（现 85 份）—— 这里是产出物本身。
