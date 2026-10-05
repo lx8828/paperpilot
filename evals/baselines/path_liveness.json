@@ -359,9 +359,6 @@
  "retrieval/data/r2dev/nli_calibration.csv": [
   "retrieval/results/R2_L3_NLI_20260928.md"
  ],
- "retrieval/results/DIRECTION_RELEVANCE_20260927.csv": [
-  "docs/RESULTS_SUMMARY.md"
- ],
  "retrieval/results/LITSEARCH_RERANK.md": [
   "docs/RAG_COMPONENT_NOTES.md"
  ],
@@ -376,9 +373,9 @@
  ],
  "retrieval/results/R2_PROD_FINAL.csv": [
   "README.md",
+  "RESULTS_SUMMARY.md",
   "docs/DOC_INDEX.md",
-  "docs/RAG2_CORPUS_WIRING.md",
-  "docs/RESULTS_SUMMARY.md"
+  "docs/RAG2_CORPUS_WIRING.md"
  ],
  "retrieval/results/R2_RETR_n50_gnew_cnew_2arms.csv": [
   "retrieval/tmp/_r2_random_baseline50.py"

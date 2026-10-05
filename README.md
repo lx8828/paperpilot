@@ -40,7 +40,7 @@
 ## 📊 评测成绩
 
 > **要一份完整汇总（做了什么 / 上线了什么 / 上线效果 / 没上线的为什么 / 大 N 重采样 / 可信度支撑）？
-> 看 [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md)** —— 对外汇报的第一入口，每个数字都带出处。
+> 看 [`RESULTS_SUMMARY.md`](RESULTS_SUMMARY.md)**（与本文并排在仓库根）—— 对外汇报的第一入口，每个数字都带出处。
 > 下面是口径与水位明细。
 
 **产品定位**：论文**帮读器**（面向小白），**不是"答题得分器"**。对"帮高手精确摘原文细节"这类需求，我们如实承认不占优——那是产品范围决策，不是缺陷。
@@ -449,6 +449,10 @@ cli/                   # 命令行入口 + 评测工具
 tests/                 # pytest 测试套件（离线：假 LLM/假向量/假 MinerU；CI 跑这个）
 demo/                  # 自带 demo 论文（合成内容、无版权）+ 生成脚本 make_demo_pdf.py
 qa/                    # 手写问题集 + 各轮评测报告与复算脚本（质量评测，需真模型）
+retrieval/             # ★ 研究区（与生产区 src/paperpilot/ 刻意分离；目录名是历史命名，实为研究区）：
+                       #   data/ 语料与手工标注真值 · tmp/ 评测与实验脚本 · scripts/ 出题与导出 ·
+                       #   results/ ★ **全项目的评测证据库** —— RAG1/LitSearch、RAG2、MultiAnswer/QAMPARI
+                       #   的报告都在这里（检索线的研究记录见 docs/RETRIEVAL_LOG.md）
 bench/                 # 回归基线（baseline.json）
 assets/papers/         # 论文 PDF（不入库）
 assets/artifacts/      # 产物（不入库）
@@ -646,6 +650,7 @@ uv run python evals/runners/l4_loft.py --official --task sql --name my_run
 
 | 文档 | 内容 |
 |---|---|
+| 📊 **`RESULTS_SUMMARY.md`** | **成果汇总**（与本文并排在仓库根）：主要口径 / 上线效果 / 数据来源 / 已知局限 —— 对外汇报的第一入口 |
 | 🗂 **`docs/DOC_INDEX.md`** | **文档总地图**：哪些是现状、哪些是历史、冲突时信谁（建立 2026-09-22，**最近校验 2026-10-06**；与代码冲突时**信代码**） |
 | `qa/CAMPAIGN_20260906-07.md` | **决策总账**：优化史 + 定版 + 定位收尾 |
 | `DEVELOPMENT_LOG.md` | 开发踩坑记录、决策背景、遗留项、命令速查 |

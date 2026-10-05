@@ -616,10 +616,10 @@
    "retrieval/results/RAG2_TWO_SETS_INVENTORY_20260929.md"
   ],
   "_r2_random_baseline50": [
-   "docs/RESULTS_SUMMARY.md"
+   "RESULTS_SUMMARY.md"
   ],
   "_dir_relevance": [
-   "docs/RESULTS_SUMMARY.md",
+   "RESULTS_SUMMARY.md",
    "retrieval/results/LITSEARCH_DELIVER_N_20260927.md"
   ],
   "_mineru_check": [
