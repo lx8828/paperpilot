@@ -1,11 +1,24 @@
 # PaperPilot · 论文帮读器（LLM 精读 + 可溯源问答）
 
-输入一篇 PDF 学术论文 → 系统自动完成 **解析 → claims 提取与证据溯源 → 语义去重 → 角色打标 → 重要性打分 → 论证骨架 → 图表指南 → 结构化精读报告**，并支持**带引用溯源的论文问答**（**v3 两级**：报告层直答 → 不够时 **全文直读**（默认，`PAPERPILOT_QA_READER=fullctx`）/ **块级检索**（RAG-2，`=retrieval` 切回），输出前经**事实闸门**校验）。
+输入一篇 PDF 学术论文 → 系统自动完成 **解析 → claims 提取与证据溯源 → 语义去重 → 角色打标 → 重要性打分 → 论证骨架 → 图表指南 → 结构化精读报告**，并支持**带引用溯源的论文问答**（**v3 两级**：报告层直答 → 不够时 **全文直读**（默认，`PAPERPILOT_QA_READER=fullctx`）/ **块级检索**（RAG2，`=retrieval` 切回），输出前经**事实闸门**校验）。
 
 **给谁用**：想读论文、却被英文和专业门槛劝退的普通人。系统把论文**讲成能懂的话**（一分钟导读 / 大白话概述 / 引导式问答），同时每个关键结论都带回原文出处——让外行"读得懂、不跑偏、能自己点回原文核实"。
 
 > **核心信条：所有结论必须能回到原文。**
 > 任何产出如果不能指向原文页码/证据片段，就视为不合格——用工程手段对抗 LLM 在学术场景下的幻觉，而不是靠 "prompt 让它别编"。
+
+---
+## 🧭 检索能力地图
+
+| 能力 | 角色 | 当前状态 | 对应评测 / 说明 |
+|---|---|---|---|
+| **RAG1** | **论文级检索**：方向问题 → 候选论文 | 现行；稳定交付工作区是 **top-5**，LLM listwise 精排上限为 **top-10** | **LitSearch**（64,183 篇 / 597 查询） |
+| **RAG2** | **论文块级 reader 检索**：块召回 → 生成答案 | 代码保留，**默认关闭**；只作 A/B 对照与回退 | r2dev 证据召回 / reader 判定 |
+| **MultiAnswer** | **论文集合级多答案检索**：哪几篇满足问题 → 给出**回答** | **独立页 `/ma`**（工作台左下角进入），语料 = 本工作区那批论文，**固定 ≤10 篇** | **QAMPARI**（对外 passage 基准）+ 三簇论文集（内部） |
+| **Fullctx** | 报告层不够时，全文直读作答 | **论文问答默认 reader** | 三列公平对比与端到端 QA |
+
+> **QAMPARI 不是独立模块**。它属于 MultiAnswer，用来检查多答案检索能力；关系就像 **LitSearch 是 RAG1 的评测**。
+> **RAG2 也不是 MultiAnswer**：前者是块级 reader 检索，后者是论文集合级多答案检索。
 
 ---
 
@@ -15,15 +28,20 @@
 |---|---|
 | 📄 **帮读型报告** | 一分钟导读 / 大白话概述 / 核心要点 / 论证骨架 / 章节精读（低分默认折叠可展开）/ 图表一览 |
 | 🔍 **证据溯源闭环** | 每条主张绑定原文 `evidence_quote` + 页码，报告里可一键跳回原文并**整行高亮** |
-| 💬 **两级问答（v3）** | `Router(L0 报告层)` 够 → 直答；不够 → **全文直读**（默认；≤5 篇 ≈ 48k token 放得下，判据 S/C ≤ 1）→ **一律试答** → **输出闸门**兜底（修复 / 拒答话术）。RAG-2 块级检索**代码保留但前端不启用**（`PAPERPILOT_QA_READER=retrieval` 仅代码/对照可用）。直读的 `cites` **已含 `{pdf, chunk_id, page, section, evidence}`**（与检索路径**同形**）→ 点答案里的 `[n]` 可跳原文，**跨篇时会自动切到那一篇**（前端约 20 行；`web/prototype.html` 已实测验证） |
-| 🛡 **输出前事实闸门** | 机器件（引用越界、编数/漏数）**硬拦** → 对症修复 → 修不动则**LLM「补充说明」**（带「非系统作答」标注）→ 才兜底拒答；LLM 体检（无支撑断言/偏题/矛盾/含糊/零引用）**软标注** → 前端显示"答案自检（AI 复核）" |
+| 💬 **论文问答（v3）** | `Router(L0 报告层)` 够 → 直答；不够 → **`fullctx` 全文直读（默认）**；`PAPERPILOT_QA_READER=retrieval` 可切回 **RAG2 块级检索**（对照/回退，不在前端暴露）。`fullctx` 引用形如 `[P{n}·§...·¶cid]`，检索路径为 `[n]`，前端两者都可点回原文；输出前经事实闸门 |
+| 🧩 **MultiAnswer 多答案** | 论文集合级“哪几篇满足条件”：从工作台**左下角**进入**独立页 `/ma`**，语料 = 本工作区那批论文（**固定 ≤10 篇**），产出**回答**（逐篇判定 → LLM 汇总）+ 依据。**QAMPARI 是它的对外检索评测，不是独立模块** |
+| 🛡 **输出前事实闸门** | 机器件（引用越界、编数/漏数）**硬拦** → 对症修复 → 修不动则 **LLM「补充说明」**（带「非系统作答」标注）→ 才兜底拒答；LLM 体检（无支撑断言/偏题/矛盾/含糊/零引用）**软标注** → 前端显示“答案自检（AI 复核）” |
 | 📊 **表格内容可检索** | MinerU 表格/公式注入**检索视图**（表格数值可被召回、可被作答读到）；表池**并集候选**（正文 top-12 原样保留 + 追加表池前 2 名） |
 | 🖥 **三栏工作台** | 左：结构导航 ｜ 中：报告 / 原文 PDF ｜ 右：多轮追问（含答案自检提示条） |
-| ✅ **评测体系** | 帮读问答 + 导读忠实度 + 防幻觉/压力/稳定性 + 三列公平对比 + QASPER 第三方基准（详见下） |
+| ✅ **评测体系** | 帮读问答 + 导读忠实度 + 防幻觉/压力/稳定性 + 三列公平对比 + QASPER；RAG1 对应 LitSearch，MultiAnswer 对应 QAMPARI + 三簇论文集（详见下） |
 
 ---
 
 ## 📊 评测成绩
+
+> **要一份完整汇总（做了什么 / 上线了什么 / 上线效果 / 没上线的为什么 / 大 N 重采样 / 可信度支撑）？
+> 看 [`docs/RESULTS_SUMMARY.md`](docs/RESULTS_SUMMARY.md)** —— 对外汇报的第一入口，每个数字都带出处。
+> 下面是口径与水位明细。
 
 **产品定位**：论文**帮读器**（面向小白），**不是"答题得分器"**。对"帮高手精确摘原文细节"这类需求，我们如实承认不占优——那是产品范围决策，不是缺陷。
 
@@ -67,6 +85,52 @@
 > 不要与 09-12 之后的检索层改动混算。
 
 **版本说明**：链路模型 `deepseek-chat`；评测裁判默认 `glm-4-flash`（免费、与主链路异源）。完整决策史见 [`qa/CAMPAIGN_20260906-07.md`](qa/CAMPAIGN_20260906-07.md)。
+
+---
+
+## 🧩 MultiAnswer · 多答案开放域检索（独立页 `/ma` · 2026-10-06）
+
+> **定位**：MultiAnswer 是论文集合级“哪几篇满足条件”的能力。
+> **QAMPARI 属于 MultiAnswer 的评测体系**，用于检查多答案检索与判官能力；
+> 它不是独立模块——对应关系是 **QAMPARI : MultiAnswer = LitSearch : RAG1**。
+> **RAG2 另有其人**：RAG2 是论文块级 reader 检索，默认关闭、只作对照/回退。
+
+**入口与形态（2026-10-06 简化：不再有第二条路、没有 N）**
+
+| | |
+|---|---|
+| **入口** | 工作台**左栏左下角**「🎯 多答案展示」→ 跳**独立页** `GET /ma?pdfs=…` |
+| **语料** | **本工作区的那批论文**（与单篇问答同一口径 `askSources()`），**固定 ≤10 篇** |
+| **N** | **没有 N 选择器** —— 篇集由 URL 的 `pdfs` 唯一确定，后端强制 `n = len(pdfs)` |
+| **产物** | **回答**（把逐篇判定**塞进 LLM 汇总**）＋「依据」（逐篇明细，可折叠） |
+
+入口这样收拢，是因为两者都是「**主题类查询 → 10 篇论文**」—— 入口统一、下游复用同一批语料。
+
+**离线评测（能力仍在，只是不经前端）**
+
+| 口径 | 语料 | 规模 |
+|---|---|---|
+| 实时档（离线 CLI） | RAG1 现场检索 → 取料下载 PDF → 切块 | ≤10 篇 |
+| 论文域评测 | 预生成的固定论文簇 | **50 篇/簇**（3 簇 × 50 = 150） |
+
+**规模口径（统一按这版读）**
+
+- RAG1 的稳定交付工作区是 **top-5**；LLM listwise 精排上限是 **top-10**。
+- 在线一次**最多 10 篇**；它表示“链路可跑通”，**不表示已验证 10 篇效果好**。
+- **3 簇 × 50 = 150 篇**只是离线评测总量，不等于在线一次输入 150 篇。
+- 换检索源、换语料或换规模后，既有 P/R/F1 **不可直接比较**，必须重标真值。
+
+**评测归属**
+
+| 能力 | 评测 | 数据 / 报告入口 |
+|---|---|---|
+| RAG1 | **LitSearch**（64,183 篇 / 597 查询） | `retrieval/results/` 的 LitSearch 报告 |
+| RAG2 | r2dev 证据召回 / reader 判定 | `evals/RESULTS.md` 的 L2 + `retrieval/results/` |
+| MultiAnswer · 对外 | **QAMPARI**（LoFT，100 题，128k passage 档） | `evals/RESULTS.md` 的 L4 + `retrieval/results/R2_QAMPARI_*.md` |
+| MultiAnswer · 论文域 | 三簇 × 50 篇 = 150 篇、28 组合、三判官多数票 | `retrieval/results/R2_PROD_FINAL.csv` + `R2_PROD_FINAL_20261001.md` |
+
+> QAMPARI 验证的是 multi-answer / coverage 方法在 passage 语料上的表现，**不能替代论文语料的端到端结论**。
+> `evals/reports/*.jsonl` 是本地生成物；干净 clone 应看已入库的 `evals/RESULTS.md`、`evals/baselines/metrics.json` 和 `retrieval/results/` 报告。
 
 ---
 
@@ -186,9 +250,13 @@ uv run python web/app.py        # 摄取时自动调用（默认 backend=pipelin
 | `POST /api/job/{id}/cancel` | 请求取消（阶段边界生效；MinerU 会真终止子进程） |
 | `POST /api/job/{id}/retry` | 重试（已完成的阶段**自动复用**，通常快很多） |
 | `GET /api/report/{name}` | 取报告 JSON（含 `upload_note` / `mineru_warning`） |
-| `GET /api/meta` | 运行模式（演示模式横幅用它；也便于排查"为什么答案都是示例"）。另含 `ask_wait_s` / `ask_concurrency`：前端据此算问答的**兜底超时**（`AbortController` = `ask_wait_s + 180s`），避免连接挂住时页面一直转圈 |
+| `GET /ma` | **多答案展示独立页**（`web/multianswer.html`）。URL 带 `?pdfs=a.pdf,b.pdf,…`（裸文件名，相对 `assets/papers/`）—— 这就是它的**全部语料**；缺参数时页面给引导 |
+| `GET /api/meta` | 运行模式（演示模式横幅用它）。另含 `ask_wait_s` / `ask_concurrency`，以及 MultiAnswer 契约 `ma_live_max` / `ma_stages`（`ma_n_options` / `ma_n_max` 仍返回，但**只服务于离线评测**，独立页不使用） |
 | `GET /pdf/{name}` | 取原始 PDF（前端 pdf.js 渲染与"点引用跳原文高亮"用）。另有 `GET /`（工作台页面）与 `/vendor`（静态资源挂载） |
 | `POST /api/ask` | 提问（**不阻塞事件循环**：同步端点走线程池 + 并发闸门；摄取**进行中**时明确告知"正在解析，请稍候"——那不是失败） |
+| `POST /api/direction/search` | 方向问题 → RAG1 检索候选论文（离线编排 CLI `run_rag2_flow.py` 复用该入口） |
+| `POST /api/multianswer/fetch` | 候选 arXiv id → 取料下载 + 摄取（后台 job；失败篇逐条返回） |
+| `POST /api/multianswer/search` | 独立页 `/ma` 用：`{question, pdfs}` —— 传了 `pdfs` 就以**它**为语料，后端**强制 `n=len(pdfs)`** 且 `≤ ma_live_max`；★ `corpus` **不是请求字段**。**完成后 job 带** `answer`（LLM 汇总的回答）/ `answer_ok` / `answer_error` / `evidence_text`（逐篇依据）/ `candidates`。**不带 `pdfs`** 时用服务端语料（`n` 生效）—— 那是**离线评测**路径，前端不用 |
 
 **上传门（2026-09-14）**：只做两条"边界上花 3 行、省掉一次注定失败的分钟级摄取"的校验 ——
 ① 非 `.pdf` 扩展名 → `400`；② 缺 `%PDF-` 文件头（把 `.docx`/`.txt` 改名成 `.pdf`）→ `400`
@@ -220,11 +288,13 @@ uv run python cli/run_skeleton.py <pdf名>    # 论证骨架
 uv run python cli/run_figures.py <pdf名>     # 图表识别 + 读图指南
 uv run python cli/run_report.py <pdf名>      # 结构化精读报告
 
-# ── 四个工具 ──────────────────────────────────────────────────
-uv run python cli/run_fetch.py 1706.03762 --ingest     # ① 论文取料：arXiv id → 论文库 PDF（--ingest 顺手摄取）
-uv run python cli/run_search.py "问题"                 # ② 论文检索：问题 → top-k 论文（支持时间窗）
-uv run python cli/run_pipeline.py "问题"               # ③ 论文直读：检索 → 抓取 → 精读 → 报告（端到端）
-uv run python cli/run_set.py --dir assets/papers --question "哪些篇做了消融？"   # ④ 多答案开放域问答：哪几篇做了 X + 逐篇证据
+# ── 检索 / MultiAnswer ────────────────────────────────────────
+uv run python cli/run_fetch.py 1706.03762 --ingest     # 论文取料：arXiv id → 论文库 PDF（--ingest 顺手摄取）
+uv run python cli/run_search.py "问题"                 # RAG1：问题 → top-k 论文（支持时间窗）
+uv run python cli/run_pipeline.py "问题"               # 论文直读：检索 → 抓取 → 精读 → 报告（端到端）
+uv run python cli/run_set.py --dir assets/papers --question "哪些篇做了消融？"   # MultiAnswer：已有论文集合上判定哪几篇满足，并汇成回答
+uv run python cli/run_rag2_flow.py --direction "RAG 如何做知识密集问答" --n 10 --question "哪些篇做了消融？"  # 离线编排：RAG1 → 取料 → MultiAnswer（--n 是离线参数；文件名历史遗留）
+uv run python cli/eval/run_multianswer.py --question "哪些篇做了消融？" --chunks <切块.parquet> --corpus-n 50        # 离线评测：固定语料上跑 MultiAnswer
 # 评测/跑批脚本已归入 cli/eval/（见「评测与回归护栏」节）
 ```
 
@@ -232,7 +302,7 @@ uv run python cli/run_set.py --dir assets/papers --question "哪些篇做了消�
 
 ## ⚙️ 行为开关（env）
 
-**这一节是"现在实际在跑什么"的权威说明**：默认值直接决定线上行为，回退通常只改一行/一个 env。
+**默认值直接决定线上行为**；回退通常只改一行或一个 env。
 
 ### 默认**生效**的改动
 
@@ -245,7 +315,7 @@ uv run python cli/run_set.py --dir assets/papers --question "哪些篇做了消�
 | `PAPERPILOT_EXT_RRF_ALPHA` | `0.5` | 外部块（表格/公式）两路权重 `(2α, 2(1-α))`；0.5 = 生产原样（文本块恒 1:1 不动） |
 | `PAPERPILOT_MINERU_INJECT` | `1`（开） | 把 MinerU 表格/公式文本按页注入**检索视图**（`=0` 可关，评测用） |
 
-### 其它开关（**默认值以「默认」列为准** —— 不少默认是"开"，别当成实验开关）
+### 其它开关（**以「默认」列为准** —— 不少默认是"开"）
 
 | 开关 | 默认 | 作用 / 为什么默认关 |
 |---|---|---|
@@ -321,8 +391,10 @@ POST /api/report ──→ job_id（202，立即返回）
 ```
 用户问题
   Router   L0 报告层（overview + core_points）够不够？── 够 ──→ 直答（快，不唤醒 embedding）
-                                            └─ 不够 ──→ 全局检索 L3（向量 + BM25 混合，RRF 融合）
-                                                        └─→ **一律试答**（默认无 judge_l3）
+                                            └─ 不够 ──→ reader
+                                                          ├─ 默认：fullctx 全文直读
+                                                          └─ `PAPERPILOT_QA_READER=retrieval`：RAG2 块级检索（对照/回退）
+                                                                    └─→ **一律试答**（默认无 judge_l3）
   输出前闸门 validator.gate()：
     HIGH（引用越界 / 编数漏数）→ repairer 对症修复（Self-Refine / CRAG）
                                 └─ 修不动 → **LLM「补充说明」**（文本强制带「非系统作答」标注）
@@ -335,6 +407,23 @@ POST /api/report ──→ job_id（202，立即返回）
 > ⚠️ **默认配置下没有 L3 裁判**（`PAPERPILOT_V3_NOL3J` 未设即开：删 `judge_l3`、一律试答，消融 64%→73%），
 > 因此 `answer_unknown` 节点在默认图里**不可达** —— "诚实拒答"由**输出闸门兜底话术**承担。
 > `=0` 才回到带 `judge_l3` 的图（够→答 / 不够→answer_unknown）。
+
+### 归档：v2 四层漏斗（为什么下线）
+
+`archive/qa_funnel_v2/` 是旧版检索架构的完整快照
+（`L0 总览 → L1 claims → L2 圆心扩窗（自环）→ L3 全局检索 → unknown`），**已从活代码彻底移除**，
+不提供 `ask_v2` 回退；现行唯一检索链是 `src/paperpilot/graph/qa_graph_v3.py`。
+
+| 证据 | 结论 |
+|---|---|
+| 250 题同裁判 A/B | v3 两级 **203** ≥ v2 四层 **201**；calls 3.7 vs 5.6（**−34%**） |
+| L2 目标题群 67 题五连 A/B | L2 可赢空间**≈1 题**（噪声内），却要付"圆心+半径+预算自环"的整块复杂度 |
+| L1 claims 分支 A/B | V1=62 < V0=64 —— claims 分支捞不回 L2 那 8 题（那 8 题实为 L3 检索召回短板） |
+| judge 精度 | L2 曾出现 **61%** 判够准确率 —— LLM 预测当路由**危险**，判"够"的对象必须简单 |
+
+一句话：**四层漏斗买到的准度 ≈ 0，复杂度却真实存在**（单篇场景的瓶颈在"全局限检索召回 + 答案层"，
+不在"多一层判够"）。可复用教训：① 中间层要用数据赎买；② judge 是 LLM 预测，必须配降级链
+（判"不够"只是多花钱，判"够"才会答错）；③ 诊断先分"没送到"与"送到了没用好"；④ 融合平坦即有害。
 
 ### 代码分层
 
@@ -376,7 +465,7 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 uv run pytest -q        # 203 passed in ~10s（本地；CI 上含装依赖约 1~2 分钟）
 ```
 
-规矩很简单，**三层命令分三类事**（后两档默认跳过，缺环境也只会 skip、不会红）：
+**三层命令分三类事**（后两档默认跳过，缺环境只会 skip、不会红）：
 
 | 命令 | 跑什么 | 需要什么 |
 |---|---|---|
@@ -406,7 +495,7 @@ uv run pytest -q        # 203 passed in ~10s（本地；CI 上含装依赖约 1~
 | `test_llm_client.py` | 16 | JSON 解析容错、**坏 JSON**、**超长输入**、未配置时明确报错 |
 | `test_tgt.py` | 15 | 目标表定位口径（编号 ∪ 内容）—— 所有表格类指标的尺子 |
 | `test_validator_offline.py` | 13 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归（+1 条 `local`：真裁判模型） |
-| `test_mock_mode.py` | 10 | **演示模式**（`--mock`）：无 Key / 无模型 / 无 MinerU 也能跑通（上面 README 承诺的技术保障） |
+| `test_mock_mode.py` | 10 | **演示模式**（`--mock`）：无 Key / 无模型 / 无 MinerU 也能跑通（演示模式承诺的技术保障） |
 | `test_e2e_mock.py` | **4** | **mock LLM 端到端**：上传 → 后台 job → 报告 → 提问 → 带 `[n]` 引用的答案；含"MinerU 失败 → 不建索引 + 问答被闸门拦" |
 | `test_local_smoke.py` | 3 | `local` 档**真模型冒烟**：真向量检索位次 / 真 LLM 作答带引用 / 真 MinerU 解析（各带 skip 条件） |
 | `test_ui_smoke.py` | 1 | `ui` 档**浏览器冒烟**：playwright 驱动真页面走完上传 → 报告 → 提问 → 点引用跳原文，并捕获未捕获 JS 异常 |
@@ -432,11 +521,124 @@ CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任�
 | `uv run python cli/eval/run_rag_eval.py` | RAG 评估：对 `qa_set` 每道题真实跑 LangGraph 问答图 |
 | `uv run python cli/eval/run_chunk_eval.py` / `run_retrieval_eval.py` / `run_chunk_recall.py` | 分块 / 检索层专项评估（零 LLM 尺子） |
 
-> 评测/跑批脚本 2026-10-01 已统一归入 **`cli/eval/`**（14 个 + `_anchors.py`）；`cli/` 根下只留
+> 评测/跑批脚本 2026-10-01 已统一归入 **`cli/eval/`**（15 个 + `_anchors.py`）；`cli/` 根下只留
 > 四个工具与报告小组件入口。旧入口 `run_qasper_eval.py` / `run_qa_v2.py` 已不在。
 
-本 README 的评测数字**必须带口径与日期**；单次端到端运行的 churn 在 8%~25%，
+**评测数字必须带口径与日期**；单次端到端运行的 churn 在 8%~25%，
 **<3 题的效应不可判**（见 `qa/recall/UNION_AND_CONTEXT_20260911.md` §2）。
+
+### 评测分层（L0–L4）：每层一个触发条件
+
+| 层 | 判什么 | 触发 | 成本 | 现状 |
+|---|---|---|---|---|
+| **L0 · 不变量** | 仓库状态与契约（**不跑模型**）：干净 clone 能不能评测、路径引用是否悬空、gold 与导出是否同步 | **每次改动**（CI 默认） | 秒级 / 免费 | ✅ 已有 |
+| **L1 · 篇级检索（RAG1）** | LitSearch（64,183 篇）：Recall@k / nDCG | 发版前 / 手动 | 分钟级 | 🟡 能力已有（`cli/eval/run_retrieval_eval.py`） |
+| **L2 · 块级 reader（RAG2）** | r2dev 28 个 facet：证据召回 / reader 判定 | 发版前 / 手动 | 分钟~小时 | 🟡 能力已有（`retrieval/tmp/_r2_*.py`） |
+| **L3 · 端到端** | 产品链路（`graph.ask`）+ 5 组 164 题 | 发版前 / 手动 | 小时级 | 🟡 能力已有（`cli/eval/run_group_qa.py`） |
+| **L4 · 对外可比** | **MultiAnswer 的外部评测（主用 QAMPARI）**；runner 同时支持 LoFT 五任务 | **按需** | 小时级 | ✅ 已有（`evals/runners/l4_loft.py`） |
+
+**为什么这么分层**：把「**免费且必须每次跑**」（L0）与「**贵且只需发版前跑**」（L1–L3）分开 ——
+否则一套评测要么贵到没人跑、要么便宜到抓不住问题。L4 单独一档，因为它的价值在**对外可比**
+（与公开榜同口径），触发节奏与内部回归不同。
+
+**能力 ↔ 评测归属**
+
+| 能力模块 | 内部 / 端到端 | 对外可比 |
+|---|---|---|
+| **RAG1** | 篇级检索回归、LitSearch 消融 | **LitSearch（L1）** |
+| **RAG2** | 块级证据召回 / reader 判定（L2） | —（默认关闭的对照路径） |
+| **MultiAnswer** | 3 簇 × 50 篇 = 150 篇、28 组合（论文域） | **QAMPARI（L4）** |
+| **Fullctx / 产品链路** | L3 端到端 + 三列公平对比 | QASPER 等报告 |
+
+**`evals/` 目录约定**
+
+```
+evals/
+  baselines/  基线（棘轮）：path_liveness.json（悬空引用）/ tmp_scripts.json（tmp 脚本分类）/ metrics.json（指标）
+  checks/     L0 不变量（只读工具）：path_liveness.py / tmp_scripts_audit.py / metrics_ratchet.py
+  report.py   统一记录格式 —— 让各层数字能放一张表里比
+  reports/    落盘（gitignore；入库的是 .md 摘要）
+  runners/    l4_loft.py（LoFT 五任务）
+```
+
+三条硬约定：① **真值只放一份** —— `evals/datasets/` 只写**指针**（指向 `retrieval/tmp/group*/` 与
+`retrieval/data/r2dev/`），**不复制**（复制必然漂移）；② **判据只放一处** —— 例如"gold ↔ 导出同步"
+只由 `retrieval/scripts/_check_export_sync.py` 定义，`evals/` 与 `tests/` 都**调用**它、不重写
+（重写 = 漂移 = 假测试）；③ **报告入库，产物不入库** —— `retrieval/results/*.md` 入库（不可再生的记录），
+跑批产出（`results/*/`、`qa/multi/_runs/`）不入库。
+
+### L0 在查什么（免费 · 每次改动都跑）
+
+| 检查 | 在哪 | 断言什么 |
+|---|---|---|
+| gold 是否全部入库 | `tests/test_eval_assets.py` | 磁盘上**每个** gold 都已在 git（曾 15 个只入库 7 个） |
+| r2dev 真值是否入库 | 同上 | 现役真值 + 题集 + 子查询在库；大件/可再生件**不**在库 |
+| gold ↔ 导出是否同步 | 同上 + `retrieval/scripts/_check_export_sync.py` | 不同步 = 跑批**静默测另一份题** |
+| 悬空路径引用 | `evals/checks/path_liveness.py` + `tests/test_path_liveness.py` | 无**新增**悬空引用（棘轮，历史债不阻塞）。判据是**版本库视图**（不是磁盘）—— 否则本机绿、CI 红 |
+| `retrieval/tmp` 脚本归属 | `evals/checks/tmp_scripts_audit.py` + `tests/test_tmp_scripts_audit.py` | 保留脚本**已入库**；归档**不造断 import** |
+| 统一记录格式 | `evals/report.py` + `tests/test_evals_report.py` | 缺 `n`/`note` 的记录**写不进去**；NaN/inf 被拒 |
+| **指标棘轮** | `evals/checks/metrics_ratchet.py` + `tests/test_metrics_ratchet.py` | 跑批后指标**掉出容差**就报错；带容差（±16pt）与**方向** —— `reader_offlabel` / `gold_map_failed` 这类**越低越好**，一律"降了就红"会把**修好了**判成回退 |
+| **L4 口径完整性** | `evals/runners/l4_loft.py` + `tests/test_l4_loft.py` | 坏指标文件（**0KB**/缺字段）**被跳过而非当 0 分** |
+| **跑批入口的 emit 接线** | `tests/test_eval_emit_wiring.py` | 记录**真落盘**（断言**副作用**，不是"没抛异常"）。曾因 `_emit_report` 漏传 `args` → `NameError` 被 `except` 静默吞掉 → **一整天没记录也没人发现** |
+
+### L4：LoFT 五个任务（口径不同，不可混谈）
+
+```bash
+uv run python evals/runners/l4_loft.py --check                      # 五任务前置（离线秒级）
+uv run python evals/runners/l4_loft.py --collect                    # 汇总已有运行
+uv run python evals/runners/l4_loft.py --official --task sql --name my_run
+```
+
+| `--task` | 官方指标 | 口径要点 |
+|---|---|---|
+| `multi_value_rag`（QAMPARI） | `em` / `coverage` / `subspan_em` | `coverage` **只有 recall**；官方 `f1` **恒为 0**（多值分支未赋值）→ 已从记录里**排除** |
+| `rag` | `em` / `f1` | SQuAD 风格**单值** |
+| `retrieval` | `recall@k` / `mrecall@k` | **Capped**：gold 数 > `k` 时**除以 `k`** |
+| `sql` | `execution_accuracy` | **不强制顺序**（建集时已滤掉需排序的题） |
+| `icl` | `em` | 预测**多值被忽略**、实例**多轮** |
+
+指标**透传**（官方输出里有什么数值指标就落什么）—— 硬编码清单会"官方加指标而这里**静默漏报**"。
+健康度 `<前缀>.unanswered`（空预测题数）应为 0：官方口径会把它们**剔出分母** → 虚高。
+
+### 评测侧已知未决
+
+- **L2 只跑了检索侧，判定质量未测**：`_r2_retr_eval.py`（证据召回）已落 18 条；reader 侧
+  `_r2_reader.py` 要**真调 LLM 判官**，**尚未跑** → `r2.reader_*` 无基线，"判得对不对"这一半**还是空白**。
+- **L4 当前有数据的只有 QAMPARI**：`rag` / `retrieval` / `sql` / `icl` 四个任务**无数据无运行**（`--check` 显示"尚无运行"）；
+  QAMPARI 的 **`32k` 档有数据但无运行**（补跑要真调 LLM）。
+- **L4 容差待实测**：默认 `0.02` 在 `n=100` 上 = **2 题翻转**。只跟"**重收同一批 preds**"比是**确定性**的（没问题）；
+  **重跑 preds**（LLM 采样）则可能误报。放宽容差等于把闸门关小 —— **要先量同配置两次跑的离散度**再定。
+- **`evals/reports/` 是 gitignore 的** → 干净 clone 里指标棘轮**无数据可比**（会跳过并说明）。
+  要让"指标历史"进版本库，应入库 `--md` 摘要（`uv run python evals/report.py --md`），当前摘要落在 **`evals/RESULTS.md`**。
+
+### `qa/` 目录（评测与实验记录 —— **不是测试套件**）
+
+测试在 `tests/`（`uv run pytest -q`，203 用例、无需 key）；`qa/` 放的是**评测与实验记录**：
+判"高低"，有噪声、要 key/模型，**按需手动跑**。
+
+**三份主要文档**
+
+| 文档 | 内容 |
+|---|---|
+| `qa/QASPER_EVAL_LOG.md` | QASPER 第三方基准的逐次记录（**84.3%** 那条线的来龙去脉、每次改动的归因） |
+| `qa/RETRIEVAL_EVAL_FRAMEWORK.md` | **评测脚本清单**：每个脚本的定位 / 样本量 / 得分 / 是否可复用 |
+| `qa/CAMPAIGN_20260906-07.md` | v2→v3 的**决策史**（为什么砍 L2、为什么表池并集设为默认、什么是负结果） |
+
+| 目录 / 文件 | 是什么 | 入库 |
+|---|---|---|
+| `recall/` | 检索与表格线的主战场：报告（`.md`）、评测口径模块（`_tgt.py`）、保留的 runner | ✅ 141 个 |
+| `questions/` | 中文 QA 题集（31 个 json / 304 题；第一组 5 篇 = 70 题按 gold 引文口径重建） | ✅ |
+| `compare/` | B0 / B1 / B2 三列对照（设计 + 报告 + 配对 McNemar / 检验功效脚本） | ✅ 12 个 |
+| `reader/` `negqa/` `robust/` `stress/` | 四个专项：外行问答 / 防幻觉 / 同义改写稳定性 / 对抗诱导 | ✅ |
+| `review/` | 代码审查的复现脚本与应答台账 | ✅ |
+| `snapshots/`、`_archive/`（136 个一次性诊断脚本）、`_scratch/` | 场景快照 / 归档诊断 / 临时脚本 | ❌ 本机留档 |
+
+**两个容易误判的地方**：
+
+1. 报告里引用的 `qa/*.json` / `*.jsonl` 运行记录**多数没入库**（本机另有约 250 个运行记录与日志）。
+   看到"某个 `qa/qasper_run_*.json` 不存在"，通常不是文档坏了，而是**那份记录只在本机**。
+2. **2026-09-14 归档了 136 个一次性脚本**到 `qa/_archive/recall/`（本机留档、不入库，git 历史仍在），
+   **清单见 `qa/recall/ARCHIVED.md`** → 老报告里指向 `qa/recall/_xxx.py` 的路径**可能已经不在**。
 
 ---
 
@@ -453,7 +655,9 @@ CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任�
 | `qa/COMPARE_DESIGN.md` | 三列公平对比设计（控制变量/口径/成本） |
 | `qa/reader/` `qa/negqa/` `qa/robust/` `qa/stress/` | 帮读主口径 / 防幻觉 / 稳定性 / 压力边界 报告 |
 | `archive/qa_funnel_v2/QA_FUNNEL_DESIGN.md` | v2 四层漏斗架构设计 + 铁律（**已归档**，只作对照） |
-| `design.md` | 早期设计 |
+| `docs/RAG2_CORPUS_WIRING.md` | **MultiAnswer 语料接线与能力边界**（文件名 RAG2 为历史遗留；QAMPARI 是 MultiAnswer 的评测） |
+| `docs/RETRIEVAL_LOG.md` | **RAG1 研究记录**：数据事实 / 完整消融 / 池深与精排扫描 / 阶段 ①~③ 的正负结果 |
+| `archive/design.md` | 早期设计（已归档，只作对照） |
 
 ---
 
@@ -470,7 +674,60 @@ CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任�
   机器产出、可重跑、体积约 7 MB，且**含论文原文片段**（gold 证据/答案）不宜大段转载。
   ⚠️ 代价：复算脚本若依赖某个记录文件，**先在本地跑上游脚本生成**（README 里引用的原始记录均为本地文件）。
 - **评测口径**：目标表定位用 `qa/recall/_tgt.py`（编号 ∪ 内容联合判定），不要在各脚本里另写 `cap_key`。
-  `qa/` 下的测试类断言已迁到 `tests/`（pytest），别再新增散装 `_selftest_*.py`。
+  `qa/` 下的测试类断言已迁到 `tests/`（pytest）；测试类断言不再新增散装 `_selftest_*.py`。
+
+### 论文线真值（`retrieval/data/r2dev/`）：读哪个 gold
+
+真值由人工 + 多判官标注，**不能靠重跑脚本再生**（原则：**gold 不重标**）→ **必须入库**。
+按**语料口径**选，**别按文件名新旧猜**：
+
+| 语料口径 | 真值 | 题集 | PDF 映射 | 语料 / 切块 |
+|---|---|---|---|---|
+| **20 篇**（3 簇 × 20 池 = 60，47 篇有 PDF） | `gold_final2.csv` | `facets_v2_selected.json`（28 组合） | `pdf_map.json` | `clusters/` + `prodchunk/mineru/` |
+| **50 篇**（3 簇 × 50 = 150，含同领域干扰项） | **`gold_final3.csv`** | 同上 | `corpus50/pdf_map_all.json` | `corpus50/` + `prodchunk50/mineru/` |
+
+**对外 / 汇总口径统一用 50 篇**；20 篇那套是最早的语料口径、**不再用于对外报数**，但**保留在库**
+（真值不可再生；`retrieval/tmp/_r2_retr_eval.py --corpus 20|50` 等分析脚本仍会读它）。
+`gold_final2.csv` **不是"旧版本"**（它比 `gold_final.csv` 新）—— 它是 `gold_final3.csv` 的**标注基础**：
+`gold_final3` = 它的 **451 对** + 新增 **949 对** = **1,400 对**（**50 篇就是在 20 篇上扩出来的**）。
+
+```
+gold_final.csv ──(题集重选 29→28 组合 + 补三判官票数)──▶ gold_final2.csv ──(换语料 47→150 篇)──▶ gold_final3.csv
+   第一代                                                    第二代(20篇)                      第三代·对外口径(50篇)
+```
+
+**入库策略**（本目录 27.9MB，只有约 1.3MB 入库）：三代 gold / 推导链 / 题集 / 子查询 / 映射 / 校准表入库；
+`*_evidence.json`（11.6MB）、`clusters/` `corpus50/` `pdftext*/` `prodchunk*/`（14.3MB）、运行缓存**不入库**
+（可按 gold 的 `ev_idx` 从切块重抽 / 从 PDF 重建）。
+
+⚠️ **踩过的坑**：① 本目录曾**整体被 `.gitignore` 的 `retrieval/data/` 挡掉** → 干净 clone 拿不到真值、
+论文线评测**完全无法复现**（2026-10-05 改为"挡可再生大件、放行手工标注真值"）；
+② **`git check-ignore` 不能用来验证 `!` 反选**（反选命中时它**仍会打印路径**）——
+要验证请用 `git ls-files --others --exclude-standard retrieval/data`。
+
+### `retrieval/tmp/`：为什么"临时目录"里装着真源
+
+目录名看着像"临时"，其实装着**两类不可再生的东西**：
+
+| 内容 | 是什么 | 入库？ |
+|---|---|---|
+| `group*/<stem>.questions.json`、`group*/_group.questions.json` | **出题 gold（唯一真源）** —— 每题带逐字原文引文 | ✅ **必须** |
+| `_*.py`（135 个） | 评测/实验脚本：**库 14 个 + 有出处的入口 ~120 个** | ✅ |
+| `_archive/`（161 个 `.py`） | **一次性实验**的归档（无出处、无人引用） | ❌ gitignore |
+| `_gold_history/` | 出题的草稿/备份 | ❌ gitignore |
+
+分类**不是猜的** —— 由 `evals/checks/tmp_scripts_audit.py` 算出，结果落
+`evals/baselines/tmp_scripts.json`（含每个脚本被谁引用、被哪份报告提到），可重跑复核。
+
+⚠️ **这 14 个是「库」**（被别的脚本 import，删/改会连带一大片）：
+`_r2_std_metrics.py`（被引用 **30**）、`_r2_facets_v2.py`（22）、`_sandbox.py`（15）、
+`_qampari_run.py`（8）、`_r2_gold_recalib.py`（8）……
+
+**为什么留在 `retrieval/tmp/` 而没搬去 `evals/`**：它们按**相对 `retrieval/`** 定位
+（`HERE = parents[1]` → `retrieval/`；`sys.path` 插 `retrieval/scripts`；用 `spec_from_file_location`
+动态加载兄弟脚本）。实测 **133/135 个用 `parents[N]`**、88 个改过 `sys.path`、50 个动态加载 ——
+**换目录会让这些语义变化，不是换名能修的**（得在 100+ 个文件里逐处判断"这个相对路径想要的是谁"）。
+零功能收益、全是风险，所以**不搬**。真要拆 `lib/` + `runners/`，前提是**先改成包导入**（`import evals.lib.x`）。
 
 ---
 

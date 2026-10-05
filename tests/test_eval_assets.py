@@ -100,7 +100,7 @@ def test_r2dev_truth_and_inputs_are_tracked():
     for name in _R2DEV_REQUIRED:
         assert any(t.endswith(name) for t in tracked), (
             f"r2dev 的 {name} 未入库 —— 干净 clone 跑不了论文线评测。\n"
-            f"（{name} 不可再生，见 retrieval/data/r2dev/README.md）")
+            f"（{name} 不可再生，见仓库 README 的「论文线真值」节）")
 
 
 def test_r2dev_big_regenerable_files_stay_out():

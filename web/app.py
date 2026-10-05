@@ -159,6 +159,16 @@ async def index() -> str:
     return (WEB_DIR / "index.html").read_text(encoding="utf-8")
 
 
+# ★★ 「多答案展示」独立页（2026-10-06）—— 从工作台左栏左下角进入。
+#   URL 约定：`/ma?pdfs=a.pdf,b.pdf,…`（★ **裸文件名**，相对 `assets/papers/`；
+#   与 `/api/multianswer/search` 的 `pdfs` 同口径）。★ 篇集是这页**唯一的语料真源**
+#   （后端没有"当前批"的会话状态），所以刷新/分享都不能丢参数。
+#   照 `index()` 的写法内联读文件 —— **不要**把 `StaticFiles` 挂到 `/`（会盖掉 /api/*）。
+@app.get("/ma", response_class=HTMLResponse)
+async def ma_page() -> str:
+    return (WEB_DIR / "multianswer.html").read_text(encoding="utf-8")
+
+
 @app.get("/pdf/{name}")
 async def serve_pdf(name: str) -> FileResponse:
     """给前端 pdf.js 渲染用：返回 assets/papers 下的 PDF 文件。"""
@@ -431,12 +441,37 @@ def _job_view(j: dict[str, Any]) -> dict[str, Any]:
             "n_candidates": j.get("n_candidates") or 0,
             "papers": [dict(p) for p in (j.get("papers") or [])
                        if isinstance(p, dict)],
+            # ★ 候选全表（篇名 + 检索分）—— 展示页用它算「未命中是哪几篇」
+            #   （`papers` 只含判 yes 的；未命中篇没有理由字段，故只列篇名）。
+            "candidates": [dict(c) for c in (j.get("candidates") or [])
+                           if isinstance(c, dict)],
             # ★ 全 unclear 的提示**不吞掉**：那通常意味着判官链路坏了，
             #   而输出看着像「没有论文符合」——正是要防的静默假结论。
             "warning": j.get("warning") or "",
+            # ★★ 「回答」= 把逐篇判定**塞进 LLM 汇总**的产物（2026-10-06 新增）——
+            #   独立展示页 `/ma` 的主输出；`answer_ok=False` 时前端应回退到「依据」。
+            "answer": j.get("answer") or "",
+            "answer_ok": bool(j.get("answer_ok")),
+            "answer_error": j.get("answer_error") or "",
+            # ★ 「依据」：逐篇判定清单（原 `render()` 产物），展示页折叠区用它。
+            "evidence_text": j.get("evidence_text") or j.get("answer_text") or "",
             "answer_text": j.get("answer_text") or "",
             "retr": j.get("retr") or "",
             "win_chars": j.get("win_chars") or 0,
+            # ★ 这条 job 走的是哪条链路：`live`（A 实时）/ `showcase`（B 展示）。
+            #   前端可据此**自查**（避免"标签说 50、其实是 10 篇"）。
+            "route": j.get("route") or "",
+        })
+    # 「② 论文取料下载」（2026-10-05）：同样**只在 kind 匹配时**附加字段，
+    # 单篇 / 方向 / 多答案三种视图逐位不变（既有前端与测试不受影响）。
+    elif str(j.get("kind") or "") == "ma_fetch":
+        view.update({
+            "kind": "ma_fetch",
+            "arxiv_ids": list(j.get("arxiv_ids") or []),
+            "progress": dict(j.get("progress") or {}),
+            "papers": [dict(p) for p in (j.get("papers") or [])
+                       if isinstance(p, dict)],
+            "n_ok": j.get("n_ok") or 0,
         })
     return view
 
@@ -493,10 +528,23 @@ async def api_meta() -> JSONResponse:
         # 前端以为能选 8 篇、后端只收 10 篇，用户白勾一场）。
         "search_k": SEARCH_K,          # 阶段①给几篇候选（10）
         "select_max": SELECT_MAX,      # 用户最多能选几篇（10；依据见 direction.SELECT_MAX）
-        # 「多答案开放域检索」的契约值：★ 同样**前端据此渲染，不写死魔数**。
-        #   `ma_n_tiers` = N 的分段选项；`ma_corpus_exists` = 语料在不在（不在就别让点）。
-        "ma_n_tiers": list(_MA_N_TIERS),
+        # 「多答案开放域检索」的契约值。
+        # ★★ 2026-10-06 起**独立页 `/ma` 只用 `ma_live_max` / `ma_stages`**；
+        #   下面三个**仍返回，但只服务离线评测**（前端**不再渲染 N** —— 独立页固定 ≤10 篇）：
+        #   `ma_n_tiers`   = N 的**数值**档位（离线跑批用）；
+        #   `ma_n_options` = N 的**带标签**档位 `[{n, label}]`（离线评测报告里引用）；
+        #   `ma_corpus_exists` = 服务端语料在不在（只有**离线路径**用得上）。
+        "ma_n_tiers": [n for n, _ in _MA_N_TIERS],
+        "ma_n_options": [{"n": n, "label": f"{n}（{lab}）"} for n, lab in _MA_N_TIERS],
         "ma_n_max": _MA_N_MAX,
+        # ★ 语料**硬上限**（独立页固定 ≤10 篇，**没有"选 N"**）——
+        #   后端对 `pdfs` 分支同时**强制 `n = len(pdfs)`**（见 `multianswer_search`）。
+        "ma_live_max": _MA_LIVE_MAX,
+        # 「② 论文取料下载」的阶段键（前端据此渲染进度）—— ★ 同样从后端来，不写死。
+        "ma_fetch_stages": list(worker.MA_FETCH_STAGES),
+        # 「③ 多答案检索」的阶段键：★ 语料是"现成切块"时只有 `index`/`run`；
+        #   是"刚取料下来的 PDF"时**多一个 `chunk`**（先生产切块）→ 前端据实际阶段渲染。
+        "ma_stages": list(worker.MA_STAGES),
         "ma_corpus_exists": Path(_ma_corpus_path()).exists(),
         # 上下文预算（**字符**，0=不限制）：`fullctx` 把全文塞进提示词，这是硬闸。
         # 前端可用它显示"当前语料 / 预算"，或据 `ctx_per_paper_chars` 提示篇数。
@@ -649,8 +697,30 @@ def direction_process(body: DirectionProcessBody) -> JSONResponse:
 #    当**引用**，而 `retrieval/data/` 下的语料是**有意不入库**的（可再生）→
 #    写成整条会被判「悬空引用」（今天实测被闸门抓到过）。
 _MA_CORPUS_REL = ("retrieval", "data", "r2dev", "prodchunk50", "mineru", "c0.parquet")
-_MA_N_TIERS = (10, 20, 30, 50)      # 档位；语料只有 50 篇，故不超过它
-_MA_N_MAX = max(_MA_N_TIERS)
+
+# ★ N 的档位 = **`(值, 标签)`**；标签是给**前端下拉框**直接显示的
+#   （前端不写死魔数，见 `/api/meta` 的 `ma_n_options` 注释）。
+#
+# ★★ N 的两档 = **两条链路**（2026-10-06 按审查意见**明确分开**）：
+#
+#   · `10（本地）` = **A · 实时链路**：方向问题 → rag1 现场检索 → 取料下载 PDF → 用它当语料。
+#     ★ 本链路**固定 ≤ `_MA_LIVE_MAX`（10）篇**，**没有"选 N"** —— rag1 的 LLM listwise
+#       只输出前 10 名（`tools/corpus_search.py` 的 `POOL = 200`、`N_OUT = 10`），
+#       再往后**不是精排的**。实测（2026-10-05）：拿论文**自己的标题**去检索 → 4/4 进不了
+#       top-50；交付 top-50 与既有语料重合仅 10%~29%。
+#   · `50（展示）` = **B · 展示链路**：语料 = **现成论文簇**
+#     （`prodchunk50/mineru/c{0,1,2}.parquet`，50 篇/簇），**不使用** A 下好的 PDF。
+#
+#   ★★ 两条链路**绝不可互相串** —— 否则会出现「**10 篇实时语料 + 50 的 UI 标签**」这种错配
+#      （2026-10-06 审查意见点出的 bug：前端先走 A，再选 `50（展示）`，仍用了那 10 篇 PDF）。
+#      为此 `multianswer_search` **有硬校验**（前端挡不住的在这里兜）：
+#        · 传了 `pdfs` ⇒ 判为 **A 链路**，此时 **`n` 强制 = `len(pdfs)`**（不采信请求里的 `n`），
+#          且 **`len(pdfs) <= _MA_LIVE_MAX`**；
+#        · 没传 `pdfs` ⇒ 判为 **B 链路**，语料**只能**是现成簇。
+#   ★ 升级路径（接更优质的论文检索工具 / 增加 rag1 预算）见 `docs/RAG2_CORPUS_WIRING.md`。
+_MA_LIVE_MAX = 10       # ★ A 实时链路的**硬上限**（= `corpus_search.N_OUT`，依据见上）
+_MA_N_TIERS: tuple[tuple[int, str], ...] = ((10, "本地"), (50, "展示"))
+_MA_N_MAX = max(n for n, _ in _MA_N_TIERS)
 
 
 def _ma_corpus_path() -> str:
@@ -661,9 +731,34 @@ def _ma_corpus_path() -> str:
     return str(Path(__file__).resolve().parents[1].joinpath(*_MA_CORPUS_REL))
 
 
+# 「从 PDF 现切语料」的输出目录（★ 同样**拼接**而非整条字面量，理由见上面 _MA_CORPUS_REL）
+_MA_FLOW_DIR = ("retrieval", "data", "rag2_flow")
+_MA_FLOW_TAG = "web"
+
+
+def _ma_flow_out(key: str) -> str:
+    """给「从 PDF 现切语料」的输出 parquet 一个**确定**的落盘位置。
+
+    ★ 落在 `retrieval/data/` 下（**不入库**的可再生产物），**不覆盖**既有簇；
+    ★ 文件名含 `key`（问题＋篇集＋N）的哈希 → **换篇集就是换文件**，不会互相踩。
+    """
+    import hashlib
+    h = hashlib.sha1(key.encode("utf-8")).hexdigest()[:12]
+    d = Path(__file__).resolve().parents[1].joinpath(*_MA_FLOW_DIR)
+    d.mkdir(parents=True, exist_ok=True)
+    return str(d / f"{_MA_FLOW_TAG}_{h}.parquet")
+
+
 class MultiAnswerBody(BaseModel):
     question: str
-    n: int = 30                     # 语料规模 = 用户说的"选 N"（从多少篇里找）
+    # 语料规模 = 用户说的"选 N"（从多少篇里找）。
+    # ★ 默认取 **50（展示档）**：语料本就是现成的整簇（50 篇），默认就该把整簇用上；
+    #   若默认 10，展示时会**只看检索前 10 篇**，效果反而被截断（见 `_MA_N_TIERS` 注释）。
+    n: int = 50
+    # ★★ 语料来源二（2026-10-05 接通 ②→③）：**② 取料下载下来的 PDF 文件名**。
+    #   给了它 → 这批 PDF 会先被**生产切块器**切成语料，再走多答案检索；
+    #   不给 → 沿用"现成切块 parquet"（`PAPERPILOT_MA_CORPUS` / 默认簇1）。
+    pdfs: list[str] = []
 
 
 @app.post("/api/multianswer/search")
@@ -674,6 +769,22 @@ def multianswer_search(body: MultiAnswerBody) -> JSONResponse:
 
     ★ 为什么必须异步（不能同步请求）：建索引编码 **50 篇 ≈ 156 秒**（bge-m3，
       `max_seq_length=8192` 是生产值），命中缓存才秒级；再加逐篇判定 ~20s。
+
+    ## ★★ 语料从哪来 —— **这里用的是「现成的论文簇」，不是现场检索**
+
+    按设计，本入口的语料**本该由 rag1 论文检索现场产出**（方向问题 → topN 篇 →
+    取料下载 PDF → 切块）。但**本地机器 + 预算**所限，rag1 实际**只精排前 10 名**
+    （`tools/corpus_search.py`：`POOL = 200` 进 CE、`N_OUT = 10` 交给 LLM）；
+    实测 2026-10-05：**拿论文自己的标题去检索，4/4 都进不了 top-50**，
+    交付 top-50 与既有语料重合仅 **10%~29%**。
+    ⇒ 所以本入口**不拿现场检索当语料**，而是**直接用现成的论文簇**
+      （`prodchunk50/mineru/c{0,1,2}.parquet`，3 簇 × 50 篇 = 150 篇，
+       由 `_r2_corpus_expand.py` 从 RAG-1 的 arxiv 池按簇质心扩出来的），
+      目的是把**前端接线**先跑通、可演示。
+
+    ★ 换语料：`PAPERPILOT_MA_CORPUS=<切块 parquet 路径>`（需含 `docid`/`text` 两列）。
+    ★ 升级路径（接更优质的论文检索工具 / 增加 rag1 预算）：见
+      `docs/RAG2_CORPUS_WIRING.md`。
     """
     if not llm.is_configured():
         raise HTTPException(status_code=500,
@@ -682,18 +793,82 @@ def multianswer_search(body: MultiAnswerBody) -> JSONResponse:
     if not q:
         raise HTTPException(status_code=400, detail="请先填一个问题（不能为空）")
     n = int(body.n or 0)
-    if n and not 1 <= n <= _MA_N_MAX:
+    pdfs = [str(x).strip() for x in (body.pdfs or []) if str(x).strip()]
+
+    # ★★ 链路判定（两条路**互斥**，2026-10-06 审查意见）：
+    #    传了 `pdfs` ⇒ **A · 实时链路**（语料 = 刚取料下来的 PDF）
+    #    没传 `pdfs` ⇒ **B · 展示链路**（语料 = 现成论文簇）
+    if pdfs:
+        # ── A · 实时链路 ──
+        # ★ 硬上限：rag1 只精排前 10 → 实时语料**不可能**超过它。
+        #   不拦的话，前端把 `n` 传大就会得到「少篇语料 + 大 N 标签」的错配。
+        if len(pdfs) > _MA_LIVE_MAX:
+            raise HTTPException(
+                status_code=400,
+                detail=(f"实时链路最多 {_MA_LIVE_MAX} 篇（收到 {len(pdfs)}）。"
+                        f"★ rag1 只精排前 {_MA_LIVE_MAX}（`corpus_search.N_OUT`）——"
+                        f"要更大语料请走「展示链路」（现成论文簇）。"))
+        # ★ **`n` 强制 = 语料篇数**：A 链路**没有"选 N"**（语料就是这几篇）。
+        #   不采信请求里的 `n` —— 这正是「10 篇语料 + 50 标签」那个 bug 的根。
+        n = len(pdfs)
+        # `corpus` 是**切块的输出路径**——由**后端**给（worker 不硬编码仓库路径），
+        # 落在 `retrieval/data/rag2_flow/`（不入库的可再生产物），文件名带
+        # `(问题 + 篇集)` 的哈希 → **换篇集就是换文件，不会互相踩**。
+        corpus = _ma_flow_out(f"{q}|{'|'.join(pdfs)}")
+        route = "live"
+    else:
+        # ── B · 展示链路 ──
+        if n and not 1 <= n <= _MA_N_MAX:
+            raise HTTPException(
+                status_code=400,
+                detail=(f"N 需在 1~{_MA_N_MAX} 之间（收到 {n}）。"
+                        f"★ N 是**语料规模**（从多少篇里找），不是「答案条数」。"))
+        corpus = _ma_corpus_path()
+        if not Path(corpus).exists():
+            raise HTTPException(
+                status_code=400,
+                detail=(f"语料不存在：{corpus}。可用环境变量 PAPERPILOT_MA_CORPUS 指定"
+                        f"（需含 `docid` / `text` 两列的切块 parquet）。"))
+        route = "showcase"
+
+    job = worker.submit_multianswer(q, n=n, corpus=corpus, pdfs=pdfs)
+    job["route"] = route      # ★ 落进 job → `_job_view` 原样带回，前端/调试可自查是哪条链路
+    return JSONResponse(_job_view(job), status_code=202)
+
+
+class MultiAnswerFetchBody(BaseModel):
+    arxiv_ids: list[str]
+    force: bool = False
+    ingest: bool = True
+
+
+@app.post("/api/multianswer/fetch")
+def multianswer_fetch(body: MultiAnswerFetchBody) -> JSONResponse:
+    """**② 论文取料下载**：① 拿到的 arxiv-id → `assets/papers/<id>.pdf`（+ MinerU 解析）。
+
+    提交即返回 `202`；轮询 `GET /api/job/{id}`，`ready` 后读 `papers[]`
+    （每篇 `arxiv_id / pdf / docid / ok / cached / reason`）。
+
+    ★ 为什么必须异步（不能同步请求）：除了下载，还要 **MinerU 解析** —— 实测
+      **每篇 50~220 秒**（50 篇 61.9 分钟）→ 同步 HTTP 必超时。
+    ★ 这一步的产物 = **语料**（PDF）；下一步才是「多答案开放问题 → rag2」。
+    ★ 实现 = `multianswer.pipeline.fetch_papers`（`arxiv_fetch` + `ingest`，
+      与 `cli/run_fetch.py --ingest` **同源**）—— **不重写取料逻辑**。
+    """
+    ids = [str(x).strip() for x in (body.arxiv_ids or []) if str(x).strip()]
+    if not ids:
+        raise HTTPException(status_code=400,
+                            detail="arxiv_ids 不能为空（先跑 ① 检索候选）")
+    # ★ ② 取料属于 **A · 实时链路** → 上限是 `_MA_LIVE_MAX`（10），不是展示链路的 `_MA_N_MAX`。
+    #   放它过去，下游就会出现「多篇实时语料 + 小 N」或反之，两条链路就串了。
+    if len(ids) > _MA_LIVE_MAX:
         raise HTTPException(
             status_code=400,
-            detail=(f"N 需在 1~{_MA_N_MAX} 之间（收到 {n}）。"
-                    f"★ N 是**语料规模**（从多少篇里找），不是「答案条数」。"))
-    corpus = _ma_corpus_path()
-    if not Path(corpus).exists():
-        raise HTTPException(
-            status_code=400,
-            detail=(f"语料不存在：{corpus}。可用环境变量 PAPERPILOT_MA_CORPUS 指定"
-                    f"（需含 `docid` / `text` 两列的切块 parquet）。"))
-    job = worker.submit_multianswer(q, n=n, corpus=corpus)
+            detail=(f"实时链路一次最多取 {_MA_LIVE_MAX} 篇（收到 {len(ids)}）。"
+                    f"★ rag1 只精排前 {_MA_LIVE_MAX}（`corpus_search.N_OUT`）；"
+                    f"要更大语料请走「展示链路」（现成论文簇）。"))
+    job = worker.submit_multianswer_fetch(ids, force=bool(body.force),
+                                          ingest=bool(body.ingest))
     return JSONResponse(_job_view(job), status_code=202)
 
 

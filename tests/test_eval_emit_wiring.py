@@ -5,7 +5,7 @@
 `test_evals_report.py` 守「记录**合不合规**」，`test_metrics_ratchet.py` 守
 「掉点**有没有人管**」—— 但**没有一条守「入口到底有没有把记录写出来」**。
 
-于是 2026-10-05 实测撞上：`evals/README.md` 写着「L1/L2/L3 已全部接上 `report.emit`」，
+于是 2026-10-05 实测撞上：README 写着「L1/L2/L3 已全部接上 `report.emit`」，
 而 `_r2_retr_eval.py` 的 `_emit_report` 引用了 `main()` 的**局部** `args` 却没传进去：
 
     NameError: name 'args' is not defined

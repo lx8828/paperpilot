@@ -494,15 +494,20 @@ def submit_direction(query: str, *, k: int = 5, force: bool = False,
 # 加上逐篇判定 ~20s → 一次 20 秒~3 分钟。同步 HTTP 会超时。
 _MA_EXEC = ThreadPoolExecutor(max_workers=1, thread_name_prefix="multianswer-job")
 
-# 阶段键（前端据此渲染进度）。★ 只有两个：索引（贵，一次性）+ 跑（检索+逐篇判定）。
-MA_STAGES = ("index", "run")
+# 阶段键（前端据此渲染进度）。★ `chunk` 只在"语料是**刚取料下来的 PDF**"时出现
+# （2026-10-05 接通 ②→③ 之后），"用现成切块"那条路仍然只有 index / run 两步。
+MA_STAGES = ("chunk", "index", "run")
 
 
-def _ma_key(question: str, *, n: int, corpus: str) -> str:
-    """job 去重键。同问题 + 同语料 + 同 N 且未结束 → 直接复用（不重复花钱）。"""
+def _ma_key(question: str, *, n: int, corpus: str, pdfs: tuple[str, ...] = ()) -> str:
+    """job 去重键。同问题 + 同语料 + 同 N 且未结束 → 直接复用（不重复花钱）。
+
+    ★ `pdfs` **必须进 key**：语料是"刚下好的那批 PDF"时，换了 PDF 就是换了语料 ——
+      漏进 key 会让"换了篇集"命中旧 job，静默用错语料。
+    """
     import hashlib
-    h = hashlib.sha1(f"{question}|{corpus}|{n}".encode("utf-8")).hexdigest()[:8]
-    return f"ma:{h}:{n}"
+    raw = f"{question}|{corpus}|{'|'.join(pdfs)}|{n}"
+    return f"ma:{hashlib.sha1(raw.encode('utf-8')).hexdigest()[:8]}:{n}"
 
 
 def _run_multianswer_job(job: dict[str, Any]) -> None:
@@ -524,6 +529,21 @@ def _run_multianswer_job(job: dict[str, Any]) -> None:
         corpus = str(job.get("corpus") or "")
         b = int(job.get("b") or 12)
         workers = int(job.get("workers") or 8)
+
+        # ⓪ ★ 语料来源二：**刚取料下来的 PDF**（② 的产物）→ 先**生产切块**成 parquet。
+        #   走这条时 `corpus` 是**切块的输出路径**（调用方给，worker 不硬编码仓库路径）。
+        #   ★ 切块器与既有簇**同一套**（`ordered_chunks`，见 `multianswer.pipeline`
+        #     docstring）—— 否则"换了语料"会同时换掉口径，数字**不可比**。
+        pdfs = [str(x) for x in (job.get("pdfs") or []) if str(x).strip()]
+        if pdfs:
+            _check_cancel(ev)
+            _mark(job, "chunk", status="running")
+            t = time.time()
+            from pathlib import Path as _Path
+            from paperpilot.multianswer import pipeline as _P
+            pairs = [(_Path(p).stem, _Path(p).name) for p in pdfs]
+            _P.chunk_papers(pairs, corpus, verbose=False)
+            _mark(job, "chunk", status="ok", seconds=time.time() - t)
 
         # ① 建索引（★ 耗时 ∝ 语料规模；命中缓存则秒级）
         _check_cancel(ev)
@@ -561,6 +581,15 @@ def _run_multianswer_job(job: dict[str, Any]) -> None:
             })
         papers.sort(key=lambda x: x["rank"] or 999)
 
+        # ★★ 「回答」：把逐篇判定的结果**塞进 LLM 汇总**（2026-10-06 新增）——
+        #   这是「多答案展示页」的**主输出**（在此之前只有 `render()` 拼的清单）。
+        #   ⚠️ **必须放在 `_JOB_LOCK` 之外**：LLM 是秒级调用，持锁会把其它 job 卡住。
+        #   ★ `synth.synthesize()` 内部兜底、**不抛异常**；失败则回退成「依据」清单。
+        from paperpilot.multianswer import synth as _synth
+        sy = _synth.synthesize(question, res)
+        # ★ 「依据」：逐篇判定清单（原有 `render()` 的产物，**保留**，供页面上折叠展开）
+        evidence = render(question, res)
+
         with _JOB_LOCK:
             job["papers"] = papers
             job["n_yes"] = int(res.get("n_yes") or 0)
@@ -569,7 +598,12 @@ def _run_multianswer_job(job: dict[str, Any]) -> None:
             job["candidates"] = [{"pdf": str(c.get("pdf")), "score": float(c.get("score") or 0.0)}
                                  for c in (res.get("candidates") or [])]
             job["warning"] = str(res.get("warning") or "")     # ★ 全 unclear 的提示，不吞掉
-            job["answer_text"] = render(question, res)
+            job["answer"] = str(sy.get("answer") or "")        # ★ 回答（LLM 汇总）
+            job["answer_ok"] = bool(sy.get("ok"))
+            job["answer_error"] = str(sy.get("error") or "")
+            job["evidence_text"] = evidence                    # ★ 依据（可折叠）
+            # 兼容旧字段：汇总成功用它，失败回退清单（宁可显示清单，也不白屏）
+            job["answer_text"] = job["answer"] if job["answer_ok"] else evidence
             job["retr"] = str(res.get("retr") or "")
             job["win_chars"] = int(res.get("win_chars") or 0)
             jobs.save(job)
@@ -586,8 +620,9 @@ def _run_multianswer_job(job: dict[str, Any]) -> None:
         _finish(job, jobs.STATUS_FAILED, error=f"{type(e).__name__}: {e}")
 
 
-def submit_multianswer(question: str, *, n: int, corpus: str, b: int = 12,
-                       workers: int = 8) -> dict[str, Any]:
+def submit_multianswer(question: str, *, n: int, corpus: str,
+                       pdfs: list[str] | None = None,
+                       b: int = 12, workers: int = 8) -> dict[str, Any]:
     """提交「多答案开放域检索」任务（**立即返回 job**）。
 
     Args:
@@ -595,12 +630,18 @@ def submit_multianswer(question: str, *, n: int, corpus: str, b: int = 12,
         n: **语料规模**（用户说的"选 N"）—— 从多少篇里找。`0` = 不限（用整个语料）。
         corpus: 切块 parquet 路径（需含 `docid` / `text`）。★ 由调用方给，
                 worker 不硬编码仓库路径。
+                ★★ **`pdfs` 非空时，`corpus` 的含义变成「切块的输出路径」**
+                （那批 PDF 会先被生产切块器切好写到这里，再当语料用）。
+        pdfs: **语料来源二**：② 取料下载下来的 PDF 文件名列表（`assets/papers/` 下）。
+              ★ 给了它 → 走「先切块 → 再检索判定」（多一个 `chunk` 阶段）。
+              不给 → 走"现成切块 parquet"（只有 `index` / `run` 两阶段）。
         b / workers: 每篇给判官的块数 / 判官并发（生产默认 12 / 8）。
 
-    同一 `(问题, 语料, N)` 已有未结束的 job → 直接返回它。
+    同一 `(问题, 语料/篇集, N)` 已有未结束的 job → 直接返回它。
     """
+    ids = tuple(str(x).strip() for x in (pdfs or []) if str(x).strip())
     jobs.recover_interrupted()
-    key = _ma_key(question, n=int(n or 0), corpus=str(corpus))
+    key = _ma_key(question, n=int(n or 0), corpus=str(corpus), pdfs=ids)
     with _JOB_LOCK:
         active = jobs.find_active(key)
         if active is not None:
@@ -611,11 +652,13 @@ def submit_multianswer(question: str, *, n: int, corpus: str, b: int = 12,
             "question": str(question).strip(),
             "n": int(n or 0),
             "corpus": str(corpus),
+            "pdfs": list(ids),
             "b": int(b),
             "workers": int(workers),
             "papers": [],
             "progress": {"stage": "", "done": 0, "total": 0, "note": ""},
-            "note": f"多答案：{str(question).strip()[:60]}",
+            "note": (f"多答案（语料={len(ids)} 篇刚取料的 PDF）：{str(question).strip()[:50]}"
+                     if ids else f"多答案：{str(question).strip()[:60]}"),
         })
         jobs.save(job)
         fut = _MA_EXEC.submit(_run_multianswer_job, job)
@@ -623,4 +666,99 @@ def submit_multianswer(question: str, *, n: int, corpus: str, b: int = 12,
         return job
 
 
-__all__ = ["JobCancelled", "retry", "submit", "submit_direction", "submit_multianswer"]
+# ─────────── ② 论文取料下载（2026-10-05）：① rag1 拿到 id 之后的下一步 ───────────
+# ★ 为什么也必须走 job（不能同步）：取料 = **下载 PDF + MinerU 解析**，而 MinerU
+#   实测 **每篇 50~220 秒**（50 篇 61.9 分钟）→ 同步 HTTP 必超时。
+_FETCH_EXEC = ThreadPoolExecutor(max_workers=1, thread_name_prefix="ma-fetch-job")
+
+# 阶段键（前端据此渲染进度）。★ 只有两个：下载 + 解析（MinerU 在 `fetch_papers` 内部做）。
+MA_FETCH_STAGES = ("download", "ingest")
+
+
+def _run_ma_fetch_job(job: dict[str, Any]) -> None:
+    """执行「② 论文取料下载」：arxiv-id → `assets/papers/<id>.pdf`（+ MinerU 解析）。
+
+    直接调编排里的 `multianswer.pipeline.fetch_papers`（= `arxiv_fetch.fetch_arxiv`
+    + `ingest.ingest`，与 `cli/run_fetch.py --ingest` **同源**）—— **不重写取料逻辑**。
+
+    ⚠️ `fetch_papers` 对失败篇**不抛异常**（返回 `ok=false` + `reason`）→ 这里**原样落进
+       `job["papers"]`**，前端逐条看得到「哪篇没下到、为什么」，而不是只给一个"成功 N 篇"。
+    """
+    ev = jobs.cancel_event(job["job_id"])
+    try:
+        with _JOB_LOCK:
+            job["status"] = jobs.STATUS_RUNNING
+            job["started_at"] = _now_iso()
+            job["_t0"] = time.time()
+            jobs.save(job)
+
+        refs = [{"arxiv_id": str(x)} for x in (job.get("arxiv_ids") or [])]
+
+        _check_cancel(ev)
+        _mark(job, "download", status="running")
+        t0 = time.time()
+        from paperpilot.multianswer import pipeline as P
+        rows = P.fetch_papers(refs, force=bool(job.get("force")),
+                              ingest=bool(job.get("ingest", True)), verbose=False)
+        _mark(job, "download", status="ok", seconds=time.time() - t0)
+        _mark(job, "ingest", status="ok")     # MinerU 在 fetch_papers 内逐篇做，这里只归档
+
+        papers = [{"arxiv_id": str(r.get("arxiv_id") or ""),
+                   "pdf": str(r.get("pdf") or ""),
+                   "docid": str(r.get("docid") or ""),
+                   "ok": bool(r.get("ok")),
+                   "cached": bool(r.get("cached")),
+                   "reason": str(r.get("reason") or "")} for r in rows]
+        with _JOB_LOCK:
+            job["papers"] = papers
+            job["n_ok"] = sum(1 for p in papers if p["ok"])
+            jobs.save(job)
+
+        _check_cancel(ev)
+        _finish(job, jobs.STATUS_READY)
+    except JobCancelled:
+        _mark(job, job.get("stage") or "", status="cancelled")
+        _finish(job, jobs.STATUS_CANCELLED, error="已取消")
+    except Exception as e:  # noqa: BLE001
+        import traceback
+        traceback.print_exc()
+        _finish(job, jobs.STATUS_FAILED, error=f"{type(e).__name__}: {e}")
+
+
+def submit_multianswer_fetch(arxiv_ids: list[str], *, force: bool = False,
+                             ingest: bool = True) -> dict[str, Any]:
+    """提交「② 论文取料下载」（**立即返回 job**）：arxiv-id 列表 → `assets/papers/`。
+
+    ★ 与 `submit_multianswer`（③ 多答案检索）**刻意分成两个 job**：
+      ①→②→③ 一步一个 job，前端能**逐步看到**进度，出问题也能定位在**哪一步**
+      （而不是一个长 job 里黑箱）。
+    """
+    import hashlib
+
+    ids = [str(x).strip() for x in (arxiv_ids or []) if str(x).strip()]
+    if not ids:
+        raise ValueError("arxiv_ids 不能为空（先跑 ① 检索候选）")
+    jobs.recover_interrupted()
+    key = f"mafetch:{hashlib.sha1('|'.join(ids).encode('utf-8')).hexdigest()[:8]}:{len(ids)}"
+    with _JOB_LOCK:
+        active = jobs.find_active(key)
+        if active is not None:
+            return active
+        job = jobs.new_job(key)
+        job.update({
+            "kind": "ma_fetch",
+            "arxiv_ids": ids,
+            "force": bool(force),
+            "ingest": bool(ingest),
+            "papers": [],
+            "progress": {"stage": "", "done": 0, "total": len(ids), "note": ""},
+            "note": f"② 取料下载：{len(ids)} 篇",
+        })
+        jobs.save(job)
+        fut = _FETCH_EXEC.submit(_run_ma_fetch_job, job)
+        fut.add_done_callback(lambda f: _guard(f, job))
+        return job
+
+
+__all__ = ["JobCancelled", "retry", "submit", "submit_direction", "submit_multianswer",
+           "submit_multianswer_fetch"]

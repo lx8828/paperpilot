@@ -11,7 +11,7 @@
 而**多路检索**（中文题面 + n 路英文子查询 → 加权 RRF）由 `idx.search_multiroute()` 提供。
 
 生产里这些方法长在 `embedder.ChunkIndex` 上 —— 但它绑在"**已入库的那批论文**"上。
-本模块要能对**任意一批语料**（例如"**选 N 篇**"）做同样的事，于是：
+本模块要能对**任意一批论文**（例如"这次检索到的 10 篇"）做同样的事，于是：
 
     search_multiroute = ChunkIndex.search_multiroute     # ★ 生产方法，**原样借**
     search_hybrid     = ChunkIndex.search_hybrid

@@ -14,7 +14,9 @@
 1. **前 N 是不是合适论文**：`P(A)@5 / P(A+B)@5 / ... @20 / @50`、以及各级的**梯度**
 2. **分层权重该取多少**：用各层合适率**反推**惩罚系数（而不是拍一个）
 
-⚠️ 判级是 **LLM judge（异源 glm 系）**，**必须人工抽查标定**（脚本会导出逐篇明细供人工核）。
+⚠️ 判级用的是 `.env` 的 **`PAPERPILOT_LLM_*`（本机 = `deepseek-chat`，与主链**同源**）** ——
+**不是**异源判官（要异源的话仓库另有 `PAPERPILOT_JUDGE` = `glm-4-flash`，本脚本**没有**读它）。
+因此结果**必须人工抽查标定**（脚本导出逐篇明细供人工核）。
 
 用法：
     uv run python retrieval/tmp/_dir_relevance.py --limit 3      # 冒烟
@@ -115,7 +117,7 @@ def load_pipeline():
     print(f"[4/4] 载入两个模型（bge-m3 + bge-reranker-v2-m3，设备 **{dev}**）…", flush=True)
     if dev != "cuda":
         print("      ⚠️ **CPU 模式**：本仓库 `uv run` 会把 torch 换成 CPU 版 → 请用 "
-              "`./.venv/Scripts/python.exe -u` 直跑（见 retrieval/README.md「环境」节）",
+              "`./.venv/Scripts/python.exe -u` 直跑（见 docs/RETRIEVAL_LOG.md「环境」节）",
               flush=True)
     enc = SentenceTransformer("BAAI/bge-m3", device=dev, trust_remote_code=True)
     enc.max_seq_length = 512

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--
+  「多答案展示」独立页（2026-10-06）—— 从工作台**左栏左下角**的入口进入。
+
+  ## 它做什么
+  对**固定的一批 10 篇论文**做多答案开放域问答：逐篇判定「这篇做没做这件事」，
+  再把判定结果**塞进 LLM 汇总成一段回答**（主输出）；逐篇明细保留在「依据」里。
+
+  ## URL 约定
+      /ma?pdfs=2310.11511.pdf,2310.12962.pdf,…      ← ★ 裸文件名，相对 assets/papers/
+  与 `POST /api/multianswer/search` 的 `pdfs` 同口径。★ 这批篇集是**唯一的语料真源**
+  （后端没有"当前批"的会话状态）→ 刷新/分享都别丢参数。
+
+  ## 设计要点
+  · ★ **没有 N 选择器**：语料就是 URL 里的那几篇，`n` 由后端强制 = `len(pdfs)`。
+  · ★ 主输出是**回答**（LLM 汇总）；`answer_ok=false` 时回退到「依据」清单，
+    **绝不白屏**。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>多答案展示 · PaperPilot</title>
+<style>
+  :root { --bg:#eef1f5; --card:#fff; --line:#e2e5ea; --accent:#2563eb;
+          --text:#1a1d21; --muted:#6b7280; --good:#16a34a; --warn:#d97706; --bad:#dc2626; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; }
+  body { display:flex; flex-direction:column; height:100vh; overflow:hidden;
+         font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+         color:var(--text); background:var(--bg); }
+
+  header { display:flex; align-items:center; gap:14px; padding:9px 18px;
+           background:#fff; border-bottom:1px solid var(--line); flex:0 0 auto; }
+  .back { font-size:12.5px; color:var(--accent); background:none;
+          border:1px solid var(--line); border-radius:9px; padding:5px 12px;
+          cursor:pointer; font-family:inherit; text-decoration:none; }
+  .back:hover { background:#f1f5f9; }
+  .logo { font-weight:800; font-size:16px; white-space:nowrap; }
+  .logo em { color:var(--accent); font-style:normal; }
+  .spacer { flex:1; }
+  .chip { font-size:12px; color:var(--muted); background:#f1f5f9;
+          border:1px solid var(--line); border-radius:999px; padding:3px 11px; }
+  .chip b { color:var(--accent); }
+
+  .main { flex:1; overflow-y:auto; padding:26px 20px 48px; }
+  .inner { max-width:840px; margin:0 auto; }
+
+  .box { background:#fff; border:1px solid var(--line); border-radius:14px;
+         padding:18px 20px; margin-bottom:18px; }
+  .lbl { font-size:13px; font-weight:600; margin-bottom:9px; }
+  .row { display:flex; gap:9px; }
+  .row input { flex:1; padding:11px 14px; font:inherit; font-size:14px;
+               border:1px solid var(--line); border-radius:10px; }
+  .row input:focus { outline:2px solid var(--accent); outline-offset:1px; border-color:#fff; }
+  .row button { padding:11px 22px; font:inherit; font-size:14px; font-weight:600;
+                color:#fff; background:var(--accent); border:0; border-radius:10px;
+                cursor:pointer; white-space:nowrap; }
+  .row button:hover { background:#1d4ed8; }
+  .row button:disabled { opacity:.55; cursor:default; }
+  .exs { margin-top:11px; display:flex; flex-wrap:wrap; gap:7px; }
+  .ex { font-size:12px; color:#4b5563; background:#f1f5f9; border:1px solid var(--line);
+        border-radius:999px; padding:4px 11px; cursor:pointer; }
+  .ex:hover { background:#e4edff; border-color:#bfd3f7; color:var(--accent); }
+
+  /* 语料抽屉 */
+  details.corpus { margin-top:12px; font-size:12px; color:var(--muted); }
+  details.corpus summary { cursor:pointer; }
+  .corpus-list { margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+  .corpus-list code { font-size:11.5px; background:#f6f7f9; border:1px solid var(--line);
+                      border-radius:6px; padding:2px 7px; }
+
+  /* 进度 */
+  #prog { display:none; }
+  .pbar { height:6px; background:#e8ebf0; border-radius:999px; overflow:hidden; margin-top:9px; }
+  .pbar > div { height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .pnote { font-size:12.5px; color:var(--muted); margin-top:8px; }
+
+  /* 回答（主输出） */
+  #answrap { display:none; }
+  .answer { background:#fff; border:1px solid var(--line); border-left:3px solid var(--accent);
+            border-radius:14px; padding:18px 20px 20px; margin-bottom:14px; }
+  .answer .ah { display:flex; align-items:center; gap:8px; font-size:13px;
+                font-weight:700; color:var(--accent); margin-bottom:6px; }
+  .answer .ah .k { font-size:11px; font-weight:600; color:#fff; background:var(--accent);
+                   border-radius:999px; padding:2px 9px; }
+  .answer .ah .meta { margin-left:auto; font-size:11.5px; font-weight:400; color:var(--muted); }
+  .qline { font-size:12.5px; color:var(--muted); margin-bottom:12px;
+           padding-bottom:10px; border-bottom:1px dashed var(--line); }
+  .atext { font-size:14px; line-height:1.95; color:#1f2937; white-space:pre-wrap;
+           word-break:break-word; }
+  .atext b { color:#111827; }
+  .fallback { font-size:12.5px; color:#92400e; background:#fffbeb;
+              border:1px solid #fde68a; border-radius:9px; padding:9px 12px;
+              margin-bottom:11px; line-height:1.7; }
+  .pre { white-space:pre-wrap; font-size:12.5px; color:#374151; line-height:1.85;
+         word-break:break-word; }
+
+  .warn { font-size:12.5px; color:#92400e; background:#fffbeb; border:1px solid #fde68a;
+          border-radius:10px; padding:10px 13px; margin-bottom:14px; line-height:1.7; }
+
+  /* 依据 */
+  details.ev { background:#fff; border:1px solid var(--line); border-radius:12px;
+               padding:12px 16px; }
+  details.ev > summary { font-size:12.5px; color:#4b5563; cursor:pointer; font-weight:600; }
+  .ev-i { padding:10px 0; border-bottom:1px solid #f1f3f6; }
+  .ev-i:last-child { border-bottom:0; }
+  .r1 { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+  .yes { font-size:11px; font-weight:700; color:#fff; background:var(--good);
+         border-radius:6px; padding:1px 6px; }
+  .nope { font-size:11px; font-weight:700; color:#fff; background:#cbd5e1;
+          border-radius:6px; padding:1px 6px; }
+  .ti { font-size:12.5px; font-weight:600; color:#374151; word-break:break-all; }
+  .sub { font-size:12px; color:#6b7280; background:#f8f9fb; border-radius:8px;
+         padding:7px 10px; margin-top:6px; line-height:1.7; word-break:break-word; }
+  .sub .loc { color:var(--accent); font-weight:600; }
+
+  .empty { text-align:center; color:var(--muted); font-size:13px; padding:34px 20px;
+           background:#fff; border:1px dashed var(--line); border-radius:14px; line-height:2; }
+  .empty code { background:#f6f7f9; border:1px solid var(--line); border-radius:6px;
+                padding:2px 7px; font-size:12.5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="/">← 返回工作台</a>
+  <div class="logo">🎯 多答案<em>展示</em></div>
+  <div class="spacer"></div>
+  <div class="chip">语料：<b id="ncorpus">—</b> 篇 · 固定</div>
+</header>
+
+<div class="main">
+  <div class="inner">
+
+    <!-- 没有篇集（URL 缺参数）时的引导 -->
+    <div id="noarg" class="empty" style="display:none">
+      这个页面要用<b>一批论文</b>当语料，但 URL 里没有篇集参数。<br>
+      ★ 请从<b>工作台的左下角</b>「🎯 多答案展示」进入 —— 那里会自动带上当前这 10 篇。<br>
+      <span style="font-size:12px">（手动构造：<code>/ma?pdfs=2310.11511.pdf,2310.12962.pdf</code>）</span>
+    </div>
+
+    <!-- 提问 -->
+    <div id="askwrap" class="box" style="display:none">
+      <div class="lbl">问一个「哪几篇…」的问题</div>
+      <div class="row">
+        <input id="q" autocomplete="off"
+               placeholder="例：哪些论文报告了多次运行的波动或显著性检验？">
+        <button id="run">检索</button>
+      </div>
+      <div class="exs">
+        <span class="ex">哪些论文报告了显著性检验？</span>
+        <span class="ex">哪几篇公开了代码？</span>
+        <span class="ex">哪些工作做了消融实验？</span>
+        <span class="ex">哪几篇用了表格检索？</span>
+      </div>
+      <details class="corpus">
+        <summary>▸ 本页语料（<span id="ncorpus2">—</span> 篇）</summary>
+        <div class="corpus-list" id="clist"></div>
+      </details>
+    </div>
+
+    <!-- 进度 -->
+    <div id="prog" class="box">
+      <div class="lbl" id="ptitle">正在处理…</div>
+      <div class="pbar"><div id="pbarin"></div></div>
+      <div class="pnote" id="pnote">已提交，排队中…</div>
+    </div>
+
+    <!-- 结果 -->
+    <div id="answrap">
+      <div id="warnbox"></div>
+      <div class="answer">
+        <div class="ah"><span class="k">回答</span> 由「逐篇判定」的结果汇总生成
+          <span class="meta" id="ansmeta"></span></div>
+        <div class="qline" id="qline"></div>
+        <div id="failbox"></div>
+        <div class="atext" id="atext"></div>
+      </div>
+      <details class="ev" id="evbox">
+        <summary id="evsum">▸ 依据：逐篇判定明细</summary>
+        <div id="evlist"></div>
+      </details>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;');
+
+// ★ 只做**轻度** markdown：先转义，再把 **粗体** 转 <b>（避免 XSS）
+function miniMd(s){
+  return esc(s).replace(/\*\*([^*\n]{1,80})\*\*/g, '<b>$1</b>');
+}
+
+// ── 语料：来自 URL（★ 唯一真源）──────────────────────────────
+const PDFS = new URLSearchParams(location.search)
+  .get('pdfs')?.split(',').map(s => s.trim()).filter(Boolean) || [];
+
+$('ncorpus').textContent = PDFS.length;
+$('ncorpus2').textContent = PDFS.length;
+
+if (!PDFS.length) {
+  $('noarg').style.display = '';
+} else {
+  $('askwrap').style.display = '';
+  $('clist').innerHTML = PDFS.map(p => `<code>${esc(p)}</code>`).join('');
+}
+
+document.querySelectorAll('.ex').forEach(el =>
+  el.addEventListener('click', () => { $('q').value = el.textContent; }));
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') start(); });
+$('run').addEventListener('click', start);
+
+const STAGE_LABEL = {
+  chunk: '正在把 PDF 切成语料…',
+  index: '正在建索引…（首次约 1~3 分钟，之后走缓存）',
+  run:   '正在逐篇判定…',
+};
+
+function showProg(on){ $('prog').style.display = on ? '' : 'none'; }
+function fail(msg){
+  showProg(false);
+  $('answrap').style.display = '';
+  $('warnbox').innerHTML = `<div class="warn">✗ ${esc(msg)}</div>`;
+  $('qline').textContent = '';
+  $('atext').textContent = '';
+  $('evbox').style.display = 'none';
+}
+
+async function start(){
+  const q = $('q').value.trim();
+  if (!q) return;
+  $('run').disabled = true;
+  $('answrap').style.display = 'none';
+  $('warnbox').innerHTML = '';
+  $('ptitle').textContent = '正在处理…';
+  $('pnote').textContent = '已提交，排队中…';
+  $('pbarin').style.width = '0';
+  showProg(true);
+
+  let job;
+  try {
+    // ★ 不传 n：后端在实时链路会强制 n = len(pdfs)（见 web/app.py）
+    const r = await fetch('/api/multianswer/search', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q, pdfs: PDFS }),
+    });
+    job = await r.json();
+    if (!r.ok) throw new Error(job.detail || r.statusText);
+  } catch (e) { fail('提交失败：' + e.message); return; }
+
+  const jid = job.job_id;
+  let bad = 0;
+  for (;;) {
+    let j;
+    try {
+      const r = await fetch('/api/job/' + encodeURIComponent(jid));
+      j = await r.json();
+      if (!r.ok) throw new Error(j.detail || r.statusText);
+      bad = 0;
+    } catch (e) {
+      if (++bad >= 5) { fail('进度查询连续失败：' + e.message); return; }
+      await new Promise(s => setTimeout(s, 2000)); continue;
+    }
+
+    const pr = j.progress || {};
+    if (j.status === 'running' || j.status === 'queued') {
+      const st = String(pr.stage || '');
+      $('pnote').textContent = pr.note || STAGE_LABEL[st] || '处理中…';
+      if (pr.total) $('pbarin').style.width = Math.round((pr.done || 0) / pr.total * 100) + '%';
+      await new Promise(s => setTimeout(s, 1200));
+      continue;
+    }
+    if (j.status === 'ready')  { render(j, q); return; }
+    if (j.status === 'failed') { fail(j.error || j.reason || '检索失败'); return; }
+    if (j.status === 'cancelled') { fail('任务已取消'); return; }
+    await new Promise(s => setTimeout(s, 1200));
+  }
+}
+
+function render(j, q){
+  showProg(false);
+  $('run').disabled = false;
+  $('answrap').style.display = '';
+  $('qline').textContent = '问题：' + q;
+  $('ansmeta').textContent =
+    `命中 ${j.n_yes || 0} / ${j.n_candidates || PDFS.length} 篇`;
+
+  if (j.warning) $('warnbox').innerHTML = `<div class="warn">${esc(j.warning)}</div>`;
+
+  // ★ 主输出：LLM 汇总的「回答」；失败则回退到「依据」清单（绝不白屏）
+  const ok = !!j.answer_ok && String(j.answer || '').trim();
+  if (ok) {
+    $('failbox').innerHTML = '';
+    $('atext').innerHTML = miniMd(j.answer);
+  } else {
+    $('failbox').innerHTML =
+      `<div class="fallback">⚠️ <b>汇总未生成</b>（${esc(j.answer_error || '未启用')}）`
+      + `—— 下面是**逐篇判定清单**（原料）。</div>`;
+    $('atext').innerHTML = `<div class="pre">${esc(j.evidence_text || '（无）')}</div>`;
+  }
+
+  // ── 依据：YES 明细 + 未命中篇名 ──
+  const ps = j.papers || [];
+  const hit = new Set(ps.map(p => String(p.pdf)));
+  const miss = (j.candidates || []).map(c => String(c.pdf)).filter(p => !hit.has(p));
+
+  let h = '';
+  ps.forEach((p, i) => {
+    const loc = [p.page ? `第 ${p.page} 页` : '', p.section || ''].filter(Boolean).join(' ');
+    const ev = Array.isArray(p.evidence) && p.evidence.length
+      ? `证据：片段 ${p.evidence.join(',')}` : '';
+    const ex = String(p.extract || '').trim();
+    h += `<div class="ev-i">
+      <div class="r1"><span class="yes">YES</span><span class="ti">${esc(p.pdf)}</span></div>
+      <div class="sub">${esc(p.why || '')}${ex ? '；<b>具体内容：</b>' + esc(ex) : ''}
+        ${(loc || ev) ? `<br><span class="loc">${esc(loc)}</span> ${esc(ev)}` : ''}</div>
+    </div>`;
+  });
+  miss.forEach(p => {
+    h += `<div class="ev-i">
+      <div class="r1"><span class="nope">NO</span><span class="ti">${esc(p)}</span></div>
+      <div class="sub">未检出相关证据（未命中）。</div>
+    </div>`;
+  });
+  $('evlist').innerHTML = h || '<div class="sub">（无明细）</div>';
+  $('evsum').textContent =
+    `▸ 依据：逐篇判定明细（判了 ${j.n_candidates || PDFS.length} 篇，`
+    + `YES ${ps.length} ｜ NO ${miss.length}）`;
+}
+</script>
+</body>
+</html>

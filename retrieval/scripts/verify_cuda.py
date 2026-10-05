@@ -17,7 +17,7 @@ def main() -> int:
     print(f"torch          : {torch.__version__}")
     print(f"cuda_available : {torch.cuda.is_available()}")
     if not torch.cuda.is_available():
-        print("→ CUDA 不可用：检查驱动；或按 retrieval/README.md 重装 CUDA 版 torch")
+        print("→ CUDA 不可用：检查驱动；或按 docs/RETRIEVAL_LOG.md 重装 CUDA 版 torch")
         return 1
 
     print(f"device         : {torch.cuda.get_device_name(0)}")

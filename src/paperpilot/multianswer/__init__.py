@@ -2,12 +2,14 @@
 
 ## 这个模块是什么
 
-输入 **一个问题**（如"哪些论文用了对比学习做跨语言摘要"），输出 **多篇论文**：
-每篇给出「是/否做了这件事」+ 证据片段 + 理由。
+输入 **一个问题**（如"哪些论文用了对比学习做跨语言摘要"），输出 **一份回答**：
+先逐篇判「是/否做了这件事」（带证据片段 + 理由），再把判定结果**塞进 LLM 汇总**
+（`synth.synthesize()`）产出**回答**；逐篇清单作为「依据」保留。
 
 ★ 它**不在**现有的"方向问题 → 取料 → 建索引 → 单篇精读"那条链路上 ——
-   那条链路的产物是"一篇论文的深度报告"；本模块的产物是"**一批论文里哪几篇符合**"。
-   两条路线**并行**，只在**前端起始页并列**。
+  那条链路的产物是"一篇论文的深度报告"；本模块的产物是"**一批论文里哪几篇符合，并汇成一段回答**"。
+  ★ 2026-10-06 起入口是工作台左下角的「🎯 多答案展示」→ **独立页 `GET /ma`**
+  （**不再**与方向检索在起始页并列；那条并列入口已删除）。
 
 ## ★ 它不是新写的链路（重要）
 
@@ -34,6 +36,7 @@
 """
 from __future__ import annotations
 
+from paperpilot.multianswer import synth
 from paperpilot.multianswer.corpus import CorpusIndex, load_chunks_from_parquet
 from paperpilot.multianswer.runner import answer, render, sweep_n
 
@@ -43,4 +46,6 @@ __all__ = [
     "answer",
     "render",
     "sweep_n",
+    # ★ 2026-10-06 新增：把逐篇判定**汇成回答**（LLM）。`render` 仍是「依据」的产物。
+    "synth",
 ]

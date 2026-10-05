@@ -122,7 +122,7 @@
 
 > **全链 R@1：0.2588（BM25）→ 0.4154（+CE）→ 0.6092（+LLM listwise），相对 +135%**；
 > 每一步都**统计显著**，且**瓶颈定位清楚**：候选池扩到 100 之后，"改池子"的六种方式全部无效
-> （详见 `retrieval/README.md` 阶段 ②-C~②-F），**唯一有效的是换排序范式（pointwise → listwise）**。
+> （详见 `docs/RETRIEVAL_LOG.md` 阶段 ②-C~②-F），**唯一有效的是换排序范式（pointwise → listwise）**。
 
 **边界（必须并列说明）**：
 1. **LitSearch 是英文提问 + NLP 冻结语料**；线上是**中文提问 + 54 万篇最新 arXiv**

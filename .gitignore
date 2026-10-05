@@ -91,8 +91,6 @@ qa/qasper_*.md
 retrieval/data/*/
 !retrieval/data/r2dev/
 retrieval/data/r2dev/*
-# ↓ 本目录的说明（**必须入库** —— 否则"哪份真值现役"又只能靠猜）
-!retrieval/data/r2dev/README.md
 # ↓ 手工标注 / 题集 / 映射（**不可再生** → 入库；合计约 1.3MB）
 !retrieval/data/r2dev/gold_final*.csv
 !retrieval/data/r2dev/gold_final_meta.json
@@ -111,7 +109,7 @@ retrieval/data/r2dev/*
 # ↑ 刻意**不**放行的（体积大 / 可再生）：`*_evidence.json`(11.6MB)、
 #   `corpus20.parquet`、`mt_cache.json`、`mineru_progress*.json`、
 #   以及 6 个子目录（clusters/corpus50/pdftext/pdftext50/prodchunk/prodchunk50）
-#   —— 重建方法见 `retrieval/data/r2dev/README.md`。
+#   —— 重建方法见根目录 `README.md` 的「论文线真值」节。
 retrieval/results/*.json
 retrieval/results/*.jsonl
 retrieval/results/*.npy

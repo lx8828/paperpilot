@@ -2,17 +2,14 @@
  "cli/run_bench.py": [
   "DEVELOPMENT_LOG.md",
   "qa/CAMPAIGN_20260906-07.md",
-  "qa/README.md",
   "qa/REPORT_2.0_20260911.md"
  ],
  "cli/run_chunk_eval.py": [
-  "qa/README.md",
   "qa/REPORT_2.0_20260911.md"
  ],
  "cli/run_compare.py": [
   "DEVELOPMENT_LOG.md",
   "qa/CAMPAIGN_20260906-07.md",
-  "qa/README.md",
   "qa/RETRIEVAL_EVAL_FRAMEWORK.md",
   "qa/RETRIEVAL_EXPLORATION_20260908.md"
  ],
@@ -35,13 +32,11 @@
  "cli/run_qa_v2.py": [
   "DEVELOPMENT_LOG.md",
   "docs/RAG_COMPONENT_NOTES.md",
-  "qa/README.md",
   "qa/RETRIEVAL_EVAL_FRAMEWORK.md"
  ],
  "cli/run_qasper_eval.py": [
   "DEVELOPMENT_LOG.md",
   "qa/CAMPAIGN_20260906-07.md",
-  "qa/README.md",
   "qa/REPORT_2.0_20260911.md",
   "qa/RETRIEVAL_EVAL_FRAMEWORK.md",
   "qa/recall/QASPER_TBL_EXP_20260911.md",
@@ -70,7 +65,6 @@
  ],
  "cli/run_retrieval_eval.py": [
   "qa/RAG_ENGINE_DESIGN.md",
-  "qa/README.md",
   "qa/REPORT_2.0_20260911.md",
   "qa/recall/RERANK_AB_20260911.md",
   "qa/recall/_run_bg.ps1",
@@ -81,6 +75,7 @@
  ],
  "qa/QASPER_EVAL_LOG.md": [
   "DEVELOPMENT_LOG.md",
+  "README.md",
   "qa/REPORT_2.0_20260911.md"
  ],
  "qa/_archive/qasper_run_20260905_224146.json": [
@@ -101,7 +96,6 @@
  ],
  "qa/baseline.json": [
   "DEVELOPMENT_LOG.md",
-  "docs/DOC_INDEX.md",
   "evals/checks/path_liveness.py"
  ],
  "qa/compare/run_20260907_191606_B0.json": [
@@ -276,7 +270,6 @@
  ],
  "qa/recall/ab_v3regress_result.json": [
   "DEVELOPMENT_LOG.md",
-  "archive/qa_funnel_v2/README.md",
   "src/paperpilot/graph/__init__.py"
  ],
  "qa/recall/e2e_union_q0_20260912.json": [
@@ -356,11 +349,18 @@
  "retrieval/data/r2dev/calib2_3judge.csv": [
   "retrieval/results/R2_CALIB_20260928.md"
  ],
+ "retrieval/data/r2dev/gold_final3.csv": [
+  "docs/RAG2_CORPUS_WIRING.md",
+  "retrieval/tmp/_r2_random_baseline50.py"
+ ],
  "retrieval/data/r2dev/mt_cache.json": [
   "retrieval/results/R2_NLI_LANG_20260928.md"
  ],
  "retrieval/data/r2dev/nli_calibration.csv": [
   "retrieval/results/R2_L3_NLI_20260928.md"
+ ],
+ "retrieval/results/DIRECTION_RELEVANCE_20260927.csv": [
+  "docs/RESULTS_SUMMARY.md"
  ],
  "retrieval/results/LITSEARCH_RERANK.md": [
   "docs/RAG_COMPONENT_NOTES.md"
@@ -373,6 +373,16 @@
  ],
  "retrieval/results/R2_PHASE1.csv": [
   "retrieval/results/R2_PHASE1_20260929.md"
+ ],
+ "retrieval/results/R2_PROD_FINAL.csv": [
+  "README.md",
+  "docs/DOC_INDEX.md",
+  "docs/RAG2_CORPUS_WIRING.md",
+  "docs/RESULTS_SUMMARY.md"
+ ],
+ "retrieval/results/R2_RETR_n50_gnew_cnew_2arms.csv": [
+  "docs/RESULTS_SUMMARY.md",
+  "retrieval/tmp/_r2_random_baseline50.py"
  ],
  "retrieval/results/R2_SETSEL_raw.csv": [
   "retrieval/results/R2_SETSEL_20260927.md"
@@ -446,12 +456,8 @@
  "retrieval/tmp/_xling_cache.json": [
   "retrieval/tmp/_xling_ab.py"
  ],
- "src/paperpilot/agents/nodes/retrieve.py": [
-  "archive/qa_funnel_v2/README.md"
- ],
  "src/paperpilot/graph/qa_graph.py": [
-  "archive/qa_funnel_v2/QA_FUNNEL_DESIGN.md",
-  "archive/qa_funnel_v2/README.md"
+  "archive/qa_funnel_v2/QA_FUNNEL_DESIGN.md"
  ],
  "src/paperpilot/qasper_source.py": [
   "qa/sources/qasper.py"
