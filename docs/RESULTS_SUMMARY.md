@@ -293,8 +293,8 @@ RAG2 不是"没做"：`answer_set` 已在图里，由 `PAPERPILOT_QA_READER` 三
    是英文语料结论，不能直接搬）。
 6. **方向型题的金标准很薄**：只有 **20 题**，判级是 **LLM 且与主链同源**（`deepseek-chat`，非异源）
    → 93.0% / nDCG@50 0.864 属**初版水位**。
-   抽 3 条方向题 × 前 10 篇（**30 个判级**，逐篇底表见
-   `retrieval/results/DIRECTION_RELEVANCE_20260927.csv`）人工核对：**未见方向性错判**
+   抽 3 条方向题 × 前 10 篇（**30 个判级**；判级口径见
+   `retrieval/results/LITSEARCH_DELIVER_N_20260927.md` §6）人工核对：**未见方向性错判**
    （没有 A↔C 翻转）；可争议的约 **5 / 30** 落在 **B 层边界**（B「同方向/相邻」的定义本身模糊）
    ⇒ 梯度（top-5 ≫ 6~10）与结论方向都不变。
    两点不足：抽查只到**标题级**（判官看的是标题 + 摘要）；判级**未异源化**
@@ -316,12 +316,12 @@ RAG2 不是"没做"：`answer_set` 已在图里，由 `PAPERPILOT_QA_READER` 三
 | QAMPARI 1m 档完整记录 | `retrieval/results/R2_QAMPARI_TIER1M_20260929.md` |
 | QAMPARI 对外数字 | `retrieval/results/R2_TWO_TRACK_SUMMARY_20260929.md` |
 | RAG1 线上形态与水位、arXiv200 饱和、方向型题实测 | `retrieval/results/LITSEARCH_DELIVER_N_20260927.md` |
-| 方向型题的逐篇三级判级明细 | `retrieval/results/DIRECTION_RELEVANCE_20260927.csv`、`retrieval/tmp/_dir_relevance.py` |
+| 方向型题的三级合适率、裁判口径与判级产物 | `retrieval/results/LITSEARCH_DELIVER_N_20260927.md`、`retrieval/tmp/_dir_relevance.py` |
 | RAG1 研究区：α 扫描 / 精排链 / 论文对标 / 显著性 | `retrieval/results/LITSEARCH_METRICS_20260927.md` |
 | RAG1 显著性细节 | `retrieval/results/LITSEARCH_SIGNIFICANCE.md` |
 | 多答案**离线**评测定稿口径（3 簇 × 50 篇、28 组合）与字段字典 | `retrieval/results/R2_PROD_FINAL_20261001.md`、`retrieval/results/R2_PROD_FINAL.csv` |
 | 大 N 重采样外推 | `retrieval/results/R2_BUDGET_MODEL_20261001.md` |
-| 50 篇语料下的检索臂名次、随机 / oracle 参照（0.408 / 2.02× / 0.772） | `retrieval/results/R2_RETR_n50_gnew_cnew_2arms.csv`、`retrieval/tmp/_r2_random_baseline50.py`（可复跑，零 LLM） |
+| 50 篇语料下的检索臂名次（0.408 / 0.392 / 0.738）、随机 / oracle 参照（2.02× / 0.772） | `retrieval/results/R2_CORPUS_50_20260930.md`（§4.1 检索臂）、`retrieval/tmp/_r2_random_baseline50.py`（可复跑，零 LLM） |
 | 为什么 RAG2 / 判定线没上生产 | `retrieval/results/R2_SC_VERDICT_20260929.md` |
 | 泄露检查 / 污染检查 | `retrieval/results/R2_LEAK_AUDIT_20260929.md`、`retrieval/results/R2_CONTAM_20260929.md` |
 | 成本与复用（缓存） | `retrieval/results/R2_LLM_COST_20260929.md` |

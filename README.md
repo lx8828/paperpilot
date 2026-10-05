@@ -646,7 +646,7 @@ uv run python evals/runners/l4_loft.py --official --task sql --name my_run
 
 | 文档 | 内容 |
 |---|---|
-| 🗂 **`docs/DOC_INDEX.md`** | **文档总地图**：哪些是现状、哪些是历史、冲突时信谁（2026-09-22 以代码为准逐条核对；本文档与代码冲突时**信代码**） |
+| 🗂 **`docs/DOC_INDEX.md`** | **文档总地图**：哪些是现状、哪些是历史、冲突时信谁（建立 2026-09-22，**最近校验 2026-10-06**；与代码冲突时**信代码**） |
 | `qa/CAMPAIGN_20260906-07.md` | **决策总账**：优化史 + 定版 + 定位收尾 |
 | `DEVELOPMENT_LOG.md` | 开发踩坑记录、决策背景、遗留项、命令速查 |
 | `docs/RAG_COMPONENT_NOTES.md` | 组件层设计依据（Router/Retriever/Generator/Validator 的取舍与实测） |

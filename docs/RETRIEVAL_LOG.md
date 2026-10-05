@@ -16,9 +16,10 @@
 
 ## 目录
 
+> 本文原为 `retrieval/` 目录下的 README，2026-10-06 移入 `docs/RETRIEVAL_LOG.md`；下列目录同属研究区。
+
 ```
 retrieval/
-├── README.md               本文件
 ├── data/                   ← 不入库（.gitignore），可重下
 │   └── litsearch/
 │       ├── README.md                  数据集官方说明

@@ -381,7 +381,6 @@
   "docs/RESULTS_SUMMARY.md"
  ],
  "retrieval/results/R2_RETR_n50_gnew_cnew_2arms.csv": [
-  "docs/RESULTS_SUMMARY.md",
   "retrieval/tmp/_r2_random_baseline50.py"
  ],
  "retrieval/results/R2_SETSEL_raw.csv": [

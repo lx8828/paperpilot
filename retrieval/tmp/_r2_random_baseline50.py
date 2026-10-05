@@ -6,7 +6,7 @@
 数据来源（全部已落盘，**不重跑检索、不调 LLM**）
 ----------------------------------------------
 - 真值：`retrieval/data/r2dev/gold_final3.csv`（1,400 对 ｜ 28 组合 ｜ 50 篇/簇）
-- 本系统名次：`retrieval/results/R2_RETR_n50_gnew_cnew_2arms.csv`
+- 本系统名次：`retrieval/results/R2_RETR_n50_gnew_cnew_2arms.csv`（★ 本地跑批产物，**未入库**）
   （arm `C_pdf_prod` = 生产切块，sorter `B mq_max` = 多查询；与 `R2_CORPUS_50` §4.1 同口径）
 - 指标函数：逐字复用 `retrieval/tmp/_r2_std_metrics.py`（mrecall / strecall / setpf / alpha_ndcg）
 
