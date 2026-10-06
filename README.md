@@ -466,14 +466,14 @@ archive/qa_funnel_v2/  # v2 四层漏斗快照（含设计稿），只作对照
 **一条命令，5 分钟内出确定结果，不需要任何 API Key / GPU / 本地模型：**
 
 ```bash
-uv run pytest -q        # 203 passed in ~10s（本地；CI 上含装依赖约 1~2 分钟）
+uv run pytest -q        # 379 passed in ~10s（本地；CI 上含装依赖约 1~2 分钟）
 ```
 
 **三层命令分三类事**（后两档默认跳过，缺环境只会 skip、不会红）：
 
 | 命令 | 跑什么 | 需要什么 |
 |---|---|---|
-| **`uv run pytest -q`** | **离线**：纯逻辑 / 契约边界 / 状态机 / 缓存命中失效 / API / **mock LLM 端到端**（203 用例） | 无（CI 与"别人 clone 后自证"都用这条） |
+| **`uv run pytest -q`** | **离线**：纯逻辑 / 契约边界 / 状态机 / 缓存命中失效 / API / **mock LLM 端到端**（379 用例） | 无（CI 与"别人 clone 后自证"都用这条） |
 | `uv run pytest -m local` | **真模型冒烟**：真向量检索位次（中文问英文论文）/ 真 LLM 作答带引用 / 真 MinerU 解析 / 真实裁判体检 | 本机 key + 模型 + `.venv-mineru`（实测 13s / 22s / 68s） |
 | `uv run pytest -m ui` | **浏览器级冒烟**：真前端 JS + 真 HTTP（上传 → 报告 → 提问 → 点引用跳原文），并捕获未捕获的 JS 异常 | 本机 Edge/Chrome（或 `playwright install chromium`；**不必**下 130MB） |
 
@@ -487,22 +487,40 @@ uv run pytest -q        # 203 passed in ~10s（本地；CI 上含装依赖约 1~
 | **论文语料** | 现场用 pymupdf 生成小 PDF；所有 `assets/**` 路径被重定向到 `tmp_path`（**不碰真实论文与产物**） |
 | **网络** | `urllib.request.urlopen` 被换成"一用就炸"：漏了替身会**明确失败**，而不是偶发联网成功 |
 
-覆盖清单（`uv run pytest --collect-only -q` 实测：**默认档 203 + local/ui 档 5 = 208**）：
+覆盖清单（`uv run pytest --collect-only -q` 实测：**默认档 379 + local/ui 档 7 = 386**；下表为**全量 28 个文件**，按用例数降序）：
 
 | 文件 | 用例 | 覆盖 |
 |---|---|---|
 | `test_tables.py` | 31 | 表块纯函数：caption 清噪（含罗马数字）、表头指纹、摘要、并集配额、按块权重、RRF |
 | `test_api.py` | 30 | API 集成：202 早返回、幂等 200、任务查询、取消/重试、404/400、拒答话术、状态快照；**上传门**（`%PDF-` 魔数 / 大小上限，含**配置 fail-safe**：非法值不放宽权限） |
 | `test_jobs_worker.py` | 25 | 任务状态机：阶段耗时、取消（含"编码中取消"）、重试、重启恢复、**异常兜底不卡死**、**并发读写不丢状态**、MinerU 真状态被采纳 |
+| `test_evals_report.py` | 25 | L0 统一记录格式：**不合规的记录写不进去**（缺 `n` / 缺 `note` / 指标名乱写 / 值不是数）—— `n` 与 `note` 是"能不能比"的前提 |
+| `test_l4_loft.py` | 21 | L4 LoFT 五任务**官方口径**：**坏指标文件跳过而不是当 0 分**（本仓就躺着一个 **0KB** 的 `preds_metrics.json`）、指标**透传**、只排除官方自己恒为 0 的项 |
+| `test_query_optimizer.py` | 21 | 查询侧优化组件的**行为契约**（它的默认值是 A/B 基线）：未开任何开关 → **只回原问题**；旧开关仍等价于新档位 |
+| `test_identity_cache.py` | 20 | 内容指纹判定（ok/stale/adopt）、**缓存命中与失效**（进程内 + 磁盘 cvec）、表格只进检索视图 |
+| `test_validator_offline.py` | 20 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归（+1 条 `local`：真裁判模型） |
 | `test_api_concurrency.py` | 18 | **`/api/ask` 不阻塞事件循环**（同步端点 + 并发闸门）；闸门配置 **fail-safe**、排队**有界**（无名额 → 503 而不是无限等待） |
-| `test_identity_cache.py` | 17 | 内容指纹判定（ok/stale/adopt）、**缓存命中与失效**（进程内 + 磁盘 cvec）、表格只进检索视图 |
+| `test_cites_anchor.py` | 18 | 引用对齐的**串篇 / 误匹配**回归：核心事实是 **`chunk_id` 只在篇内唯一** → 任何只按 cid 的匹配或去重都会**静默串篇**（点引用跳到另一篇） |
 | `test_llm_client.py` | 16 | JSON 解析容错、**坏 JSON**、**超长输入**、未配置时明确报错 |
 | `test_tgt.py` | 15 | 目标表定位口径（编号 ∪ 内容）—— 所有表格类指标的尺子 |
-| `test_validator_offline.py` | 13 | 闸门机器判据：**零引用分级**、**引用越界**、gate 动作不变回归（+1 条 `local`：真裁判模型） |
+| `test_ctx_budget.py` | 15 | `fullctx` 上下文预算窗口：单位是**字符**、判据 **fail-safe**（非法配置只能收紧）、**超预算绝不去调 API** |
+| `test_reader_switch.py` | 13 | 读取器开关：默认必须是 **`fullctx`**（否则"下线 RAG-2"根本没生效）；切回 `retrieval` 时图与路由**回到原样** |
+| `test_metrics_ratchet.py` | 12 | L0 指标棘轮：**容差**（噪声底 ≈ ±16pt，没容差会天天误报、闸门被"狼来了"淹没）、**方向**（如应为 0 的指标越低越好） |
+| `test_set_judge.py` | 12 | 集合问答（`set` reader）离线回归：分组取块 / 判定解析 / **聚合只留 yes** / 渲染不做完备性宣称 / 节点输出契约 / 图接线 |
+| `test_eval_assets.py` | 11 | 评测资产完整性：把「**干净 clone 到底能不能评测**」变成默认跑的回归——每条都在防**已真实发生过的静默失效**（不报错，只是别人 clone 后跑不起来或拿到错的数）（+2 条 `local`） |
+| `test_gold_guard.py` | 11 | **gold 隔离守卫**：题集里 `hint`（答案原文）与 `must_all`（判分锚点）同处 → 运行时 0 处读 `hint` 只是**偶然安全**，本测试锁成**结构性安全** |
 | `test_mock_mode.py` | 10 | **演示模式**（`--mock`）：无 Key / 无模型 / 无 MinerU 也能跑通（演示模式承诺的技术保障） |
+| `test_direction_two_phase.py` | 8 | 「方向」两阶段（search → 挑 → process）的契约与去重键：**job 去重键必须按 `phase` 隔离**，否则两个 job 互吞（第二个被判成"已有"） |
+| `test_index_needed.py` | 8 | 摄取期「要不要预建向量索引」：默认 `fullctx` 读全文**一个向量都不读**，而摄取期是 eager 建 cvec —— 实测 5 篇 **21.8s** 全白花 |
+| `test_repair_routing.py` | 6 | 修复链的**读取器分流**：`fullctx`（提示词里已有全部语料）→ 同一上下文 + 初稿 + 意见重答，**不重检索**（覆盖不丢、`[P…]` 锚点不换） |
 | `test_e2e_mock.py` | **4** | **mock LLM 端到端**：上传 → 后台 job → 报告 → 提问 → 带 `[n]` 引用的答案；含"MinerU 失败 → 不建索引 + 问答被闸门拦" |
+| `test_eval_emit_wiring.py` | 4 | L0 **跑批入口的 emit 接线**：另两个文件守"记录合不合规""掉点有没有人管"，**没有一条守"入口到底有没有把记录写出来"** |
+| `test_tmp_scripts_audit.py` | 4 | L0 `retrieval/tmp` 脚本**分类完整性**：**只断言不变量、不比快照**——钉死数量会"一加脚本就红"，闸门随即被"狼来了"淹没 |
 | `test_local_smoke.py` | 3 | `local` 档**真模型冒烟**：真向量检索位次 / 真 LLM 作答带引用 / 真 MinerU 解析（各带 skip 条件） |
+| `test_path_liveness.py` | 1 | L0 **路径存活棘轮接进 CI**：只做「接进默认测试」这一件事，**不重写扫描逻辑**（判据分两处必然漂移） |
 | `test_ui_smoke.py` | 1 | `ui` 档**浏览器冒烟**：playwright 驱动真页面走完上传 → 报告 → 提问 → 点引用跳原文，并捕获未捕获 JS 异常 |
+
+> 表内「用例」列默认档合计 **379**；另外 7 条 `local`/`ui` 用例分布在四处 —— `test_local_smoke`（3）、`test_ui_smoke`（1）、`test_eval_assets`（+2）、`test_validator_offline`（+1）→ **总计 386**。
 
 CI：`.github/workflows/ci.yml`（每次 push 自动跑同一套，**不设任何 secret**）。
 
@@ -617,7 +635,7 @@ uv run python evals/runners/l4_loft.py --official --task sql --name my_run
 
 ### `qa/` 目录（评测与实验记录 —— **不是测试套件**）
 
-测试在 `tests/`（`uv run pytest -q`，203 用例、无需 key）；`qa/` 放的是**评测与实验记录**：
+测试在 `tests/`（`uv run pytest -q`，379 用例、无需 key）；`qa/` 放的是**评测与实验记录**：
 判"高低"，有噪声、要 key/模型，**按需手动跑**。
 
 **三份主要文档**
