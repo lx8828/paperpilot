@@ -78,7 +78,14 @@ PRUNE = (
     "qa/multi/_runs/",         # 跑批产出
     "retrieval/tmp/_archive/", "retrieval/tmp/_gold_history/",
 )
-SKIP_EXT = (".py", ".md", ".json", ".html", ".ps1", ".js", ".toml", ".cfg", ".ini", ".txt")
+# ⚠️ 本元组必须与 `REF` 认的扩展名**对齐**：它是"什么算文件"的白名单 ——
+#    只有进了 `_repo_files()` 才有机会被判存活。
+#    2026-10-06 修：`REF` 一直认 `.csv`，而这里漏了它 → **任何 `.csv` 引用都永远
+#    悬空**（连在库的 `R2_PROD_FINAL.csv` 也被判死，只能靠记基线绕过）。
+#    补上后：**在库**的 csv 恢复正常判定；被 `.gitignore` 挡住的生成物 csv 仍会
+#    （正确地）报悬空 —— 干净 clone 里确实没有它们，那不是假阳性。
+SKIP_EXT = (".py", ".md", ".json", ".csv", ".html", ".ps1", ".js",
+            ".toml", ".cfg", ".ini", ".txt")
 
 # ⚠️ 文档里的**举例/省略**写法，不是引用。不放白名单 → 假阳性淹没闸门。
 PLACEHOLDER = re.compile(r"(^|/)x\.py$|xxx|\.\.\.|/x/|(\.\w+){2,}$")
