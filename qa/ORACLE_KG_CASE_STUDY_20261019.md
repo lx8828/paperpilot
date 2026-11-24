@@ -17,10 +17,11 @@
   relation; ten deliberately assigned that relation to a wrong but highly
   similar paper.
 
-Raw runs:
+Raw runs (local run records; they contain paper excerpts, so per repo policy
+they are not distributed — the files sit next to this report under `qa/`):
 
-- `qa/oracle_kg_probe_50_round2.json`
-- `qa/oracle_kg_probe_50_round3.json`
+- `oracle_kg_probe_50_round2.json`
+- `oracle_kg_probe_50_round3.json`
 
 ## Observed failures
 
@@ -54,9 +55,9 @@ the cited text belongs to the paper node named in the question.  Here the
 evidence is real, so the answer passes factuality checking while still being
 bound to the wrong entity.
 
-Raw validator run:
+Raw validator run (local record, not distributed; under `qa/`):
 
-- `qa/validator_on_kg_failures.json`
+- `validator_on_kg_failures.json`
 
 ## Hard multi-hop failure
 
